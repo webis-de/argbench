@@ -1,0 +1,14 @@
+#+title: Results
+
+* Single adapter performance
+** ibmsc
+f1 score: 0.44
+** ajjour-19-webis-argument-framing
+f1 score: 0.43
+** stance-classificaiton
+f1 score: 0.38
+
+
+* Combination of adapters performance
+Used ibmsc + ajjour-19-webis-argument-framing and evaluated on key-point-analysis
+F1 score: 0.48

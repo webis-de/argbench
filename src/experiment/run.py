@@ -13,21 +13,21 @@ config = {
     "train_datasets": {
         "stab18_stance_classification": {
             "match": "stab18_stance_classification",
-            "prompt_template": "{definition}\nPositive Example:\nInput: {positive_example_input_0}\nOutput: {positive_example_output_0}\nNegative Example:\nInput: {negative_example_input_0}\nOutput: {negative_example_output_0}\nInput: {instance_input}\n Output:"
+            "prompt_template": "### Instruction:\n{definition}\n### Input:\nPositive Example:\nInput: {positive_example_input_0}\nOutput: {positive_example_output_0}\nNegative Example:\nInput: {negative_example_input_0}\nOutput: {negative_example_output_0}\nInput: {instance_input}\n### Response:"
         }
     },
     "test_datasets": {
         "barhaim21_key_point": {
             "match": "barhaim21_key_point",
-            "prompt_template": "{definition}\nPositive Example:\nInput: {positive_example_input_0}\nOutput: {positive_example_output_0}\nNegative Example:\nInput: {negative_example_input_0}\nOutput: {negative_example_output_0}\nInput: {instance_input}\n Output:"
+            "prompt_template": "### Instruction:\n{definition}\n### Input:\nPositive Example:\nInput: {positive_example_input_0}\nOutput: {positive_example_output_0}\nNegative Example:\nInput: {negative_example_input_0}\nOutput: {negative_example_output_0}\nInput: {instance_input}\n### Response:"
         }
     }
 }
 
-cutoff_len=1024
+cutoff_len=1500
 batch_size = 32
-warmup_steps = 20
-num_epochs = 1
+warmup_steps = 0
+num_epochs = 2
 learning_rate = 3e-4
 optim = "adamw_torch"
 output_dir = "/bigwork/nhwpbozd/train-checkpoint"
@@ -39,6 +39,7 @@ print("tokenizer loaded")
 model = LlamaForCausalLM.from_pretrained(
     base_model,
     load_in_4bit=True,
+    # load_in_8bit=True,
     torch_dtype=torch.float16,
     device_map=device_map
 )
@@ -74,12 +75,17 @@ def tokenize(prompt, add_eos_token=True):
 
 
 def generate_and_tokenize_prompt(data_point, train=True):
+    input_prompt = tokenize(data_point['input'])
     if train:
-        full_prompt = f"{data_point['input']}{data_point['output']}"
-    else:
-        full_prompt = data_point['input']
-    tokenized_full_prompt = tokenize(full_prompt)
-    return tokenized_full_prompt
+        full_prompt = tokenize(f"{data_point['input']}{data_point['output']}")
+        instruction_len = len(input_prompt) - 1
+        full_prompt["labels"] = [
+            -100
+        ] * instruction_len + full_prompt["labels"][
+            instruction_len:
+        ]
+        return full_prompt
+    return input_prompt
 
 train_data = [generate_and_tokenize_prompt(d) for d in train_instances]
 test_data = [generate_and_tokenize_prompt(d) for d in test_instances]

@@ -5,6 +5,7 @@ import random
 from string import Formatter
 import re
 from yaml import load, Loader
+import random
 import ndjson
 import os
 
@@ -81,6 +82,7 @@ def compile_instances(dataset, template, instances):
             "output": output
         })
 
+
 def append_dataset(datasets, dataset_config, dataset_file_path, data_instances):
     for dataset in datasets["file_list"]:
         if not re.match(dataset_config["match"], dataset):
@@ -95,17 +97,25 @@ def collect_datasets(config, metadata, datasets_path):
     train_instances = []
     test_instances = []
 
-    for dataset in config["train_datasets"]:
+    for i, dataset in enumerate(config["train_datasets"]):
         dataset_files = metadata[dataset]
         dataset_config = config["train_datasets"][dataset]
         dataset_file_path = datasets_path / dataset
         append_dataset(dataset_files, dataset_config, dataset_file_path, train_instances)
+        if dataset_config.get("subsample_rate"):
+            data_indices = [n for n in range(len(train_instances[i]))]
+            data_indices = random.sample(data_indices, int(len(data_indices) * dataset_config["subsample_rate"]))
+            train_instances[i] = [train_instances[n] for n in data_indices]
 
-    for dataset in config["test_datasets"]:
+    for i, dataset in enumerate(config["test_datasets"]):
         dataset_files = metadata[dataset]
         dataset_config = config["test_datasets"][dataset]
         dataset_file_path = datasets_path / dataset
         append_dataset(dataset_files, dataset_config, dataset_file_path, test_instances)
+        if dataset_config.get("subsample_rate"):
+            data_indices = [i for i in range(len(test_instances[i]))]
+            data_indices = random.sample(data_indices, int(len(data_indices) * dataset_config["subsample_rate"]))
+            test_instances[i] = [test_instances[n] for n in data_indices]
 
     random.shuffle(train_instances)
     random.shuffle(test_instances)
