@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import uuid
 import re
 
-DATASET_NAME = "arc_premise_generation_chakarbarty21"
+DATASET_NAME = "premise_generation_arc_chakarbarty21"
 
 @dataclass
 class Record:
@@ -92,47 +92,47 @@ if __name__ == "__main__":
     d1test_data, d1test_data_para_comet = read_para_comet(d1test_data, d1test_data_para_comet)
     d1test_data, d1test_data_para_comet = make_outputs(d1test_data, d1test_data_para_comet)
 
-    d1test_data.write_output("arc_premise_generation_d1test_chakarbarty21.json")
-    d1test_data_para_comet.write_output("arc_premise_generation_d1test_para_comet_chakarbarty21.json")
+    d1test_data.write_output("premise_generation_arc_d1test_chakarbarty21.json")
+    d1test_data_para_comet.write_output("premise_generation_arc_d1test_para_comet_chakarbarty21.json")
 
-    metadata.add_dataset("arc_premise_generation_d1test_chakarbarty21.json", "test")
-    metadata.add_dataset("arc_premise_generation_d1test_para_comet_chakarbarty21.json", "test")
+    metadata.add_dataset("premise_generation_arc_d1test_chakarbarty21.json", "test")
+    metadata.add_dataset("premise_generation_arc_d1test_para_comet_chakarbarty21.json", "test")
 
     d2test_data, d2test_data_para_comet = read_para_comet(d2test_data, d2test_data_para_comet)
     d2test_data, d2test_data_para_comet = make_outputs(d2test_data, d2test_data_para_comet)
 
-    d2test_data.write_output("arc_premise_generation_d2test_chakarbarty21.json")
-    d2test_data_para_comet.write_output("arc_premise_generation_d2test_para_comet_chakarbarty21.json")
+    d2test_data.write_output("premise_generation_arc_d2test_chakarbarty21.json")
+    d2test_data_para_comet.write_output("premise_generation_arc_d2test_para_comet_chakarbarty21.json")
 
-    metadata.add_dataset("arc_premise_generation_d2test_chakarbarty21.json", "test")
-    metadata.add_dataset("arc_premise_generation_d2test_para_comet_chakarbarty21.json", "test")
+    metadata.add_dataset("premise_generation_arc_d2test_chakarbarty21.json", "test")
+    metadata.add_dataset("premise_generation_arc_d2test_para_comet_chakarbarty21.json", "test")
 
     d3test_data, d3test_data_para_comet = read_para_comet(d3test_data, d3test_data_para_comet)
     d3test_data, d3test_data_para_comet = make_outputs(d3test_data, d3test_data_para_comet)
 
-    d3test_data.write_output("arc_premise_generation_d3test_chakarbarty21.json")
-    d3test_data_para_comet.write_output("arc_premise_generation_d3test_para_comet_chakarbarty21.json")
+    d3test_data.write_output("premise_generation_arc_d3test_chakarbarty21.json")
+    d3test_data_para_comet.write_output("premise_generation_arc_d3test_para_comet_chakarbarty21.json")
 
-    metadata.add_dataset("arc_premise_generation_d3test_chakarbarty21.json", "test")
-    metadata.add_dataset("arc_premise_generation_d3test_para_comet_chakarbarty21.json", "test")
+    metadata.add_dataset("premise_generation_arc_d3test_chakarbarty21.json", "test")
+    metadata.add_dataset("premise_generation_arc_d3test_para_comet_chakarbarty21.json", "test")
 
     art_data_train_target, art_data_train_target_para_comet = read_para_comet(art_data_train_target, art_data_train_source)
     art_data_train_target, art_data_train_target_para_comet = make_outputs(art_data_train_target, art_data_train_target_para_comet)
 
-    art_data_train_target.write_output("arc_premise_generation_train_chakarbarty21.json")
-    art_data_train_target_para_comet.write_output("arc_premise_generation_train_para_comet_chakarbarty21.json")
+    art_data_train_target.write_output("premise_generation_arc_train_chakarbarty21.json")
+    art_data_train_target_para_comet.write_output("premise_generation_arc_train_para_comet_chakarbarty21.json")
 
-    metadata.add_dataset("arc_premise_generation_train_chakarbarty21.json", "train")
-    metadata.add_dataset("arc_premise_generation_train_para_comet_chakarbarty21.json", "train")
+    metadata.add_dataset("premise_generation_arc_train_chakarbarty21.json", "train")
+    metadata.add_dataset("premise_generation_arc_train_para_comet_chakarbarty21.json", "train")
 
     art_data_val_target, art_data_val_target_para_comet = read_para_comet(art_data_val_target, art_data_val_source)
     art_data_val_target, art_data_val_target_para_comet = make_outputs(art_data_val_target, art_data_val_target_para_comet)
 
-    art_data_val_target.write_output("arc_premise_generation_val_chakarbarty21.json")
-    art_data_val_target_para_comet.write_output("arc_premise_generation_val_para_comet_chakarbarty21.json")
+    art_data_val_target.write_output("premise_generation_arc_val_chakarbarty21.json")
+    art_data_val_target_para_comet.write_output("premise_generation_arc_val_para_comet_chakarbarty21.json")
 
-    metadata.add_dataset("arc_premise_generation_val_chakarbarty21.json", "val")
-    metadata.add_dataset("arc_premise_generation_val_para_comet_chakarbarty21.json", "val")
+    metadata.add_dataset("premise_generation_arc_val_chakarbarty21.json", "val")
+    metadata.add_dataset("premise_generation_arc_val_para_comet_chakarbarty21.json", "val")
 
     metadata.add_evaluation_metric("rouge")
 
