@@ -1,0 +1,92 @@
+=======
+convert_aharoni14_claim_evidence_extraction.py -> convert_evidence_extraction_ibm_claim_evidence_aharoni14.py
+convert_aharoni14_claim_extraction.py -> convert_conclusion_extraction_ibm_claim_evidence_aharoni14.py
+=======
+convert_ajjour_frame_identification.py -> convert_frame_identification_webis_argument_framing_19_ajjour19.py
+convert_ajjour_frame_identification_stance.py -> convert_frame_identification_webis_stance_classification_19_ajjour19.py
+========
+convert_ajjour_unit_segmentation.py -> convert_argument_unit_segmentation_ajjour17.py
+--------
+convert_ajjour_unit_segmentation.py -> convert_argument_unit_segmentation_essays_ajjour17.py
+convert_ajjour_unit_segmentation.py -> convert_argument_unit_segmentation_webis_editorials_ajjour17.py
+convert_ajjour_unit_segmentation.py -> convert_argument_unit_segmentation_web_discourse_ajjour17.py
+========
+convert_ajjour_unit_segmentation_entity.py -> convert_argument_unit_segmentation_ajjour17.py
+--------
+convert_ajjour_unit_segmentation_entity.py -> convert_argument_unit_segmentation_essays_ajjour17.py
+convert_ajjour_unit_segmentation_entity.py -> convert_argument_unit_segmentation_webis_editorials_entity_ajjour17.py
+convert_ajjour_unit_segmentation_entity.py -> convert_argument_unit_segmentation_web_discourse_entity_ajjour17.py
+========
+convert_alkhatib16_argumentation_strategy_mining_unit_segmentation.py -> convert_argument_unit_segmentation_webis_editorials_alkhatib16.py
+convert_alkhatib16_argumentation_strategy_mining_unit_segmentation.py -> convert_argument_unit_segmentation_webis_editorials_entity_alkhatib16.py
+========
+convert_alshomary21_belief_based_argument_generation.py -> convert_conclusion_generation_belief_generation_alshomary21.py
+========
+convert_barhaim21_key_point.py -> convert_key_point_matching_argkp_2021_barhaim21.py
+========
+convert_chakarbarty21_implicit_premise_generation.py -> convert_arc_premise_generation_chakarbarty21.py
+========
+lexisnexis wikipedia articles
+convert_ein_dor_20_argument_detection.py -> convert_argument_unit_classificaiton_wikipedia_articles_lexisnexis_eindor20.py
+========
+convert_gleize19_evidence_quality_pairvise_rank.py -> convert_argument_ranking_ibm_evidence_quality_gleize19.py
+========
+convert_goffredo23_logical_fallacy_classification.py -> convert_fallacy_detection_elecdeb60t020_goffredo23.py
+========
+convert_gretz20_conclusion_generation.py -> convert_conclusion_generation_ibm_claim_generation_gretz20.py
+========
+convert_gretz20_ibm_quality_rank_30k.py _> convert_argument_ranking_ibm_rank_30k_class_rank_gretz20.py
+convert_gretz20_ibm_quality_rank_30k_pairvise_rank.py _> convert_argument_ranking_ibm_rank_30k_pairvise_rank_gretz20.py
+convert_gretz20_ibm_quality_rank_30k_rank.py _> convert_argument_ranking_ibm_rank_30k_full_rank_gretz20.py
+========
+convert_habernal18_ad_hominem_detection.py -> convert_fallacy_detection_cmv_adhominem_habernal18.py
+========
+convert_habernal18_implicit_warrant_identification.py -> convert_warrant_identification_semeval_2018_task_12_habernal18.py
+========
+convert_hua_18_counter_argument_generation.py -> convert_counter_argument_generation_cmv_hua18.py
+========
+convert_ibmsc_stance_classification.py -> convert_stance_classification_ibmsc_barhaim17.py
+========
+convert_jin22_logical_fallacy_detection.py -> convert_fallacy_detection_logic_jin22.py
+convert_jin22_logical_fallacy_detection_entity.py -> convert_fallacy_detection_logic_entity_jin22.py
+========
+convert_menini18_relation_identification.py -> convert_argument_relation_identification_political_debates_menini18.py
+========
+convert_ng20_argument_quality_assesment.py -> convert_argument_ranking_ng20.py
+--------
+convert_ng20_argument_quality_assesment.py -> convert_argument_ranking_debate_forums_crowd_ng20.py
+convert_ng20_argument_quality_assesment.py -> convert_argument_ranking_debate_forums_experts_ng20.py
+convert_ng20_argument_quality_assesment.py -> convert_argument_ranking_qa_forums_crowd_ng20.py
+convert_ng20_argument_quality_assesment.py -> convert_argument_ranking_qa_forums_experts_ng20.py
+convert_ng20_argument_quality_assesment.py -> convert_argument_ranking_review_forums_crowd_ng20.py
+convert_ng20_argument_quality_assesment.py -> convert_argument_ranking_review_forums_experts_ng20.py
+========
+convert_park18_cornel_erulemaking_classification.py -> convert_argument_unit_classification_erulemaking_park18.py
+========
+convert_park18_cornel_erulemaking_identification.py -> convert_argument_relation_identification_erulemaking_park18.py
+========
+changed argument_generation -> premise_extraction
+convert_saha_23_argument_extraction.py -> convert_premise_extraction_argu_saha23.py
+convert_saha_23_argument_scheme_identification.py -> convert_scheme_classification_argu_saha23.py
+convert_saha_23_stance_detection.py -> convert_stance_classification_argu_saha23.py
+========
+convert_schiller21_aspect_argument_generation.py -> convert_aspect_argument_generation_ukp_aspect_schiller21.py
+========
+convert_skitalinskaya23_claim_optimization.py -> convert_claim_optimization_claim_revisions_skitalinskaya23.py
+========
+convert_stab17_argument_relation_identification.py -> convert_argument_unit_relation_identification_essays_stab17
+========
+convert_stab18_stance_classification.py -> convert_stance_classification_ukp_sentential_stab18.py
+========
+convert_ukp_aspect_argument_similarity.py -> convert_argument_similarity_ukp_aspect_reimers19.py
+========
+chakarbarty21 -> skeppstedt18
+convert_upotsdam_microtexts_v1.py -> convert_premise_generation_microtexts_v1_skeppstedt18.py
+convert_upotsdam_microtexts_v2.py -> convert_premise_generation_microtexts_v2_skeppstedt18.py
+========
+convert_wachsmuth_dagstuhl_quality.py -> convert_argument_ranking_dagstuhl_15512_wachsmuth17.py
+--------
+convert_wachsmuth_dagstuhl_quality.py -> convert_argument_ranking_dagstuhl_15512_class_rank_wachsmuth17.py
+convert_wachsmuth_dagstuhl_quality_pairvise_rank.py -> convert_argument_ranking_dagstuhl_15512_pairvise_rank_wachsmuth17.py
+convert_wachsmuth_dagstuhl_quality_rank.py -> convert_argument_ranking_dagstuhl_15512_full_rank_wachsmuth17.py
+========

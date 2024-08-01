@@ -4,48 +4,48 @@ import json
 
 DATASET_CANON_SIZE = [
     {
-        "name": "stab17_argument_relation_identification", # essays
+        "name": "argument_unit_relation_identification_essays_stab17", # essays
         "canon_size": 402
     },
     {
-        "name": "peldzus15_argument_relation_identification", # microtexts1
+        "name": "premise_generation_microtexts_v1_skeppstedt18", # microtexts1
         "canon_size": 112
     },
     {
-        "name": "skepstedt18_argument_relation_identification", # microtexts2
+        "name": "premise_generation_microtexts_v2_skeppstedt18", # microtexts2
         "canon_size": 112
     },
     {
-        "name": "park18_cornell_erulemaking_classification", # erulemaking 781 x cartesian products of argument units
+        "name": "argument_unit_classification_erulemaking_park18", # erulemaking 781 x cartesian products of argument units
         "canon_size": 45782
     },
     {
-        "name": "menini18_relation_identification", # political argumentation, unbalanced. Balanced - 1462
+        "name": "argument_relation_identification_political_debates_menini18", # political argumentation, unbalanced. Balanced - 1462
         "canon_size": 1907
     },
     {
-        "name": "skitalinskaya23_claim_optimization", # claim revisions 121504 currently in dataset
+        "name": "claim_optimization_claim_revisions_skitalinskaya23", # claim revisions 121504 currently in dataset
         "canon_size": 124312 # In the paper original 210,222 revision history pairs were reduced to 198,089 instances of main labels, which may explain why number is lover
         # In readme there exists original unrevised dataset, we use revised
     },
     {
-        "name": "aharoni14_claim_evidence_extraction",
+        "name": "evidence_extraction_ibm_claim_evidence_aharoni14",
         "canon_size": 1291
     },
     {
-        "name": "aharoni14_claim_extraction", # 1392 CDCs, 1387 in CDC file, 1291 related to CDEs
+        "name": "conclusion_extraction_ibm_claim_evidence_aharoni14", # 1392 CDCs, 1387 in CDC file, 1291 related to CDEs
         "canon_size": 1392
     },
     {
-        "name": "alkhatib16_argumentation_strategy_mining_unit_segmentation",
+        "name": "argument_unit_segmentation_webis_editorials_alkhatib16",
         "canon_size": 300
     },
     {
-        "name": "habernal18_implicit_warrant_identification", # 1970 high-quality instances
+        "name": "warrant_identification_semeval_2018_task_12_habernal18", # 1970 high-quality instances
         "canon_size": 1970
     },
     {
-        "name": "habernal18-ad-hominem-detection", # 1800 annotated OPs
+        "name": "fallacy_detection_cmv_adhominem_habernal18", # 1800 annotated OPs
         "canon_size": 1800
     }
 ]
