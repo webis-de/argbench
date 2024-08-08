@@ -1,54 +1,15 @@
 from .common import tasks_path
+from pathlib import Path
 import pytest
 import json
+import os
 
-DATASET_CANON_SIZE = [
-    {
-        "name": "argument_unit_relation_identification_essays_stab17", # essays
-        "canon_size": 402
-    },
-    {
-        "name": "premise_generation_microtexts_v1_skeppstedt18", # microtexts1
-        "canon_size": 112
-    },
-    {
-        "name": "premise_generation_microtexts_v2_skeppstedt18", # microtexts2
-        "canon_size": 112
-    },
-    {
-        "name": "argument_unit_classification_erulemaking_park18", # erulemaking 781 x cartesian products of argument units
-        "canon_size": 45782
-    },
-    {
-        "name": "argument_relation_identification_political_debates_menini18", # political argumentation, unbalanced. Balanced - 1462
-        "canon_size": 1907
-    },
-    {
-        "name": "claim_optimization_claim_revisions_skitalinskaya23", # claim revisions 121504 currently in dataset
-        "canon_size": 124312 # In the paper original 210,222 revision history pairs were reduced to 198,089 instances of main labels, which may explain why number is lover
-        # In readme there exists original unrevised dataset, we use revised
-    },
-    {
-        "name": "evidence_extraction_ibm_claim_evidence_aharoni14",
-        "canon_size": 1291
-    },
-    {
-        "name": "conclusion_extraction_ibm_claim_evidence_aharoni14", # 1392 CDCs, 1387 in CDC file, 1291 related to CDEs
-        "canon_size": 1392
-    },
-    {
-        "name": "argument_unit_segmentation_webis_editorials_alkhatib16",
-        "canon_size": 300
-    },
-    {
-        "name": "warrant_identification_semeval_2018_task_12_habernal18", # 1970 high-quality instances
-        "canon_size": 1970
-    },
-    {
-        "name": "fallacy_detection_cmv_adhominem_habernal18", # 1800 annotated OPs
-        "canon_size": 1800
-    }
-]
+
+curr_file = os.path.abspath(__file__)
+config_file = Path(curr_file).parents[0] / "dataset_canonical_size.json"
+with open(config_file) as f:
+    DATASET_CANON_SIZE = json.load(f)
+
 
 @pytest.mark.parametrize("dataset_size", DATASET_CANON_SIZE)
 def test_dataset_canonical_size(dataset_size):
