@@ -18,6 +18,8 @@ def process_split(dataset_file, output_file, metadata, dataset_split):
             aspect_pos_string = row["aspect_pos_string"]
 
             prompt = f"Argument: {argument}"
+            if aspect_pos_string[0] == "no_Aspect":
+                continue
             aspect_output = "\n".join([asp_text for asp_text in aspect_pos_string])
 
             output.append_instance(id, prompt, [aspect_output])
