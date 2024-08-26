@@ -1,4 +1,4 @@
-from common import Output, read_tabular, datasets_path, tasks_path
+from common import tasks_path
 import json
 
 def print_data_size(dataset_name, *data_paths):
@@ -13,18 +13,22 @@ def print_data_size(dataset_name, *data_paths):
 
 
 if __name__ == "__main__":
-    ajjour_frame_identification = tasks_path() / "ajjour_frame_identification" / "ajjour_frame_identification.json"
-    print_data_size("Unit Segmentation of Argumentative texts - Frame Identification", ajjour_frame_identification)
+    frame_identification_webis_argument_framing_19_ajjour19 = (tasks_path() /
+                                   "frame_identification_webis_argument_framing_19_ajjour19" /
+                                   "frame_identification_webis_argument_framing_19_ajjour19.json")
+    print_data_size("Unit Segmentation of Argumentative texts - Frame Identification", frame_identification_webis_argument_framing_19_ajjour19)
 
-    ajjour_frame_identification = tasks_path() / "ajjour_frame_identification_stance" / "ajjour_frame_identification_stance.json"
-    print_data_size("Unit Segmentation of Argumentative texts - Stance Classification", ajjour_frame_identification)
+    frame_identification_webis_stance_classification_19_ajjour19 = (tasks_path() /
+                                                                    "frame_identification_webis_stance_classification_19_ajjour19" /
+                                                                    "frame_identification_webis_stance_classification_19_ajjour19.json")
+    print_data_size("Unit Segmentation of Argumentative texts - Stance Classification", frame_identification_webis_stance_classification_19_ajjour19)
 
-    ein_dor_premise_detection = tasks_path() / "ein_dor_20_argument_detection" / "ein_dor_20_argument_detection.json"
+    ein_dor_premise_detection = tasks_path() / "argument_unit_classificaiton_wikipedia_articles_lexisnexis_eindor20" / "argument_unit_classificaiton_wikipedia_articles_lexisnexis_eindor20.json"
     print_data_size("Corpus Wide Argument Mining - a Working Solution", ein_dor_premise_detection)
 
-    gretz20_ibm_quaity_rank_train = tasks_path() / "gretz20_ibm_quality_rank_30k" / "gretz20_ibm_quality_rank_30k_train.json"
-    gretz20_ibm_quaity_rank_test = tasks_path() / "gretz20_ibm_quality_rank_30k" / "gretz20_ibm_quality_rank_30k_test.json"
-    gretz20_ibm_quaity_rank_dev = tasks_path() / "gretz20_ibm_quality_rank_30k" / "gretz20_ibm_quality_rank_30k_dev.json"
+    gretz20_ibm_quaity_rank_train = tasks_path() / "argument_ranking_ibm_rank_30k_class_rank_gretz20" / "argument_ranking_ibm_rank_30k_class_rank_train_gretz20.json"
+    gretz20_ibm_quaity_rank_test = tasks_path() / "argument_ranking_ibm_rank_30k_class_rank_gretz20" / "argument_ranking_ibm_rank_30k_class_rank_test_gretz20.json"
+    gretz20_ibm_quaity_rank_dev = tasks_path() / "argument_ranking_ibm_rank_30k_class_rank_gretz20" / "argument_ranking_ibm_rank_30k_class_rank_dev_gretz20.json"
 
     print_data_size(
         "A Large Scale Dataset for Argument Quality Ranking: Construction and Analysis - Quality Classification",
@@ -32,9 +36,9 @@ if __name__ == "__main__":
         gretz20_ibm_quaity_rank_test,
         gretz20_ibm_quaity_rank_dev)
 
-    gretz20_ibm_quaity_rank_train = tasks_path() / "gretz20_ibm_quality_rank_30k_pairvise_rank" / "gretz20_ibm_quality_rank_30k_pairvise_rank_train.json"
-    gretz20_ibm_quaity_rank_test = tasks_path() / "gretz20_ibm_quality_rank_30k_pairvise_rank" / "gretz20_ibm_quality_rank_30k_pairvise_rank_test.json"
-    gretz20_ibm_quaity_rank_dev = tasks_path() / "gretz20_ibm_quality_rank_30k_pairvise_rank" / "gretz20_ibm_quality_rank_30k_pairvise_rank_dev.json"
+    gretz20_ibm_quaity_rank_train = tasks_path() / "argument_ranking_ibm_rank_30k_pairvise_rank_gretz20" / "argument_ranking_ibm_rank_30k_pairvise_rank_train_gretz20.json"
+    gretz20_ibm_quaity_rank_test = tasks_path() / "argument_ranking_ibm_rank_30k_pairvise_rank_gretz20" / "argument_ranking_ibm_rank_30k_pairvise_rank_test_gretz20.json"
+    gretz20_ibm_quaity_rank_dev = tasks_path() / "argument_ranking_ibm_rank_30k_pairvise_rank_gretz20" / "argument_ranking_ibm_rank_30k_pairvise_rank_dev_gretz20.json"
 
     print_data_size(
         "A Large Scale Dataset for Argument Quality Ranking: Construction and Analysis - Pairvise Ranking",
@@ -43,9 +47,9 @@ if __name__ == "__main__":
         gretz20_ibm_quaity_rank_dev)
 
 
-    gretz20_ibm_quaity_rank_train = tasks_path() / "gretz20_ibm_quality_rank_30k_rank" / "gretz20_ibm_quality_rank_30k_rank_train.json"
-    gretz20_ibm_quaity_rank_test = tasks_path() / "gretz20_ibm_quality_rank_30k_rank" / "gretz20_ibm_quality_rank_30k_rank_test.json"
-    gretz20_ibm_quaity_rank_dev = tasks_path() / "gretz20_ibm_quality_rank_30k_rank" / "gretz20_ibm_quality_rank_30k_rank_dev.json"
+    gretz20_ibm_quaity_rank_train = tasks_path() / "argument_ranking_ibm_rank_30k_full_rank_gretz20" / "argument_ranking_ibm_rank_30k_full_rank_train_gretz20.json"
+    gretz20_ibm_quaity_rank_test = tasks_path() / "argument_ranking_ibm_rank_30k_full_rank_gretz20" / "argument_ranking_ibm_rank_30k_full_rank_train_gretz20.json"
+    gretz20_ibm_quaity_rank_dev = tasks_path() / "argument_ranking_ibm_rank_30k_full_rank_gretz20" / "argument_ranking_ibm_rank_30k_full_rank_train_gretz20.json"
 
     print_data_size(
         "A Large Scale Dataset for Argument Quality Ranking: Construction and Analysis - Full Ranking",
@@ -54,10 +58,9 @@ if __name__ == "__main__":
         gretz20_ibm_quaity_rank_dev)
 
 
-
-    gretz20_conclusion_generation_train =  tasks_path() / "gretz20_conclusion_generation" / "gretz20_conclusion_generation_train.json"
-    gretz20_conclusion_generation_test =  tasks_path() / "gretz20_conclusion_generation" / "gretz20_conclusion_generation_test.json"
-    gretz20_conclusion_generation_dev =  tasks_path() / "gretz20_conclusion_generation" / "gretz20_conclusion_generation_dev.json"
+    gretz20_conclusion_generation_train =  tasks_path() / "conclusion_generation_ibm_claim_generation_gretz20" / "conclusion_generation_ibm_claim_generation_train_gretz20.json"
+    gretz20_conclusion_generation_test =  tasks_path() / "conclusion_generation_ibm_claim_generation_gretz20" / "conclusion_generation_ibm_claim_generation_test_gretz20.json"
+    gretz20_conclusion_generation_dev =  tasks_path() / "conclusion_generation_ibm_claim_generation_gretz20" / "conclusion_generation_ibm_claim_generation_dev_gretz20.json"
 
     print_data_size(
         "The workweek is the best time to start a family - A Study of GPT-2 Based Claim Generation",
@@ -66,21 +69,21 @@ if __name__ == "__main__":
         gretz20_conclusion_generation_train
     )
 
-    wachsmuth_dagstuhl_quality_overall_quality = tasks_path() / "wachsmuth_dagstuhl_quality" / "wachsmuth17_dagstuhl_overall_quality.json"
-    wachsmuth_dagstuhl_quality_effectiveness = tasks_path() / "wachsmuth_dagstuhl_quality" / "wachsmuth17_dagstuhl_effectiveness.json"
-    wachsmuth_dagstuhl_quality_local_acceptability = tasks_path() / "wachsmuth_dagstuhl_quality" / "wachsmuth17_dagstuhl_local_acceptability.json"
-    wachsmuth_dagstuhl_quality_appropriateness = tasks_path() / "wachsmuth_dagstuhl_quality" / "wachsmuth17_dagstuhl_appropriateness.json"
-    wachsmuth_dagstuhl_quality_arrangement = tasks_path() / "wachsmuth_dagstuhl_quality" / "wachsmuth17_dagstuhl_arrangement.json"
-    wachsmuth_dagstuhl_quality_clarity = tasks_path() / "wachsmuth_dagstuhl_quality" / "wachsmuth17_dagstuhl_clarity.json"
-    wachsmuth_dagstuhl_quality_cogency = tasks_path() / "wachsmuth_dagstuhl_quality" / "wachsmuth17_dagstuhl_cogency.json"
-    wachsmuth_dagstuhl_quality_global_acceptability = tasks_path() / "wachsmuth_dagstuhl_quality" / "wachsmuth17_dagstuhl_global_acceptability.json"
-    wachsmuth_dagstuhl_quality_global_relevance = tasks_path() / "wachsmuth_dagstuhl_quality" / "wachsmuth17_dagstuhl_global_relevance.json"
-    wachsmuth_dagstuhl_quality_global_sufficiency = tasks_path() / "wachsmuth_dagstuhl_quality" / "wachsmuth17_dagstuhl_global_sufficiency.json"
-    wachsmuth_dagstuhl_quality_reasonableness = tasks_path() / "wachsmuth_dagstuhl_quality" / "wachsmuth17_dagstuhl_reasonableness.json"
-    wachsmuth_dagstuhl_quality_local_relevance = tasks_path() / "wachsmuth_dagstuhl_quality" / "wachsmuth17_dagstuhl_local_relevance.json"
-    wachsmuth_dagstuhl_quality_credibility = tasks_path() / "wachsmuth_dagstuhl_quality" / "wachsmuth17_dagstuhl_credibility.json"
-    wachsmuth_dagstuhl_quality_emotional_appeal = tasks_path() / "wachsmuth_dagstuhl_quality" / "wachsmuth17_dagstuhl_emotional_appeal.json"
-    wachsmuth_dagstuhl_quality_sufficiency = tasks_path() / "wachsmuth_dagstuhl_quality" / "wachsmuth17_dagstuhl_sufficiency.json"
+    wachsmuth_dagstuhl_quality_overall_quality = tasks_path() / "argument_ranking_dagstuhl_15512_class_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_class_rank_overall_quality_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_effectiveness = tasks_path() / "argument_ranking_dagstuhl_15512_class_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_class_rank_effectiveness_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_local_acceptability = tasks_path() / "argument_ranking_dagstuhl_15512_class_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_class_rank_local_acceptability_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_appropriateness = tasks_path() / "argument_ranking_dagstuhl_15512_class_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_class_rank_appropriateness_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_arrangement = tasks_path() / "argument_ranking_dagstuhl_15512_class_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_class_rank_arrangement_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_clarity = tasks_path() / "argument_ranking_dagstuhl_15512_class_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_class_rank_clarity_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_cogency = tasks_path() / "argument_ranking_dagstuhl_15512_class_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_class_rank_cogency_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_global_acceptability = tasks_path() / "argument_ranking_dagstuhl_15512_class_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_class_rank_global_acceptability_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_global_relevance = tasks_path() / "argument_ranking_dagstuhl_15512_class_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_class_rank_global_relevance_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_global_sufficiency = tasks_path() / "argument_ranking_dagstuhl_15512_class_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_class_rank_global_sufficiency_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_reasonableness = tasks_path() / "argument_ranking_dagstuhl_15512_class_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_class_rank_reasonableness_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_local_relevance = tasks_path() / "argument_ranking_dagstuhl_15512_class_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_class_rank_local_relevance_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_credibility = tasks_path() / "argument_ranking_dagstuhl_15512_class_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_class_rank_credibility_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_emotional_appeal = tasks_path() / "argument_ranking_dagstuhl_15512_class_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_class_rank_emotional_appeal_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_sufficiency = tasks_path() / "argument_ranking_dagstuhl_15512_class_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_class_rank_sufficiency_wachsmuth17.json"
 
     print_data_size(
         "Computational Argumentation Quality Assesment in Natural Language - Quality Classification",
@@ -171,14 +174,14 @@ if __name__ == "__main__":
         wachsmuth_dagstuhl_quality_sufficiency
     )
 
-    ajjour_unit_segmentation_essays_train = tasks_path() / "ajjour_unit_segmentation" / "ajjour_unit_segmentation_essays_train.json"
-    ajjour_unit_segmentation_essays_test = tasks_path() / "ajjour_unit_segmentation" / "ajjour_unit_segmentation_editorials_test.json"
+    ajjour_unit_segmentation_essays_train = tasks_path() / "argument_unit_segmentation_ajjour17" / "argument_unit_segmentation_essays_train_ajjour17.json"
+    ajjour_unit_segmentation_essays_test = tasks_path() / "argument_unit_segmentation_ajjour17" / "argument_unit_segmentation_essays_test_ajjour17.json"
 
-    ajjour_unit_segmentation_editorials_train = tasks_path() / "ajjour_unit_segmentation" / "ajjour_unit_segmentation_editorials_train.json"
-    ajjour_unit_segmentation_editorials_test = tasks_path() / "ajjour_unit_segmentation" / "ajjour_unit_segmentation_editorials_test.json"
+    ajjour_unit_segmentation_editorials_train = tasks_path() / "argument_unit_segmentation_ajjour17" / "argument_unit_segmentation_webis_editorials_train_ajjour17.json"
+    ajjour_unit_segmentation_editorials_test = tasks_path() / "argument_unit_segmentation_ajjour17" / "argument_unit_segmentation_webis_editorials_test_ajjour17.json"
 
-    ajjour_unit_segmentation_web_discourse_train = tasks_path() / "ajjour_unit_segmentation" / "ajjour_unit_segmentation_web_discourse_train.json"
-    ajjour_unit_segmentation_web_discourse_test = tasks_path() / "ajjour_unit_segmentation" / "ajjour_unit_segmentation_web_discourse_test.json"
+    ajjour_unit_segmentation_web_discourse_train = tasks_path() / "argument_unit_segmentation_ajjour17" / "argument_unit_segmentation_web_discourse_train_ajjour17.json"
+    ajjour_unit_segmentation_web_discourse_test = tasks_path() / "argument_unit_segmentation_ajjour17" / "argument_unit_segmentation_web_discourse_test_ajjour17.json"
 
     print_data_size(
         "Unit Segmentation of Argumentative Tasks - Extract Argument",
@@ -190,14 +193,14 @@ if __name__ == "__main__":
         ajjour_unit_segmentation_web_discourse_train
     )
 
-    ajjour_unit_segmentation_essays_train = tasks_path() / "ajjour_unit_segmentation_entity" / "ajjour_unit_segmentation_entity_essays_train.json"
-    ajjour_unit_segmentation_essays_test = tasks_path() / "ajjour_unit_segmentation_entity" / "ajjour_unit_segmentation_entity_editorials_test.json"
+    ajjour_unit_segmentation_essays_train = tasks_path() / "argument_unit_segmentation_entity_ajjour17" / "argument_unit_segmentation_essays_entity_train_ajjour17.json"
+    ajjour_unit_segmentation_essays_test = tasks_path() / "argument_unit_segmentation_entity_ajjour17" / "argument_unit_segmentation_essays_entity_test_ajjour17.json"
 
-    ajjour_unit_segmentation_editorials_train = tasks_path() / "ajjour_unit_segmentation_entity" / "ajjour_unit_segmentation_entity_editorials_train.json"
-    ajjour_unit_segmentation_editorials_test = tasks_path() / "ajjour_unit_segmentation_entity" / "ajjour_unit_segmentation_entity_editorials_test.json"
+    ajjour_unit_segmentation_editorials_train = tasks_path() / "argument_unit_segmentation_entity_ajjour17" / "argument_unit_segmentation_webis_editorials_entity_train_ajjour17.json"
+    ajjour_unit_segmentation_editorials_test = tasks_path() / "argument_unit_segmentation_entity_ajjour17" / "argument_unit_segmentation_webis_editorials_entity_test_ajjour17.json"
 
-    ajjour_unit_segmentation_web_discourse_train = tasks_path() / "ajjour_unit_segmentation_entity" / "ajjour_unit_segmentation_entity_web_discourse_train.json"
-    ajjour_unit_segmentation_web_discourse_test = tasks_path() / "ajjour_unit_segmentation_entity" / "ajjour_unit_segmentation_entity_web_discourse_test.json"
+    ajjour_unit_segmentation_web_discourse_train = tasks_path() / "argument_unit_segmentation_entity_ajjour17" / "argument_unit_segmentation_web_discourse_entity_train_ajjour17.json"
+    ajjour_unit_segmentation_web_discourse_test = tasks_path() / "argument_unit_segmentation_entity_ajjour17" / "argument_unit_segmentation_web_discourse_entity_test_ajjour17.json"
 
     print_data_size(
         "Unit Segmentation of Argumentative Tasks - Entity Segmentation",
@@ -209,9 +212,9 @@ if __name__ == "__main__":
         ajjour_unit_segmentation_web_discourse_train
     )
 
-    stab18_stance_classification_train = tasks_path() / "stab18_stance_classification" / "stab18_stance_classification_train.json"
-    stab18_stance_classification_test = tasks_path() / "stab18_stance_classification" / "stab18_stance_classification_test.json"
-    stab18_stance_classification_val = tasks_path() / "stab18_stance_classification" / "stab18_stance_classification_val.json"
+    stab18_stance_classification_train = tasks_path() / "stance_classification_ukp_sentential_stab18" / "stance_classification_ukp_sentential_train_stab18.json"
+    stab18_stance_classification_test = tasks_path() / "stance_classification_ukp_sentential_stab18" / "stance_classification_ukp_sentential_test_stab18.json"
+    stab18_stance_classification_val = tasks_path() / "stance_classification_ukp_sentential_stab18" / "stance_classification_ukp_sentential_val_stab18.json"
 
     print_data_size(
         "Cross-Topic Argument Mining from Heterogeneous Sources",
@@ -220,11 +223,15 @@ if __name__ == "__main__":
         stab18_stance_classification_val
     )
 
-    barhaim21_key_point = tasks_path() / "barhaim21_key_point" / "barhaim21_key_point.json"
+    barhaim21_key_point_train = tasks_path() / "stance_classification_ibmsc_barhaim17" / "stance_classification_ibmsc_train_barhaim17.json"
+    barhaim21_key_point_test = tasks_path() / "stance_classification_ibmsc_barhaim17" / "stance_classification_ibmsc_test_barhaim17.json"
+    barhaim21_key_point_dev = tasks_path() / "stance_classification_ibmsc_barhaim17" / "stance_classification_ibmsc_dev_barhaim17.json"
 
     print_data_size(
         "From Arguments to Key Points: Towards Automatic Argument Summarization",
-        barhaim21_key_point
+        barhaim21_key_point_train,
+        barhaim21_key_point_test,
+        barhaim21_key_point_dev,
     )
 
     ibmsc_stance_classification_train = tasks_path() / "ibmsc_stance_classification" / "ibmsc_stance_classification_train.json"
@@ -238,15 +245,15 @@ if __name__ == "__main__":
         ibmsc_stance_classification_test
     )
 
-    ukp_aspect_argument_similarity = tasks_path() / "ukp_aspect_argument_similarity" / "ukp_aspect_argument_similarity.json"
+    ukp_aspect_argument_similarity = tasks_path() / "argument_similarity_ukp_aspect_reimers19" / "argument_similarity_ukp_aspect_reimers19.json"
 
     print_data_size(
         "Classification and Clustering of Arguments with Contextualized Word Embeddings",
         ukp_aspect_argument_similarity
     )
 
-    saha_23_argument_extraction_train = tasks_path() / "saha_23_argument_extraction" / "saha_23_argument_extraction_train.json"
-    saha_23_argument_extraction_test = tasks_path() / "saha_23_argument_extraction" / "saha_23_argument_extraction_test.json"
+    saha_23_argument_extraction_train = tasks_path() / "premise_extraction_argu_saha23" / "premise_extraction_argu_train_saha23.json"
+    saha_23_argument_extraction_test = tasks_path() / "premise_extraction_argu_saha23" / "premise_extraction_argu_test_saha23.json"
 
     print_data_size(
         "ArgU: A Controllable Factual Argument Generator - Extract Argument",
@@ -254,8 +261,8 @@ if __name__ == "__main__":
         saha_23_argument_extraction_train
     )
 
-    saha_23_argument_extraction_train = tasks_path() / "saha_23_argument_scheme_identification" / "saha_23_argument_scheme_test.json"
-    saha_23_argument_extraction_test = tasks_path() / "saha_23_argument_scheme_identification" / "saha_23_argument_scheme_train.json"
+    saha_23_argument_extraction_train = tasks_path() / "scheme_classification_argu_saha23" / "scheme_classification_argu_train_saha23.json"
+    saha_23_argument_extraction_test = tasks_path() / "scheme_classification_argu_saha23" / "scheme_classification_argu_test_saha23.json"
 
     print_data_size(
         "ArgU: A Controllable Factual Argument Generator - Argument Scheme Classification",
@@ -263,8 +270,8 @@ if __name__ == "__main__":
         saha_23_argument_extraction_train
     )
 
-    saha_23_argument_extraction_train = tasks_path() / "saha_23_stance_detection" / "saha_23_stance_detection_test.json"
-    saha_23_argument_extraction_test = tasks_path() / "saha_23_stance_detection" / "saha_23_stance_detection_train.json"
+    saha_23_argument_extraction_train = tasks_path() / "stance_classification_argu_saha23" / "stance_classification_argu_train_saha23.json"
+    saha_23_argument_extraction_test = tasks_path() / "stance_classification_argu_saha23" / "stance_classification_argu_test_saha23.json"
 
     print_data_size(
         "ArgU: A Controllable Factual Argument Generator - Stance Classification",
@@ -272,16 +279,16 @@ if __name__ == "__main__":
         saha_23_argument_extraction_train
     )
 
-    schiller21_aspect_argument_generation = tasks_path() / "schiller21_aspect_argument_generation" / "schiller21_aspect_argument_generation.json"
+    schiller21_aspect_argument_generation = tasks_path() / "aspect_argument_generation_ukp_aspect_schiller21" / "aspect_argument_generation_ukp_aspect_schiller21.json"
 
     print_data_size(
         "Aspect-Controlled Neural Argument Generation",
         schiller21_aspect_argument_generation
     )
 
-    hua_18_counter_argument_generation_train = tasks_path() / "hua_18_counter_argument_generation" / "hua_18_counter_argument_generation_train.json"
-    hua_18_counter_argument_generation_test = tasks_path() / "hua_18_counter_argument_generation" / "hua_18_counter_argument_generation_test.json"
-    hua_18_counter_argument_generation_valid = tasks_path() / "hua_18_counter_argument_generation" / "hua_18_counter_argument_generation_valid.json"
+    hua_18_counter_argument_generation_train = tasks_path() / "counter_argument_generation_cmv_hua18" / "counter_argument_generation_cmv_train_hua18.json"
+    hua_18_counter_argument_generation_test = tasks_path() / "counter_argument_generation_cmv_hua18" / "counter_argument_generation_cmv_test_hua18.json"
+    hua_18_counter_argument_generation_valid = tasks_path() / "counter_argument_generation_cmv_hua18" / "counter_argument_generation_cmv_valid_hua18.json"
 
     print_data_size(
         "Neural Argument Generation Augmented with Externally Retrieved Evidence",
@@ -290,10 +297,17 @@ if __name__ == "__main__":
         hua_18_counter_argument_generation_valid
     )
 
-    peldzus15_argument_relation_identification = tasks_path() / "peldzus15_argument_relation_identification" / "peldzus15_argument_relation_identification.json"
+    peldzus15_argument_relation_identification = tasks_path() / "premise_generation_microtexts_v1_skeppstedt18" / "premise_generation_microtexts_v1_skeppstedt18.json"
 
     print_data_size(
-        "An Annotated Corpus of Argumentative Microtexts - Argument Relation Identification",
+        "An Annotated Corpus of Argumentative Microtexts v1 - Argument Relation Identification",
+        peldzus15_argument_relation_identification
+    )
+
+    peldzus15_argument_relation_identification = tasks_path() / "premise_generation_microtexts_v2_skeppstedt18" / "premise_generation_microtexts_v2_skeppstedt18.json"
+
+    print_data_size(
+        "An Annotated Corpus of Argumentative Microtexts v2 - Argument Relation Identification",
         peldzus15_argument_relation_identification
     )
 
@@ -304,16 +318,16 @@ if __name__ == "__main__":
         skepstedt18_argument_relation_identification
     )
 
-    chakarbarty21_implicit_premise_generation_art_train = tasks_path() / "chakarbarty21_implicit_premise_generation" / "chakarbarty21_implicit_premise_generation_art_train.json"
-    chakarbarty21_implicit_premise_generation_art_train_para_comet = tasks_path() / "chakarbarty21_implicit_premise_generation" / "chakarbarty21_implicit_premise_generation_art_train_para_comet.json"
-    chakarbarty21_implicit_premise_generation_art_val = tasks_path() / "chakarbarty21_implicit_premise_generation" / "chakarbarty21_implicit_premise_generation_art_val.json"
-    chakarbarty21_implicit_premise_generation_art_val_para_comet = tasks_path() / "chakarbarty21_implicit_premise_generation" / "chakarbarty21_implicit_premise_generation_art_val_para_comet.json"
-    chakarbarty21_implicit_premise_generation_d1test = tasks_path() / "chakarbarty21_implicit_premise_generation" / "chakarbarty21_implicit_premise_generation_d1test.json"
-    chakarbarty21_implicit_premise_generation_d1test_para_comet = tasks_path() / "chakarbarty21_implicit_premise_generation" / "chakarbarty21_implicit_premise_generation_d1test_para_comet.json"
-    chakarbarty21_implicit_premise_generation_d2test = tasks_path() / "chakarbarty21_implicit_premise_generation" / "chakarbarty21_implicit_premise_generation_d2test.json"
-    chakarbarty21_implicit_premise_generation_d2test_para_comet = tasks_path() / "chakarbarty21_implicit_premise_generation" / "chakarbarty21_implicit_premise_generation_d2test_para_comet.json"
-    chakarbarty21_implicit_premise_generation_d3test = tasks_path() / "chakarbarty21_implicit_premise_generation" / "chakarbarty21_implicit_premise_generation_d3test.json"
-    chakarbarty21_implicit_premise_generation_d3test_para_comet = tasks_path() / "chakarbarty21_implicit_premise_generation" / "chakarbarty21_implicit_premise_generation_d3test_para_comet.json"
+    chakarbarty21_implicit_premise_generation_art_train = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_train_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_art_train_para_comet = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_train_para_comet_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_art_val = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_val_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_art_val_para_comet = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_val_para_comet_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_d1test = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_d1test_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_d1test_para_comet = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_d1test_para_comet_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_d2test = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_d2test_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_d2test_para_comet = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_d2test_para_comet_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_d3test = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_d3test_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_d3test_para_comet = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_d3test_para_comet_chakarbarty21.json"
 
     print_data_size(
         "Implicit Premise Generation with Discourse-aware Commonsense Knowledge Models",
@@ -329,44 +343,50 @@ if __name__ == "__main__":
         chakarbarty21_implicit_premise_generation_d3test_para_comet
     )
 
-    aharoni14_claim_evidence_extraction = tasks_path() / "aharoni14_claim_evidence_extraction" / "aharoni14_claim_evidence_extraction.json"
+    evidence_extraction_ibm_claim_evidence_aharoni14 = (
+        tasks_path() /
+        "evidence_extraction_ibm_claim_evidence_aharoni14" /
+        "evidence_extraction_ibm_claim_evidence_aharoni14.json")
 
     print_data_size(
         "A Benchmark Dataset for Automatic Detection of Claims and Evidence in the Context of Controversial Topics - Evidence Extraction",
-        aharoni14_claim_evidence_extraction
+        evidence_extraction_ibm_claim_evidence_aharoni14
     )
 
-    aharoni14_claim_extraction = tasks_path() / "aharoni14_claim_extraction" / "aharoni14_claim_extraction.json"
+    conclusion_extraction_ibm_claim_evidence_aharoni14 = (
+        tasks_path() /
+        "conclusion_extraction_ibm_claim_evidence_aharoni14" /
+        "conclusion_extraction_ibm_claim_evidence_aharoni14.json")
 
     print_data_size(
         "A Benchmark Dataset for Automatic Detection of Claims and Evidence in the Context of Controversial Topics - Claim Extraction",
-        aharoni14_claim_extraction
+        conclusion_extraction_ibm_claim_evidence_aharoni14
     )
 
-    alkhatib16_argumentation_strategy_mining_unit_segmentation = tasks_path() / "alkhatib16_argumentation_strategy_mining_unit_segmentation" / "alkhatib16_argumentation_strategy_mining_unit_segmentation.json"
+    alkhatib16_argumentation_strategy_mining_unit_segmentation = tasks_path() / "argument_unit_segmentation_webis_editorials_alkhatib16" / "argument_unit_segmentation_webis_editorials_alkhatib16.json"
 
     print_data_size(
         "A News Editorial Corpus for Mining Argumentation Strategies - Extract Argument",
         alkhatib16_argumentation_strategy_mining_unit_segmentation
     )
 
-    alkhatib16_argumentation_strategy_mining_unit_segmentation_entity = tasks_path() / "alkhatib16_argumentation_strategy_mining_unit_segmentation_entity" / "alkhatib16_argumentation_strategy_mining_unit_segmentation_entity.json"
+    alkhatib16_argumentation_strategy_mining_unit_segmentation_entity = tasks_path() / "argument_unit_segmentation_webis_editorials_entity_alkhatib16" / "argument_unit_segmentation_webis_editorials_entity_alkhatib16.json"
 
     print_data_size(
         "A News Editorial Corpus for Mining Argumentation Strategies - Entity Segmentation",
         alkhatib16_argumentation_strategy_mining_unit_segmentation_entity
     )
 
-    habernal18_ad_hominem_detection = tasks_path() / "habernal18-ad-hominem-detection" / "habernal18-ad-hominem-detection.json"
+    habernal18_ad_hominem_detection = tasks_path() / "fallacy_detection_cmv_adhominem_habernal18" / "fallacy_detection_cmv_adhominem_habernal18.json"
 
     print_data_size(
         "Before Name-calling: Dynamics and Triggers of Ad Hominem Fallacies in Web Argumentation",
         habernal18_ad_hominem_detection
     )
 
-    habernal18_implicit_warrant_identification_dev = tasks_path() / "habernal18_implicit_warrant_identification" / "habernal18_implicit_warrant_identification_dev.json"
-    habernal18_implicit_warrant_identification_train = tasks_path() / "habernal18_implicit_warrant_identification" / "habernal18_implicit_warrant_identification_train.json"
-    habernal18_implicit_warrant_identification_test = tasks_path() / "habernal18_implicit_warrant_identification" / "habernal18_implicit_warrant_identification_test.json"
+    habernal18_implicit_warrant_identification_dev = tasks_path() / "warrant_identification_semeval_2018_task_12_habernal18" / "warrant_identification_semeval_2018_task_12_dev_habernal18.json"
+    habernal18_implicit_warrant_identification_train = tasks_path() / "warrant_identification_semeval_2018_task_12_habernal18" / "warrant_identification_semeval_2018_task_12_train_habernal18.json"
+    habernal18_implicit_warrant_identification_test = tasks_path() / "warrant_identification_semeval_2018_task_12_habernal18" / "warrant_identification_semeval_2018_task_12_test_habernal18.json"
 
     print_data_size(
         "The Argument Reasoning Comprehension Task: Identification and Reconstruction",
@@ -375,30 +395,30 @@ if __name__ == "__main__":
         habernal18_implicit_warrant_identification_train
     )
 
-    park18_cornell_erulemaking_classification = tasks_path() / "park18_cornell_erulemaking_classification" / "park18_cornell_erulemaking_classification.json"
+    park18_cornell_erulemaking_classification = tasks_path() / "argument_unit_classification_erulemaking_park18" / "argument_unit_classification_erulemaking_park18.json"
 
     print_data_size(
         "A Corpus of eRulemaking User Comments for Measuring Evaluability of Arguments - Argument Unit Classification",
         park18_cornell_erulemaking_classification
     )
 
-    park18_cornell_erulemaking_identification = tasks_path() / "park18_cornell_erulemaking_identification" / "park18_cornell_erulemaking_identification.json"
+    park18_cornell_erulemaking_identification = tasks_path() / "argument_relation_identification_erulemaking_park18" / "argument_relation_identification_erulemaking_park18.json"
 
     print_data_size(
         "A Corpus of eRulemaking User Comments for Measuring Evaluability of Arguments - Argument Unit Identification",
         park18_cornell_erulemaking_identification
     )
 
-    menini18_relation_identification = tasks_path() / "menini18_relation_identification" / "menini18_relation_identification.json"
+    menini18_relation_identification = tasks_path() / "argument_relation_identification_political_debates_menini18" / "argument_relation_identification_political_debates_menini18.json"
 
     print_data_size(
         "Never Retreat, Never Retract: Argumentation Analysis for Political Speeches - Relation Identification",
         menini18_relation_identification
     )
 
-    skitalinskaya23_claim_optimization_dev = tasks_path() / "skitalinskaya23_claim_optimization" / "skitalinskaya23_claim_optimization_dev.json"
-    skitalinskaya23_claim_optimization_test = tasks_path() / "skitalinskaya23_claim_optimization" / "skitalinskaya23_claim_optimization_test.json"
-    skitalinskaya23_claim_optimization_train = tasks_path() / "skitalinskaya23_claim_optimization" / "skitalinskaya23_claim_optimization_train.json"
+    skitalinskaya23_claim_optimization_dev = tasks_path() / "claim_optimization_claim_revisions_skitalinskaya23" / "claim_optimization_claim_revisions_dev_skitalinskaya23.json"
+    skitalinskaya23_claim_optimization_test = tasks_path() / "claim_optimization_claim_revisions_skitalinskaya23" / "claim_optimization_claim_revisions_test_skitalinskaya23.json"
+    skitalinskaya23_claim_optimization_train = tasks_path() / "claim_optimization_claim_revisions_skitalinskaya23" / "claim_optimization_claim_revisions_train_skitalinskaya23.json"
 
     print_data_size(
         "Claim Optimization in Computational Argumentation - Claim Optimization",
@@ -407,16 +427,16 @@ if __name__ == "__main__":
         skitalinskaya23_claim_optimization_train
     )
 
-    stab17_argument_relation_identification = tasks_path() / "stab17_argument_relation_identification" / "stab17_argument_relation_identification.json"
+    stab17_argument_relation_identification = tasks_path() / "argument_unit_relation_identification_essays_stab17" / "argument_unit_relation_identification_essays_stab17.json"
 
     print_data_size(
         "Parsing Argumentation Structures in Persuasive Essays - Argument Relation Identification",
         stab17_argument_relation_identification
     )
 
-    alshomary21_belief_based_argument_generation_train = tasks_path() / "alshomary21_belief_based_argument_generation" / "alshomary21_belief_based_argument_generation_train.json"
-    alshomary21_belief_based_argument_generation_test = tasks_path() / "alshomary21_belief_based_argument_generation" / "alshomary21_belief_based_argument_generation_test.json"
-    alshomary21_belief_based_argument_generation_valid = tasks_path() / "alshomary21_belief_based_argument_generation" / "alshomary21_belief_based_argument_generation_valid.json"
+    alshomary21_belief_based_argument_generation_train = tasks_path() / "conclusion_generation_belief_generation_alshomary21" / "conclusion_generation_belief_generation_train_alshomary21.json"
+    alshomary21_belief_based_argument_generation_test = tasks_path() / "conclusion_generation_belief_generation_alshomary21" / "conclusion_generation_belief_generation_test_alshomary21.json"
+    alshomary21_belief_based_argument_generation_valid = tasks_path() / "conclusion_generation_belief_generation_alshomary21" / "conclusion_generation_belief_generation_valid_alshomary21.json"
 
     print_data_size(
         "Belief-based Generation of Argumentative Claims",
@@ -424,3 +444,8 @@ if __name__ == "__main__":
         alshomary21_belief_based_argument_generation_test,
         alshomary21_belief_based_argument_generation_valid
     )
+
+    # convert_argument_ranking_ibm_evidence_quality_gleize19.py
+    # convert_fallacy_detection_elecdeb60t020_goffredo23.py
+    # convert_fallacy_detection_logic_jin22.py
+    # convert_argument_ranking_ng20.py
