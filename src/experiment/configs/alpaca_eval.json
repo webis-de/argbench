@@ -1,0 +1,42 @@
+{
+    "seed": 42,
+    "base_model": "/bigwork/nhwpbozd/decapoda-research-llama-7B-hf/",
+    "cutoff_len": 1500,
+    "train_dataasets": {
+        "stab18_stance_classification": {
+            "match": "stab18_stance_classification",
+            "prompt_template": "### Instruction:\n{definition}\n### Input:\nPositive Example:\nInput: {positive_example_input_0}\nOutput: {positive_example_output_0}\nNegative Example:\nInput: {negative_example_input_0}\nOutput: {negative_example_output_0}\nInput: {instance_input}\n### Response:",
+            "subsample_amount": 10
+        }
+    },
+    "test_datasets": {
+        "barhaim21_key_point": {
+            "match": "barhaim21_key_point",
+            "prompt_template": "### Instruction:\n{definition}\n### Input:\nPositive Example:\nInput: {positive_example_input_0}\nOutput: {positive_example_output_0}\nNegative Example:\nInput: {negative_example_input_0}\nOutput: {negative_example_output_0}\nInput: {instance_input}\n### Response:",
+            "subsample_amount": 10
+        }
+    },
+    "llama_causal_config": {
+        "device_map": "auto"
+    },
+    "peft_configs": [
+        {
+            "model_id": "/bigwork/nhwpbozd/alpaca-lora-7b/",
+            "adapter_name": "lora-adapter",
+            "is_trainable": false
+        }
+    ],
+    "quant_config": {
+        "load_in_4bit": true
+    },
+    "generation_config": {
+        "top_k": 20,
+        "length_penalty": 1.5,
+        "num_beams": 1,
+        "max_length": 250
+    },
+    "validation_config": {
+        "eval_metric": "f1",
+        "f1_average": "macro"
+    }
+}
