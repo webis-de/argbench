@@ -57,7 +57,10 @@ if __name__ == "__main__":
 
     metadata = Metadata(DATASET_NAME)
 
-    dataset_path = datasets_path() / "argument-generation" / "schiller21-aspect-controlled-argument-generation" / "generated_arguments"
+    dataset_path = (datasets_path() /
+                    "ukp-aspect-argument-generation" /
+                    "generated_arguments")
+
     output = Output(DATASET_NAME)
     output.append_definition("Given topic, generate an argument that has appropriate stance. Argument should be related to the topic in a given aspect.")
 

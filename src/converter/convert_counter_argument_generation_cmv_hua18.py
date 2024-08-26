@@ -46,8 +46,7 @@ if __name__ == "__main__":
     metadata = Metadata(DATASET_NAME)
 
     data_folder_path = (datasets_path()
-                        / "argument-generation"
-                        / "hua-18-neural-argument-generation-argumented-with-externally-retrieved-evidence")
+                        / "cmv-counter-argument-generation")
 
     output_folder = tasks_path()
 

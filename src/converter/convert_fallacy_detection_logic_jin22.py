@@ -97,7 +97,7 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
 
-    data_path = datasets_path() / "argument-detection" / "jin22-logical-fallacy-detection" # path to data
+    data_path = datasets_path() / "logic" # path to data
 
     train_data, test_data, dev_data = load_data(data_path / "train.conll", data_path / "test.conll", data_path / "dev.conll")
 

@@ -8,7 +8,7 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    data_path = datasets_path() / "argument-detection" / "menini18-never-retreat-never-retract-argumentation-analysis-for-political-speeches" / "full_dataset.tsv"
+    data_path = datasets_path() / "political-debates" / "full_dataset.tsv"
 
     # Set name of the dataset to identify it and files of that dataset
     dataset_name = "argument_relation_identification_political_debates_menini18"

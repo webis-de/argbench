@@ -1,6 +1,5 @@
 from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
-from pathlib import Path
 import pickle
 from dataclasses import dataclass
 
@@ -21,8 +20,7 @@ if __name__ == "__main__":
 
     metadata = Metadata(DATASET_NAME)
 
-    dataset_path = Path("/run/media/dima/drive2/download/datasets/saha-23-argu-a-controllable-factual-argument-generator/")
-    output_path = tasks_path()
+    dataset_path = (datasets_path() / "argu")
 
     splits_path = dataset_path / "arg_span_and_scheme_data_keys.pkl"
     data_path = dataset_path / "arg_span_and_scheme_data.pkl"

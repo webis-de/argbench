@@ -12,8 +12,7 @@ if __name__ == "__main__":
     set_seed(args)
 
     dataset_path = str(datasets_path()
-                    / "key-point-analysis"
-                    / "barhaim21-from-arguments-to-key-points-towards-automatic-argument-summarization"
+                    / "argkpa-2021"
                     / "ArgKP-2021_dataset.csv")
     dataset = read_tabular(dataset_path)
 

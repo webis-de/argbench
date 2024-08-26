@@ -46,7 +46,7 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
 
-    data_path = datasets_path() / "argument-quality" / "goffredo23-argument-based-detection-and-classification-of-fallacies-in-political-debates" # path to data
+    data_path = datasets_path() / "elecdeb60t020" # path to data
 
     metadata = Metadata(dataset_name)
 

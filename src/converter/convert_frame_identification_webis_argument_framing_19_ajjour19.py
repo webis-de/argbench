@@ -11,7 +11,7 @@ if __name__ == "__main__":
     set_seed(args)
 
     dataset_path = str(datasets_path()
-                    / "argument-frame-identification"
+                    / "webis-argument-framing-19"
                     / "Webis-argument-framing.csv")
     dataset = read_tabular(dataset_path)
 

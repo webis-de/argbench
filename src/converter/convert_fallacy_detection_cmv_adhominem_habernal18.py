@@ -24,9 +24,9 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
 
-    data_path = datasets_path() / "argument-detection" / "habernal18-ad-hominem-detection" / "exported-1800-sampled-balanced-ops.json"
-    controversy_path =  datasets_path() / "argument-detection" / "habernal18-ad-hominem-detection" / "annotated-1800-sampled-balanced-ops-controversy.json"
-    stupidity_path = datasets_path() / "argument-detection" / "habernal18-ad-hominem-detection" / "annotated-1800-sampled-balanced-ops-stupidity.json"
+    data_path = datasets_path() / "cmv-adhominem" / "exported-1800-sampled-balanced-ops.json"
+    controversy_path =  datasets_path() / "cmv-adhominem" / "annotated-1800-sampled-balanced-ops-controversy.json"
+    stupidity_path = datasets_path() / "cmv-adhominem" / "annotated-1800-sampled-balanced-ops-stupidity.json"
 
     dataset_name = "fallacy_detection_cmv_adhominem_habernal18"
     dataset_file = "fallacy_detection_cmv_adhominem_habernal18.json"

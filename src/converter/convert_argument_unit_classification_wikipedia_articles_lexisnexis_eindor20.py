@@ -16,8 +16,8 @@ if __name__ == "__main__":
     set_seed(args)
 
     dataset_path = str(datasets_path()
-                    / "argument-detection"
-                    / "ein-dor-20-corpus-wide-argument-mining-a-working-solution.csv")
+                    / "ibm-evidence-sentences"
+                    / "wikipedia_evidence_dataset_29429.csv")
 
     dataset = read_tabular(dataset_path)
 

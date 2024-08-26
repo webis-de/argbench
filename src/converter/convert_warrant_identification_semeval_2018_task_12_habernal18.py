@@ -33,7 +33,9 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    data_folder = datasets_path() / "argument-detection" / "habernal18-identification-and-reconstruction-of-implicit-warrants" / "data" / ""
+    data_folder = (datasets_path() /
+                   "semeval-18-task12" /
+                   "data")
 
     metadata = Metadata(dataset_name)
 

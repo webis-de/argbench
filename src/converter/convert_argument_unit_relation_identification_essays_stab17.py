@@ -59,7 +59,7 @@ if __name__ == "__main__":
     dataset_name = "argument_unit_relation_identification_essays_stab17"
     dataset_file = "argument_unit_relation_identification_essays_stab17.json"
 
-    dataset_path = datasets_path() / "argument-detection/stab17-parsing-argumentation-structures-in-persuasive-essays"
+    dataset_path = datasets_path() / "essays-argument-mining"
     output = Output(dataset_name)
     output.append_definition("Given the following document and the given argument units with the given ids " +
                              "mark an argument unit referenced with [0] that supports another argument unit that referenced with [1] with the following " +

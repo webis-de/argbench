@@ -34,18 +34,15 @@ if __name__ == "__main__":
     metadata = Metadata(DATASET_NAME)
 
     dataset_train_path = str(datasets_path()
-                    / "stance-classification"
-                    / "cross-topic-argument-mining-from-heterogeneous-sources"
+                    / "ukp-sentential"
                     / "argmin_train.csv")
 
     dataset_test_path = str(datasets_path()
-                    / "stance-classification"
-                    / "cross-topic-argument-mining-from-heterogeneous-sources"
+                    / "ukp-sentential"
                     / "argmin_test.csv")
 
     dataset_val_path = str(datasets_path()
-                    / "stance-classification"
-                    / "cross-topic-argument-mining-from-heterogeneous-sources"
+                    / "ukp-sentential"
                     / "argmin_val.csv")
 
     dataset_train = read_tabular(dataset_train_path)

@@ -40,8 +40,6 @@ if __name__ == "__main__":
     metadata = Metadata(DATASET_NAME)
 
     dataset_path = str(datasets_path()
-                       / "argument-quality"
-                       / "wachsmuth17-computational-argumentation-quality-assessment-in-natural-language"
                        / "dagstuhl-15512-argquality-corpus-v2"
                        / "dagstuhl-15512-argquality-corpus-annotated.csv")
 

@@ -1,46 +1,198 @@
 [
     {
+        "name": "premise_extraction_argu_saha23",
+        "canon_size": 2990
+    },
+    {
+        "name": "argument_ranking_claim_revisions_skitalinskaya23",
+        "canon_size": 587881
+    },
+    {
+        "name": "argument_ranking_dagstuhl_15512_pairvise_rank_wachsmuth17",
+        "canon_size": 4740
+    },
+    {
+        "name": "argument_ranking_dagstuhl_15512_full_rank_wachsmuth17",
+        "canon_size": -1
+    },
+    {
+        "name": "argument_ranking_dagstuhl_15512_class_rank_wachsmuth17",
+        "canon_size": 4740
+    },
+    {
+        "name": "argument_ranking_ibm_rank_30k_class_rank_gretz20",
+        "canon_size": -1
+    },
+    {
+        "name": "argument_ranking_ibm_rank_30k_pairvise_rank_gretz20",
+        "canon_size": -1
+    },
+    {
+        "name": "argument_ranking_ibm_rank_30k_full_rank_gretz20",
+        "canon_size": -1
+    },
+    {
+        "name": "argument_ranking_ibm_evidence_quality_gleize19",
+        "canon_size": 5697
+    },
+    {
         "name": "argument_unit_relation_identification_essays_stab17",
-        "canon_size": 402
+        "canon_size": 4992
     },
     {
-        "name": "premise_generation_microtexts_v1_skeppstedt18",
+        "name": "argument_relation_identification_erulemaking_park18",
+        "canon_size": 731
+    },
+    {
+        "name": "argument_relation_identification_microtexts_v1_skeppstedt18",
         "canon_size": 112
     },
     {
-        "name": "premise_generation_microtexts_v2_skeppstedt18",
-        "canon_size": 112
-    },
-    {
-        "name": "argument_unit_classification_erulemaking_park18",
-        "canon_size": 45782
+        "name": "argument_relation_identification_microtexts_v2_skeppstedt18",
+        "canon_size": 171
     },
     {
         "name": "argument_relation_identification_political_debates_menini18",
         "canon_size": 1907
     },
     {
-        "name": "claim_optimization_claim_revisions_skitalinskaya23",
-        "canon_size": 124312
+        "name": "argument_similarity_ukp_aspect_reimers19",
+        "canon_size": 3595
     },
     {
-        "name": "evidence_extraction_ibm_claim_evidence_aharoni14",
-        "canon_size": 1291
+        "name": "argument_unit_classification_erulemaking_park18",
+        "canon_size": 731
     },
     {
-        "name": "conclusion_extraction_ibm_claim_evidence_aharoni14",
-        "canon_size": 1392
+        "name": "argument_unit_segmentation_ajjour17",
+        "file_list": [
+            "argument_unit_segmentation_essays_test_ajjour17.json",
+            "argument_unit_segmentation_essays_train_ajjour17.json"
+        ],
+        "canon_size": 402
     },
     {
-        "name": "argument_unit_segmentation_webis_editorials_alkhatib16",
+        "name": "argument_unit_segmentation_entity_ajjour17",
+        "file_list": [
+            "argument_unit_segmentation_webis_editorials_entity_test_ajjour17.json",
+            "argument_unit_segmentation_webis_editorials_entity_train_ajjour17.json"
+        ],
+        "canon_size": 402
+    },
+    {
+        "name": "argument_unit_segmentation_ajjour17",
+        "file_list": [
+            "ajjour_unit_segmentation_webis_editorials_test.json",
+            "ajjour_unit_segmentation_webis_editorials_train.json"
+        ],
         "canon_size": 300
     },
     {
-        "name": "warrant_identification_semeval_2018_task_12_habernal18",
-        "canon_size": 1970
+        "name": "argument_unit_segmentation_entity_ajjour17",
+        "file_list": [
+            "argument_unit_segmentation_webis_editorials_entity_test_ajjour17.json",
+            "argument_unit_segmentation_webis_editorials_entity_train_ajjour17.json"
+        ],
+        "canon_size": 300
+    },
+    {
+        "name": "argument_unit_segmentation_ajjour17",
+        "file_list": [
+            "argument_unit_segmentation_web_discourse_test_ajjour17.json",
+            "argument_unit_segmentation_web_discourse_train_ajjour17.json"
+        ],
+        "canon_size": 340
+    },
+    {
+        "name": "argument_unit_segmentation_entity_ajjour17",
+        "file_list": [
+            "argument_unit_segmentation_web_discourse_entity_test_ajjour17.json",
+            "argument_unit_segmentation_web_discourse_entity_train_ajjour17.json"
+        ],
+        "canon_size": 340
+    },
+    {
+        "name": "aspect_argument_generation_ukp_aspect_schiller21",
+        "canon_size": 5032
+    },
+    {
+        "name": "claim_optimization_claim_revisions_skitalinskaya23",
+        "canon_size": 198089
+    },
+    {
+        "name": "conclusion_extraction_ibm_claim_evidence_aharoni14",
+        "canon_size": 586
+    },
+    {
+        "name": "conclusion_generation_belief_generation_alshomary21",
+        "canon_size": 51470
+    },
+    {
+        "name": "conclusion_generation_ibm_claim_generation_gretz20",
+        "canon_size": 2739
+    },
+    {
+        "name": "counter_argument_generation_cmv_hua18",
+        "canon_size": 12549
     },
     {
         "name": "fallacy_detection_cmv_adhominem_habernal18",
         "canon_size": 1800
+    },
+    {
+        "name": "fallacy_detection_elecdeb60t020_goffredo23",
+        "canon_size": -1
+    },
+    {
+        "name": "fallacy_detection_logic_jin22",
+        "canon_size": 2449
+    },
+    {
+        "name": "fallacy_detection_logic_entity_jin22",
+        "canon_size": 2449
+    },
+    {
+        "name": "frame_identification_webis_argument_framing_19_ajjour19",
+        "canon_size": 12326
+    },
+    {
+        "name": "key_point_matching_argkp_2021_barhaim21",
+        "canon_size": 27519
+    },
+    {
+        "name": "premise_extraction_ibm_claim_evidence_aharoni14",
+        "canon_size": 586
+    },
+    {
+        "name": "argument_unit_classificaiton_ibm_evidence_sentences_eindor20",
+        "canon_size": 29429
+    },
+    {
+        "name": "premise_generation_arc_chakarbarty21",
+        "canon_size": 1654
+    },
+    {
+        "name": "stance_classification_argu_saha23",
+        "canon_size": 2990
+    },
+    {
+        "name": "scheme_classification_argu_saha23",
+        "canon_size": 2990
+    },
+    {
+        "name": "stance_classification_ibmsc_barhaim17",
+        "canon_size": 2394
+    },
+    {
+        "name": "stance_classification_ukp_sentential_stab18",
+        "canon_size": 25492
+    },
+    {
+        "name": "frame_identification_webis_stance_classification_19_ajjour19",
+        "canon_size": 12326
+    },
+    {
+        "name": "warrant_identification_semeval_2018_task_12_habernal18",
+        "canon_size": 1970
     }
 ]

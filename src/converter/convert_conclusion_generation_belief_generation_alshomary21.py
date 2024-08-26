@@ -34,10 +34,19 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
 
-    data_path = datasets_path() / "argument-generation" / "alshomary21_belief_based_argument_generation" # path to data
+    bows_path = (datasets_path() /
+                 "belief-arguments" /
+                 "data" /
+                 "big_issues_bows")
+
+    data_path = (datasets_path() /
+                 "belief-arguments" /
+                 "data" /
+                 "preprocessed_data")
+
     dataset_name = "conclusion_generation_belief_generation_alshomary21"
 
-    bows_dataset = read_tabular(data_path / "big_issues_new_bows.csv")
+    bows_dataset = read_tabular(bows_path / "big_issues_new_bows.csv")
     bows_dataset["pro_parsed"] = bows_dataset["pro_bow"].apply(ast.literal_eval)
     bows_dataset["con_parsed"] = bows_dataset["con_bow"].apply(ast.literal_eval)
 

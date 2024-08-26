@@ -18,9 +18,12 @@ def test_dataset_canonical_size(dataset_size):
 
     total_instances = 0
     for file in metadata[dataset_size["name"]]["file_list"]:
+        if dataset_size.get("file_list"):
+            if file not in dataset_size["file_list"]:
+                continue
         file_path = tasks_path() / dataset_size["name"] / file
         with open(file_path, "r") as f:
             dataset = json.load(f)
             total_instances += len(dataset["Instances"])
 
-    assert total_instances == dataset_size["canon_size"], "Instance amount is not equal to canon instance amount"
+    assert total_instances == dataset_size["canon_size"], f"Instance amount is not equal to canon instance amount: {dataset_size['name']}"
