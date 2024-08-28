@@ -30,7 +30,7 @@ from peft import (
 from preprocess import collect_datasets, tasks_path, get_metadata
 from tqdm import tqdm
 from config import RunConfig
-from evaluate import compute_f1_score, compute_rouge_score, compute_bleu_score
+from evaluate import compute_precision_recall_fscore_support, compute_rouge_score, compute_bleu_score
 import torch
 
 def eval_collate(batch):
@@ -111,7 +111,7 @@ class Runner:
         datasets_path = tasks_path()
         metadata = get_metadata()
         return collect_datasets(
-            self.config.train_dataasets,
+            self.config.train_datasets,
             self.config.test_datasets,
             metadata,
             datasets_path
@@ -198,6 +198,7 @@ class Runner:
             print("Start training")
             self.trainer.train()
 
+
     def evaluate(self):
         labels = [t["output"] for t in self.test_instances]
         predictions = []
@@ -210,23 +211,25 @@ class Runner:
         )
 
         for data in tqdm(loader):
-            prompt = self.tokenizer(text=data["input"], return_tensors="pt", padding=True)
+            text = data["input"]
+            prompt = self.tokenizer(text=text, return_tensors="pt", padding=True)
             inputs = prompt["input_ids"].cuda()
             generated = self.model.generate(
                 input_ids=inputs,
                 generation_config=self.generation_config,
                 return_dict_in_generate=True
             )
-            gen_diff = generated.sequences[:, inputs.shape[1]:]
-            output = self.tokenizer.batch_decode(gen_diff, skip_special_tokens=True)
+            output = self.tokenizer.batch_decode(generated.sequences, skip_special_tokens=True)
             # output = self.tokenizer.decode(gen_diff[0])
+            output = [o[len(text[i]):] for i, o in enumerate(output)]
             predictions += output
 
-        if self.config.validation_config.eval_metric == "f1":
-            return compute_f1_score(
+        if self.config.validation_config.eval_metric == "fscore":
+            return compute_precision_recall_fscore_support(
                 predictions,
                 labels,
-                f1_average=self.config.validation_config.f1_average
+                f1_average=self.config.validation_config.fscore_average,
+                beta=self.config.validation_config.fscore_beta
             )
         elif self.config.validation_config.eval_metric == "rouge":
             return compute_rouge_score(predictions, labels)
@@ -251,4 +254,5 @@ if __name__ == "__main__":
     runner.train()
 
     score = runner.evaluate()
+
     print(score)

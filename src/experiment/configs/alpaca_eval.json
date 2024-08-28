@@ -2,18 +2,20 @@
     "seed": 42,
     "base_model": "/bigwork/nhwpbozd/decapoda-research-llama-7B-hf/",
     "cutoff_len": 1500,
-    "train_dataasets": {
-        "stab18_stance_classification": {
-            "match": "stab18_stance_classification",
+    "train_datasets": {
+        "stance_classification_ukp_sentential_stab18": {
+            "name": "stance_classification_ukp_sentential_stab18",
+            "match": "stance_classification_ukp_sentential",
             "prompt_template": "### Instruction:\n{definition}\n### Input:\nPositive Example:\nInput: {positive_example_input_0}\nOutput: {positive_example_output_0}\nNegative Example:\nInput: {negative_example_input_0}\nOutput: {negative_example_output_0}\nInput: {instance_input}\n### Response:",
-            "subsample_amount": 10
+            "subsample_amount": 20
         }
     },
     "test_datasets": {
-        "barhaim21_key_point": {
-            "match": "barhaim21_key_point",
+        "key_point_matching_argkp_2021_barhaim21": {
+            "name": "key_point_matching_argkp_2021_barhaim21",
+            "match": "key_point_matching_argkp_2021_barhaim21",
             "prompt_template": "### Instruction:\n{definition}\n### Input:\nPositive Example:\nInput: {positive_example_input_0}\nOutput: {positive_example_output_0}\nNegative Example:\nInput: {negative_example_input_0}\nOutput: {negative_example_output_0}\nInput: {instance_input}\n### Response:",
-            "subsample_amount": 10
+            "subsample_amount": 50
         }
     },
     "llama_causal_config": {
@@ -36,7 +38,8 @@
         "max_length": 250
     },
     "validation_config": {
-        "eval_metric": "f1",
-        "f1_average": "macro"
+        "eval_metric": "fscore",
+        "fscore_average": "macro",
+        "fscore_beta": 1.0
     }
 }

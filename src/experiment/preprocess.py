@@ -99,8 +99,8 @@ def collect_datasets(train_config, test_config, metadata, datasets_path):
 
     for i, dataset in enumerate(train_config):
         dataset_instances = []
-        dataset_files = metadata[dataset]
         dataset_config = train_config[dataset]
+        dataset_files = metadata[dataset_config["name"]]
         dataset_file_path = datasets_path / dataset
         append_dataset(dataset_files, dataset_config, dataset_file_path, dataset_instances)
         if dataset_config.get("subsample_rate"):
@@ -108,11 +108,12 @@ def collect_datasets(train_config, test_config, metadata, datasets_path):
         elif dataset_config.get("subsample_amount"):
             dataset_instances = random.sample(dataset_instances, dataset_config["subsample_amount"])
         train_instances += dataset_instances
+        print(f"Train dataset loaded: {dataset} with instances: {len(dataset_instances)}")
 
     for i, dataset in enumerate(test_config):
         dataset_instances = []
-        dataset_files = metadata[dataset]
         dataset_config = test_config[dataset]
+        dataset_files = metadata[dataset_config["name"]]
         dataset_file_path = datasets_path / dataset
         append_dataset(dataset_files, dataset_config, dataset_file_path, dataset_instances)
         if dataset_config.get("subsample_rate"):
@@ -120,9 +121,13 @@ def collect_datasets(train_config, test_config, metadata, datasets_path):
         elif dataset_config.get("subsample_amount"):
             dataset_instances = random.sample(dataset_instances, dataset_config["subsample_amount"])
         test_instances += dataset_instances
+        print(f"Test dataset loaded: {dataset} with instances: {len(dataset_instances)}")
 
     random.shuffle(train_instances)
     random.shuffle(test_instances)
+
+    print(f"Total train set size: {len(train_instances)}")
+    print(f"Total test set size: {len(test_instances)}")
 
     return train_instances, test_instances
 
