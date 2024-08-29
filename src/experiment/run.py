@@ -134,9 +134,11 @@ class Runner:
         """
         if len(self.config.peft_configs) > 1:
             first_config = self.config.peft_configs[0]
-            model = PeftMixedModel.from_pretrained(model, **first_config.to_conf())
+            # model.load_adapter(first_config.model_id, first_config.adapter_name)
+            # model = PeftMixedModel.from_pretrained(model, **first_config.to_conf())
+            model = PeftModel.from_pretrained(model, **first_config.to_conf())
             for adapter in self.config.peft_configs[1:]:
-                model.load_adapter(**adapter.to_conf())
+                model.load_adapter(adapter.model_id, adapter.adapter_name)
 
             model.add_weighted_adapter(
                 [c.adapter_name for c in self.config.peft_configs],
@@ -255,4 +257,7 @@ if __name__ == "__main__":
 
     score = runner.evaluate()
 
-    print(score)
+    if runner.config.validation_config.eval_metric == "fscore":
+        print(f"Precision: {score[0]} Recall: {score[1]} Fscore: {score[2]} Support: {score[3]} Labels: {score[4]}")
+    else:
+        print(f"Score: {score}")

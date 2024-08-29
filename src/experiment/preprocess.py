@@ -92,7 +92,7 @@ def append_dataset(datasets, dataset_config, dataset_file_path, data_instances):
         compile_instances(dataset_contents, dataset_config["prompt_template"], data_instances)
 
 
-def collect_datasets(train_config, test_config, metadata, datasets_path):
+def collect_datasets(train_config, test_config, metadata, datasets_path, ignore_subsample=False):
     """Collect used datasets"""
     train_instances = []
     test_instances = []
@@ -103,7 +103,9 @@ def collect_datasets(train_config, test_config, metadata, datasets_path):
         dataset_files = metadata[dataset_config["name"]]
         dataset_file_path = datasets_path / dataset
         append_dataset(dataset_files, dataset_config, dataset_file_path, dataset_instances)
-        if dataset_config.get("subsample_rate"):
+        if ignore_subsample:
+            pass
+        elif dataset_config.get("subsample_rate"):
             dataset_instances = random.sample(dataset_instances, int(len(dataset_instances) * dataset_config["subsample_rate"]))
         elif dataset_config.get("subsample_amount"):
             dataset_instances = random.sample(dataset_instances, dataset_config["subsample_amount"])
@@ -116,15 +118,14 @@ def collect_datasets(train_config, test_config, metadata, datasets_path):
         dataset_files = metadata[dataset_config["name"]]
         dataset_file_path = datasets_path / dataset
         append_dataset(dataset_files, dataset_config, dataset_file_path, dataset_instances)
-        if dataset_config.get("subsample_rate"):
+        if ignore_subsample:
+            pass
+        elif dataset_config.get("subsample_rate"):
             dataset_instances = random.sample(dataset_instances, int(len(dataset_instances) * dataset_config["subsample_rate"]))
         elif dataset_config.get("subsample_amount"):
             dataset_instances = random.sample(dataset_instances, dataset_config["subsample_amount"])
         test_instances += dataset_instances
         print(f"Test dataset loaded: {dataset} with instances: {len(dataset_instances)}")
-
-    random.shuffle(train_instances)
-    random.shuffle(test_instances)
 
     print(f"Total train set size: {len(train_instances)}")
     print(f"Total test set size: {len(test_instances)}")
