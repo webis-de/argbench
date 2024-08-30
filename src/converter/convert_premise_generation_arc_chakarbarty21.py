@@ -66,9 +66,7 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    data_path = (datasets_path()
-                 / "premise-generation-2"
-                 / "chakarbarty21-implicit-premise-generation-with-discourse-aware-commonsens-knowledge-models")
+    data_path = (datasets_path()/"art")
 
     output_path = tasks_path()
 
