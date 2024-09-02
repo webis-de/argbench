@@ -7,19 +7,24 @@ def process_dataset(bows_dataset, metadata, dataset_name, dataset_file, dataset_
     dataset = read_tabular(dataset_path)
     dataset["parsed_issues"] = dataset["big_issues"].str.findall("\d")
     output = Output(dataset_name)
-    output.append_definition("Given discussion topic and a collection of keywords that describe your stance on various issues, generate a claim that is based on your stance.")
+    output.append_definition("Given discussion topic and a collection of topic staces that describe users stance on various issues, generate a claim that is based user stance.")
 
     for row in dataset.iterrows():
         row = row[1]
-        total_words = []
+        total_topic_rel = []
         for i, issue_label in enumerate(row["parsed_issues"]):
             if issue_label == "1":
-                total_words += bows_dataset["con_parsed"][i]
+                topic_str = f"{bows_dataset['topic'][i]}: Con"
+                total_topic_rel.append(topic_str)
             if issue_label == "3":
-                total_words += bows_dataset["pro_parsed"][i]
+                topic_str = f"{bows_dataset['topic'][i]}: Pro"
+                total_topic_rel.append(topic_str)
+            else:
+                topic_str = f"{bows_dataset['topic'][i]}: N/A"
+                total_topic_rel.append(topic_str)
 
-        total_words = ", ".join(total_words)
-        prompt = f"Topic: {row['topic']}\nStance keywords: {total_words}"
+        total_topic_rel = "; ".join(total_topic_rel)
+        prompt = f"Topic: {row['topic']}\nTopic Stances: {total_topic_rel}"
         label = row["top_claim"]
         id = str(uuid.uuid4())
         output.append_instance(id, prompt, [label])
