@@ -37,9 +37,7 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    data_path = (datasets_path() /
-                 "claim-revisions" /
-                 "acl23_revised.csv")
+    data_path = datasets_path() / "argument-quality" / "skitalinskaya23-claim-optimization-in-computational-argumentation" / "acl23_revised.csv"
 
     metadata = Metadata(dataset_name)
 

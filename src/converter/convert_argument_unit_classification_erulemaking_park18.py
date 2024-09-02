@@ -59,7 +59,8 @@ if __name__ == "__main__":
     set_seed(args)
 
     data_path = (datasets_path() /
-                 "erulemaking" /
+                 "argument-detection" /
+                 "park18-a-corpus-of-erulemaking-user-comments-for-measruing-evaluability-of-arguments" /
                  "cdcp_type_edge_annot.jsonlist")
     # Set name of the dataset to identify it and files of that dataset
     dataset_name = "argument_unit_classification_erulemaking_park18"

@@ -33,9 +33,7 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    dataset = str(datasets_path() /
-                  "ibm-claim-generation" /
-                  "generated_texts_plausibility_stance.csv")
+    dataset = str(datasets_path() / "conclusion-generation" / "gretz20-workweek-is-the-best-time-to-start-a-family" / "generated_texts_plausibility_stance.csv")
 
     out_path = tasks_path()
 

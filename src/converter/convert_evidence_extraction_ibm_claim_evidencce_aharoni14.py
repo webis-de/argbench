@@ -16,8 +16,8 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    data_path = datasets_path() / "ibm-claim-evidence" / "2014_7_18_ibm_CDEdata.csv"
-    articles_folder = datasets_path() / "ibm-claim-evidence" / "wiki12_articles"
+    data_path = datasets_path() / "argument-detection" / "aharoni14-automatic-claim-evidence-in-context-detection" / "2014_7_18_ibm_CDEdata.csv"
+    articles_folder = datasets_path() / "argument-detection" / "aharoni14-automatic-claim-evidence-in-context-detection" / "wiki12_articles"
 
     metadata = Metadata(dataset_name)
     output = Output(dataset_name)

@@ -9,7 +9,7 @@ DATASET_NAME = "counter_argument_generation_cmv_hua18"
 def process_dataset(op_path, arg_path, keynote_path):
     output = Output(DATASET_NAME)
 
-    output.append_definition("Given statement and relevant evidence, generate a counterargument that relates to the original argument by a given key phrase.")
+    output.append_definition("Given a statement and relevant evidence, generate a counterargument that attacks to the original argument and highlights the given keyphrases.")
 
     op_file = open(op_path, "r")
     arg_file = open(arg_path, "r")
@@ -25,10 +25,10 @@ def process_dataset(op_path, arg_path, keynote_path):
         keynote_sentences = etree.fromstring(keynotes, html_parser).xpath("//sent_cs")
         id = str(uuid.uuid4())
 
-        statement = ". ".join([s.text for s in post_sentences])
-        keynote = "; ".join([s.text for s in keynote_sentences])
-        contexts = "; ".join([s.text for s in post_contextes])
-        prompt = f"Statement: {statement}\nKey Phrase: {keynote}\nEvidence: {contexts}"
+        statement = " ".join([s.text.replace(" .",".").replace(" ,", ",").strip() for s in post_sentences])
+        keynote = ", ".join([s.text.replace(" .",".").replace(" ,", ",").strip() for s in keynote_sentences])
+        contexts = " ".join([s.text.replace(" .",".").replace(" ,", ",").strip() for s in post_contextes])
+        prompt = f"Statement: {statement}\nKeyphrases: {keynote}\nEvidence: {contexts}"
 
         for arg in argument_sentences:
             response = arg.text

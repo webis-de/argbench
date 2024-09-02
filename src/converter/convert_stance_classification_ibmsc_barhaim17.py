@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
     metadata = Metadata(DATASET_NAME)
 
-    dataset = str(datasets_path() / "ibmsc" / "ibmsc-stance-classification.csv")
+    dataset = str(datasets_path() / "stance-classification" / "claim_stance_dataset_v1.csv")
 
     data = read_tabular(dataset)
 

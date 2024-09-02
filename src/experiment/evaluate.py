@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from sklearn.metrics import precision_recall_fscore_support
 import evaluate
+import torch
 
 def compute_precision_recall_fscore_support(predictions, references, f1_average="macro", beta=1.0):
     labels = list(set(references))

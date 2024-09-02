@@ -21,7 +21,7 @@ if __name__ == "__main__":
     metadata = Metadata(DATASET_NAME)
 
     dataset_path = str(datasets_path()
-                       / "ukp-aspect-argument-similarity"
+                       / "argument-similarity"
                        / "UKP_ASPECT.tsv")
 
     dataset = read_tabular(dataset_path, separator="\t")

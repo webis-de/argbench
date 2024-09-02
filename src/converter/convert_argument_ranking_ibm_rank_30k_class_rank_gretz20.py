@@ -32,7 +32,8 @@ if __name__ == "__main__":
     metadata = Metadata(DATASET_NAME)
 
     dataset_path = str(datasets_path()
-                    / "ibm-rank-30k"
+                    / "argument-quality"
+                    / "gretz20-a-large-scale-dataset-for-argument-quality-ranking-construction-and-analysis"
                     / "arg_quality_rank_30k.csv")
 
     dataset = read_tabular(dataset_path)

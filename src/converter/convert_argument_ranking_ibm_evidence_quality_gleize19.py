@@ -34,7 +34,7 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
 
-    data_path = datasets_path() / "ibm-evidence-quality" # path to data
+    data_path = datasets_path() / "argument-quality" / "gleize19-are-you-convinced-choosing-more-convincing-evidence" # path to data
 
     # Set name of the dataset to identify it and files of that dataset
     dataset_name = "argument_ranking_ibm_evidence_quality_gleize19"
