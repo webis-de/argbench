@@ -2,7 +2,7 @@ from uuid import uuid4
 from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 
-dataset_name = "fallacy_detection_elecdeb60t020_goffredo23"
+dataset_name = "fallacy_detection_logic_goffredo23"
 
 def process_data(data_path, data_name, data_split, metadata):
     dataset = read_tabular(data_path)
@@ -46,16 +46,16 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
 
-    data_path = datasets_path() / "elecdeb60t020" # path to data
+    data_path = datasets_path() / "logic" # path to data
 
     metadata = Metadata(dataset_name)
 
-    process_data(data_path / "climate_train.csv", "fallacy_detection_elecdeb60t020_climate_train_goffredo23.json", "train", metadata)
-    process_data(data_path / "climate_test.csv", "fallacy_detection_elecdeb60t020_climate_test_goffredo23.json", "test", metadata)
-    process_data(data_path / "climate_dev.csv", "fallacy_detection_elecdeb60t020_climate_dev_goffredo23.json", "dev", metadata)
-    process_data(data_path / "edu_train.csv", "fallacy_detection_elecdeb60t020_edu_train_goffredo23.json", "train", metadata)
-    process_data(data_path / "edu_test.csv", "fallacy_detection_elecdeb60t020_edu_test_goffredo23.json", "test", metadata)
-    process_data(data_path / "edu_dev.csv", "fallacy_detection_elecdeb60t020_edu_dev_goffredo23.json", "dev", metadata)
+    process_data(data_path / "climate_train.csv", "fallacy_detection_logic_climate_train_goffredo23.json", "train", metadata)
+    process_data(data_path / "climate_test.csv", "fallacy_detection_logic_climate_test_goffredo23.json", "test", metadata)
+    process_data(data_path / "climate_dev.csv", "fallacy_detection_logic_climate_dev_goffredo23.json", "dev", metadata)
+    process_data(data_path / "edu_train.csv", "fallacy_detection_logic_edu_train_goffredo23.json", "train", metadata)
+    process_data(data_path / "edu_test.csv", "fallacy_detection_logic_edu_test_goffredo23.json", "test", metadata)
+    process_data(data_path / "edu_dev.csv", "fallacy_detection_logic_edu_dev_goffredo23.json", "dev", metadata)
 
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()
