@@ -52,7 +52,7 @@ def make_outputs(target_data, para_comet_data):
     for i in range(len(target_data)):
         prompt = f"Reason: {target_data[i].reason}\nClaim: {target_data[i].claim}"
         prompt_para_comet = f"Reason: {target_data[i].reason}\nContext: {para_comet_data[i].enthymeme}\nClaim: {target_data[i].claim}"
-        output = target_data[i].enthymeme
+        output = target_data[i].reason + " " + target_data[i].enthymeme + ". " + target_data[i].claim
         id = str(uuid.uuid4())
         target_output.append_instance(id, prompt, [output])
         output_para_comet.append_instance(id, prompt_para_comet, [output])
@@ -90,47 +90,47 @@ if __name__ == "__main__":
     d1test_data, d1test_data_para_comet = read_para_comet(d1test_data, d1test_data_para_comet)
     d1test_data, d1test_data_para_comet = make_outputs(d1test_data, d1test_data_para_comet)
 
-    d1test_data.write_output("premise_generation_arc_d1test_chakarbarty21.json")
-    d1test_data_para_comet.write_output("premise_generation_arc_d1test_para_comet_chakarbarty21.json")
+    d1test_data.write_output("premise_generation_arc_test_chakarbarty21.json")
+    d1test_data_para_comet.write_output("premise_generation_arc_test_para_comet_chakarbarty21.json")
 
-    metadata.add_dataset("premise_generation_arc_d1test_chakarbarty21.json", "test")
-    metadata.add_dataset("premise_generation_arc_d1test_para_comet_chakarbarty21.json", "test")
+    metadata.add_dataset("premise_generation_arc_chakarbarty21.json", "test")
+    metadata.add_dataset("premise_generation_arc_para_comet_chakarbarty21.json", "test")
 
     d2test_data, d2test_data_para_comet = read_para_comet(d2test_data, d2test_data_para_comet)
     d2test_data, d2test_data_para_comet = make_outputs(d2test_data, d2test_data_para_comet)
 
-    d2test_data.write_output("premise_generation_arc_d2test_chakarbarty21.json")
-    d2test_data_para_comet.write_output("premise_generation_arc_d2test_para_comet_chakarbarty21.json")
+    d2test_data.write_output("premise_generation_ideolological_debate_test_chakarbarty21.json")
+    d2test_data_para_comet.write_output("premise_generation_ideolological_debate_test_para_comet_chakarbarty21.json")
 
-    metadata.add_dataset("premise_generation_arc_d2test_chakarbarty21.json", "test")
-    metadata.add_dataset("premise_generation_arc_d2test_para_comet_chakarbarty21.json", "test")
+    metadata.add_dataset("premise_generation_ideolological_debate_test_chakarbarty21.json", "test")
+    metadata.add_dataset("premise_generation_ideolological_debate_test_para_comet_chakarbarty21.json", "test")
 
     d3test_data, d3test_data_para_comet = read_para_comet(d3test_data, d3test_data_para_comet)
     d3test_data, d3test_data_para_comet = make_outputs(d3test_data, d3test_data_para_comet)
 
-    d3test_data.write_output("premise_generation_arc_d3test_chakarbarty21.json")
-    d3test_data_para_comet.write_output("premise_generation_arc_d3test_para_comet_chakarbarty21.json")
+    d3test_data.write_output("premise_generation_microtexts1_test_chakarbarty21.json")
+    d3test_data_para_comet.write_output("premise_generation_microtexts1_test_para_comet_chakarbarty21.json")
 
-    metadata.add_dataset("premise_generation_arc_d3test_chakarbarty21.json", "test")
-    metadata.add_dataset("premise_generation_arc_d3test_para_comet_chakarbarty21.json", "test")
+    metadata.add_dataset("premise_generation_microtexts1_test_chakarbarty21.json", "test")
+    metadata.add_dataset("premise_generation_microtexts1_test_para_comet_chakarbarty21.json", "test")
 
     art_data_train_target, art_data_train_target_para_comet = read_para_comet(art_data_train_target, art_data_train_source)
     art_data_train_target, art_data_train_target_para_comet = make_outputs(art_data_train_target, art_data_train_target_para_comet)
 
-    art_data_train_target.write_output("premise_generation_arc_train_chakarbarty21.json")
-    art_data_train_target_para_comet.write_output("premise_generation_arc_train_para_comet_chakarbarty21.json")
+    art_data_train_target.write_output("premise_generation_art_train_chakarbarty21.json")
+    art_data_train_target_para_comet.write_output("premise_generation_art_train_para_comet_chakarbarty21.json")
 
-    metadata.add_dataset("premise_generation_arc_train_chakarbarty21.json", "train")
-    metadata.add_dataset("premise_generation_arc_train_para_comet_chakarbarty21.json", "train")
+    metadata.add_dataset("premise_generation_art_train_chakarbarty21.json", "train")
+    metadata.add_dataset("premise_generation_art_train_para_comet_chakarbarty21.json", "train")
 
     art_data_val_target, art_data_val_target_para_comet = read_para_comet(art_data_val_target, art_data_val_source)
     art_data_val_target, art_data_val_target_para_comet = make_outputs(art_data_val_target, art_data_val_target_para_comet)
 
-    art_data_val_target.write_output("premise_generation_arc_val_chakarbarty21.json")
-    art_data_val_target_para_comet.write_output("premise_generation_arc_val_para_comet_chakarbarty21.json")
+    art_data_val_target.write_output("premise_generation_art_val_chakarbarty21.json")
+    art_data_val_target_para_comet.write_output("premise_generation_art_val_para_comet_chakarbarty21.json")
 
-    metadata.add_dataset("premise_generation_arc_val_chakarbarty21.json", "val")
-    metadata.add_dataset("premise_generation_arc_val_para_comet_chakarbarty21.json", "val")
+    metadata.add_dataset("premise_generation_art_val_chakarbarty21.json", "val")
+    metadata.add_dataset("premise_generation_ar_val_para_comet_chakarbarty21.json", "val")
 
     metadata.add_evaluation_metric("rouge")
 
