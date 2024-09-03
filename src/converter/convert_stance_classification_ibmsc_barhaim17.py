@@ -8,7 +8,7 @@ DATASET_NAME = "stance_classification_ibmsc_barhaim17"
 def process_dataset(dataset, path):
     output = Output(DATASET_NAME)
 
-    output.append_definition("Judge if claim supports topic or not. Possible responses: Pro if claim supports topic or Con if claim is against the topic.")
+    output.append_definition("Classify the following claim to Pro if the claim supports the topic or Con if the claim attacks the topic.")
 
     for row in dataset.iterrows():
         row = row[1]
@@ -31,17 +31,17 @@ if __name__ == "__main__":
 
     metadata = Metadata(DATASET_NAME)
 
-    dataset = str(datasets_path() / "stance-classification" / "claim_stance_dataset_v1.csv")
+    dataset = str(datasets_path() / "ibmsc" / "ibmsc-stance-classification.csv")
 
     data = read_tabular(dataset)
 
     process_dataset(data[data["split"] == "train"], "stance_classification_ibmsc_train_barhaim17.json")
     process_dataset(data[data["split"] == "test"], "stance_classification_ibmsc_test_barhaim17.json")
-    process_dataset(data[data["split"] == "dev"], "stance_classification_ibmsc_dev_barhaim17.json")
+
 
     metadata.add_dataset("stance_classification_ibmsc_train_barhaim17.json", "train")
     metadata.add_dataset("stance_classification_ibmsc_test_barhaim17.json", "test")
-    metadata.add_dataset("stance_classification_ibmsc_dev_barhaim17.json", "dev")
+
 
     metadata.add_evaluation_metric("f1_macro")
 

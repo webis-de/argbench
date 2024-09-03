@@ -8,18 +8,17 @@ DATASET_NAME = "stance_classification_ukp_sentential_stab18"
 def make_output(dataset, dataset_name):
     output = Output(DATASET_NAME)
 
-    output.append_definition("Identify sentiment of claim towards topic. Possible outputs: Pro if claim supports topic or Con if claim does not support claim towards target.")
+    output.append_definition("Classify the following claim to Pro if the claim supports the topic, Con if the claim attacks the topic, or Neutral if neither.")
+
+    label_mappings = {"NoArgument": "Neutral", "Argument_for": "Pro", "Argument_against": "Con"}
+
+    dataset["annotation"] = dataset["annotation"].apply(lambda x: label_mappings[x])
 
     for row in dataset.iterrows():
         row = row[1]
-        prompt = f"Topic: {row['topic']}\nClaim: {row['text']}"
-        response = "Pro" if row["label"] == 1 else "Con"
-        wrong_response = "Pro" if row["label"] == 0 else "Con"
+        prompt = f"Topic: {row['topic']}\nClaim: {row['sentence']}"
+        response = row['annotation']
         id = str(uuid.uuid4())
-
-        output.append_positive_example(prompt, response, "")
-        output.append_negative_example(prompt, wrong_response, "")
-
         output.append_instance(id, prompt, [response])
 
     output.write_output(dataset_name)
@@ -32,25 +31,13 @@ if __name__ == "__main__":
     set_seed(args)
 
     metadata = Metadata(DATASET_NAME)
+    dataset_path= str(datasets_path() / "ukp-sentential/corpus-ukp-sentential-argument-mining.csv")
 
-    dataset_train_path = str(datasets_path()
-                    / "stance-classification"
-                    / "cross-topic-argument-mining-from-heterogeneous-sources"
-                    / "argmin_train.csv")
 
-    dataset_test_path = str(datasets_path()
-                    / "stance-classification"
-                    / "cross-topic-argument-mining-from-heterogeneous-sources"
-                    / "argmin_test.csv")
-
-    dataset_val_path = str(datasets_path()
-                    / "stance-classification"
-                    / "cross-topic-argument-mining-from-heterogeneous-sources"
-                    / "argmin_val.csv")
-
-    dataset_train = read_tabular(dataset_train_path)
-    dataset_test = read_tabular(dataset_test_path)
-    dataset_val = read_tabular(dataset_val_path)
+    dataset = read_tabular(dataset_path)
+    dataset_train = dataset[dataset["set"]=="train"]
+    dataset_test = dataset[dataset["set"]=="test"]
+    dataset_val = dataset[dataset["set"]=="val"]
 
     make_output(dataset_train, "stance_classification_ukp_sentential_train_stab18.json")
     make_output(dataset_test, "stance_classification_ukp_sentential_test_stab18.json")
