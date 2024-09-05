@@ -4,8 +4,8 @@ from peft import PeftModel, prepare_model_for_kbit_training
 from preprocess import collect_datasets, tasks_path, get_metadata
 import torch
 
-base_model = "/bigwork/nhwpbozd/decapoda-research-llama-7B-hf/"
-lora_model = "/bigwork/nhwpbozd/alpaca-lora-7b/"
+base_model = "/bigwork/nhwpajjy/pre-trained-models/llama-7b-hf"
+lora_model = "/bigwork/nhwpajjy/pre-trained-models/alpaca-lora-7b/"
 device_map = "auto"
 
 config = {
