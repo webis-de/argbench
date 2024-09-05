@@ -58,6 +58,7 @@ class Output:
         self.positive_examples = []
         self.negative_examples = []
         self.instances = []
+        self.genre = []
         self.instance_license = []
 
 
@@ -77,6 +78,14 @@ class Output:
         self.definition.append(definition)
 
 
+    def append_subarea(self, subarea: str):
+        self.categories.append(subarea)
+
+
+    def append_genre(self, genre: str):
+        self.genre.append(genre)
+
+
     def write_output(self, file_name):
         output = {
             "Contributors": self.contributors,
@@ -92,6 +101,7 @@ class Output:
             "Positive Examples": self.positive_examples,
             "Negative Examples": self.negative_examples,
             "Instances": self.instances,
+            "Genre": self.genre,
             "Instance License": self.instance_license
         }
 
