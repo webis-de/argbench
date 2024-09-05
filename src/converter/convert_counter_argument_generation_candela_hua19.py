@@ -28,9 +28,9 @@ def process_dataset(data_file, output_file, split_name, metadata):
         counter_phrase = " ".join(counter_phrase)
 
         retrieved_phrase = []
-        for retrieved_sentence in instance["target_retrieved_passages"][:2]:
+        for retrieved_sentence in instance["target_retrieved_passages"][:1]:
             try:
-                sentence = tokenizer.detokenize(t for s in retrieved_sentence["sentences"] for t in s)
+                sentence = tokenizer.detokenize(t for s in retrieved_sentence["sentences"][:14] for t in s)
                 retrieved_phrase.append(sentence)
             except Exception:
                 pprint.pprint(instance)
