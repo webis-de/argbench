@@ -10,13 +10,25 @@ def read_file(path):
     file = open(path,encoding='utf-8',errors="ignore")
     return " ".join(file)
 
-def extract_argument_units(tree):
-
-    argument_units = []
+def extract_sentences(tree):
+    sentence = ""
+    sentences = {}
+    current_edus = []
+    end_sentence_punctuations = (".", "!", "?")
     for child in tree:
         if child.tag == "edu":
-            argument_units.append((child.attrib["id"], child.text))
-    return argument_units
+            current_edus.append((child.attrib["id"], child.text))
+            if sentence:
+                sentence = sentence + " " + child.text
+            else:
+                sentence = sentence + child.text
+            if child.text.endswith(end_sentence_punctuations):
+                for edu in current_edus:
+                    sentences[edu[0]] = sentence
+                sentence = ""
+                current_edus = []
+
+    return sentences
 
 
 def extract_argument_relations(tree):
@@ -53,9 +65,9 @@ def lookup_node(node, argument_relations):
     return node
 
 
-def format_argument_relations(argument_units, argument_relations):
+def format_argument_relations(sentences, argument_relations):
     text = ""
-    argument_units_ids = [argument_unit[0] for argument_unit in argument_units]
+    added_relations = []
     for argument_relation in argument_relations:
         src_id = argument_relation[1]
         trgt_id = argument_relation[2]
@@ -68,18 +80,25 @@ def format_argument_relations(argument_units, argument_relations):
         trgt_id = clean_node(trgt_id)
         print(src_id)
 
-        src_index = argument_units_ids.index(src_id)
-        trgt_index = argument_units_ids.index(trgt_id)
-        if relation =="sup" or relation =="add":
+        #src_index = sentence_ids.index(src_id)
+        #trgt_index = sentence_ids.index(trgt_id)
+        if relation == "sup" or relation == "add":
+            if (sentences[src_id], sentences[trgt_id], "Support\n") not in added_relations:
+                text += "Support\n"
+                text += sentences[src_id] + "\n"
+                text += sentences[trgt_id] + "\n"
+                added_relations.append((sentences[src_id],sentences[trgt_id], "Support\n"))
 
-            text += f"[{src_index}] --> [{trgt_index}]\n"
         elif relation =="reb" or relation =="und":
-
-            text += f"[{src_index}] /-> [{trgt_index}]\n"
+            if (sentences[src_id], sentences[trgt_id] ,"Attack\n") not in added_relations:
+                text += "Attack\n"
+                text += sentences[src_id] + "\n"
+                text += sentences[trgt_id] + "\n"
+                added_relations.append((sentences[src_id],sentences[trgt_id] ,"Attack\n"))
     return text
 
-DATASET_NAME = "premise_generation_microtexts_v2_skeppstedt18"
-DATASET_FILE = "premise_generation_microtexts_v2_skeppstedt18.json"
+DATASET_NAME = "argument_relation_identification_microtexts_1_peldzus15"
+DATASET_FILE = "argument_relation_identification_microtexts_1_peldzus15.json"
 
 if __name__ == "__main__":
     argument_parser = ArgumentParser(description="Convert argument mining dataset")
@@ -87,11 +106,11 @@ if __name__ == "__main__":
     args = argument_parser.parse_known_args()[0]
     set_seed(args)
 
-    dataset_path = datasets_path() / "argument-detection/skeppstedt18-more-or-less-controlled-elicitation-of-argumentative-text-enlarging-a-microtext-corpus-via-crowdsourcing/corpus"
+    dataset_path = datasets_path() / "microtexts-1/original/original/corpus/en"
 
     output = Output(DATASET_NAME)
     metadata = Metadata(DATASET_NAME)
-    output.append_definition("""Given the following document and the given argument units with the given ids mark an argument unit referenced with [0] that supports another argument unit that referenced with [1] with the following [0] --> [1] and an argument unit [0] that attacks another argument [1] with [0] /-> [1] """)
+    output.append_definition("""Given the following essay list of pairs of sentences where the second sentence supports or attacks the first. Mark the pair with Support or Attack""")
 
 
     print(dataset_path)
@@ -104,15 +123,14 @@ if __name__ == "__main__":
                 xml_path = os.path.join(root,file_name.replace("txt","xml"))
                 print(xml_path)
                 tree=etree.parse(xml_path).getroot()
-                argument_units = extract_argument_units(tree)
+                argument_units = extract_sentences(tree)
                 argument_relations = extract_argument_relations(tree)
-                print(f"{argument_units}")
                 print(f"{argument_relations}")
-                argument_units_formatted = format_argument_units(argument_units)
+
                 argument_relations_formatted = format_argument_relations(argument_units, argument_relations)
                 document = read_file(file_path)
                 id = str(uuid.uuid4())
-                output.append_instance(id, document + argument_units_formatted, [argument_relations_formatted])
+                output.append_instance(file_name, document , [argument_relations_formatted])
 
 
     output.write_output(DATASET_FILE)
