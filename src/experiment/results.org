@@ -1,12 +1,38 @@
 #+title: Results
 
 * Single adapter performance
-** ibmsc
+** LoRa
+*** ibmsc
 f1 score: 0.44
-** ajjour-19-webis-argument-framing
+*** ajjour-19-webis-argument-framing
 f1 score: 0.43
-** stance-classificaiton
+*** stance-classificaiton
 f1 score: 0.38
+** DoRa
+*** ibmsc
+f1 score: 0.34
+*** ajjour-19-webis-argument-framing
+f1 score: 0.33
+*** stance-classificaiton
+** RsLoRa
+*** ibmsc
+f1 score: 0.45
+*** ajjour-19-webis-argument-framing
+*** stance-classificaiton
+** LayerNorm
+*** ibmsc
+f1 score: 0.39
+*** ajjour-19-webis-argument-framing
+f1 score: 0.39
+*** stance-classificaiton
+f1 score: 0.39
+** PrefixTuning
+*** ibmsc
+f1 score: 0.38
+*** ajjour-19-webis-argument-framing
+f1 score: 0.39
+*** stance-classificaiton
+f1 score: 0.41
 
 
 * Combination of adapters performance
