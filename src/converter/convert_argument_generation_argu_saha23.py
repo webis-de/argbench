@@ -1,4 +1,4 @@
-from common import Output, tasks_path, Metadata, add_seed_arg, set_seed, datasets_path
+from common import Output, tasks_path, Metadata, add_seed_arg, set_seed, datasets_path, Genres, Subareas
 from argparse import ArgumentParser
 import pickle
 from dataclasses import dataclass
@@ -48,6 +48,7 @@ if __name__ == "__main__":
             arguments.append(Prompt(id, prompt, output))
 
     output = Output(DATASET_NAME)
+    output.append_genre("generation")
     output.append_definition("Given argument type, topic and stance generate an argument from listed facts.")
     for arg in arguments:
         output.append_instance(arg.id, arg.prompt, [arg.output])

@@ -1,4 +1,5 @@
 import random
+from enum import Enum
 from typing import List
 import pandas as pd
 import json
@@ -37,6 +38,24 @@ def add_seed_arg(argparser):
 def set_seed(parsed_args):
     random.seed(parsed_args.seed)
     np.random.seed(parsed_args.seed)
+
+
+class Genres(Enum):
+    """Valid genres"""
+    ESSAYS = "essays"
+    SOCIAL_MEDIA = "soical media"
+    WIKIPEDIA = "wikipedia"
+    DEBATE_PORTALS = "debate portals"
+    DEBATES = "debates"
+
+
+class Subareas(Enum):
+    """Valid subareas"""
+    MINING = "mining"
+    GENERATION = "generation"
+    REASONING = "reasoning"
+    RANKING = "ranking"
+    CONTEXTUALIZATION = "contextualization"
 
 
 class Output:
@@ -78,12 +97,14 @@ class Output:
         self.definition.append(definition)
 
 
-    def append_subarea(self, subarea: str):
-        self.categories.append(subarea)
+    def append_subarea(self, subarea: Subareas):
+        assert subarea in Subareas, f"Subarea {subarea} is not valid"
+        self.categories.append(subarea.value)
 
 
-    def append_genre(self, genre: str):
-        self.genre.append(genre)
+    def append_genre(self, genre: Genres):
+        assert genre in Genres, f"Genre {genre} is not valid"
+        self.genre.append(genre.value)
 
 
     def write_output(self, file_name):

@@ -177,8 +177,7 @@ if __name__ == "__main__":
 
     dataset_path = (datasets_path()
                     / "argument-detection"
-                    / "ajjour17-unit-segmentation-of-argumentative-text/"
-                    / "cross-domain"
+                    / "segmentation-splits"
                     / "simple")
 
     output_path = tasks_path()
@@ -193,8 +192,8 @@ if __name__ == "__main__":
     train_editorials, test_editorials = generate_negatives(train_editorials, test_editorials)
     train_editorials, test_editorials = convert_arguments(train_editorials, test_editorials)
 
-    train_editorials.write_output("ajjour_unit_segmentation_editorials_train.json")
-    test_editorials.write_output("ajjour_unit_segmentation_editorials_test.json")
+    train_editorials.write_output("argument_unit_segmentation_webis_editorials_train_ajjour17.json")
+    test_editorials.write_output("argument_unit_segmentation_webis_editorials_test_ajjour17.json")
 
     metadata.add_dataset("argument_unit_segmentation_webis_editorials_train_ajjour17.json", "train")
     metadata.add_dataset("argument_unit_segmentation_webis_editorials_test_ajjour17.json", "test")

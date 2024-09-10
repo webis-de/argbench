@@ -104,21 +104,21 @@ if __name__ == "__main__":
         wachsmuth_dagstuhl_quality_sufficiency
     )
 
-    wachsmuth_dagstuhl_quality_overall_quality = tasks_path() / "wachsmuth_dagstuhl_quality_pairvise_rank" / "wachsmuth17_dagstuhl_overall_quality_pairvise_rank.json"
-    wachsmuth_dagstuhl_quality_effectiveness = tasks_path() / "wachsmuth_dagstuhl_quality_pairvise_rank" / "wachsmuth17_dagstuhl_effectiveness_pairvise_rank.json"
-    wachsmuth_dagstuhl_quality_local_acceptability = tasks_path() / "wachsmuth_dagstuhl_quality_pairvise_rank" / "wachsmuth17_dagstuhl_local_acceptability_pairvise_rank.json"
-    wachsmuth_dagstuhl_quality_appropriateness = tasks_path() / "wachsmuth_dagstuhl_quality_pairvise_rank" / "wachsmuth17_dagstuhl_appropriateness_pairvise_rank.json"
-    wachsmuth_dagstuhl_quality_arrangement = tasks_path() / "wachsmuth_dagstuhl_quality_pairvise_rank" / "wachsmuth17_dagstuhl_arrangement_pairvise_rank.json"
-    wachsmuth_dagstuhl_quality_clarity = tasks_path() / "wachsmuth_dagstuhl_quality_pairvise_rank" / "wachsmuth17_dagstuhl_clarity_pairvise_rank.json"
-    wachsmuth_dagstuhl_quality_cogency = tasks_path() / "wachsmuth_dagstuhl_quality_pairvise_rank" / "wachsmuth17_dagstuhl_cogency_pairvise_rank.json"
-    wachsmuth_dagstuhl_quality_global_acceptability = tasks_path() / "wachsmuth_dagstuhl_quality_pairvise_rank" / "wachsmuth17_dagstuhl_global_acceptability_pairvise_rank.json"
-    wachsmuth_dagstuhl_quality_global_relevance = tasks_path() / "wachsmuth_dagstuhl_quality_pairvise_rank" / "wachsmuth17_dagstuhl_global_relevance_pairvise_rank.json"
-    wachsmuth_dagstuhl_quality_global_sufficiency = tasks_path() / "wachsmuth_dagstuhl_quality_pairvise_rank" / "wachsmuth17_dagstuhl_global_sufficiency_pairvise_rank.json"
-    wachsmuth_dagstuhl_quality_reasonableness = tasks_path() / "wachsmuth_dagstuhl_quality_pairvise_rank" / "wachsmuth17_dagstuhl_reasonableness_pairvise_rank.json"
-    wachsmuth_dagstuhl_quality_local_relevance = tasks_path() / "wachsmuth_dagstuhl_quality_pairvise_rank" / "wachsmuth17_dagstuhl_local_relevance_pairvise_rank.json"
-    wachsmuth_dagstuhl_quality_credibility = tasks_path() / "wachsmuth_dagstuhl_quality_pairvise_rank" / "wachsmuth17_dagstuhl_credibility_pairvise_rank.json"
-    wachsmuth_dagstuhl_quality_emotional_appeal = tasks_path() / "wachsmuth_dagstuhl_quality_pairvise_rank" / "wachsmuth17_dagstuhl_emotional_appeal_pairvise_rank.json"
-    wachsmuth_dagstuhl_quality_sufficiency = tasks_path() / "wachsmuth_dagstuhl_quality_pairvise_rank" / "wachsmuth17_dagstuhl_sufficiency_pairvise_rank.json"
+    wachsmuth_dagstuhl_quality_overall_quality = tasks_path() / "argument_ranking_dagstuhl_15512_pairvise_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_pairvise_rank_overall_quality_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_effectiveness = tasks_path() / "argument_ranking_dagstuhl_15512_pairvise_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_pairvise_rank_effectiveness_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_local_acceptability = tasks_path() / "argument_ranking_dagstuhl_15512_pairvise_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_pairvise_rank_local_acceptability_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_appropriateness = tasks_path() / "argument_ranking_dagstuhl_15512_pairvise_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_pairvise_rank_appropriateness_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_arrangement = tasks_path() / "argument_ranking_dagstuhl_15512_pairvise_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_pairvise_rank_arrangement_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_clarity = tasks_path() / "argument_ranking_dagstuhl_15512_pairvise_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_pairvise_rank_clarity_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_cogency = tasks_path() / "argument_ranking_dagstuhl_15512_pairvise_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_pairvise_rank_cogency_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_global_acceptability = tasks_path() / "argument_ranking_dagstuhl_15512_pairvise_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_pairvise_rank_global_acceptability_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_global_relevance = tasks_path() / "argument_ranking_dagstuhl_15512_pairvise_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_pairvise_rank_global_relevance_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_global_sufficiency = tasks_path() / "argument_ranking_dagstuhl_15512_pairvise_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_pairvise_rank_global_sufficiency_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_reasonableness = tasks_path() / "argument_ranking_dagstuhl_15512_pairvise_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_pairvise_rank_reasonableness_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_local_relevance = tasks_path() / "argument_ranking_dagstuhl_15512_pairvise_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_pairvise_rank_local_relevance_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_credibility = tasks_path() / "argument_ranking_dagstuhl_15512_pairvise_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_pairvise_rank_credibility_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_emotional_appeal = tasks_path() / "argument_ranking_dagstuhl_15512_pairvise_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_pairvise_rank_emotional_appeal_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_sufficiency = tasks_path() / "argument_ranking_dagstuhl_15512_pairvise_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_pairvise_rank_sufficiency_wachsmuth17.json"
 
     print_data_size(
         "Computational Argumentation Quality Assesment in Natural Language - Pairvise Ranking",
@@ -139,21 +139,21 @@ if __name__ == "__main__":
         wachsmuth_dagstuhl_quality_sufficiency
     )
 
-    wachsmuth_dagstuhl_quality_overall_quality = tasks_path() / "wachsmuth_dagstuhl_quality_rank" / "wachsmuth17_dagstuhl_overall_quality_rank.json"
-    wachsmuth_dagstuhl_quality_effectiveness = tasks_path() / "wachsmuth_dagstuhl_quality_rank" / "wachsmuth17_dagstuhl_effectiveness_rank.json"
-    wachsmuth_dagstuhl_quality_local_acceptability = tasks_path() / "wachsmuth_dagstuhl_quality_rank" / "wachsmuth17_dagstuhl_local_acceptability_rank.json"
-    wachsmuth_dagstuhl_quality_appropriateness = tasks_path() / "wachsmuth_dagstuhl_quality_rank" / "wachsmuth17_dagstuhl_appropriateness_rank.json"
-    wachsmuth_dagstuhl_quality_arrangement = tasks_path() / "wachsmuth_dagstuhl_quality_rank" / "wachsmuth17_dagstuhl_arrangement_rank.json"
-    wachsmuth_dagstuhl_quality_clarity = tasks_path() / "wachsmuth_dagstuhl_quality_rank" / "wachsmuth17_dagstuhl_clarity_rank.json"
-    wachsmuth_dagstuhl_quality_cogency = tasks_path() / "wachsmuth_dagstuhl_quality_rank" / "wachsmuth17_dagstuhl_cogency_rank.json"
-    wachsmuth_dagstuhl_quality_global_acceptability = tasks_path() / "wachsmuth_dagstuhl_quality_rank" / "wachsmuth17_dagstuhl_global_acceptability_rank.json"
-    wachsmuth_dagstuhl_quality_global_relevance = tasks_path() / "wachsmuth_dagstuhl_quality_rank" / "wachsmuth17_dagstuhl_global_relevance_rank.json"
-    wachsmuth_dagstuhl_quality_global_sufficiency = tasks_path() / "wachsmuth_dagstuhl_quality_rank" / "wachsmuth17_dagstuhl_global_sufficiency_rank.json"
-    wachsmuth_dagstuhl_quality_reasonableness = tasks_path() / "wachsmuth_dagstuhl_quality_rank" / "wachsmuth17_dagstuhl_reasonableness_rank.json"
-    wachsmuth_dagstuhl_quality_local_relevance = tasks_path() / "wachsmuth_dagstuhl_quality_rank" / "wachsmuth17_dagstuhl_local_relevance_rank.json"
-    wachsmuth_dagstuhl_quality_credibility = tasks_path() / "wachsmuth_dagstuhl_quality_rank" / "wachsmuth17_dagstuhl_credibility_rank.json"
-    wachsmuth_dagstuhl_quality_emotional_appeal = tasks_path() / "wachsmuth_dagstuhl_quality_rank" / "wachsmuth17_dagstuhl_emotional_appeal_rank.json"
-    wachsmuth_dagstuhl_quality_sufficiency = tasks_path() / "wachsmuth_dagstuhl_quality_rank" / "wachsmuth17_dagstuhl_sufficiency_rank.json"
+    wachsmuth_dagstuhl_quality_overall_quality = tasks_path() / "argument_ranking_dagstuhl_15512_full_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_full_rank_overall_quality_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_effectiveness = tasks_path() / "argument_ranking_dagstuhl_15512_full_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_full_rank_effectiveness_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_local_acceptability = tasks_path() / "argument_ranking_dagstuhl_15512_full_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_full_rank_local_acceptability_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_appropriateness = tasks_path() / "argument_ranking_dagstuhl_15512_full_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_full_rank_appropriateness_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_arrangement = tasks_path() / "argument_ranking_dagstuhl_15512_full_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_full_rank_arrangement_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_clarity = tasks_path() / "argument_ranking_dagstuhl_15512_full_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_full_rank_clarity_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_cogency = tasks_path() / "argument_ranking_dagstuhl_15512_full_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_full_rank_cogency_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_global_acceptability = tasks_path() / "argument_ranking_dagstuhl_15512_full_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_full_rank_global_acceptability_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_global_relevance = tasks_path() / "argument_ranking_dagstuhl_15512_full_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_full_rank_global_relevance_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_global_sufficiency = tasks_path() / "argument_ranking_dagstuhl_15512_full_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_full_rank_global_sufficiency_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_reasonableness = tasks_path() / "argument_ranking_dagstuhl_15512_full_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_full_rank_reasonableness_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_local_relevance = tasks_path() / "argument_ranking_dagstuhl_15512_full_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_full_rank_local_relevance_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_credibility = tasks_path() / "argument_ranking_dagstuhl_15512_full_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_full_rank_credibility_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_emotional_appeal = tasks_path() / "argument_ranking_dagstuhl_15512_full_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_full_rank_emotional_appeal_wachsmuth17.json"
+    wachsmuth_dagstuhl_quality_sufficiency = tasks_path() / "argument_ranking_dagstuhl_15512_full_rank_wachsmuth17" / "argument_ranking_dagstuhl_15512_full_rank_sufficiency_wachsmuth17.json"
 
     print_data_size(
         "Computational Argumentation Quality Assesment in Natural Language - Full Ranking",
@@ -234,9 +234,9 @@ if __name__ == "__main__":
         barhaim21_key_point_dev,
     )
 
-    ibmsc_stance_classification_train = tasks_path() / "ibmsc_stance_classification" / "ibmsc_stance_classification_train.json"
-    ibmsc_stance_classification_test = tasks_path() / "ibmsc_stance_classification" / "ibmsc_stance_classification_test.json"
-    ibmsc_stance_classification_dev = tasks_path() / "ibmsc_stance_classification" / "ibmsc_stance_classification_dev.json"
+    ibmsc_stance_classification_train = tasks_path() / "stance_classification_ibmsc_barhaim17" / "stance_classification_ibmsc_train_barhaim17.json"
+    ibmsc_stance_classification_test = tasks_path() / "stance_classification_ibmsc_barhaim17" / "stance_classification_ibmsc_test_barhaim17.json"
+    ibmsc_stance_classification_dev = tasks_path() / "stance_classification_ibmsc_barhaim17" / "stance_classification_ibmsc_dev_barhaim17.json"
 
     print_data_size(
         "Stance Classification of Context-Dependent Claims",
@@ -311,23 +311,24 @@ if __name__ == "__main__":
         peldzus15_argument_relation_identification
     )
 
-    skepstedt18_argument_relation_identification = tasks_path() / "skepstedt18_argument_relation_identification" / "skepstedt18_argument_relation_identification.json"
+    # skepstedt18_argument_relation_identification = tasks_path() / "skepstedt18_argument_relation_identification" / "skepstedt18_argument_relation_identification.json"
+    skepstedt18_argument_relation_identification = tasks_path() / "skepstedt18_argument_relation_identification.json"
 
     print_data_size(
         "More or less controlled elicitation of argumentative text: Enlarging a microtext corpus via crowdsourcing - Argument Relation Identification",
         skepstedt18_argument_relation_identification
     )
 
-    chakarbarty21_implicit_premise_generation_art_train = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_train_chakarbarty21.json"
-    chakarbarty21_implicit_premise_generation_art_train_para_comet = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_train_para_comet_chakarbarty21.json"
-    chakarbarty21_implicit_premise_generation_art_val = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_val_chakarbarty21.json"
-    chakarbarty21_implicit_premise_generation_art_val_para_comet = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_val_para_comet_chakarbarty21.json"
-    chakarbarty21_implicit_premise_generation_d1test = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_d1test_chakarbarty21.json"
-    chakarbarty21_implicit_premise_generation_d1test_para_comet = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_d1test_para_comet_chakarbarty21.json"
-    chakarbarty21_implicit_premise_generation_d2test = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_d2test_chakarbarty21.json"
-    chakarbarty21_implicit_premise_generation_d2test_para_comet = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_d2test_para_comet_chakarbarty21.json"
-    chakarbarty21_implicit_premise_generation_d3test = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_d3test_chakarbarty21.json"
-    chakarbarty21_implicit_premise_generation_d3test_para_comet = tasks_path() / "arc_premise_generation_chakarbarty21" / "arc_premise_generation_d3test_para_comet_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_art_train = tasks_path() / "premise_generation_arc_chakarbarty21" / "premise_generation_arc_train_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_art_train_para_comet = tasks_path() / "premise_generation_arc_chakarbarty21" / "premise_generation_arc_train_para_comet_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_art_val = tasks_path() / "premise_generation_arc_chakarbarty21" / "premise_generation_arc_val_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_art_val_para_comet = tasks_path() / "premise_generation_arc_chakarbarty21" / "premise_generation_arc_val_para_comet_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_d1test = tasks_path() / "premise_generation_arc_chakarbarty21" / "premise_generation_arc_d1test_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_d1test_para_comet = tasks_path() / "premise_generation_arc_chakarbarty21" / "premise_generation_arc_d1test_para_comet_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_d2test = tasks_path() / "premise_generation_arc_chakarbarty21" / "premise_generation_arc_d2test_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_d2test_para_comet = tasks_path() / "premise_generation_arc_chakarbarty21" / "premise_generation_arc_d2test_para_comet_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_d3test = tasks_path() / "premise_generation_arc_chakarbarty21" / "premise_generation_arc_d3test_chakarbarty21.json"
+    chakarbarty21_implicit_premise_generation_d3test_para_comet = tasks_path() / "premise_generation_arc_chakarbarty21" / "premise_generation_arc_d3test_para_comet_chakarbarty21.json"
 
     print_data_size(
         "Implicit Premise Generation with Discourse-aware Commonsense Knowledge Models",
@@ -434,9 +435,9 @@ if __name__ == "__main__":
         stab17_argument_relation_identification
     )
 
-    alshomary21_belief_based_argument_generation_train = tasks_path() / "conclusion_generation_belief_generation_alshomary21" / "conclusion_generation_belief_generation_train_alshomary21.json"
-    alshomary21_belief_based_argument_generation_test = tasks_path() / "conclusion_generation_belief_generation_alshomary21" / "conclusion_generation_belief_generation_test_alshomary21.json"
-    alshomary21_belief_based_argument_generation_valid = tasks_path() / "conclusion_generation_belief_generation_alshomary21" / "conclusion_generation_belief_generation_valid_alshomary21.json"
+    alshomary21_belief_based_argument_generation_train = tasks_path() / "stance_classification_belief_arguments_alshomary21" / "stance_classification_belief_arguments_train_alshomary21.json"
+    alshomary21_belief_based_argument_generation_test = tasks_path() / "stance_classification_belief_arguments_alshomary21" / "stance_classification_belief_arguments_test_alshomary21.json"
+    alshomary21_belief_based_argument_generation_valid = tasks_path() / "stance_classification_belief_arguments_alshomary21" / "stance_classification_belief_arguments_valid_alshomary21.json"
 
     print_data_size(
         "Belief-based Generation of Argumentative Claims",
@@ -444,6 +445,138 @@ if __name__ == "__main__":
         alshomary21_belief_based_argument_generation_test,
         alshomary21_belief_based_argument_generation_valid
     )
+
+    argument_ranking_ibm_evidence_quality_train_gleize19 = tasks_path() / "argument_ranking_ibm_evidence_quality_gleize19" / "argument_ranking_ibm_evidence_quality_test_gleize19.json"
+    argument_ranking_ibm_evidence_quality_test_gleize19 = tasks_path() / "argument_ranking_ibm_evidence_quality_gleize19" / "argument_ranking_ibm_evidence_quality_train_gleize19.json"
+
+    print_data_size(
+        "Are You Convinced? Choosing the More Convincing Evidence with a Siamese Network",
+        argument_ranking_ibm_evidence_quality_test_gleize19,
+        argument_ranking_ibm_evidence_quality_train_gleize19
+    )
+
+    fallacy_detection_logic_goffredo23_climate_dev = tasks_path() / "fallacy_detection_logic_goffredo23" / "fallacy_detection_logic_climate_dev_goffredo23.json"
+    fallacy_detection_logic_goffredo23_climate_test = tasks_path() / "fallacy_detection_logic_goffredo23" / "fallacy_detection_logic_climate_test_goffredo23.json"
+    fallacy_detection_logic_goffredo23_climate_train = tasks_path() / "fallacy_detection_logic_goffredo23" / "fallacy_detection_logic_climate_train_goffredo23.json"
+
+    fallacy_detection_logic_goffredo23_edu_dev = tasks_path() / "fallacy_detection_logic_goffredo23" / "fallacy_detection_logic_edu_dev_goffredo23.json"
+    fallacy_detection_logic_goffredo23_edu_test = tasks_path() / "fallacy_detection_logic_goffredo23" / "fallacy_detection_logic_edu_test_goffredo23.json"
+    fallacy_detection_logic_goffredo23_edu_train = tasks_path() / "fallacy_detection_logic_goffredo23" / "fallacy_detection_logic_edu_train_goffredo23.json"
+
+    print_data_size(
+        "Logical Fallacy Detection",
+        fallacy_detection_logic_goffredo23_climate_dev,
+        fallacy_detection_logic_goffredo23_climate_test,
+        fallacy_detection_logic_goffredo23_climate_train,
+        fallacy_detection_logic_goffredo23_edu_dev,
+        fallacy_detection_logic_goffredo23_edu_test,
+        fallacy_detection_logic_goffredo23_edu_train
+    )
+
+    fallacy_classification_elecdeb60t020_dev_goffredo23 = tasks_path() / "argument_fallacy_classification_elecdeb60t020_goffredo23" / "argument_fallacy_classification_elecdeb60t020_dev_goffredo23.json"
+    fallacy_classification_elecdeb60t020_test_goffredo23 = tasks_path() / "argument_fallacy_classification_elecdeb60t020_goffredo23" / "argument_fallacy_classification_elecdeb60t020_test_goffredo23.json"
+    fallacy_classification_elecdeb60t020_train_goffredo23 = tasks_path() / "argument_fallacy_classification_elecdeb60t020_goffredo23" / "argument_fallacy_classification_elecdeb60t020_train_goffredo23.json"
+
+    print_data_size(
+        "Argument-based Detection and Classification of Fallacies in Political Debates",
+        fallacy_classification_elecdeb60t020_dev_goffredo23,
+        fallacy_classification_elecdeb60t020_test_goffredo23,
+        fallacy_classification_elecdeb60t020_train_goffredo23
+    )
+
+    ranking_debate_forums_experts_cogency_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_debate_forums_experts_cogency_ng20.json"
+    ranking_debate_forums_experts_effectiveness_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_debate_forums_experts_effectiveness_ng20.json"
+    ranking_debate_forums_experts_reasonableness_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_debate_forums_experts_reasonableness_ng20.json"
+
+    ranking_qa_forums_experts_cogency_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_qa_forums_experts_cogency_ng20.json"
+    ranking_qa_forums_experts_effectiveness_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_qa_forums_experts_effectiveness_ng20.json"
+    ranking_qa_forums_experts_reasonableness_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_qa_forums_experts_reasonableness_ng20.json"
+
+    ranking_review_forums_experts_cogency_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_review_forums_experts_cogency_ng20.json"
+    ranking_review_forums_experts_effectiveness_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_review_forums_experts_effectiveness_ng20.json"
+    ranking_review_forums_experts_reasonableness_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_review_forums_experts_reasonableness_ng20.json"
+
+    print_data_size(
+        "Creating a Domain-diverse Corpus for Theory-based Argument Quality Assessment - experts",
+        ranking_debate_forums_experts_cogency_ng20,
+        ranking_debate_forums_experts_effectiveness_ng20,
+        ranking_debate_forums_experts_reasonableness_ng20,
+        ranking_qa_forums_experts_cogency_ng20,
+        ranking_qa_forums_experts_effectiveness_ng20,
+        ranking_qa_forums_experts_reasonableness_ng20,
+        ranking_review_forums_experts_cogency_ng20,
+        ranking_review_forums_experts_effectiveness_ng20,
+        ranking_review_forums_experts_reasonableness_ng20
+    )
+
+
+    ranking_debate_forums_crowd_cogency_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_debate_forums_crowd_cogency_ng20.json"
+    ranking_debate_forums_crowd_effectiveness_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_debate_forums_crowd_effectiveness_ng20.json"
+    ranking_debate_forums_crowd_reasonableness_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_debate_forums_crowd_reasonableness_ng20.json"
+
+    ranking_qa_forums_crowd_cogency_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_qa_forums_crowd_cogency_ng20.json"
+    ranking_qa_forums_crowd_effectiveness_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_qa_forums_crowd_effectiveness_ng20.json"
+    ranking_qa_forums_crowd_reasonableness_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_qa_forums_crowd_reasonableness_ng20.json"
+
+    ranking_review_forums_crowd_cogency_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_review_forums_crowd_cogency_ng20.json"
+    ranking_review_forums_crowd_effectiveness_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_review_forums_crowd_effectiveness_ng20.json"
+    ranking_review_forums_crowd_reasonableness_ng20 = tasks_path() / "argument_ranking_ng20" / "argument_ranking_review_forums_crowd_reasonableness_ng20.json"
+
+    print_data_size(
+        "Creating a Domain-diverse Corpus for Theory-based Argument Quality Assessment - crowd",
+        ranking_debate_forums_crowd_cogency_ng20,
+        ranking_debate_forums_crowd_effectiveness_ng20,
+        ranking_debate_forums_crowd_reasonableness_ng20,
+        ranking_qa_forums_crowd_cogency_ng20,
+        ranking_qa_forums_crowd_effectiveness_ng20,
+        ranking_qa_forums_crowd_reasonableness_ng20,
+        ranking_review_forums_crowd_cogency_ng20,
+        ranking_review_forums_crowd_effectiveness_ng20,
+        ranking_review_forums_crowd_reasonableness_ng20
+    )
+
+    aspect_detection_ukp_aspect_dev_schiller21 = tasks_path() / "aspect_detection_ukp_aspect_schiller21" / "aspect_detection_ukp_aspect_dev_schiller21.json"
+    aspect_detection_ukp_aspect_test_schiller21 = tasks_path() / "aspect_detection_ukp_aspect_schiller21" / "aspect_detection_ukp_aspect_test_schiller21.json"
+    aspect_detection_ukp_aspect_train_schiller21 = tasks_path() / "aspect_detection_ukp_aspect_schiller21" / "aspect_detection_ukp_aspect_train_schiller21.json"
+
+    print_data_size(
+        "Aspect-Controlled Neural Argument Generation",
+        aspect_detection_ukp_aspect_dev_schiller21,
+        aspect_detection_ukp_aspect_test_schiller21,
+        aspect_detection_ukp_aspect_train_schiller21
+    )
+
+    argument_ranking_claim_revisions_skitalinskaya21 = tasks_path() / "argument_ranking_claim_revisions_skitalinskaya23" / "argument_ranking_claim_revisions_skitalinskaya23.json"
+
+    print_data_size(
+        "Learning From Revisions: Quality Assessment of Claims in Argumentation at Scale",
+        argument_ranking_claim_revisions_skitalinskaya21
+    )
+    stance_classification_belief_arguments_test_alshomary21 = tasks_path() / "stance_classification_belief_arguments_alshomary21" / "stance_classification_belief_arguments_test_alshomary21.json"
+    stance_classification_belief_arguments_train_alshomary21 = tasks_path() / "stance_classification_belief_arguments_alshomary21" / "stance_classification_belief_arguments_train_alshomary21.json"
+    stance_classification_belief_arguments_valid_alshomary21 = tasks_path() / "stance_classification_belief_arguments_alshomary21" / "stance_classification_belief_arguments_valid_alshomary21.json"
+
+    print_data_size(
+        "Belief-based Generation of Argumentative Claims",
+        stance_classification_belief_arguments_test_alshomary21,
+        stance_classification_belief_arguments_train_alshomary21,
+        stance_classification_belief_arguments_valid_alshomary21
+    )
+
+    claim_improvement_detection_claim_revisions_skitalinskaya23 = tasks_path() / "claim_improvement_detection_claim_revisions_skitalinskaya23" / "claim_improvement_detection_claim_revisions_skitalinskaya23.json"
+
+    print_data_size(
+        "Claim improvement detection claim revisions",
+        claim_improvement_detection_claim_revisions_skitalinskaya23
+    )
+
+    suboptimal_claim_detection_claim_revisions_skitalinskaya23 = tasks_path() / "suboptimal_claim_detection_claim_revisions_skitalinskaya23" / "suboptimal_claim_detection_claim_revisions_skitalinskaya23.json"
+
+    print_data_size(
+        "Suboptimal claim detection claim revisions",
+        suboptimal_claim_detection_claim_revisions_skitalinskaya23
+    )
+
 
     # convert_argument_ranking_ibm_evidence_quality_gleize19.py
     # convert_fallacy_detection_elecdeb60t020_goffredo23.py

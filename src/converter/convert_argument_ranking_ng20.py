@@ -72,7 +72,7 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
 
-    data_path = datasets_path() / "argument-quality" / "ng20-creating-a-domain-diverse-corpus-for-theory-based-argument-quality-assesment" / "all" # path to data
+    data_path = datasets_path() / "gaq" / "all" # path to data
 
     # Set name of the dataset to identify it and files of that dataset
     dataset_name = "argument_ranking_ng20"
