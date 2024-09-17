@@ -1,13 +1,11 @@
 from argparse import ArgumentParser
 import json
 from pathlib import Path
-import random
-from string import Formatter
-import re
+from torch import _convert_indices_from_coo_to_csr
 from yaml import load, Loader
-import random
 import ndjson
 import os
+import pandas as pd
 
 def data_repo():
     """Get path of data repository"""
@@ -26,146 +24,117 @@ def get_metadata():
     with open(tasks_path() / "metadata.json", "r") as f:
         return json.load(f)
 
-def compile_template_vars(dataset, template):
-    """Compiles prompt based on config template"""
-    template_variables = [var for _, var, _, _ in Formatter().parse(template) if var]
-
-    positive_amount = sum("positive_example_input" in var for var in template_variables)
-    negative_amount = sum("negative_example_input" in var for var in template_variables)
-
-    template_values = {
-        "definition": dataset["Definition"][0],
-    }
-
-    if dataset["Positive Examples"]:
-        positive_chosen = random.sample(dataset["Positive Examples"], k=positive_amount)
-    else:
-        positive_chosen = []
-    if dataset["Negative Examples"]:
-        negative_chosen = random.sample(dataset["Negative Examples"], k=negative_amount)
-    else:
-        negative_chosen = []
-
-    for i in range(positive_amount):
-        template_input_var = f"positive_example_input_{i}"
-        template_output_var = f"positive_example_output_{i}"
-        template_values[template_input_var] = positive_chosen[i]["input"]
-        template_values[template_output_var] = positive_chosen[i]["output"]
-
-    for i in range(negative_amount):
-        template_input_var = f"negative_example_input_{i}"
-        template_output_var = f"negative_example_output_{i}"
-        template_values[template_input_var] = negative_chosen[i]["input"]
-        template_values[template_output_var] = negative_chosen[i]["output"]
-
-    return template_values
-
-def compile_instances(dataset, template, instances):
-    """Compile all dataset instances to one array"""
-    template_vars = compile_template_vars(dataset, template)
-
-    for instance in dataset["Instances"]:
-        prompt = template.format(
-            instance_input=instance["input"],
-            **template_vars
-        )
-        try:
-            output = instance["output"][0]
-        except IndexError:
-            print(template)
-            print(dataset["Instances"][0])
-            raise Exception()
-
-        instances.append({
-            "id": instance["id"],
-            "input": prompt,
-            "output": output
-        })
+def collect_files(
+        task_path,
+        metadata,
+        test_configs,
+        include_genre=None,
+        include_subarea=None,
+        is_leave_one_out=False,
+        exclude_datasets=None
+):
+    if include_genre:
+        include_genre = set(include_genre)
+    if include_subarea:
+        include_subarea = set(include_subarea)
+    if not exclude_datasets:
+        exclude_datasets = []
 
 
-def append_dataset(datasets, dataset_config, dataset_file_path, data_instances):
-    for dataset in datasets["file_list"]:
-        if not re.match(dataset_config["match"], dataset):
+    test_files = []
+    for file in metadata[test_configs["name"]]["file_list"]:
+        if test_configs["match"] in file:
+            test_files.append(task_path / test_configs["name"] / file)
+
+    train_files = []
+    for task in os.listdir(task_path):
+        task_data_path = task_path / task
+
+        if task in exclude_datasets:
             continue
-        with open(dataset_file_path / dataset, "r") as f:
-            dataset_contents = json.load(f)
-        compile_instances(dataset_contents, dataset_config["prompt_template"], data_instances)
+        if not os.path.isdir(task_data_path):
+            continue
+
+        if task not in metadata:
+            print(f"{task} not in metadata!")
+            continue
+        genres = metadata[task].get("genre", set())
+        subareas = metadata[task].get("subareas", set())
+
+        for task_file in os.listdir(task_data_path):
+            task_file_path = task_data_path / task_file
+            if not os.path.isfile(task_file_path):
+                continue
+
+            if is_leave_one_out:
+                train_files.append(task_file_path)
+                continue
+
+            if include_genre and include_genre.intersection(genres):
+                train_files.append(task_file_path)
+                continue
+
+            if include_subarea and include_subarea.intersection(subareas):
+                train_files.append(task_file_path)
+
+    return train_files, test_files
 
 
-def collect_datasets(train_config, test_config, metadata, datasets_path, ignore_subsample=False):
-    """Collect used datasets"""
-    train_instances = []
-    test_instances = []
+def compile_datasets(dataset_paths, prompt_template, subsample_amount=None, subsample_rate=None):
+    """
+    Compile all datasets into a dataframe
+    """
+    def template_formatter(row):
+        return prompt_template.format(
+            instance_input=row["input"],
+            definition=row["definition"])
 
-    for i, dataset in enumerate(train_config):
-        dataset_instances = []
-        dataset_config = train_config[dataset]
-        dataset_files = metadata[dataset_config["name"]]
-        dataset_file_path = datasets_path / dataset
-        append_dataset(dataset_files, dataset_config, dataset_file_path, dataset_instances)
-        if ignore_subsample:
-            pass
-        elif dataset_config.get("subsample_rate"):
-            dataset_instances = random.sample(dataset_instances, int(len(dataset_instances) * dataset_config["subsample_rate"]))
-        elif dataset_config.get("subsample_amount"):
-            dataset_instances = random.sample(dataset_instances, dataset_config["subsample_amount"])
-        train_instances += dataset_instances
-        print(f"Train dataset loaded: {dataset} with instances: {len(dataset_instances)}")
+    datasets = []
+    for task_path in dataset_paths:
+        task_data = pd.read_json(task_path, lines=True)
 
-    for i, dataset in enumerate(test_config):
-        dataset_instances = []
-        dataset_config = test_config[dataset]
-        dataset_files = metadata[dataset_config["name"]]
-        dataset_file_path = datasets_path / dataset
-        append_dataset(dataset_files, dataset_config, dataset_file_path, dataset_instances)
-        if ignore_subsample:
-            pass
-        elif dataset_config.get("subsample_rate"):
-            dataset_instances = random.sample(dataset_instances, int(len(dataset_instances) * dataset_config["subsample_rate"]))
-        elif dataset_config.get("subsample_amount"):
-            dataset_instances = random.sample(dataset_instances, dataset_config["subsample_amount"])
-        test_instances += dataset_instances
-        print(f"Test dataset loaded: {dataset} with instances: {len(dataset_instances)}")
+        if subsample_amount:
+            task_data = task_data.sample(subsample_amount, axis=0)
+        if subsample_rate:
+            task_data = task_data.sample(frac=subsample_rate, axis=0)
 
-    print(f"Total train set size: {len(train_instances)}")
-    print(f"Total test set size: {len(test_instances)}")
+        task_data["input"] = task_data.apply(template_formatter, axis=1)
 
-    return train_instances, test_instances
+        datasets.append(task_data[["id", "input", "output"]])
 
-def validate_config(config):
-    """Validate configuration file"""
-    assert config.get("seed")
-    assert config.get("dataset_output")
-    assert all(split in ["train", "test"] for split in config["dataset_output"])
-    assert len(config["train_datasets"]) > 0
-    for dataset in config["train_datasets"]:
-        dataset_config = config["train_datasets"][dataset]
-        assert dataset_config.get("match")
-        assert dataset_config.get("prompt_template")
+    return pd.concat(datasets, axis=0)
 
-    assert len(config["test_datasets"]) > 0
-    for dataset in config["test_datasets"]:
-        dataset_config = config["test_datasets"][dataset]
-        assert dataset_config.get("match")
-        assert dataset_config.get("prompt_template")
 
-if __name__ == "__main__":
-    argument_parser = ArgumentParser(description="Compile dataset to use")
-    argument_parser.add_argument("-c", "--config", type=Path, required=True, help="Path to the config file to use")
-    args = argument_parser.parse_known_args()[0]
+def collect_datasets(run_config, tasks_path):
+    """
+    Collect all datasets to use in run
+    """
+    train_config = run_config.train_datasets
+    test_config = run_config.test_datasets
 
-    with open(args.config, "r") as f:
-        config = load(f, Loader=Loader)
-
-    validate_config(config)
-
-    datasets_path = tasks_path()
     metadata = get_metadata()
 
-    train_instances, test_instances = collect_datasets(config, metadata, datasets_path)
+    train_tasks, test_tasks = collect_files(
+        tasks_path,
+        metadata,
+        test_config,
+        train_config.get("include_genre"),
+        train_config.get("include_subarea"),
+        train_config.get("leave_one_out", False),
+        train_config.get("exclude_datasets")
+    )
 
-    with open(config["dataset_output"]["train"], "w") as f:
-        ndjson.dump(train_instances, f)
+    train_dataset = compile_datasets(
+        train_tasks,
+        train_config["prompt_template"],
+        train_config.get("subsample_amount", None),
+        train_config.get("subsample_rate", None)
+    )
+    test_dataset = compile_datasets(
+        test_tasks,
+        test_config["prompt_template"],
+        test_config.get("subsample_amount", None),
+        test_config.get("subsample_rate", None)
+    )
 
-    with open(config["dataset_output"]["test"], "w") as f:
-        ndjson.dump(test_instances, f)
+    return train_dataset, test_dataset

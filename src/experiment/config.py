@@ -237,9 +237,24 @@ class RunConfig:
     generation_config: ModelGenerationConfig = None
     validation_config: ValidationConfig = None
 
+    @staticmethod
+    def register_cli(arg_parser):
+        arg_parser.add_argument("-it", "--is_train", action="store_true", default=True, help="Should training be performed")
+        arg_parser.add_argument("-ie", "--is_evaluate", action="store_true", default=True, help="Should evaluation be performed")
+        arg_parser.add_argument("-s", "--seed", type=int, help="Seed to use for running experiment")
+        arg_parser.add_argument("-is", "--include_subarea", action="append", help="Training set subareas")
+        arg_parser.add_argument("-ig", "--include_generes", action="append", help="Training set genres")
+        arg_parser.add_argument("-tsr", "--train_subsample_rate", type=float, help="Fraction of instances to subsample from each dataset")
+        arg_parser.add_argument("-tsa", "--train_subsample_amount", type=int, help="Amount of instances to subsamplea from each dataset")
+        arg_parser.add_argument("-l", "--is_leave_one_out", action="store_true", help="Should leave one out training be performed")
+        arg_parser.add_argument("-vsr", "--test_subsample_rate", type=float, help="Fraction of instances to subsample from each dataset for testing")
+        arg_parser.add_argument("-vsa", "--test_subsample_amount", type=int, help="Amount of instances to subsamplea from each dataset for testing")
+        arg_parser.add_argument("-tdm", "--test_dataset_match", type=str, help="Matching pattern for test dataset files to include")
+        arg_parser.add_argument("-tdn", "--test_dataset_name", type=str, help="Name of the test dataset to use")
+
 
     @classmethod
-    def from_file(cls, path: Path):
+    def from_file(cls, path: Path, args):
         """Read config from file"""
         with open(path, "r") as f:
             config = json.load(f)
@@ -267,5 +282,26 @@ class RunConfig:
             conf_obj.peft_fresh_config = PeftAdapterConfig(**conf_obj.peft_fresh_config)
         if config.get("quant_config"):
             conf_obj.quant_config = QuantConfig(**conf_obj.quant_config)
+
+        if args.seed:
+            conf_obj.seed = args.seed
+        if args.include_subarea:
+            conf_obj.train_datasets["include_subarea"] = args.include_subarea
+        if args.include_generes:
+            conf_obj.train_datasets["include_genres"] = args.include_generes
+        if args.train_subsample_rate:
+            conf_obj.train_datasets["subsample_rate"] = args.train_subsample_rate
+        if args.train_subsample_amount:
+            conf_obj.train_datasets["subsample_amount"] = args.train_subsample_amount
+        if args.is_leave_one_out:
+            conf_obj.train_datasets["leave_one_out"] = args.is_leave_one_out
+        if args.test_subsample_rate:
+            conf_obj.test_datasets["subsample_rate"] = args.test_subsample_rate
+        if args.test_subsample_amount:
+            conf_obj.test_datasets["subsample_amount"] = args.test_subsample_amount
+        if args.test_dataset_match:
+            conf_obj.test_datasets["match"] = args.test_dataset_match
+        if args.test_dataset_name:
+            conf_obj.test_datasets["name"] = args.test_dataset_name
 
         return conf_obj

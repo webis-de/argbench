@@ -1,40 +1,12 @@
 #+title: Results
 
 * Single adapter performance
-** LoRa
-*** ibmsc
-f1 score: 0.44
-*** ajjour-19-webis-argument-framing
-f1 score: 0.43
-*** stance-classificaiton
-f1 score: 0.38
-** DoRa
-*** ibmsc
-f1 score: 0.34
-*** ajjour-19-webis-argument-framing
-f1 score: 0.33
-*** stance-classificaiton
-** RsLoRa
-*** ibmsc
-f1 score: 0.45
-*** ajjour-19-webis-argument-framing
-*** stance-classificaiton
-** LayerNorm
-*** ibmsc
-f1 score: 0.39
-*** ajjour-19-webis-argument-framing
-f1 score: 0.39
-*** stance-classificaiton
-f1 score: 0.39
-** PrefixTuning
-*** ibmsc
-f1 score: 0.38
-*** ajjour-19-webis-argument-framing
-f1 score: 0.39
-*** stance-classificaiton
-f1 score: 0.41
-
-
-* Combination of adapters performance
-Used ibmsc + ajjour-19-webis-argument-framing and evaluated on key-point-analysis
-F1 score: 0.48
+** key_point_matching_argkp_2021_barhaim21
+*** social_media
+f1 score: 0.3246
+*** essays
+f1 score: 0.299999
+*** debate portals
+f1 score: 0.24512
+*** social media
+f1 score: 0.233333

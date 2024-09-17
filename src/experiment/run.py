@@ -88,14 +88,17 @@ class Runner:
                 EarlyStoppingCallback(**self.config.early_stopping_config.to_conf())
             ]
 
-        train_data = [
-            self.generate_and_tokenize_prompt(d, config.cutoff_len)
-            for d in self.train_instances
-        ]
-        test_data = [
-            self.generate_and_tokenize_prompt(d, config.cutoff_len, False)
-            for d in self.test_instances
-        ]
+        train_data = []
+        for row in self.train_instances.iterrows():
+            row = row[1]
+            processed = self.generate_and_tokenize_prompt(row, config.cutoff_len)
+            train_data.append(processed)
+
+        test_data = []
+        for row in self.test_instances.iterrows():
+            row = row[1]
+            processed = self.generate_and_tokenize_prompt(row, config.cutoff_len, False)
+            test_data.append(processed)
 
         return Trainer(
             model=self.model,
@@ -108,13 +111,9 @@ class Runner:
 
 
     def prepare_data(self):
-        datasets_path = tasks_path()
-        metadata = get_metadata()
         return collect_datasets(
-            self.config.train_datasets,
-            self.config.test_datasets,
-            metadata,
-            datasets_path
+            self.config,
+            Path("/home/dima/Projects/data/")
         )
 
 
@@ -247,9 +246,11 @@ if __name__ == "__main__":
 
     arg_parser.add_argument("-c", "--config", type=Path, help="Path to experiment config")
 
+    RunConfig.register_cli(arg_parser)
+
     args = arg_parser.parse_args()
 
-    config = RunConfig.from_file(args.config)
+    config = RunConfig.from_file(args.config, args)
 
     runner = Runner(config)
 
