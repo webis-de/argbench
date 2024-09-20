@@ -1,0 +1,16 @@
+#+title: Work State
+
+* Preprocessing tasks
+** Refactor preprocess files to conform to others
+:PROPERTIES:
+:EFFORT:   2:30:00
+:END:
+:LOGBOOK:
+CLOCK: [2024-09-19 Do 13:10]--[2024-09-19 Do 15:13] =>  2:03
+CLOCK: [2024-09-18 Mi 16:49]--[2024-09-18 Mi 20:08] =>  3:19
+:END:
+
+** Fixing Kialo dataset
+:LOGBOOK:
+CLOCK: [2024-09-20 Fr 13:51]--[2024-09-20 Fr 14:18] =>  0:27
+:END:
