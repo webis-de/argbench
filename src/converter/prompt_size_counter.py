@@ -29,6 +29,11 @@ if __name__ == "__main__":
         "AVG Instance Len": [],
         "MIN Instance Len": [],
         "MAX Instance Len": [],
+        "AVG Output Len": [],
+        "MIN Output Len": [],
+        "MAX Output Len": [],
+        "MAX Definition + Instance": [],
+        "MAX ALL": []
     }
 
     for dataset in metadata:
@@ -41,7 +46,15 @@ if __name__ == "__main__":
                 print(f"File not found, skipping: {file_path}")
                 continue
 
+            print("------------------------------")
+            print(file)
+
+            if not file_data["Instances"]:
+                print(f"File has no instances: {file_path}")
+                continue
+
             instances = [inst["input"] for inst in file_data["Instances"]]
+            outputs = [inst["output"][0] for inst in file_data["Instances"]]
 
             definition = file_data["Definition"][0]
 
@@ -49,15 +62,21 @@ if __name__ == "__main__":
 
             if tokenizer:
                 instances = [tokenizer(text=inst, return_tensors="pt")["input_ids"][0] for inst in instances]
+                outputs = [tokenizer(text=out, return_tensors="pt")["input_ids"][0] for out in outputs]
                 definition = tokenizer(text=definition, return_tensors="pt")["input_ids"][0]
 
             description_len = len(definition)
 
-            print("------------------------------")
-            print(file)
             max_instance_len = max((len(inst) for inst in instances))
             min_instance_len = min((len(inst) for inst in instances))
             avg_instance_len = mean((len(inst) for inst in instances))
+
+            max_outputs_len = max((len(out) for out in outputs))
+            min_outputs_len = min((len(out) for out in outputs))
+            avg_outputs_len = mean((len(out) for out in outputs))
+
+            max_def_inst = max_instance_len + description_len
+            max_all = max_def_inst + max_outputs_len
 
             print(description_len)
             print(avg_instance_len)
@@ -68,7 +87,12 @@ if __name__ == "__main__":
             data["AVG Instance Len"].append(avg_instance_len)
             data["MIN Instance Len"].append(min_instance_len)
             data["MAX Instance Len"].append(max_instance_len)
+            data["AVG Output Len"].append(avg_outputs_len)
+            data["MIN Output Len"].append(min_outputs_len)
+            data["MAX Output Len"].append(max_outputs_len)
             data["Definition Len"].append(description_len)
+            data["MAX Definition + Instance"].append(max_def_inst)
+            data["MAX ALL"].append(max_all)
 
     df = pd.DataFrame(data)
 

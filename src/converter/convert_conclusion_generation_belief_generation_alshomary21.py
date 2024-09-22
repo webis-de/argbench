@@ -5,6 +5,7 @@ import uuid
 
 def process_dataset(bows_dataset, metadata, dataset_name, dataset_file, dataset_path):
     dataset = read_tabular(dataset_path)
+    dataset = dataset.dropna(axis=0)
     dataset["parsed_issues"] = dataset["big_issues"].str.findall("\d")
     output = Output(dataset_name)
     output.append_definition("Given discussion topic and a collection of topic staces that describe users stance on various issues, generate a claim that is based user stance.")
@@ -45,6 +46,7 @@ if __name__ == "__main__":
     dataset_name = "conclusion_generation_belief_generation_alshomary21"
 
     bows_dataset = read_tabular(data_path / "big_issues_bows" / "big_issues_new_bows.csv")
+    bows_dataset = bows_dataset.dropna(axis=0)
     bows_dataset["pro_parsed"] = bows_dataset["pro_bow"].apply(ast.literal_eval)
     bows_dataset["con_parsed"] = bows_dataset["con_bow"].apply(ast.literal_eval)
 

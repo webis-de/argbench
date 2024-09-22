@@ -40,7 +40,7 @@ class Runner:
 
     def __init__(self, config: RunConfig):
         self.config = config
-        self.tokenizer = LlamaTokenizer.from_pretrained(config.base_model, padding_side="left")
+        self.tokenizer = LlamaTokenizerFast.from_pretrained(config.base_model, padding_side="left", unk_token="<unk>")
         self.tokenizer.pad_token_id = config.pad_token_id
         self.model = self.prepare_llama_for_causal_llm(
             config.base_model

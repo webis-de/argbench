@@ -56,7 +56,7 @@ if __name__ == "__main__":
     make_output(dataset[dataset["set"] == "dev"], "argument_ranking_ibm_rank_30k_full_rank_dev_gretz20.json")
 
     metadata.add_dataset("argument_ranking_ibm_rank_30k_full_rank_train_gretz20.json", "train")
-    metadata.add_dataset("argument_ranking_ibm_rank_30k_full_test_train_gretz20.json", "test")
+    metadata.add_dataset("argument_ranking_ibm_rank_30k_full_test_gretz20.json", "test")
     metadata.add_dataset("argument_ranking_ibm_rank_30k_full_dev_train_gretz20.json", "dev")
 
     metadata.add_evaluation_metric("f1_macro")
