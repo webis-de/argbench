@@ -1,5 +1,5 @@
 import json
-from common import Output, add_seed_arg, set_seed
+from common import Output, add_seed_arg, set_seed, datasets_path, Metadata, Genres, Subareas
 from argparse import ArgumentParser
 
 
@@ -37,7 +37,7 @@ def process_json_file(json_file_path, output):
                 output.append_instance(
                     comment_id,
                     ' '.join([prop.get("text") for prop in propositions]),  # 拼接所有的句子作为input
-                    relations
+                    ["\n".join(relations)]
                 )
 
             print(f"Processed commentID: {comment_id}")
@@ -49,19 +49,31 @@ def main():
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    json_file_path = "/Users/Wangyaxi/Downloads/erulemaking/cdcp_type_edge_annot.jsonlist"
+    data_path = (datasets_path() /
+                 "erulemaking" /
+                 "cdcp_type_edge_annot.jsonlist")
 
-    dataset_name = "argument_relation_identification_erulemaking_test"
-    dataset_file = "argument_relation_identification_erulemaking_test.json"
+    dataset_name = "argument_relation_identification_erulemaking_extract_park18"
+    dataset_file = "argument_relation_identification_erulemaking_extract_park18.json"
 
     output = Output(dataset_name)
+    metadata = Metadata(dataset_name)
     output.append_definition(
         "Detect which sentences provide reasons (support) or evidence for another sentence within the comment."
     )
 
-    process_json_file(json_file_path, output)
+    process_json_file(data_path, output)
 
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_subarea(Subareas.REASONING)
     output.write_output(dataset_file)
+
+    metadata.add_dataset(dataset_file)
+    metadata.add_evaluation_metric("rouge")
+
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_subarea(Subareas.REASONING)
+    metadata.write_metadata()
 
     print(f"All files processed and saved to {dataset_file}")
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
-from common import Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from dataclasses import dataclass
 from argparse import ArgumentParser
 
@@ -58,18 +58,19 @@ def extract_file(path: Path):
 
 
 def process_folder(path: Path):
-    train_path = path / "trainingSet"
-    test_path = path / "testingSet"
-
     train_datasets = []
-    for f in train_path.iterdir():
-        text = extract_file(f)
-        train_datasets.append(text)
-
     test_datasets = []
-    for f in test_path.iterdir():
-        text = extract_file(f)
-        test_datasets.append(text)
+    for split in path.iterdir():
+        train_path = split / "trainingSet"
+        test_path = split / "testingSet"
+
+        for f in train_path.iterdir():
+            text = extract_file(f)
+            train_datasets.append(text)
+
+        for f in test_path.iterdir():
+            text = extract_file(f)
+            test_datasets.append(text)
 
     return train_datasets, test_datasets
 
@@ -99,46 +100,32 @@ if __name__ == "__main__":
     set_seed(args)
 
     dataset_path = (datasets_path()
-                    / "argument-detection"
-                    / "ajjour17-unit-segmentation-of-argumentative-text/"
-                    / "cross-domain"
+                    / "web-discourse"
+                    / "segmentation-splits"
                     / "simple")
 
     output_path = tasks_path()
 
     metadata = Metadata(DATASET_NAME)
 
-    editorials_path = dataset_path / "editorials-split"
-    essays_path = dataset_path / "essays-split"
-    web_discourse_path = dataset_path / "webDiscourse-split"
-
-    train_editorials, test_editorials = process_folder(editorials_path)
+    train_editorials, test_editorials = process_folder(dataset_path)
     train_editorials, test_editorials = convert_arguments(train_editorials, test_editorials)
 
-    train_editorials.write_output("argument_unit_segmentation_webis_editorials_entity_train_ajjour17.json")
-    test_editorials.write_output("argument_unit_segmentation_webis_editorials_entity_test_ajjour17.json")
+    train_editorials.append_genre(Genres.ESSAYS)
+    train_editorials.append_genre(Genres.SOCIAL_MEDIA)
+    train_editorials.append_subarea(Subareas.MINING)
+    test_editorials.append_genre(Genres.ESSAYS)
+    test_editorials.append_subarea(Subareas.MINING)
 
-    metadata.add_dataset("argument_unit_segmentation_webis_editorials_entity_train_ajjour17.json", "train")
-    metadata.add_dataset("argument_unit_segmentation_webis_editorials_entity_test_ajjour17.json", "test")
+    train_editorials.write_output("argument_unit_segmentation_entity_train_ajjour17.json")
+    test_editorials.write_output("argument_unit_segmentation_entity_test_ajjour17.json")
 
-    train_essays, test_essays = process_folder(essays_path)
-    train_essays, test_essays = convert_arguments(train_essays, test_essays)
+    metadata.add_dataset("argument_unit_segmentation_entity_train_ajjour17.json", "train")
+    metadata.add_dataset("argument_unit_segmentation_entity_test_ajjour17.json", "test")
 
-    train_essays.write_output("argument_unit_segmentation_essays_entity_train_ajjour17.json")
-    test_essays.write_output("argument_unit_segmentation_essays_entity_test_ajjour17.json")
-
-    metadata.add_dataset("argument_unit_segmentation_essays_entity_train_ajjour17.json", "train")
-    metadata.add_dataset("argument_unit_segmentation_essays_entity_test_ajjour17.json", "test")
-
-    train_web_discourse, test_web_discourse = process_folder(web_discourse_path)
-    train_web_discourse, test_web_discourse = convert_arguments(train_web_discourse, test_web_discourse)
-
-    train_web_discourse.write_output("argument_unit_segmentation_web_discourse_entity_train_ajjour17.json")
-    test_web_discourse.write_output("argument_unit_segmentation_web_discourse_entity_test_ajjour17.json")
-
-    metadata.add_dataset("argument_unit_segmentation_web_discourse_entity_train_ajjour17.json", "train")
-    metadata.add_dataset("argument_unit_segmentation_web_discourse_entity_test_ajjour17.json", "test")
-
+    metadata.add_genre(Genres.SOCIAL_MEDIA)
+    metadata.add_genre(Genres.ESSAYS)
+    metadata.add_subarea(Subareas.MINING)
     metadata.add_evaluation_metric("rouge")
 
     metadata.write_metadata()

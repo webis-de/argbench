@@ -43,19 +43,44 @@ def set_seed(parsed_args):
 class Genres(Enum):
     """Valid genres"""
     ESSAYS = "essays"
-    SOCIAL_MEDIA = "soical media"
+    SOCIAL_MEDIA = "soical_media"
     WIKIPEDIA = "wikipedia"
-    DEBATE_PORTALS = "debate portals"
+    DEBATE_PORTALS = "debate_portals"
     DEBATES = "debates"
 
 
 class Subareas(Enum):
     """Valid subareas"""
-    MINING = "mining"
-    GENERATION = "generation"
-    REASONING = "reasoning"
-    RANKING = "ranking"
-    CONTEXTUALIZATION = "contextualization"
+    MINING = "mining" # *classification, segmentation, detection, extraction
+    GENERATION = "generation" # *generation
+    REASONING = "reasoning" # relation identification, similarity, key point matching
+    RANKING = "ranking" # *ranking
+    CONTEXTUALIZATION = "contextualization" # frame identification, controversy detection, warrant identification
+
+class Tasks(Enum):
+    """Valid tasks"""
+    argument_canonicalization = "argument_canonicalization"
+    argument_generation = "argument_generation"
+    argument_ranking = "argument_ranking"
+    argument_relation_identification = "argument_relation_identification"
+    argument_similarity = "argument_similarity"
+    argument_unit_classification = "argument_unit_classification"
+    argument_unit_relation = "argument_unit_relation"
+    argument_unit_segmentation = "argument_unit_segmentation"
+    aspect_argument_generation = "aspect_argument_generation"
+    aspect_detection = "aspect_detection"
+    claim_improvement_detection = "claim_improvement_detection"
+    conclusion_extraction = "conclusion_extraction"
+    counter_argument_generation = "counter_argument_generation"
+    fallacy_classification = "fallacy_classification"
+    fallacy_detection = "fallacy_detection"
+    frame_identification = "frame_identification"
+    key_point_matching = "key_point_matching"
+    post_controversy_detection = "post_controversy_detection"
+    premise_extraction = "premise_extraction"
+    premise_generation = "premise_generation"
+    scheme_classification = "scheme_classification"
+    stance_classification = "stance_classification"
 
 
 class Output:
@@ -79,6 +104,7 @@ class Output:
         self.instances = []
         self.genre = []
         self.instance_license = []
+        self.tasks = []
 
 
     def append_positive_example(self, input: str, output: str, explanation: str):
@@ -105,6 +131,10 @@ class Output:
     def append_genre(self, genre: Genres):
         assert genre in Genres, f"Genre {genre} is not valid"
         self.genre.append(genre.value)
+
+    def append_task(self, task: Tasks):
+        assert task in Tasks, f"Task {task} is not valid"
+        self.tasks.append(task.value)
 
 
     def write_output(self, file_name):
@@ -153,9 +183,25 @@ class Metadata:
         self.dataset_data[self.dataset_name] = {
             "file_list": [],
             "split_mapping": {},
-            "evaluation_metrics": []
+            "evaluation_metrics": [],
+            "subarea": [],
+            "genre": [],
+            "task": []
         }
 
+
+    def add_subarea(self, subarea: Subareas):
+        assert subarea in Subareas, f"Subarea {subarea} is not valid"
+        self.dataset_data[self.dataset_name]["subarea"].append(subarea.value)
+
+
+    def add_genre(self, genre: Genres):
+        assert genre in Genres, f"Genre {genre} is not valid"
+        self.dataset_data[self.dataset_name]["genre"].append(genre.value)
+
+    def append_task(self, task: Tasks):
+        assert task in Tasks, f"Task {task} is not valid"
+        self.dataset_data[self.dataset_name]["task"].append(task.value)
 
     def add_dataset(self, dataset_file, dataset_split=None):
         """Add Dataset to metadata"""

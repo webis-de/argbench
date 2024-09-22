@@ -1,4 +1,4 @@
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Subareas, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import uuid
 
@@ -20,6 +20,8 @@ def process_dataset(dataset, path):
         output.append_negative_example(prompt, wrong_output, "")
         output.append_instance(id, prompt, [model_output])
 
+    output.append_genre(Genres.DEBATES)
+    output.append_subarea(Subareas.MINING)
     output.write_output(path)
 
 
@@ -42,7 +44,8 @@ if __name__ == "__main__":
     metadata.add_dataset("stance_classification_ibmsc_train_barhaim17.json", "train")
     metadata.add_dataset("stance_classification_ibmsc_test_barhaim17.json", "test")
 
-
+    metadata.add_genre(Genres.DEBATES)
+    metadata.add_subarea(Subareas.MINING)
     metadata.add_evaluation_metric("f1_macro")
 
     metadata.write_metadata()

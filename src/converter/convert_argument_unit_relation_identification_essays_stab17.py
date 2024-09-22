@@ -1,6 +1,6 @@
 import os
 from uuid import uuid4
-from common import Metadata, Output, read_tabular, datasets_path, tasks_path, add_seed_arg, set_seed
+from common import Genres, Metadata, Output, read_tabular, datasets_path, tasks_path, add_seed_arg, set_seed, Subareas
 from argparse import ArgumentParser
 from lxml import etree
 
@@ -59,7 +59,7 @@ if __name__ == "__main__":
     dataset_name = "argument_unit_relation_identification_essays_stab17"
     dataset_file = "argument_unit_relation_identification_essays_stab17.json"
 
-    dataset_path = datasets_path() / "argument-detection/stab17-parsing-argumentation-structures-in-persuasive-essays"
+    dataset_path = datasets_path() / "essays-argument-mining"
     output = Output(dataset_name)
     output.append_definition("Given the following document and the given argument units with the given ids " +
                              "mark an argument unit referenced with [0] that supports another argument unit that referenced with [1] with the following " +
@@ -80,7 +80,12 @@ if __name__ == "__main__":
                 id = str(uuid4())
                 output.append_instance(id, text + argument_units_text, [argument_relations_text])
 
+    output.append_genre(Genres.ESSAYS)
+    output.append_subarea(Subareas.REASONING)
     output.write_output(dataset_file)
+
     metadata.add_dataset(dataset_file)
+    metadata.add_genre(Genres.ESSAYS)
+    metadata.add_subarea(Subareas.REASONING)
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()

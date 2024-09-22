@@ -1,12 +1,12 @@
-from common import Output, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Subareas, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import uuid
 import re
 
 dataset_name = "argument_unit_classification_ibm_claim_evidence_aharoni14"
-dataset_file_study = "argument_unit_classification_study_ibm_claim_evidence_aharoni14"
-dataset_file_anecdote = "argument_unit_classification_anecdote_ibm_claim_evidence_aharoni14"
-dataset_file_expert = "argument_unit_classification_expert_ibm_claim_evidence_aharoni14"
+dataset_file_study = "argument_unit_classification_study_ibm_claim_evidence_aharoni14.json"
+dataset_file_anecdote = "argument_unit_classification_anecdote_ibm_claim_evidence_aharoni14.json"
+dataset_file_expert = "argument_unit_classification_expert_ibm_claim_evidence_aharoni14.json"
 space_remover = re.compile("\s+")
 
 if __name__ == "__main__":
@@ -96,9 +96,23 @@ if __name__ == "__main__":
         output_expert.append_instance(id, prompt, [evidence_strings_expert])
         output_study.append_instance(id, prompt, [evidence_strings_study])
         output_anecdotal.append_instance(id, prompt, [evidence_string_anecdotes])
-    metadata.add_dataset(dataset_name)
+
+    metadata.add_dataset(dataset_file_study)
+    metadata.add_dataset(dataset_file_anecdote)
+    metadata.add_dataset(dataset_file_expert)
+
+    metadata.add_genre(Genres.WIKIPEDIA)
+    metadata.add_subarea(Subareas.MINING)
+
+    output_study.append_genre(Genres.WIKIPEDIA)
+    output_study.append_subarea(Subareas.MINING)
     output_study.write_output(dataset_file_study)
+    output_expert.append_genre(Genres.WIKIPEDIA)
+    output_expert.append_subarea(Subareas.MINING)
     output_expert.write_output(dataset_file_expert)
+    output_anecdotal.append_genre(Genres.WIKIPEDIA)
+    output_anecdotal.append_subarea(Subareas.MINING)
     output_anecdotal.write_output(dataset_file_anecdote)
+
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()

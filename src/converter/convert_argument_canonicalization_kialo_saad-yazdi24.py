@@ -1,7 +1,6 @@
 from common import Genres, Output, Subareas, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import ast
-import uuid
 
 
 if __name__ == "__main__":

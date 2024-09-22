@@ -1,4 +1,4 @@
-from common import Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from argparse import ArgumentParser
 import uuid
 
@@ -49,6 +49,9 @@ def process_dataset(dataset, data_file, dataset_type, metadata):
         id = str(uuid.uuid4())
         output.append_instance(id, prompt, [collected_fallacies])
 
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_genre(Genres.DEBATES)
+    output.append_subarea(Subareas.MINING)
     output.write_output(data_file)
     metadata.add_dataset(data_file, dataset_type)
 
@@ -114,5 +117,8 @@ if __name__ == "__main__":
     process_dataset(test_data, dataset_file_test, "test", metadata)
     process_dataset(dev_data, dataset_file_dev, "dev", metadata)
 
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_genre(Genres.DEBATES)
+    metadata.add_subarea(Subareas.MINING)
     metadata.add_evaluation_metric("rouge")
     metadata.write_metadata()

@@ -2,6 +2,7 @@
 from argparse import ArgumentParser
 from torch.utils.data import DataLoader
 from pathlib import Path
+from dataclasses import asdict
 from transformers import (
     LlamaForCausalLM,
     LlamaTokenizer,
@@ -15,22 +16,14 @@ from transformers import (
 from peft import (
     PeftModel,
     prepare_model_for_kbit_training,
-    PeftMixedModel,
-    LoHaConfig,
-    LoHaModel,
-    AdaptionPromptConfig,
-    AdaptionPromptModel,
-    BOFTConfig,
-    BOFTModel,
     LoraConfig,
     get_peft_model,
-    PrefixTuningConfig,
-    LNTuningConfig
 )
-from preprocess import collect_datasets, tasks_path, get_metadata
+from preprocess import collect_datasets, tasks_path, get_metadata, PandasDataset
 from tqdm import tqdm
 from config import RunConfig
 from evaluate import compute_precision_recall_fscore_support, compute_rouge_score, compute_bleu_score
+import json
 import torch
 
 def eval_collate(batch):
@@ -50,10 +43,11 @@ class Runner:
         self.tokenizer = LlamaTokenizer.from_pretrained(config.base_model, padding_side="left")
         self.tokenizer.pad_token_id = config.pad_token_id
         self.model = self.prepare_llama_for_causal_llm(
-            config.base_model,
+            config.base_model
         )
-        self.model = prepare_model_for_kbit_training(self.model)
-        self.model.enable_input_require_grads()
+        if config.is_eval:
+            self.model = prepare_model_for_kbit_training(self.model)
+            self.model.enable_input_require_grads()
         print("Model loaded")
         if config.peft_configs and config.peft_fresh_config:
             raise RuntimeError("Cannot instantiate both fresh and trained models")
@@ -65,7 +59,7 @@ class Runner:
 
         self.train_instances, self.test_instances = self.prepare_data()
 
-        if self.config.training_args_config:
+        if (not self.config.is_eval) and self.config.training_args_config:
             self.trainer = self.prepare_trainer()
         else:
             self.trainer = None
@@ -109,11 +103,9 @@ class Runner:
             data_collator=data_collator,
         )
 
-
     def prepare_data(self):
         return collect_datasets(
-            self.config,
-            Path("/home/dima/Projects/data/")
+            self.config
         )
 
 
@@ -200,15 +192,27 @@ class Runner:
             self.trainer.train()
 
 
+    def write_run(self, run_results):
+        with open(self.config.run_config_path, "w") as f:
+            run_data = {
+                "config": asdict(self.config),
+                "run_sesults": run_results
+            }
+            json.dump(run_data)
+
+
     def evaluate(self):
-        labels = [t["output"] for t in self.test_instances]
+        labels = self.test_instances["output"]
+        dataset = PandasDataset(self.test_instances)
         predictions = []
 
         loader = DataLoader(
-            self.test_instances,
+            dataset,
             batch_size=self.config.validation_config.batch_size,
             shuffle=True,
-            collate_fn=eval_collate
+            collate_fn=eval_collate,
+            pin_memory=True,
+            num_workers=6
         )
 
         for data in tqdm(loader):
@@ -244,7 +248,7 @@ class Runner:
 if __name__ == "__main__":
     arg_parser = ArgumentParser(description="Run peft finetuning experiment")
 
-    arg_parser.add_argument("-c", "--config", type=Path, help="Path to experiment config")
+    arg_parser.add_argument("-c", "--config", type=Path, action="append", help="Path to experiment config")
 
     RunConfig.register_cli(arg_parser)
 
@@ -254,11 +258,20 @@ if __name__ == "__main__":
 
     runner = Runner(config)
 
-    runner.train()
+    if not args.is_evaluate:
+        runner.train()
 
     score = runner.evaluate()
 
     if runner.config.validation_config.eval_metric == "fscore":
+        runner.write_run({
+            "precision": score[0],
+            "recall": score[1],
+            "fscore": score[2],
+            "support": score[3],
+            "labels": score[4]
+        })
         print(f"Precision: {score[0]} Recall: {score[1]} Fscore: {score[2]} Support: {score[3]} Labels: {score[4]}")
     else:
+        runner.write_run(score)
         print(f"Score: {score}")

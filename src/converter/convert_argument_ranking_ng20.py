@@ -1,4 +1,4 @@
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from argparse import ArgumentParser
 
 cogency_description = "An argument is cogent if it has acceptable premises that are relevant to its conclusion and that are sufficient to draw the conclusion."
@@ -58,8 +58,14 @@ def convert_dataset(data_path, dataset_name, data_name, metadata):
         reasonableness_output.append_instance(id, prompt, [reasonableness])
 
     cogency_output.write_output(cogency_dataset)
+    cogency_output.append_genre(Genres.DEBATE_PORTALS)
+    cogency_output.append_subarea(Subareas.RANKING)
     effectiveness_output.write_output(effectiveness_dataset)
+    effectiveness_output.append_genre(Genres.DEBATE_PORTALS)
+    effectiveness_output.append_subarea(Subareas.RANKING)
     reasonableness_output.write_output(reasonableness_dataset)
+    reasonableness_output.append_genre(Genres.DEBATE_PORTALS)
+    reasonableness_output.append_subarea(Subareas.RANKING)
     metadata.add_dataset(cogency_dataset)
     metadata.add_dataset(effectiveness_dataset)
     metadata.add_dataset(reasonableness_dataset)
@@ -90,4 +96,6 @@ if __name__ == "__main__":
     convert_dataset(data_path / "review_forums_crowd.csv", dataset_name, "argument_ranking_review_forums_crowd_{}_ng20.json", metadata)
     convert_dataset(data_path / "review_forums_experts.csv", dataset_name, "argument_ranking_review_forums_experts_{}_ng20.json", metadata)
 
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_subarea(Subareas.RANKING)
     metadata.write_metadata()

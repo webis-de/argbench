@@ -1,5 +1,5 @@
 from uuid import uuid4
-from common import Output, datasets_path, Metadata, add_seed_arg, set_seed
+from common import Output, datasets_path, Metadata, add_seed_arg, set_seed, Subareas, Genres
 from argparse import ArgumentParser
 import ndjson
 
@@ -57,8 +57,7 @@ if __name__ == "__main__":
     set_seed(args)
 
     data_path = (datasets_path() /
-                 "argument-detection" /
-                 "park18-a-corpus-of-erulemaking-user-comments-for-measruing-evaluability-of-arguments" /
+                 "erulemaking" /
                  "cdcp_type_edge_annot.jsonlist")
     # Set name of the dataset to identify it and files of that dataset
     dataset_name = "argument_relation_identification_erulemaking_park18"
@@ -84,5 +83,9 @@ if __name__ == "__main__":
 
     metadata.add_dataset(dataset_file)
     metadata.add_evaluation_metric("f1_macro")
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_subarea(Subareas.REASONING)
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_subarea(Subareas.REASONING)
     output.write_output(dataset_file)
     metadata.write_metadata()

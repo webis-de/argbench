@@ -1,4 +1,4 @@
-from common import Output, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Subareas, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import uuid
 
@@ -29,6 +29,8 @@ def process_dataset(bows_dataset, metadata, dataset_name, dataset_file, dataset_
         id = str(uuid.uuid4())
         output.append_instance(id, prompt, [label])
 
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_subarea(Subareas.MINING)
     output.write_output(dataset_file)
     metadata.add_dataset(dataset_file)
 
@@ -79,5 +81,7 @@ if __name__ == "__main__":
         data_path / "valid_with_claim_df.csv"
     )
 
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_subarea(Subareas.MINING)
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()

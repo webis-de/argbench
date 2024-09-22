@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from common import Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Subareas, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 from dataclasses import dataclass
 import uuid
@@ -57,6 +57,10 @@ def make_outputs(target_data, para_comet_data):
         target_output.append_instance(id, prompt, [output])
         output_para_comet.append_instance(id, prompt_para_comet, [output])
 
+    target_output.append_genre(Genres.DEBATES)
+    target_output.append_subarea(Subareas.GENERATION)
+    output_para_comet.append_genre(Genres.DEBATES)
+    output_para_comet.append_subarea(Subareas.GENERATION)
     return target_output, output_para_comet
 
 
@@ -66,7 +70,7 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    data_path = (datasets_path()/"art")
+    data_path = (datasets_path() / "art")
 
     output_path = tasks_path()
 
@@ -132,6 +136,8 @@ if __name__ == "__main__":
     metadata.add_dataset("premise_generation_art_val_chakarbarty21.json", "val")
     metadata.add_dataset("premise_generation_ar_val_para_comet_chakarbarty21.json", "val")
 
+    metadata.add_genre(Genres.DEBATES)
+    metadata.add_subarea(Subareas.GENERATION)
     metadata.add_evaluation_metric("rouge")
 
     metadata.write_metadata()

@@ -1,4 +1,4 @@
-from common import Output, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Subareas, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import pandas as pd
 
@@ -28,6 +28,9 @@ def process_split(dataset, metadata, split):
         output.append_instance(claim_id, instance_input, [revised_text])
 
     metadata.add_dataset(dataset_file, split)
+    output.append_genre(Genres.DEBATES)
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_subarea(Subareas.REASONING)
     output.write_output(dataset_file)
 
 
@@ -37,7 +40,7 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    data_path = datasets_path() / "argument-quality" / "skitalinskaya23-claim-optimization-in-computational-argumentation" / "acl23_revised.csv"
+    data_path = datasets_path() / "claim-revisions" / "acl23_revised.csv"
 
     metadata = Metadata(dataset_name)
 
@@ -51,4 +54,7 @@ if __name__ == "__main__":
     process_split(dataset[dataset["data_split"] == "dev"], metadata, "dev")
 
     metadata.add_evaluation_metric("f1_macro")
+    metadata.add_genre(Genres.DEBATES)
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_subarea(Subareas.REASONING)
     metadata.write_metadata()

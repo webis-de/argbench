@@ -1,6 +1,6 @@
 import os
 from lxml import etree
-from common import Output, Metadata, add_seed_arg, set_seed
+from common import Output, Metadata, add_seed_arg, datasets_path, set_seed, Genres, Subareas
 from argparse import ArgumentParser
 
 
@@ -67,6 +67,8 @@ def create_metadata(dataset_name, dataset_file):
     metadata = Metadata(dataset_name)
     metadata.add_evaluation_metric("f1_macro")  # Choose appropriate evaluation metric
     metadata.add_dataset(dataset_file)
+    metadata.add_genre(Genres.ESSAYS)
+    metadata.add_subarea(Subareas.REASONING)
     metadata.write_metadata()
 
 
@@ -78,9 +80,9 @@ def main():
     args = arg_parser.parse_known_args()[0]
     set_seed(args)  # Seed random number generation
 
-    xmi_directory = "/Users/Wangyaxi/Downloads/computational-argumentation-tasks-instructions-main-datasets-essays-argument-mining/datasets/essays-argument-mining"
-    dataset_name = "argument_relation_identification_essays_stab_17"
-    dataset_file = "argument_relation_identification_essays_stab_17.json"
+    xmi_directory = datasets_path() / "essays-argument-mining"
+    dataset_name = "argument_relation_identification_essays_stab17"
+    dataset_file = "argument_relation_identification_essays_stab17.json"
 
     output = Output(dataset_name)
     output.append_definition(
@@ -90,6 +92,8 @@ def main():
     process_xmi_files(xmi_directory, output)
 
     # Write the dataset to a JSON file
+    output.append_genre(Genres.ESSAYS)
+    output.append_subarea(Subareas.REASONING)
     output.write_output(dataset_file)
 
     # Create and save metadata

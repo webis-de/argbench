@@ -1,4 +1,4 @@
-from common import Output, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Subareas, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import random
 import uuid
@@ -11,7 +11,7 @@ if __name__ == "__main__":
     set_seed(args)
 
     dataset_path = str(datasets_path()
-                    / "argument-frame-identification"
+                    / "webis-argument-framing-19"
                     / "Webis-argument-framing.csv")
     dataset = read_tabular(dataset_path)
 
@@ -40,10 +40,6 @@ if __name__ == "__main__":
         prompt = f"Premise: {row['premise']}\nConclusion: {row['conclusion']}\nCandidate frames: " + frame_string
 
         id = str(uuid.uuid4())
-        output.append_positive_example(prompt, response, "")
-
-        wrong_frame = random.choice([f for f in wrong_candidates if f != response])
-        output.append_negative_example(prompt, wrong_frame, "")
 
         output.append_instance(id, prompt, [response])
 
@@ -51,6 +47,11 @@ if __name__ == "__main__":
 
     metadata.add_evaluation_metric("f1_macro")
 
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_subarea(Subareas.REASONING)
     output.write_output("frame_identification_webis_argument_framing_19_ajjour19.json")
+
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_subarea(Subareas.REASONING)
 
     metadata.write_metadata()

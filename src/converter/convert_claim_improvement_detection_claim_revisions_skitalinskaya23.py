@@ -1,4 +1,4 @@
-from common import Output, read_tabular, Metadata, add_seed_arg, set_seed, datasets_path
+from common import Genres, Output, Subareas, read_tabular, Metadata, add_seed_arg, set_seed, datasets_path
 from argparse import ArgumentParser
 import pandas as pd
 import uuid
@@ -29,6 +29,8 @@ def process_data(dataset, metadata):
         output.append_instance(id_no_improve, prompt_no_improve, ["Not Improved"])
 
     metadata.add_dataset(dataset_file)
+    output.append_genre(Genres.DEBATES)
+    output.append_subarea(Subareas.MINING)
     output.write_output(dataset_file)
 
 
@@ -46,5 +48,7 @@ if __name__ == "__main__":
 
     process_data(dataset, metadata)
 
+    metadata.add_genre(Genres.DEBATES)
+    metadata.add_subarea(Subareas.MINING)
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()

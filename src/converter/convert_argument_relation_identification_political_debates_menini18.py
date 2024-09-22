@@ -1,4 +1,4 @@
-from common import Output, datasets_path, Metadata, add_seed_arg, set_seed, read_tabular
+from common import Genres, Output, Subareas, datasets_path, Metadata, add_seed_arg, set_seed, read_tabular
 from argparse import ArgumentParser
 
 
@@ -8,7 +8,7 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    data_path = datasets_path() / "argument-detection" / "menini18-never-retreat-never-retract-argumentation-analysis-for-political-speeches" / "full_dataset.tsv"
+    data_path = datasets_path() / "political-debates" / "full_dataset.tsv"
 
     # Set name of the dataset to identify it and files of that dataset
     dataset_name = "argument_relation_identification_political_debates_menini18"
@@ -39,5 +39,10 @@ if __name__ == "__main__":
 
     metadata.add_dataset(dataset_file)
     metadata.add_evaluation_metric("f1_macro")
+    metadata.add_genre(Genres.DEBATES)
+    metadata.add_subarea(Subareas.MINING)
     metadata.write_metadata()
+
+    output.append_genre(Genres.DEBATES)
+    output.append_subarea(Subareas.MINING)
     output.write_output(dataset_file)

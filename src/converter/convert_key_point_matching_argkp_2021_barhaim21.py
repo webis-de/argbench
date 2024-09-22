@@ -1,4 +1,4 @@
-from common import Output, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Output, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from argparse import ArgumentParser
 import uuid
 
@@ -12,9 +12,9 @@ if __name__ == "__main__":
     set_seed(args)
 
     dataset_path = str(datasets_path()
-                    / "key-point-analysis"
-                    / "barhaim21-from-arguments-to-key-points-towards-automatic-argument-summarization"
+                    / "argkpa-2021"
                     / "ArgKP-2021_dataset.csv")
+
     dataset = read_tabular(dataset_path)
 
     output = Output(dataset_name)
@@ -35,9 +35,15 @@ if __name__ == "__main__":
         output.append_instance(id, prompt, [response])
 
     metadata.add_evaluation_metric("f1_macro")
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_genre(Genres.DEBATES)
+    metadata.add_subarea(Subareas.REASONING)
 
     metadata.add_dataset(dataset_file)
 
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_genre(Genres.DEBATES)
+    output.append_subarea(Subareas.REASONING)
     output.write_output(dataset_file)
 
     metadata.write_metadata()

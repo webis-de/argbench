@@ -1,5 +1,5 @@
 from uuid import uuid4
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from argparse import ArgumentParser
 
 dataset_name = "fallacy_detection_logic_goffredo23"
@@ -35,6 +35,9 @@ def process_data(data_path, data_name, data_split, metadata):
             raise Exception("No labels found!")
         output.append_instance(id, prompt, [fallacies])
 
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_genre(Genres.DEBATES)
+    output.append_subarea(Subareas.MINING)
     output.write_output(data_name)
     metadata.add_dataset(data_name, data_split)
 
@@ -58,4 +61,7 @@ if __name__ == "__main__":
     process_data(data_path / "edu_dev.csv", "fallacy_detection_logic_edu_dev_goffredo23.json", "dev", metadata)
 
     metadata.add_evaluation_metric("f1_macro")
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_genre(Genres.DEBATES)
+    metadata.add_subarea(Subareas.MINING)
     metadata.write_metadata()

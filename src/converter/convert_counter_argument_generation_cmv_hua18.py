@@ -1,4 +1,4 @@
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Subareas, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import uuid
 from lxml import etree
@@ -69,6 +69,18 @@ if __name__ == "__main__":
     print("Test")
     test = process_dataset(test_op_path, test_arg_path, test_kw_path)
 
+    train.append_genre(Genres.DEBATE_PORTALS)
+    train.append_genre(Genres.WIKIPEDIA)
+    train.append_subarea(Subareas.GENERATION)
+
+    test.append_genre(Genres.DEBATE_PORTALS)
+    test.append_genre(Genres.WIKIPEDIA)
+    test.append_subarea(Subareas.GENERATION)
+
+    valid.append_genre(Genres.DEBATE_PORTALS)
+    valid.append_genre(Genres.WIKIPEDIA)
+    valid.append_subarea(Subareas.GENERATION)
+
     train.write_output("counter_argument_generation_cmv_train_hua18.json")
     valid.write_output("counter_argument_generation_cmv_valid_hua18.json")
     test.write_output("counter_argument_generation_cmv_test_hua18.json")
@@ -76,6 +88,10 @@ if __name__ == "__main__":
     metadata.add_dataset("counter_argument_generation_cmv_train_hua18.json", "train")
     metadata.add_dataset("counter_argument_generation_cmv_test_hua18.json", "test")
     metadata.add_dataset("counter_argument_generation_cmv_valid_hua18.json", "valid")
+
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_genre(Genres.WIKIPEDIA)
+    metadata.add_subarea(Subareas.GENERATION)
 
     metadata.add_evaluation_metric("rouge")
 

@@ -1,4 +1,4 @@
-from common import Output, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Output, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from argparse import ArgumentParser
 import uuid
 
@@ -9,7 +9,7 @@ if __name__ == "__main__":
     set_seed(args)
 
     dataset_path = str(datasets_path()
-                    / "argument-frame-identification"
+                    / "webis-argument-framing-19"
                     / "Webis-argument-framing.csv")
     dataset = read_tabular(dataset_path)
 
@@ -36,8 +36,12 @@ if __name__ == "__main__":
 
     metadata.add_dataset(dataset_file)
 
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_subarea(Subareas.MINING)
     metadata.add_evaluation_metric("f1_macro")
 
     output.write_output(dataset_file)
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_subarea(Subareas.MINING)
 
     metadata.write_metadata()

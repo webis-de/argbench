@@ -1,6 +1,6 @@
 import os
 import uuid
-from common import Output, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Subareas
 from argparse import ArgumentParser
 from lxml import etree
 from collections import Counter
@@ -87,14 +87,13 @@ if __name__ == "__main__":
     args = argument_parser.parse_known_args()[0]
     set_seed(args)
 
-    dataset_path = datasets_path() / "argument-detection/peldszus15-an-annotated-corpus-of-argumentative-microtexts/original/original/corpus/en"
+    dataset_path = (datasets_path() / "microtexts-1/original/original/corpus/en")
 
     output = Output(DATASET_NAME)
     metadata = Metadata(DATASET_NAME)
 
     output.append_definition("""Given the following document and the given argument units with the given ids mark an argument unit referenced with [0] that supports another argument unit that referenced with [1] with the following [0] --> [1] and an argument unit [0] that attacks another argument [1] with [0] /-> [1] """)
 
-    print(dataset_path)
     for root,dirs,files in os.walk(dataset_path):
         for file_name in files:
             print(file_name)
@@ -114,7 +113,12 @@ if __name__ == "__main__":
                 id = str(uuid.uuid4())
                 output.append_instance(id, document + argument_units_formatted, [argument_relations_formatted])
 
+    output.append_genre(Genres.ESSAYS)
+    output.append_subarea(Subareas.GENERATION)
     output.write_output(DATASET_FILE)
+
     metadata.add_dataset(DATASET_FILE)
+    metadata.add_genre(Genres.ESSAYS)
+    metadata.add_subarea(Subareas.GENERATION)
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()

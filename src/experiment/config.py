@@ -217,8 +217,14 @@ class RunConfig:
     train_datasets: dict
     # Test datasets
     test_datasets: dict
+    # Data folder
+    data_folder: str
     # Base model path
     base_model: str
+    # Should only evaluation be performed
+    is_eval: bool
+    # Run config path
+    run_config_path: str = ""
     # Padding token id
     pad_token_id: int = 0
     # Peft combination type
@@ -239,8 +245,7 @@ class RunConfig:
 
     @staticmethod
     def register_cli(arg_parser):
-        arg_parser.add_argument("-it", "--is_train", action="store_true", default=True, help="Should training be performed")
-        arg_parser.add_argument("-ie", "--is_evaluate", action="store_true", default=True, help="Should evaluation be performed")
+        arg_parser.add_argument("-ie", "--is_evaluate", action="store_true", default=False, help="Should evaluation be performed")
         arg_parser.add_argument("-s", "--seed", type=int, help="Seed to use for running experiment")
         arg_parser.add_argument("-is", "--include_subarea", action="append", help="Training set subareas")
         arg_parser.add_argument("-ig", "--include_generes", action="append", help="Training set genres")
@@ -251,15 +256,79 @@ class RunConfig:
         arg_parser.add_argument("-vsa", "--test_subsample_amount", type=int, help="Amount of instances to subsamplea from each dataset for testing")
         arg_parser.add_argument("-tdm", "--test_dataset_match", type=str, help="Matching pattern for test dataset files to include")
         arg_parser.add_argument("-tdn", "--test_dataset_name", type=str, help="Name of the test dataset to use")
+        arg_parser.add_argument("-rc", "--resume_checkpoint", help="Resume training from checkpoint")
+        arg_parser.add_argument("-lm", "--load_model", type=str, help="Model to load")
+        arg_parser.add_argument("-la", "--load_adapter", action="append", help="Adapter to load")
+        arg_parser.add_argument("-co", "--config_output", type=Path, help="File to write config to")
+        arg_parser.add_argument("-df", "--data_folder", type=Path, help="Data folder path")
+        # Training arguments
+        arg_parser.add_argument("-tbs", "--train_batch_size", type=int, help="Training batch size")
+        arg_parser.add_argument("-te", "--train_epochs", type=int, help="Number of training epochs")
+        arg_parser.add_argument("-tlr", "--train_learning_rate", type=float, help="Learning rate")
+        arg_parser.add_argument("-to", "--train_optim", type=str, help="Optimizer")
+        arg_parser.add_argument("-tes", "--train_evaluation_strategy", type=str, help="Evaluation strategy")
+        arg_parser.add_argument("-tss", "--train_save_strategy", type=str, help="Save strategy")
+        arg_parser.add_argument("-tev", "--train_eval_steps", type=int, help="Eval steps")
+        arg_parser.add_argument("-tsv", "--train_save_steps", type=int, help="Save steps")
+        arg_parser.add_argument("-tod", "--train_output_dir", type=str, help="Output directory")
+        arg_parser.add_argument("-stl", "--train_save_total_limit", type=int, help="Maximum number of last checkpoint files to keep.")
+        arg_parser.add_argument("-tw", "--train_warmup_steps", type=int, help="Linear warmup over warmup_steps")
+        arg_parser.add_argument("-tfp", "--train_fp16", action="store_true", help="Use float16 training")
+        arg_parser.add_argument("-tls", "--train_logging_steps", type=int, help="Log & save metrics to tensorboard every logging_steps steps")
+        arg_parser.add_argument("-tlst", "--train_lr_scheduler_type", type=str, help="Learning rate scheduler type")
+        arg_parser.add_argument("-tmfb", "--train_metric_for_best_model", type=str, help="Metric for best model selection")
+        arg_parser.add_argument("-tlbme", "--train_load_best_model_at_end", action="store_true", help="Whether to load the best model at the end.")
+        arg_parser.add_argument("-tgbl", "--train_group_by_length", action="store_true", help="Group sequences into batches with same length")
+        arg_parser.add_argument("-tde", "--train_do_eval", action="store_true", help="Whether to run evaluation during training")
+        # Validation arguments
+        arg_parser.add_argument("-em", "--eval_metric", type=str, help="Evaluation metric name")
+        arg_parser.add_argument("-bs", "--validation_batch_size", type=int, help="Batch size for evaluation")
+        arg_parser.add_argument("-fa", "--fscore_average", type=str, help="F-score average mode")
+        arg_parser.add_argument("-fb", "--fscore_beta", type=float, help="Beta parameter for F-score")
+        # Generation arguments
+        arg_parser.add_argument("-ml", "--max_length", type=int, help="Maximum sequence length during generation")
+        arg_parser.add_argument("-mn", "--max_new_tokens", type=int, help="Maximum number of new tokens to generate")
+        arg_parser.add_argument("-min", "--min_length", type=int, help="Minimum sequence length during generation")
+        arg_parser.add_argument("-mnn", "--min_new_tokens", type=int, help="Minimum number of new tokens to generate")
+        arg_parser.add_argument("-es", "--early_stopping", help="Early stopping condition")
+        arg_parser.add_argument("-mt", "--max_time", type=float, help="Maximum generation time in seconds")
+        arg_parser.add_argument("-ds", "--do_sample", action="store_true", help="Use sampling method for generation")
+        arg_parser.add_argument("-nb", "--num_beams", type=int, help="Number of beams for beam search")
+        arg_parser.add_argument("-nbg", "--num_beam_groups", type=int, help="Number of beam groups for group beam search")
+        arg_parser.add_argument("-pa", "--penalty_alpha", type=float, help="Alpha parameter for penalty function")
+        arg_parser.add_argument("-uc", "--use_cache", action="store_true", help="Use cache during generation")
+        arg_parser.add_argument("-temp", "--temperature", type=float, help="Temperature parameter for sampling method")
+        arg_parser.add_argument("-k", "--top_k", type=int, help="Top-k sampling parameter")
+        arg_parser.add_argument("-p", "--top_p", type=float, help="Top-p (nucleus) sampling parameter")
+        arg_parser.add_argument("-mp", "--min_p", type=float, help="Minimum p value for typical (Tyers) sampling")
+        arg_parser.add_argument("-tp", "--typical_p", type=float, help="Typical p (Tyers) sampling parameter")
+        arg_parser.add_argument("-ec", "--epsilon_cutoff", type=float,  help="Epsilon cutoff parameter")
+        arg_parser.add_argument("-etac", "--eta_cutoff", type=float, help="Eta cutoff parameter")
+        arg_parser.add_argument("-dp", "--diversity_penalty", type=float, help="Diversity penalty parameter")
+        arg_parser.add_argument("-rp", "--repetition_penalty", type=float, help="Repetition penalty parameter")
+        arg_parser.add_argument("-lp", "--length_penalty", type=float, help="Length penalty parameter")
+        # Quantization config
+        arg_parser.add_argument("-i8", "--load_in_8bit", action="store_true", help="Load model in 8-bit precision")
+        arg_parser.add_argument("-i4", "--load_in_4bit", action="store_true", help="Load model in 4-bit precision")
+        arg_parser.add_argument("-i8t", "--llm_int8_threshold", type=float, help="LLM Int8 threshold for quantization")
+        arg_parser.add_argument("-i8s", "--llm_int8_skip_modules", action="append", help="List of modules to skip when using LLM Int8 quantization")
+        arg_parser.add_argument("-f32o", "--enable_fp32_cpu_offload", action="store_true", help="Enable FP32 CPU offloading for LLM Int8")
+        arg_parser.add_argument("-f16w", "--has_fp16_weight", action="store_true", help="Set if the model has FP16 weights for LLM Int8")
+        arg_parser.add_argument("-4qt", "--bnb_4bit_quant_type", choices=["fp4", "nf4"], help="BitsAndBytes 4-bit quantization type")
+        arg_parser.add_argument("-dq", "--double_quant", action="store_true", help="Enable double quantization for BitsAndBytes 4-bit")
+
 
 
     @classmethod
-    def from_file(cls, path: Path, args):
+    def from_file(cls, paths: List[Path], args):
         """Read config from file"""
-        with open(path, "r") as f:
-            config = json.load(f)
+        config = {}
+        for path in paths:
+            with open(path, "r") as f:
+                conf_file = json.load(f)
+                config.update(conf_file)
 
-        conf_obj = cls(**config)
+        conf_obj = cls(is_eval=args.is_evaluate, **config)
 
         if config.get("llama_causal_config"):
             conf_obj.llama_causal_config = LLamaCausalConfig(**conf_obj.llama_causal_config)
@@ -283,6 +352,8 @@ class RunConfig:
         if config.get("quant_config"):
             conf_obj.quant_config = QuantConfig(**conf_obj.quant_config)
 
+
+        # Runner config
         if args.seed:
             conf_obj.seed = args.seed
         if args.include_subarea:
@@ -303,5 +374,130 @@ class RunConfig:
             conf_obj.test_datasets["match"] = args.test_dataset_match
         if args.test_dataset_name:
             conf_obj.test_datasets["name"] = args.test_dataset_name
+        if args.load_model:
+            conf_obj.base_model = args.load_model
+        if args.config_output:
+            conf_obj.run_config_path = args.config_output
+        if args.data_folder:
+            conf_obj.data_folder = args.data_folder
+        if args.load_adapter:
+            peft_configs = []
+            for adapter in args.load_adapter:
+                peft_configs.append(PeftPretrainedConfig(
+                    model_id=adapter,
+                    adapter_name=None,
+                    is_trainable=not args.is_evaluate
+                ))
+            conf_obj.peft_configs = peft_configs
+
+        # Training arguments
+        if args.train_batch_size:
+            conf_obj.training_args_config.per_device_train_batch_size = args.train_batch_size
+        if args.train_epochs:
+            conf_obj.training_args_config.num_train_epochs = args.train_epochs
+        if args.train_learning_rate:
+            conf_obj.training_args_config.learning_rate = args.train_learning_rate
+        if args.train_optim:
+            conf_obj.training_args_config.optim = args.train_optim
+        if args.train_evaluation_strategy:
+            conf_obj.training_args_config.evaluation_strategy = args.train_evaluation_strategy
+        if args.train_save_strategy:
+            conf_obj.training_args_config.save_strategy = args.train_save_strategy
+        if args.train_eval_steps:
+            conf_obj.training_args_config.eval_steps = args.train_eval_steps
+        if args.train_save_steps:
+            conf_obj.training_args_config.save_steps = args.train_save_steps
+        if args.train_output_dir:
+            conf_obj.training_args_config.output_dir = args.train_output_dir
+        if args.train_save_total_limit:
+            conf_obj.training_args_config.save_total_limit = args.train_save_total_limit
+        if args.train_warmup_steps:
+            conf_obj.training_args_config.warmup_steps = args.train_warmup_steps
+        if args.train_fp16:
+            conf_obj.training_args_config.fp16 = args.train_fp16
+        if args.train_logging_steps:
+            conf_obj.training_args_config.logging_steps = args.train_logging_steps
+        if args.train_lr_scheduler_type:
+            conf_obj.training_args_config.lr_scheduler_type = args.train_lr_scheduler_type
+        if args.train_metric_for_best_model:
+            conf_obj.training_args_config.metric_for_best_model = args.train_metric_for_best_model
+        if args.train_load_best_model_at_end:
+            conf_obj.training_args_config.load_best_model_at_end = args.train_load_best_model_at_end
+        if args.train_group_by_length:
+            conf_obj.training_args_config.group_by_length = args.train_group_by_length
+        if args.train_do_eval:
+            conf_obj.training_args_config.do_eval = args.train_do_eval
+
+        # Evaluation arguments
+        if args.eval_metric:
+            conf_obj.validation_config.eval_metric = args.eval_metric
+        if args.validation_batch_size:
+            conf_obj.validation_config.validation_batch_size = args.validation_batch_size
+        if args.fscore_average:
+            conf_obj.validation_config.fscore_average = args.fscore_average
+        if args.fscore_beta:
+            conf_obj.validation_config.fscore_beta = args.fscore_beta
+
+        # Generation arguments
+        if args.max_length:
+            conf_obj.generation_config.max_length = args.max_length
+        if args.max_new_tokens:
+            conf_obj.generation_config.max_new_tokens = args.max_new_tokens
+        if args.min_length:
+            conf_obj.generation_config.min_length = args.min_length
+        if args.min_new_tokens:
+            conf_obj.generation_config.min_new_tokens = args.min_new_tokens
+        if args.early_stopping:
+            conf_obj.generation_config.early_stopping = args.early_stopping
+        if args.max_time:
+            conf_obj.generation_config.max_time = args.max_time
+        if args.do_sample:
+            conf_obj.generation_config.do_sample = args.do_sample
+        if args.num_beams:
+            conf_obj.generation_config.num_beams = args.num_beams
+        if args.num_beam_groups:
+            conf_obj.generation_config.num_beam_groups = args.num_beam_groups
+        if args.penalty_alpha:
+            conf_obj.generation_config.penalty_alpha = args.penalty_alpha
+        if args.use_cache:
+            conf_obj.generation_config.use_cache = args.use_cache
+        if args.temperature:
+            conf_obj.generation_config.temperature = args.temperature
+        if args.top_k:
+            conf_obj.generation_config.top_k = args.top_k
+        if args.top_p:
+            conf_obj.generation_config.top_p = args.top_p
+        if args.min_p:
+            conf_obj.generation_config.min_p = args.min_p
+        if args.typical_p:
+            conf_obj.generation_config.typical_p = args.typical_p
+        if args.epsilon_cutoff:
+            conf_obj.generation_config.epsilon_cutoff = args.epsilon_cutoff
+        if args.eta_cutoff:
+            conf_obj.generation_config.eta_cutoff = args.eta_cutoff
+        if args.diversity_penalty:
+            conf_obj.generation_config.diversity_penalty = args.diversity_penalty
+        if args.repetition_penalty:
+            conf_obj.generation_config.repetition_penalty = args.repetition_penalty
+        if args.length_penalty:
+            conf_obj.generation_config.length_penalty = args.length_penalty
+
+        # Quantization config
+        if args.load_in_8bit:
+            conf_obj.quant_config.load_in_8bit = args.load_in_8bit
+        if args.load_in_4bit:
+            conf_obj.quant_config.load_in_4bit = args.load_in_4bit
+        if args.llm_int8_threshold:
+            conf_obj.quant_config.llm_int8_threshold = args.llm_int8_threshold
+        if args.llm_int8_skip_modules:
+            conf_obj.quant_config.llm_int8_skip_modules = args.llm_int8_skip_modules
+        if args.enable_fp32_cpu_offload:
+            conf_obj.quant_config.enable_fp32_cpu_offload = args.enable_fp32_cpu_offload
+        if args.has_fp16_weight:
+            conf_obj.quant_config.has_fp16_weight = args.has_fp16_weight
+        if args.bnb_4bit_quant_type:
+            conf_obj.quant_config.bnb_4bit_quant_type = args.bnb_4bit_quant_type
+        if args.double_quant:
+            conf_obj.quant_config.double_quant = args.double_quant
 
         return conf_obj

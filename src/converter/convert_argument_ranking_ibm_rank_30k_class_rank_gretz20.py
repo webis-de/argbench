@@ -1,4 +1,4 @@
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Subareas, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import uuid
 
@@ -13,14 +13,12 @@ def make_output(dataset, dataset_name):
         row = row[1]
         prompt = f"Argument: {row['argument']}"
         response = "High Quality" if row["stance_WA"] == 1 else "Low Quality"
-        wrong_response = "Low Quality" if row["stance_WA"] == 1 else "High Quality"
         id = str(uuid.uuid4())
-        output.append_positive_example(prompt, response, "")
-
-        output.append_negative_example(prompt, wrong_response, "")
 
         output.append_instance(id, prompt, [response])
 
+    output.append_genre(Genres.DEBATES)
+    output.append_subarea(Subareas.RANKING)
     output.write_output(dataset_name)
 
 if __name__ == "__main__":
@@ -32,8 +30,7 @@ if __name__ == "__main__":
     metadata = Metadata(DATASET_NAME)
 
     dataset_path = str(datasets_path()
-                    / "argument-quality"
-                    / "gretz20-a-large-scale-dataset-for-argument-quality-ranking-construction-and-analysis"
+                    / "ibm-rank-30k"
                     / "arg_quality_rank_30k.csv")
 
     dataset = read_tabular(dataset_path)
@@ -46,5 +43,6 @@ if __name__ == "__main__":
     metadata.add_dataset("argument_ranking_ibm_rank_30k_class_rank_dev_gretz20.json", "dev")
 
     metadata.add_evaluation_metric("f1_macro")
-
+    metadata.add_genre(Genres.DEBATES)
+    metadata.add_subarea(Subareas.RANKING)
     metadata.write_metadata()

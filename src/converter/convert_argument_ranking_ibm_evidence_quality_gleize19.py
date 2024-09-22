@@ -1,4 +1,4 @@
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from argparse import ArgumentParser
 import uuid
 
@@ -24,6 +24,8 @@ def convert_dataset(data_path, data_file, metadata):
         output.append_instance(id, prompt, [label])
 
     output.write_output(data_file)
+    output.append_genre(Genres.DEBATES)
+    output.append_subarea(Subareas.RANKING)
     metadata.add_dataset(data_file)
 
 
@@ -47,4 +49,6 @@ if __name__ == "__main__":
     convert_dataset(data_path / "test.csv", dataset_file_test, metadata)
 
     metadata.add_evaluation_metric("f1_macro")
+    metadata.add_genre(Genres.DEBATES)
+    metadata.add_subarea(Subareas.RANKING)
     metadata.write_metadata()

@@ -1,4 +1,4 @@
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from argparse import ArgumentParser
 import uuid
 import ndjson
@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     metadata = Metadata(DATASET_NAME)
 
-    dataset_path = datasets_path() / "argument-generation" / "schiller21-aspect-controlled-argument-generation" / "generated_arguments"
+    dataset_path = datasets_path() / "ukp-corpus-argument-generation" / "generated_arguments"
     output = Output(DATASET_NAME)
     output.append_definition("Given topic, generate an argument that has appropriate stance. Argument should be related to the topic in a given aspect.")
 
@@ -113,7 +113,12 @@ if __name__ == "__main__":
     generated, negatives = read_generated(redditcomments_school_uniforms_path)
     collect_generated(output, generated, negatives)
 
+    output.append_genre(Genres.SOCIAL_MEDIA)
+    output.append_subarea(Subareas.GENERATION)
     output.write_output(DATASET_FILE)
+
+    metadata.add_genre(Genres.SOCIAL_MEDIA)
+    metadata.add_subarea(Subareas.GENERATION)
     metadata.add_dataset(DATASET_FILE)
     metadata.add_evaluation_metric("rouge")
     metadata.write_metadata()

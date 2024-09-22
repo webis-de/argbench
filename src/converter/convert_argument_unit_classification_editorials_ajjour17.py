@@ -1,7 +1,7 @@
 
 import os
 import json
-from common import Output, add_seed_arg, set_seed
+from common import Metadata, Output, add_seed_arg, set_seed, Genres, Subareas, datasets_path, tasks_path
 from argparse import ArgumentParser
 from collections import defaultdict
 import re
@@ -77,13 +77,15 @@ def main():
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    txt_directory_path = "/Users/Wangyaxi/Downloads/complete-annotated-final"
-    output_file_path = "/Users/Wangyaxi/Downloads/argument_unit_classification_editorials.json"
+    txt_directory_path = datasets_path() / "editorials" / "txt" / "txt" / "complete-annotated-final"
+    output_file = "argument_unit_classification_editorials_ajjour17.json"
+    dataset_name = "argument_unit_classification_editorials_ajjour17"
 
     instances_dict = defaultdict(list)
     process_all_txt_files_in_directory(txt_directory_path, instances_dict)
 
-    output = Output("argument_unit_classification_editorials")
+    output = Output(dataset_name)
+    metadata = Metadata(dataset_name)
     output.append_definition(
         "Classify sentences into different parts."
     )
@@ -96,8 +98,15 @@ def main():
         combined_input = combined_input_tmp.replace('\n', ' ')
         output.append_instance(instance_id, combined_input, [combined_output])
 
-    output.write_output(output_file_path)
-    print(f"All files processed and saved to {output_file_path}")
+    output.append_genre(Genres.ESSAYS)
+    output.append_subarea(Subareas.MINING)
+    output.write_output(output_file)
+
+    metadata.add_dataset(output_file)
+    metadata.add_genre(Genres.ESSAYS)
+    metadata.add_subarea(Subareas.MINING)
+    metadata.write_metadata()
+    print(f"All files processed and saved to {output_file}")
 
 if __name__ == "__main__":
     main()

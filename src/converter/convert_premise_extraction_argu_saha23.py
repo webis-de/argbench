@@ -1,4 +1,4 @@
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from argparse import ArgumentParser
 from pathlib import Path
 import pickle
@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
     metadata = Metadata(DATASET_NAME)
 
-    dataset_path = Path("/run/media/dima/drive2/download/datasets/saha-23-argu-a-controllable-factual-argument-generator/")
+    dataset_path = datasets_path() / "argu"
     output_path = tasks_path()
 
     splits_path = dataset_path / "arg_span_and_scheme_data_keys.pkl"
@@ -67,11 +67,19 @@ if __name__ == "__main__":
     for arg in arguments:
         output.append_instance(arg.id, arg.prompt, [arg.output])
     dataset_file = "premise_extraction_argu_saha23_full.json"
+
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_genre(Genres.DEBATES)
+    output.append_subarea(Subareas.MINING)
+
     metadata.add_dataset(dataset_file)
     output.write_output(dataset_file)
 
     splits_data.close()
 
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_genre(Genres.DEBATES)
+    metadata.add_subarea(Subareas.MINING)
     metadata.add_evaluation_metric("rouge")
 
     metadata.write_metadata()

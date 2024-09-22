@@ -1,5 +1,5 @@
 import os
-from common import Output, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Output, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from argparse import ArgumentParser
 from lxml import etree
 from collections import Counter
@@ -134,7 +134,11 @@ if __name__ == "__main__":
                 output.append_instance(file_name, document , [argument_relations_formatted])
 
 
+    output.append_genre(Genres.ESSAYS)
+    output.append_subarea(Subareas.REASONING)
     output.write_output(DATASET_FILE)
     metadata.add_dataset(DATASET_FILE)
+    metadata.add_genre(Genres.ESSAYS)
+    metadata.add_subarea(Subareas.REASONING)
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()

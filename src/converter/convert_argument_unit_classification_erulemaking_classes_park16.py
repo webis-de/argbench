@@ -1,7 +1,6 @@
-
-import json
-from common import Output, add_seed_arg, set_seed
+from common import Output, add_seed_arg, set_seed, Genres, Subareas, Metadata, datasets_path
 from argparse import ArgumentParser
+import json
 
 def process_json_file(json_file_path, output):
     """Process the JSON file and append examples to the output."""
@@ -50,19 +49,29 @@ def main():
     args = arg_parser.parse_known_args()[0]
     set_seed(args)  # Seed random number generation
 
-    json_file_path = "/Users/Wangyaxi/Downloads/erulemaking/cdcp_type_edge_annot.jsonlist"
+    data_path = (datasets_path() /
+                 "erulemaking" /
+                 "cdcp_type_edge_annot.jsonlist")
 
     # Set name of the dataset to identify it and files of that dataset
-    dataset_name = "argument_unit_classification_erulemaking"
-    dataset_file = "argument_unit_classification_erulemaking.json"
+    dataset_name = "argument_unit_classification_erulemaking_classes_park16"
+    dataset_file = "argument_unit_classification_erulemaking_classes_park16.json"
 
     # Class for collecting dataset file data
     output = Output(dataset_name)
+    metadata = Metadata(dataset_name)
     output.append_definition(
         "Classify each sentence into facts, testimony, values, policies, or resources. Keep the order of the sentences as provided in the text.")
 
     # Read JSON file and process
-    process_json_file(json_file_path, output)
+    process_json_file(data_path, output)
+
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_subarea(Subareas.MINING)
+    metadata.add_dataset(dataset_file)
+
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_subarea(Subareas.MINING)
 
     # Write processed dataset to disk
     output.write_output(dataset_file)

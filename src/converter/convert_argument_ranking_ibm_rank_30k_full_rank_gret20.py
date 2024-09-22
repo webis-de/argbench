@@ -1,4 +1,4 @@
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from argparse import ArgumentParser
 import uuid
 import pandas as pd
@@ -28,17 +28,11 @@ def make_output(dataset, dataset_name):
                                        .reset_index()["index"]
                                        .map("[{}]".format))
 
-        negative_response = " > ".join(total_rows
-                                       .sort_values(by=["WA"], ascending=True)
-                                       .reset_index()["index"]
-                                       .map("[{}]".format))
-
-        output.append_positive_example(prompt, positive_response, "Arguments are ordered based on wighted average quality score")
-
-        output.append_negative_example(prompt, negative_response, "Arguments are ordered based on wighted average quality score but in ascending order")
 
         output.append_instance(id, prompt, [positive_response])
 
+    output.append_genre(Genres.DEBATES)
+    output.append_subarea(Subareas.RANKING)
     output.write_output(dataset_name)
 
 if __name__ == "__main__":
@@ -50,8 +44,7 @@ if __name__ == "__main__":
     metadata = Metadata(DATASET_NAME)
 
     dataset_path = str(datasets_path()
-                    / "argument-quality"
-                    / "gretz20-a-large-scale-dataset-for-argument-quality-ranking-construction-and-analysis"
+                    / "ibm-rank-30k"
                     / "arg_quality_rank_30k.csv")
 
     dataset = read_tabular(dataset_path)
@@ -67,5 +60,6 @@ if __name__ == "__main__":
     metadata.add_dataset("argument_ranking_ibm_rank_30k_full_dev_train_gretz20.json", "dev")
 
     metadata.add_evaluation_metric("f1_macro")
-
+    metadata.add_genre(Genres.DEBATES)
+    metadata.add_subarea(Subareas.RANKING)
     metadata.write_metadata()

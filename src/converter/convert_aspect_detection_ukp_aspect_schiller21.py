@@ -1,6 +1,5 @@
-from common import Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from argparse import ArgumentParser
-import re
 import ndjson
 
 dataset_name = "aspect_detection_ukp_aspect_schiller21"
@@ -22,6 +21,8 @@ def process_split(dataset_file, output_file, metadata, dataset_split):
 
             output.append_instance(id, prompt, [aspect_output])
 
+    output.append_genre(Genres.WIKIPEDIA)
+    output.append_subarea(Subareas.GENERATION)
     output.write_output(output_file)
     metadata.add_dataset(output_file, dataset_split=dataset_split)
 
@@ -33,7 +34,7 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
 
-    data_path = datasets_path() / "ukp-aspect-argument-generation" / "argument_aspect_detection_v1.0" / "in_topic"
+    data_path = datasets_path() / "ukp-corpus-argument-generation" / "argument_aspect_detection_v1.0" / "in_topic"
 
     metadata = Metadata(dataset_name)
 
@@ -56,5 +57,7 @@ if __name__ == "__main__":
         "dev"
     )
 
+    metadata.add_genre(Genres.WIKIPEDIA)
+    metadata.add_subarea(Subareas.GENERATION)
     metadata.add_evaluation_metric("rouge")
     metadata.write_metadata()

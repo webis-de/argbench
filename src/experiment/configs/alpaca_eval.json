@@ -1,6 +1,6 @@
 {
     "seed": 42,
-    "base_model": "/bigwork/nhwpbozd/decapoda-research-llama-7B-hf/",
+    "base_model": "baffo32/decapoda-research-llama-7B-hf",
     "cutoff_len": 1500,
     "train_datasets": {
         "stance_classification_ukp_sentential_stab18": {
@@ -23,7 +23,7 @@
     },
     "peft_configs": [
         {
-            "model_id": "/bigwork/nhwpbozd/alpaca-lora-7b/",
+            "model_id": "tloen/alpaca-lora-7b",
             "adapter_name": "lora-adapter",
             "is_trainable": false
         }

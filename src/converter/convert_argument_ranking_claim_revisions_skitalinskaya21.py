@@ -1,4 +1,4 @@
-from common import Output, read_tabular, Metadata, add_seed_arg, set_seed, datasets_path
+from common import Output, read_tabular, Metadata, add_seed_arg, set_seed, datasets_path, Genres, Subareas
 from argparse import ArgumentParser
 from random import shuffle
 
@@ -19,7 +19,7 @@ def process_data(dataset, metadata):
         response = ""
         claim_revisions = [
             (row["claim_id"], row["claim_text"], row["revision_id"])
-            for _, row in dataset[dataset["claim_id"] == claim].iterrows()
+            for _, row in dataset[dataset["claim_id"] == claim].iloc[:1].iterrows() # Cut to only 2 arguments
         ]
         shuffle(claim_revisions)
 
@@ -30,10 +30,14 @@ def process_data(dataset, metadata):
 
         claim_revisions = sorted(claim_revisions, key=lambda x: x[3], reverse=True)
 
+        print(len(prompt))
+
         response = " > ".join([f"[{i}]" for i, _, _, _ in claim_revisions])
 
         output.append_instance(claim_revisions[0][1], prompt, [response])
 
+    output.append_genre(Genres.DEBATES)
+    output.append_subarea(Subareas.RANKING)
     metadata.add_dataset(dataset_file)
     output.write_output(dataset_file)
 
@@ -53,4 +57,6 @@ if __name__ == "__main__":
     process_data(dataset, metadata)
 
     metadata.add_evaluation_metric("f1_macro")
+    metadata.add_genre(Genres.DEBATES)
+    metadata.add_subarea(Subareas.RANKING)
     metadata.write_metadata()

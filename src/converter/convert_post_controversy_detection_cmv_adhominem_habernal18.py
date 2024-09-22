@@ -1,4 +1,4 @@
-from common import Output, datasets_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, datasets_path, Metadata, add_seed_arg, set_seed, Subareas
 from argparse import ArgumentParser
 import ndjson
 import json
@@ -24,9 +24,9 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
 
-    data_path = datasets_path() / "argument-detection" / "habernal18-ad-hominem-detection" / "exported-1800-sampled-balanced-ops.json"
-    controversy_path =  datasets_path() / "argument-detection" / "habernal18-ad-hominem-detection" / "annotated-1800-sampled-balanced-ops-controversy.json"
-    stupidity_path = datasets_path() / "argument-detection" / "habernal18-ad-hominem-detection" / "annotated-1800-sampled-balanced-ops-stupidity.json"
+    data_path = datasets_path() / "cmv-adhominem" / "exported-1800-sampled-balanced-ops.json"
+    controversy_path =  datasets_path() / "cmv-adhominem" / "annotated-1800-sampled-balanced-ops-controversy.json"
+    stupidity_path = datasets_path() / "cmv-adhominem" / "annotated-1800-sampled-balanced-ops-stupidity.json"
 
     dataset_name = "fallacy_detection_cmv_adhominem_habernal18"
     controversy_dataset_file = "post_controversy_cmv_adhominem_habernal18.json"
@@ -59,7 +59,16 @@ if __name__ == "__main__":
         label = f"{controversy_label};{reasonableness_label}"
         output.append_instance(id, prompt, [label])
 
+    output.append_genre(Genres.WIKIPEDIA)
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_subarea(Subareas.MINING)
+
     output.write_output(controversy_dataset_file)
+
+
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_genre(Genres.WIKIPEDIA)
+    metadata.add_subarea(Subareas.GENERATION)
     metadata.add_dataset(controversy_dataset_file)
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()

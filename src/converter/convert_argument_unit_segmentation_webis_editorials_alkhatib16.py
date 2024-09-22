@@ -1,6 +1,6 @@
 from typing import List
 from uuid import uuid4
-from common import Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Subareas, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 from pathlib import Path
 from dataclasses import dataclass, field
@@ -71,8 +71,7 @@ if __name__ == "__main__":
     set_seed(args)
 
     dataset_path = (datasets_path()
-                    / "argument-detection"
-                    / "alkhatib16_argumentation_strategy_mining_unit_segmentation"
+                    / "editorials"
                     / "txt"
                     / "txt"
                     / "complete-annotated-final")
@@ -105,7 +104,12 @@ if __name__ == "__main__":
         id = str(uuid4())
         output.append_instance(id, prompt, [extracted])
 
+    output.append_genre(Genres.ESSAYS)
+    output.append_subarea(Subareas.MINING)
     output.write_output(DATASET_PATH)
+
+    metadata.add_genre(Genres.ESSAYS)
+    metadata.add_subarea(Subareas.MINING)
     metadata.add_dataset(DATASET_PATH)
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()

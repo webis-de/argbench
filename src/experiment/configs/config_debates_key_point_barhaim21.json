@@ -1,0 +1,70 @@
+{
+    "seed": 42,
+    "base_model": "/bigwork/nhwpbozd/decapoda-research-llama-7B-hf/",
+    "cutoff_len": 1500,
+    "train_datasets": {
+        "include_genres": ["debates"],
+        "subsample_amount": 50,
+        "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:"
+    },
+    "test_datasets": {
+        "key_point_matching_argkp_2021_barhaim21": {
+            "name": "key_point_matching_argkp_2021_barhaim21",
+            "match": "key_point_matching_argkp_2021_barhaim21",
+            "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
+            "subsample_amount": 50
+        }
+    },
+    "quant_config": {
+        "load_in_4bit": true
+    },
+    "llama_causal_config": {
+        "device_map": "auto"
+    },
+    "peft_configs": [
+        {
+            "model_id": "/bigwork/nhwpbozd/alpaca-lora-7b/",
+            "adapter_name": "adapter",
+            "is_trainable": true
+        }
+    ],
+    "training_args_config": {
+        "per_device_train_batch_size": 32,
+        "num_train_epochs": 110,
+        "learning_rate": 0.0003,
+        "optim": "adamw_torch",
+        "evaluation_strategy": "steps",
+        "save_strategy": "steps",
+        "eval_steps": 5,
+        "save_steps": 5,
+        "save_total_limit": 3,
+        "load_best_model_at_end": true,
+        "group_by_length": false,
+        "do_eval": true,
+        "output_dir": "/bigwork/nhwpbozd/train-checkpoint",
+        "save_total_limit": 3,
+        "warmup_steps": 200,
+        "fp16": true,
+        "logging_steps": 10,
+        "lr_scheduler_type": "linear",
+        "metric_for_best_model": "loss"
+    },
+    "early_stopping_config": {
+        "early_stopping_patience": 3,
+        "early_stopping_threshold": 0.01
+    },
+    "data_collator_config": {
+        "padding": true,
+        "return_tensors": "pt"
+    },
+    "generation_config": {
+        "top_k": 20,
+        "length_penalty": 1.5,
+        "num_beams": 1,
+        "max_length": 250
+    },
+    "validation_config": {
+        "eval_metric": "f1",
+        "fscore_average": "macro"
+    }
+}

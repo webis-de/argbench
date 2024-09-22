@@ -7,6 +7,17 @@ import ndjson
 import os
 import pandas as pd
 
+class PandasDataset:
+
+    def __init__(self, dataframe):
+        self.dataframe = dataframe
+
+    def __len__(self):
+        return len(self.dataframe)
+
+    def __getitem__(self, idx):
+        return self.dataframe.iloc[idx].to_dict()
+
 def data_repo():
     """Get path of data repository"""
     curr_file = os.path.abspath(__file__)
@@ -30,13 +41,17 @@ def collect_files(
         test_configs,
         include_genre=None,
         include_subarea=None,
+        include_task=None,
         is_leave_one_out=False,
+        is_evaluate=False,
         exclude_datasets=None
 ):
     if include_genre:
         include_genre = set(include_genre)
     if include_subarea:
         include_subarea = set(include_subarea)
+    if not include_task:
+        include_task = []
     if not exclude_datasets:
         exclude_datasets = []
 
@@ -45,6 +60,9 @@ def collect_files(
     for file in metadata[test_configs["name"]]["file_list"]:
         if test_configs["match"] in file:
             test_files.append(task_path / test_configs["name"] / file)
+
+    if is_evaluate:
+        return [], test_files
 
     train_files = []
     for task in os.listdir(task_path):
@@ -65,6 +83,12 @@ def collect_files(
             task_file_path = task_data_path / task_file
             if not os.path.isfile(task_file_path):
                 continue
+
+            task_select = False
+            if include_task:
+                select_task = next((task_file for t_s in include_task if t_s in task_file), None)
+                if select_task:
+                    train_files.append(task_file_path)
 
             if is_leave_one_out:
                 train_files.append(task_file_path)
@@ -102,15 +126,18 @@ def compile_datasets(dataset_paths, prompt_template, subsample_amount=None, subs
 
         datasets.append(task_data[["id", "input", "output"]])
 
-    return pd.concat(datasets, axis=0)
+    if datasets:
+        return pd.concat(datasets, axis=0).reset_index(drop=True)
+    return pd.DataFrame()
 
 
-def collect_datasets(run_config, tasks_path):
+def collect_datasets(run_config):
     """
     Collect all datasets to use in run
     """
     train_config = run_config.train_datasets
     test_config = run_config.test_datasets
+    tasks_path = run_config.run_config_path
 
     metadata = get_metadata()
 
@@ -120,7 +147,9 @@ def collect_datasets(run_config, tasks_path):
         test_config,
         train_config.get("include_genre"),
         train_config.get("include_subarea"),
+        train_config.get("include_task"),
         train_config.get("leave_one_out", False),
+        run_config.is_eval,
         train_config.get("exclude_datasets")
     )
 

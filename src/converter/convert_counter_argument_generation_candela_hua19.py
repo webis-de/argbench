@@ -1,4 +1,4 @@
-from common import Output, datasets_path, Metadata, add_seed_arg, set_seed
+from common import Output, datasets_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from argparse import ArgumentParser
 import ndjson
@@ -43,10 +43,11 @@ def process_dataset(data_file, output_file, split_name, metadata):
         output.append_instance(instance["url"], prompt, [counter_phrase])
 
     dataset.close()
+    output.append_genre(Genres.ESSAYS)
+    output.append_subarea(Subareas.GENERATION)
     output.write_output(output_file)
     metadata.add_evaluation_metric("rouge")
     metadata.add_dataset(output_file, split_name)
-    metadata.write_metadata()
 
 
 if __name__ == "__main__":
@@ -83,3 +84,7 @@ if __name__ == "__main__":
         metadata
     )
     print("Dev processed")
+
+    metadata.add_genre(Genres.ESSAYS)
+    metadata.add_subarea(Subareas.GENERATION)
+    metadata.write_metadata()

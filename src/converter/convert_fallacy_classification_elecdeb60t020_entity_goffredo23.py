@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from common import Output, datasets_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Subareas, datasets_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import uuid
 
@@ -75,6 +75,8 @@ def process_dataset(data_file, output_file, metadata, split_name):
 
         output.append_instance(id, prompt, [model_out])
 
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_subarea(Subareas.MINING)
     output.write_output(output_file)
     metadata.add_evaluation_metric("f1_macro")
     metadata.add_dataset(output_file, split_name)
@@ -111,4 +113,6 @@ if __name__ == "__main__":
         "dev"
     )
 
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_subarea(Subareas.MINING)
     metadata.write_metadata()

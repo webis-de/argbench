@@ -1,12 +1,6 @@
-import os
-
-from common import Output, datasets_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Subareas, datasets_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import ndjson
-import json
-import uuid
-
-# Labels end at 2.0 for some reason????
 
 if __name__ == "__main__":
     # Input arguments for dataset generation
@@ -29,14 +23,20 @@ if __name__ == "__main__":
 
     for post in post_data:
 
-        print(post)
         if post["violated_rule"] == 2:
             ad_hominem = "ad-hominem"
         else:
             ad_hominem = "not-ad-hominem"
         argument = post["body"]
-        output.append_instance(id=post["id"],input=f"Argument: {argument}", output=ad_hominem)
+        output.append_instance(id=post["id"],input=f"Argument: {argument}", output=[ad_hominem])
+
+    output.append_genre(Genres.WIKIPEDIA)
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_subarea(Subareas.MINING)
     output.write_output(dataset_file)
+    metadata.add_genre(Genres.WIKIPEDIA)
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_subarea(Subareas.MINING)
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()
 

@@ -1,4 +1,4 @@
-from common import Output, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Subareas, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 
 dataset_name = "warrant_identification_semeval_2018_task_12_habernal18"
@@ -25,6 +25,8 @@ def process_split(dataset, metadata, split):
         output.append_instance(id, prompt, [label])
 
     metadata.add_dataset(dataset_file, split)
+    output.append_genre(Genres.DEBATES)
+    output.append_subarea(Subareas.MINING)
     output.write_output(dataset_file)
 
 
@@ -49,5 +51,7 @@ if __name__ == "__main__":
     print("Dev")
     process_split(dev_dataset, metadata, "dev")
 
+    metadata.add_genre(Genres.DEBATES)
+    metadata.add_subarea(Subareas.MINING)
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()

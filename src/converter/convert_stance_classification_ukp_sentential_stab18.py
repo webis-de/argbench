@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from argparse import ArgumentParser
 import uuid
+import pandas as pd
 
 DATASET_NAME = "stance_classification_ukp_sentential_stab18"
 
@@ -21,6 +22,8 @@ def make_output(dataset, dataset_name):
         id = str(uuid.uuid4())
         output.append_instance(id, prompt, [response])
 
+    output.append_genre(Genres.ESSAYS)
+    output.append_subarea(Subareas.MINING)
     output.write_output(dataset_name)
 
 
@@ -31,13 +34,18 @@ if __name__ == "__main__":
     set_seed(args)
 
     metadata = Metadata(DATASET_NAME)
-    dataset_path= str(datasets_path() / "ukp-sentential/corpus-ukp-sentential-argument-mining.csv")
+    dataset_path = datasets_path() / "ukp-sentential" / "data"
+    datasets = []
 
+    for dataset in dataset_path.iterdir():
+        data = read_tabular(dataset, separator="\t")
+        datasets.append(data)
 
-    dataset = read_tabular(dataset_path)
-    dataset_train = dataset[dataset["set"]=="train"]
-    dataset_test = dataset[dataset["set"]=="test"]
-    dataset_val = dataset[dataset["set"]=="val"]
+    datasets = pd.concat(datasets)
+
+    dataset_train = datasets[datasets["set"]=="train"]
+    dataset_test = datasets[datasets["set"]=="test"]
+    dataset_val = datasets[datasets["set"]=="val"]
 
     make_output(dataset_train, "stance_classification_ukp_sentential_train_stab18.json")
     make_output(dataset_test, "stance_classification_ukp_sentential_test_stab18.json")
@@ -46,5 +54,8 @@ if __name__ == "__main__":
     metadata.add_dataset("stance_classification_ukp_sentential_train_stab18.json", "train")
     metadata.add_dataset("stance_classification_ukp_sentential_test_stab18.json", "test")
     metadata.add_dataset("stance_classification_ukp_sentential_val_stab18.json", "dev")
+
+    metadata.add_genre(Genres.ESSAYS)
+    metadata.add_subarea(Subareas.MINING)
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()

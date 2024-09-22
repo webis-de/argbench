@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 from pathlib import Path
-from common import Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Subareas, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
 from dataclasses import dataclass
 from argparse import ArgumentParser
 from typing import List
-import numpy as np
-import itertools
 import random
 
 DATASET_NAME = "argument_unit_segmentation_ajjour17"
@@ -15,12 +13,11 @@ class TextArguments:
     fragment_id: str
     arguments: List[str]
     non_argument_seqs: List
-    negative_example: str
     text: str
 
 def extract_file(path: Path):
     datafile = open(path, "r")
-    arguments = TextArguments(path.name, [], [], "", "")
+    arguments = TextArguments(path.name, [], [], "")
 
     is_next_skip = False
     argument_idx = -1
@@ -72,18 +69,19 @@ def extract_file(path: Path):
 
 
 def process_folder(path: Path):
-    train_path = path / "trainingSet"
-    test_path = path / "testingSet"
-
     train_datasets = []
-    for f in train_path.iterdir():
-        text = extract_file(f)
-        train_datasets.append(text)
-
     test_datasets = []
-    for f in test_path.iterdir():
-        text = extract_file(f)
-        test_datasets.append(text)
+    for split in path.iterdir():
+        train_path = split / "trainingSet"
+        test_path = split / "testingSet"
+
+        for f in train_path.iterdir():
+            text = extract_file(f)
+            train_datasets.append(text)
+
+        for f in test_path.iterdir():
+            text = extract_file(f)
+            test_datasets.append(text)
 
     return train_datasets, test_datasets
 
@@ -100,16 +98,10 @@ def convert_arguments(train_datasets, test_datasets):
     for dataset in train_datasets:
         extracted_arguments = "".join([f"{a}\n" for a in dataset.arguments])
         train_output.append_instance(dataset.fragment_id, dataset.text, [extracted_arguments])
-        train_output.append_positive_example(dataset.text, extracted_arguments, "")
-        if dataset.negative_example:
-            train_output.append_negative_example(dataset.text, dataset.negative_example, "")
 
     for dataset in test_datasets:
         extracted_arguments = "".join([f"{a}\n" for a in dataset.arguments])
         test_output.append_instance(dataset.fragment_id, dataset.text, [extracted_arguments])
-        test_output.append_positive_example(dataset.text, extracted_arguments, "")
-        if dataset.negative_example:
-            test_output.append_negative_example(dataset.text, dataset.negative_example, "")
 
     return train_output, test_output
 
@@ -137,37 +129,6 @@ def find_matching_non_arg(non_arg_seqs, bin_start, bin_end):
     return (matched_span[0], matched_span[1] - offset)
 
 
-def generate_negatives(train_datasets, test_datasets, hist_bins=80):
-    arg_len = []
-    for e in train_datasets:
-        for a in e.arguments:
-            arg_len.append(len(a))
-    for e in test_datasets:
-        for a in e.arguments:
-            arg_len.append(len(a))
-
-    bin_count, bin_edges = np.histogram(arg_len, bins=hist_bins)
-    bin_idx = np.arange(len(bin_count))
-
-    for argument in itertools.chain(train_datasets, test_datasets):
-        max_non_arg_seq = 0
-        for seqs_start, seqs_end in argument.non_argument_seqs:
-            if (seqs_end - seqs_start) > max_non_arg_seq:
-                max_non_arg_seq = seqs_end - seqs_start
-        if max_non_arg_seq < bin_edges[0]:
-            continue
-        corrected_counts = bin_count[bin_edges[:hist_bins] <= max_non_arg_seq].tolist()
-        corrected_idx = bin_idx[bin_edges[:hist_bins] <= max_non_arg_seq].tolist()
-        choose_bin = random.sample(corrected_idx, k=1, counts=corrected_counts)[0]
-
-        chosen_span = find_matching_non_arg(argument.non_argument_seqs, bin_edges[choose_bin], bin_edges[choose_bin + 1])
-
-        negative_text = argument.text[chosen_span[0]:chosen_span[1]]
-        argument.negative_example = negative_text
-
-    return train_datasets, test_datasets
-
-
 if __name__ == "__main__":
 
     arg_parser = ArgumentParser(description="Program to convert ajjour unit segmentation dataset into appropriate form")
@@ -176,48 +137,32 @@ if __name__ == "__main__":
     set_seed(args)
 
     dataset_path = (datasets_path()
-                    / "argument-detection"
+                    / "web-discourse"
                     / "segmentation-splits"
                     / "simple")
 
     output_path = tasks_path()
 
-    editorials_path = dataset_path / "editorials-split"
-    essays_path = dataset_path / "essays-split"
-    web_discourse_path = dataset_path / "webDiscourse-split"
-
     metadata = Metadata(DATASET_NAME)
 
-    train_editorials, test_editorials = process_folder(editorials_path)
-    train_editorials, test_editorials = generate_negatives(train_editorials, test_editorials)
+    train_editorials, test_editorials = process_folder(dataset_path)
     train_editorials, test_editorials = convert_arguments(train_editorials, test_editorials)
 
-    train_editorials.write_output("argument_unit_segmentation_webis_editorials_train_ajjour17.json")
-    test_editorials.write_output("argument_unit_segmentation_webis_editorials_test_ajjour17.json")
+    train_editorials.append_genre(Genres.ESSAYS)
+    train_editorials.append_genre(Genres.SOCIAL_MEDIA)
+    train_editorials.append_subarea(Subareas.MINING)
+    test_editorials.append_genre(Genres.ESSAYS)
+    test_editorials.append_subarea(Subareas.MINING)
 
-    metadata.add_dataset("argument_unit_segmentation_webis_editorials_train_ajjour17.json", "train")
-    metadata.add_dataset("argument_unit_segmentation_webis_editorials_test_ajjour17.json", "test")
+    train_editorials.write_output("argument_unit_segmentation_train_ajjour17.json")
+    test_editorials.write_output("argument_unit_segmentation_test_ajjour17.json")
 
-    train_essays, test_essays = process_folder(essays_path)
-    train_essays, test_essays = generate_negatives(train_essays, test_essays)
-    train_essays, test_essays = convert_arguments(train_essays, test_essays)
+    metadata.add_dataset("argument_unit_segmentation_train_ajjour17.json", "train")
+    metadata.add_dataset("argument_unit_segmentation_test_ajjour17.json", "test")
 
-    train_essays.write_output("argument_unit_segmentation_essays_train_ajjour17.json")
-    test_essays.write_output("argument_unit_segmentation_essays_test_ajjour17.json")
-
-    metadata.add_dataset("argument_unit_segmentation_essays_train_ajjour17.json", "train")
-    metadata.add_dataset("argument_unit_segmentation_essays_train_ajjour17.json", "test")
-
-    train_web_discourse, test_web_discourse = process_folder(web_discourse_path)
-    train_web_discourse, test_web_discourse = generate_negatives(train_web_discourse, test_web_discourse)
-    train_web_discourse, test_web_discourse = convert_arguments(train_web_discourse, test_web_discourse)
-
-    train_web_discourse.write_output("argument_unit_segmentation_web_discourse_train_ajjour17.json")
-    test_web_discourse.write_output("argument_unit_segmentation_web_discourse_test_ajjour17.json")
-
-    metadata.add_dataset("argument_unit_segmentation_web_discourse_train_ajjour17.json", "train")
-    metadata.add_dataset("argument_unit_segmentation_web_discourse_test_ajjour17.json", "test")
-
+    metadata.add_genre(Genres.SOCIAL_MEDIA)
+    metadata.add_genre(Genres.ESSAYS)
+    metadata.add_subarea(Subareas.MINING)
     metadata.add_evaluation_metric("rouge")
 
     metadata.write_metadata()

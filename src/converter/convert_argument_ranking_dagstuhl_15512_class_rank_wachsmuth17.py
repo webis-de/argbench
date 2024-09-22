@@ -1,4 +1,4 @@
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Subareas, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import random
 import re
@@ -21,14 +21,11 @@ def make_output(dataset, metadata, column, aspect_description, dataset_name):
         response = p.findall(row[0])[0]
         id = str(uuid.uuid4())
 
-        output.append_positive_example(prompt, response, "")
-
-        wrong_stance = random.choice([s for s in QUALITY_SCORES if s != response])
-        output.append_negative_example(prompt, wrong_stance, "")
-
         output.append_instance(id, prompt, [response])
 
     metadata.add_dataset(dataset_name)
+    output.append_genre(Genres.DEBATES)
+    output.append_subarea(Subareas.RANKING)
     output.write_output(dataset_name)
 
 if __name__ == "__main__":
@@ -40,8 +37,6 @@ if __name__ == "__main__":
     metadata = Metadata(DATASET_NAME)
 
     dataset_path = str(datasets_path()
-                       / "argument-quality"
-                       / "wachsmuth17-computational-argumentation-quality-assessment-in-natural-language"
                        / "dagstuhl-15512-argquality-corpus-v2"
                        / "dagstuhl-15512-argquality-corpus-annotated.csv")
 
@@ -95,4 +90,6 @@ if __name__ == "__main__":
     make_output(dataset, metadata, "sufficiency", local_sufficiency_description, "argument_ranking_dagstuhl_15512_class_rank_sufficiency_wachsmuth17.json")
 
     metadata.add_evaluation_metric("f1_macro")
+    metadata.add_genre(Genres.DEBATES)
+    metadata.add_subarea(Subareas.RANKING)
     metadata.write_metadata()

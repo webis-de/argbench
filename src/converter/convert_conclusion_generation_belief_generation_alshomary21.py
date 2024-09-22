@@ -1,4 +1,4 @@
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Subareas, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import ast
 import uuid
@@ -29,6 +29,8 @@ def process_dataset(bows_dataset, metadata, dataset_name, dataset_file, dataset_
         id = str(uuid.uuid4())
         output.append_instance(id, prompt, [label])
 
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_subarea(Subareas.GENERATION)
     output.write_output(dataset_file)
     metadata.add_dataset(dataset_file)
 
@@ -39,10 +41,10 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
 
-    data_path = datasets_path() / "argument-generation" / "alshomary21_belief_based_argument_generation" # path to data
+    data_path = datasets_path() / "belief-arguments" / "data" # path to data
     dataset_name = "conclusion_generation_belief_generation_alshomary21"
 
-    bows_dataset = read_tabular(data_path / "big_issues_new_bows.csv")
+    bows_dataset = read_tabular(data_path / "big_issues_bows" / "big_issues_new_bows.csv")
     bows_dataset["pro_parsed"] = bows_dataset["pro_bow"].apply(ast.literal_eval)
     bows_dataset["con_parsed"] = bows_dataset["con_bow"].apply(ast.literal_eval)
 
@@ -53,7 +55,7 @@ if __name__ == "__main__":
         metadata,
         dataset_name,
         "conclusion_generation_belief_generation_train_alshomary21.json",
-        data_path / "train_with_claim_df.csv"
+        data_path / "preprocessed_data" / "train_with_claim_df.csv"
     )
 
     process_dataset(
@@ -61,7 +63,7 @@ if __name__ == "__main__":
         metadata,
         dataset_name,
         "conclusion_generation_belief_generation_test_alshomary21.json",
-        data_path / "test_with_claim_df.csv"
+        data_path / "preprocessed_data" / "test_with_claim_df.csv"
     )
 
     process_dataset(
@@ -69,8 +71,10 @@ if __name__ == "__main__":
         metadata,
         dataset_name,
         "conclusion_generation_belief_generation_valid_alshomary21.json",
-        data_path / "valid_with_claim_df.csv"
+        data_path / "preprocessed_data" / "valid_with_claim_df.csv"
     )
 
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_subarea(Subareas.GENERATION)
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()

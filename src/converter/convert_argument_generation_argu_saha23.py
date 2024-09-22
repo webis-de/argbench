@@ -48,10 +48,14 @@ if __name__ == "__main__":
             arguments.append(Prompt(id, prompt, output))
 
     output = Output(DATASET_NAME)
-    output.append_genre("generation")
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_subarea(Subareas.GENERATION)
     output.append_definition("Given argument type, topic and stance generate an argument from listed facts.")
     for arg in arguments:
         output.append_instance(arg.id, arg.prompt, [arg.output])
 
     metadata.add_dataset(DATASET_FILE)
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_subarea(Subareas.GENERATION)
     output.write_output(DATASET_FILE)
+    metadata.write_metadata()
