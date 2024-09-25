@@ -10,3 +10,30 @@ f1 score: 0.299999
 f1 score: 0.24512
 *** social media
 f1 score: 0.233333
+
+* Leave one out
+Config: [[./configs/config_leave_one_out.json]]
+** argument_unit_classificaiton_wikipedia_articles_lexisnexis_eindor20
+*** F1 score
+0.443
+** argument_ranking_ibm_rank_30k_class_rank_train_gretz20
+*** F1 score
+0.23333
+** argument_ranking_dagstuhl_15512_class_rank_appropriateness_wachsmuth17
+*** F1 score
+0.253
+** argument_ranking_dagstuhl_15512_class_rank_arrangement_wachsmuth17
+*** F1 score
+0.21
+** argument_ranking_dagstuhl_15512_class_rank_clarity_wachsmuth17
+*** F1 score
+0.2633
+** frame_identification_webis_stance_classification_19_ajjour19
+*** F1 score
+0.3533
+** key_point_matching_argkp_2021_barhaim21
+*** F1 score
+0.3964
+** argument_similarity_ukp_aspect_reimers19
+*** F1 score
+0.5693

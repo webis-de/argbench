@@ -115,6 +115,7 @@ def compile_datasets(dataset_paths, prompt_template, subsample_amount=None, subs
 
     datasets = []
     for task_path in dataset_paths:
+        print(task_path)
         task_data = pd.read_json(task_path, lines=True)
 
         if subsample_amount:
@@ -137,7 +138,7 @@ def collect_datasets(run_config):
     """
     train_config = run_config.train_datasets
     test_config = run_config.test_datasets
-    tasks_path = run_config.run_config_path
+    tasks_path = Path(run_config.data_folder)
 
     metadata = get_metadata()
 

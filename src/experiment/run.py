@@ -6,6 +6,7 @@ from dataclasses import asdict
 from transformers import (
     LlamaForCausalLM,
     LlamaTokenizer,
+    LlamaTokenizerFast,
     TrainingArguments,
     Trainer,
     DataCollatorForSeq2Seq,
