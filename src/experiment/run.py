@@ -170,6 +170,8 @@ class Runner:
 
         result["labels"] = result["input_ids"].copy()
 
+        print(result["input_ids"][0].shape)
+
         return result
 
 

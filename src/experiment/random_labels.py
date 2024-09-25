@@ -10,27 +10,25 @@ import random
 if __name__ == "__main__":
     arg_parser = ArgumentParser(description="Run peft finetuning experiment")
 
-    arg_parser.add_argument("-c", "--config", type=Path, help="Path to experiment config")
+    arg_parser.add_argument("-c", "--config", type=Path, action="append", help="Path to experiment config")
+
+    RunConfig.register_cli(arg_parser)
 
     args = arg_parser.parse_args()
 
-    config = RunConfig.from_file(args.config)
+    config = RunConfig.from_file(args.config, args)
+
+    config.is_eval = True
 
     datasets_path = tasks_path()
     metadata = get_metadata()
-    _, test_instances = collect_datasets(
-        config.train_datasets,
-        config.test_datasets,
-        metadata,
-        datasets_path,
-        True
-    )
+    _, test_instances = collect_datasets(config)
 
-    unique_labels = list(set([data["output"] for data in test_instances]))
+    unique_labels = test_instances["output"].unique()
 
     predictions = [random.choice(unique_labels) for _ in range(len(test_instances))]
 
-    labels = [d["output"] for d in test_instances]
+    labels = test_instances["output"]
 
     precision, recall, fscore, support, labels = compute_precision_recall_fscore_support(
         predictions,

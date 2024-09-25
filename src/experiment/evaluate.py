@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 from sklearn.metrics import  precision_recall_fscore_support
+from sklearn.feature_selection import r_regression
+from scipy.stats import kendalltau
 import evaluate
+import re
 
 def compute_precision_recall_fscore_support(predictions, references, f1_average="macro", beta=1.0):
     labels = list(set(references))
@@ -44,3 +47,19 @@ def compute_rouge_score(predictions, references):
 def compute_bleu_score(predictions, references):
     bleu = evaluate.load("bleu")
     return bleu.compute(predictions=predictions, references=references)
+
+
+def rank_string_to_matrix(rank_strings):
+    rank_regex = re.compile("\d+")
+    prediction_ranks = []
+    for p in rank_strings:
+        rr = rank_regex.findall(p)
+        prediction_ranks.append(rr)
+
+    return np.array(prediction_ranks)
+
+
+def compute_kendall_tau(predictions, references):
+    predictions = rank_string_to_matrix(predictions)
+    references = rank_string_to_matrix(references)
+    return kendalltau(predictions, references)
