@@ -42,9 +42,6 @@ def save_json(data, filename):
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 
-import os
-
-
 def main():
     data_path = '/Users/Wangyaxi/Downloads/'
     save_path = '/Volumes/YaxiHD/Hiwi/generate_summary/tasks/test_tmp/'
