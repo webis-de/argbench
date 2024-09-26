@@ -1,0 +1,20 @@
+{
+    "train_datasets": {
+        "exclude_datasets": [
+            "counter_argument_generation_candela_hua19",
+            "counter_argument_generation_cmv_hua18",
+            "aspect_detection_ukp_aspect_schiller21"
+        ]
+    },
+    "test_datasets": {
+        "name": "aspect_detection_ukp_aspect_schiller21",
+        "match": "aspect_detection_ukp_aspect"
+    },
+    "training_args_config": {
+        "output_dir": "/home/dima/Projects/leave-one-out-aspect_detection_ukp_aspect_schiller21"
+    },
+    "validation_config": {
+        "eval_metric": "fscore",
+        "fscore_average": "macro"
+    }
+}

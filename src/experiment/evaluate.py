@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from sklearn.metrics import  precision_recall_fscore_support
+from sklearn.metrics import precision_recall_fscore_support
 from sklearn.feature_selection import r_regression
 from scipy.stats import kendalltau
 import evaluate

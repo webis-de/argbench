@@ -3,6 +3,14 @@ from typing import List
 from pathlib import Path
 import json
 
+def update_conf(config_update, config_other):
+    for k, v in config_other.items():
+        if isinstance(v, dict):
+            config_update[k] = update_conf(config_update.get(k, {}), v)
+        else:
+            config_update[k] = v
+    return config_update
+
 class CommonConfig:
     """Methods for all config classes"""
 
@@ -47,6 +55,16 @@ class TrainingArgsConfig(CommonConfig):
 
     save_total_limit: int = 3
 
+    per_device_eval_batch_size: int = 8
+
+    adam_beta1: float = 0.9
+
+    adam_beta2: float = 0.999
+
+    adam_epsilon: float = 1e-8
+
+    max_grad_norm: float = 1.0
+
     warmup_steps: int = None
 
     fp16: bool = True
@@ -56,6 +74,14 @@ class TrainingArgsConfig(CommonConfig):
     lr_scheduler_type: str = None
 
     metric_for_best_model: str = None
+
+    tf32: bool = False
+
+    bf16: bool = False
+
+    gradient_checkpointing: bool = False
+
+    gradient_accumulation_steps: int = 1
 
     load_best_model_at_end: bool = True
 
@@ -280,6 +306,15 @@ class RunConfig:
         arg_parser.add_argument("-tlbme", "--train_load_best_model_at_end", action="store_true", help="Whether to load the best model at the end.")
         arg_parser.add_argument("-tgbl", "--train_group_by_length", action="store_true", help="Group sequences into batches with same length")
         arg_parser.add_argument("-tde", "--train_do_eval", action="store_true", help="Whether to run evaluation during training")
+        arg_parser.add_argument("-teb", "--train_eval_batch_size", type=int, help="Batch size for eval dataset")
+        arg_parser.add_argument("-tb1", "--train_adam_beta1", type=float, help="Adam optimizer beta 1 parameter")
+        arg_parser.add_argument("-tb2", "--train_adam_beta2", type=float, help="Adam optimizer beta 2 parameter")
+        arg_parser.add_argument("-tae", "--train_adam_epsilon", type=float, help="Adam optimizer epsilon parameter")
+        arg_parser.add_argument("-tmgn", "--train_max_grad_norm", type=float, help="Gradient clipping max_grad_norm")
+        arg_parser.add_argument("-ttf32", "--train_tf32", action="store_true", help="tf32 training acceleration")
+        arg_parser.add_argument("-tbf16", "--train_bf16", action="store_true", help="bf16 training acceleration")
+        arg_parser.add_argument("-tgc", "--train_gradient_checkpointing", action="store_true", help="Activate gradient checkpointing")
+        arg_parser.add_argument("-tgas", "--train_gradient_accumulation_steps", type=int, help="Gradient accumulation steps")
         # Validation arguments
         arg_parser.add_argument("-em", "--eval_metric", type=str, help="Evaluation metric name")
         arg_parser.add_argument("-bs", "--validation_batch_size", type=int, help="Batch size for evaluation")
@@ -326,7 +361,7 @@ class RunConfig:
         for path in paths:
             with open(path, "r") as f:
                 conf_file = json.load(f)
-                config.update(conf_file)
+                update_conf(config, conf_file)
 
         conf_obj = cls(is_eval=args.is_evaluate, **config)
 
@@ -427,6 +462,24 @@ class RunConfig:
             conf_obj.training_args_config.group_by_length = args.train_group_by_length
         if args.train_do_eval:
             conf_obj.training_args_config.do_eval = args.train_do_eval
+        if args.train_eval_batch_size:
+            conf_obj.training_args_config.per_device_eval_batch_size = args.train_eval_batch_size
+        if args.train_adam_beta1:
+            conf_obj.training_args_config.adam_beta1 = args.train_adam_beta1
+        if args.train_adam_beta2:
+            conf_obj.training_args_config.adam_beta2 = args.train_adam_beta2
+        if args.train_adam_epsilon:
+            conf_obj.training_args_config.adam_epsilon
+        if args.train_max_grad_norm:
+            conf_obj.training_args_config.max_grad_norm = args.train_max_grad_norm
+        if args.train_tf32:
+            conf_obj.training_args_config.tf32 = args.train_tf32
+        if args.train_bf16:
+            conf_obj.training_args_config.bf16 = args.train_bf16
+        if args.train_gradient_checkpointing:
+            conf_obj.training_args_config.gradient_checkpointing = args.train_gradient_checkpointing
+        if args.train_gradient_accumulation_steps:
+            conf_obj.training_args_config.gradient_accumulation_steps = args.train_gradient_accumulation_steps
 
         # Evaluation arguments
         if args.eval_metric:

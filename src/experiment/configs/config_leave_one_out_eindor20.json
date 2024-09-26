@@ -1,0 +1,13 @@
+{
+    "test_datasets": {
+        "name": "argument_unit_classificaiton_wikipedia_articles_lexisnexis_eindor20",
+        "match": "argument_unit_classificaiton_wikipedia_articles_lexisnexis_eindor20"
+    },
+    "training_args_config": {
+        "output_dir": "/home/dima/Projects/evaluations/leave-one-out-argument_unit_classificaiton_wikipedia_articles_lexisnexis_eindor20"
+    },
+    "validation_config": {
+        "eval_metric": "fscore",
+        "fscore_average": "macro"
+    }
+}

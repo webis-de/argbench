@@ -21,9 +21,10 @@ from peft import (
     get_peft_model,
 )
 from preprocess import collect_datasets, tasks_path, get_metadata, PandasDataset
+from evaluate import compute_precision_recall_fscore_support, compute_rouge_score, compute_bleu_score
 from tqdm import tqdm
 from config import RunConfig
-from evaluate import compute_precision_recall_fscore_support, compute_rouge_score, compute_bleu_score
+from tt import DebugCallback
 import json
 import torch
 
@@ -69,7 +70,9 @@ class Runner:
 
 
     def prepare_trainer(self):
-        train_args = TrainingArguments(**self.config.training_args_config.to_conf())
+        train_args = TrainingArguments(
+            **self.config.training_args_config.to_conf()
+        )
 
         data_collator = DataCollatorForSeq2Seq(
             self.tokenizer,
@@ -95,7 +98,7 @@ class Runner:
             processed = self.generate_and_tokenize_prompt(row, config.cutoff_len, False)
             test_data.append(processed)
 
-        return Trainer(
+        trainer = Trainer(
             model=self.model,
             callbacks=callbacks,
             train_dataset=train_data,
@@ -103,6 +106,8 @@ class Runner:
             args=train_args,
             data_collator=data_collator,
         )
+
+        return trainer
 
     def prepare_data(self):
         return collect_datasets(
@@ -170,8 +175,6 @@ class Runner:
 
         result["labels"] = result["input_ids"].copy()
 
-        print(result["input_ids"][0].shape)
-
         return result
 
 
@@ -198,10 +201,9 @@ class Runner:
     def write_run(self, run_results):
         with open(self.config.run_config_path, "w") as f:
             run_data = {
-                "config": asdict(self.config),
                 "run_sesults": run_results
             }
-            json.dump(run_data)
+            json.dump(run_data, f)
 
 
     def evaluate(self):
@@ -252,6 +254,9 @@ if __name__ == "__main__":
     arg_parser = ArgumentParser(description="Run peft finetuning experiment")
 
     arg_parser.add_argument("-c", "--config", type=Path, action="append", help="Path to experiment config")
+
+    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cudnn.allow_tf32 = True
 
     RunConfig.register_cli(arg_parser)
 

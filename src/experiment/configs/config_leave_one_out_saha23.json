@@ -1,0 +1,23 @@
+{
+    "train_datasets": {
+        "exclude_datasets": [
+            "counter_argument_generation_candela_hua19",
+            "counter_argument_generation_cmv_hua18",
+            "stance_classification_argu_saha23",
+            "premise_extraction_argu_saha23",
+            "argument_generation_argu_template_saha23",
+            "argument_generation_argu_saha23"
+        ]
+    },
+    "test_datasets": {
+        "name": "scheme_classification_argu_saha23",
+        "match": "scheme_classification_argu"
+    },
+    "training_args_config": {
+        "output_dir": "/home/dima/Projects/leave-one-out-scheme_classification_argu_saha23"
+    },
+    "validation_config": {
+        "eval_metric": "fscore",
+        "fscore_average": "macro"
+    }
+}

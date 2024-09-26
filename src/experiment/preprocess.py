@@ -83,6 +83,8 @@ def collect_files(
             task_file_path = task_data_path / task_file
             if not os.path.isfile(task_file_path):
                 continue
+            if task_file_path in test_files:
+                continue
 
             task_select = False
             if include_task:
@@ -154,12 +156,14 @@ def collect_datasets(run_config):
         train_config.get("exclude_datasets")
     )
 
+    print("Train datasets collected:")
     train_dataset = compile_datasets(
         train_tasks,
         train_config["prompt_template"],
         train_config.get("subsample_amount", None),
         train_config.get("subsample_rate", None)
     )
+    print("Test datasets collected:")
     test_dataset = compile_datasets(
         test_tasks,
         test_config["prompt_template"],
