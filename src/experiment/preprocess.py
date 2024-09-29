@@ -148,7 +148,7 @@ def collect_datasets(run_config):
         tasks_path,
         metadata,
         test_config,
-        train_config.get("include_genre"),
+        train_config.get("include_genres"),
         train_config.get("include_subarea"),
         train_config.get("include_task"),
         train_config.get("leave_one_out", False),

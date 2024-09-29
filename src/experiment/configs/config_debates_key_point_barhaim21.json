@@ -1,19 +1,18 @@
 {
     "seed": 42,
-    "base_model": "/bigwork/nhwpbozd/decapoda-research-llama-7B-hf/",
+    "base_model": "baffo32/decapoda-research-llama-7B-hf",
     "cutoff_len": 1500,
+    "data_folder": "/home/dima/Projects/data/",
     "train_datasets": {
         "include_genres": ["debates"],
         "subsample_amount": 50,
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:"
     },
     "test_datasets": {
-        "key_point_matching_argkp_2021_barhaim21": {
-            "name": "key_point_matching_argkp_2021_barhaim21",
-            "match": "key_point_matching_argkp_2021_barhaim21",
-            "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
-            "subsample_amount": 50
-        }
+        "name": "key_point_matching_argkp_2021_barhaim21",
+        "match": "key_point_matching_argkp_2021_barhaim21",
+        "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
+        "subsample_amount": 50
     },
     "quant_config": {
         "load_in_4bit": true
@@ -23,7 +22,7 @@
     },
     "peft_configs": [
         {
-            "model_id": "/bigwork/nhwpbozd/alpaca-lora-7b/",
+            "model_id": "tloen/alpaca-lora-7b",
             "adapter_name": "adapter",
             "is_trainable": true
         }
@@ -41,7 +40,7 @@
         "load_best_model_at_end": true,
         "group_by_length": false,
         "do_eval": true,
-        "output_dir": "/bigwork/nhwpbozd/train-checkpoint",
+        "output_dir": "/home/dima/Projects/checkpoints",
         "save_total_limit": 3,
         "warmup_steps": 200,
         "fp16": true,

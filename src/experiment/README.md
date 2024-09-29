@@ -1,220 +1,195 @@
 
-# Running model training and evaluation
+# Running experiment
 
-Main experiment running file `run.py` can run training and evaluation experiments with provided config:
+## Running with configuration file
+
+Main experiment running file `run.py` can run training and evaluation experiments with provided config file:
 
 ``` shell
 $ python run.py -c configs/config_name.json
 ```
 
-usage: run.py [-h] [-c CONFIG] [-ie] [-s SEED] [-is INCLUDE_SUBAREA] [-ig INCLUDE_GENERES]
-              [-tsr TRAIN_SUBSAMPLE_RATE] [-tsa TRAIN_SUBSAMPLE_AMOUNT] [-l]
-              [-vsr TEST_SUBSAMPLE_RATE] [-vsa TEST_SUBSAMPLE_AMOUNT] [-tdm TEST_DATASET_MATCH]
-              [-tdn TEST_DATASET_NAME] [-rc RESUME_CHECKPOINT] [-lm LOAD_MODEL] [-la LOAD_ADAPTER]
-              [-co CONFIG_OUTPUT] [-df DATA_FOLDER] [-tbs TRAIN_BATCH_SIZE] [-te TRAIN_EPOCHS]
-              [-tlr TRAIN_LEARNING_RATE] [-to TRAIN_OPTIM] [-tes TRAIN_EVALUATION_STRATEGY]
-              [-tss TRAIN_SAVE_STRATEGY] [-tev TRAIN_EVAL_STEPS] [-tsv TRAIN_SAVE_STEPS]
-              [-tod TRAIN_OUTPUT_DIR] [-stl TRAIN_SAVE_TOTAL_LIMIT] [-tw TRAIN_WARMUP_STEPS] [-tfp]
-              [-tls TRAIN_LOGGING_STEPS] [-tlst TRAIN_LR_SCHEDULER_TYPE]
-              [-tmfb TRAIN_METRIC_FOR_BEST_MODEL] [-tlbme] [-tgbl] [-tde] [-em EVAL_METRIC]
-              [-bs VALIDATION_BATCH_SIZE] [-fa FSCORE_AVERAGE] [-fb FSCORE_BETA] [-ml MAX_LENGTH]
-              [-mn MAX_NEW_TOKENS] [-min MIN_LENGTH] [-mnn MIN_NEW_TOKENS] [-es EARLY_STOPPING]
-              [-mt MAX_TIME] [-ds] [-nb NUM_BEAMS] [-nbg NUM_BEAM_GROUPS] [-pa PENALTY_ALPHA] [-uc]
-              [-temp TEMPERATURE] [-k TOP_K] [-p TOP_P] [-mp MIN_P] [-tp TYPICAL_P]
-              [-ec EPSILON_CUTOFF] [-etac ETA_CUTOFF] [-dp DIVERSITY_PENALTY] [-rp REPETITION_PENALTY]
-              [-lp LENGTH_PENALTY] [-i8] [-i4] [-i8t LLM_INT8_THRESHOLD] [-i8s LLM_INT8_SKIP_MODULES]
-              [-f32o] [-f16w] [-4qt {fp4,nf4}] [-dq]
+Multiple configuration files can be composed together. Values from later configuration files will overwrite the previous configuration files
 
+``` shell
+$ python run.py -c configs/general_config.json -c configs/specific_config.json
+```
 
-Run peft finetuning experiment
+#### Examples
 
-options:
-  **-h**, **--help**           show this help message and exit
+Running a single configuration:
 
-  **-c CONFIG, --config CONFIG** Path to experiment config
+``` shell
+$ python run.py -c configs/config_debates_key_point_barhaim21.json
+```
 
-  **-ie, --is_evaluate**    Should only evaluation be performed
+Running from composed config:
 
-  **-s SEED, --seed SEED**  Seed to use for running experiment
+``` shell
+python run.py -c configs/config_leave_one_out.json -c configs/config_leave_one_out_barhaim17.json
+```
 
-  **-is INCLUDE_SUBAREA, --include_subarea INCLUDE_SUBAREA** Training set subareas
+## Setting configuration values in command line
 
-  **-ig INCLUDE_GENERES, --include_generes INCLUDE_GENERES** Training set genres
+Many experiment configuration values can be set using command line flags.
 
-  **-tsr TRAIN_SUBSAMPLE_RATE, --train_subsample_rate TRAIN_SUBSAMPLE_RATE** Fraction of instances to subsample from each dataset
+### Evaluate model without training
 
-  **-tsa TRAIN_SUBSAMPLE_AMOUNT, --train_subsample_amount TRAIN_SUBSAMPLE_AMOUNT** Amount of instances to subsamplea from each dataset
+Skips training the model and evaluates it.
 
-  **-l, --is_leave_one_out** Should leave one out training be performed
+``` shell
+$ python run.py -c configs/config_file.json --is_evaluate
+```
 
-  **-vsr TEST_SUBSAMPLE_RATE, --test_subsample_rate TEST_SUBSAMPLE_RATE** Fraction of instances to subsample from each dataset for testing
+#### Example
 
-  **-vsa TEST_SUBSAMPLE_AMOUNT, --test_subsample_amount TEST_SUBSAMPLE_AMOUNT** Amount of instances to subsamplea from each dataset for testing
+Skip training and evaluate config:
 
-  **-tdm TEST_DATASET_MATCH, --test_dataset_match TEST_DATASET_MATCH** Matching pattern for test dataset files to include
+``` shell
+$ python run.py -c configs/config_debates_key_point_barhaim21.json --is_evaluate
+```
 
-  **-tdn TEST_DATASET_NAME, --test_dataset_name TEST_DATASET_NAME** Name of the test dataset to use
+### Set input/output folders
 
-  **-rc RESUME_CHECKPOINT, --resume_checkpoint RESUME_CHECKPOINT** Resume training from checkpoint
+Path to the output file that contains experiment evaluation results
 
-  **-lm LOAD_MODEL, --load_model LOAD_MODEL** Model to load
+``` shell
+$ pyhton run.py -c configs/config_file.json --config_output /path/to/output.json
+```
 
-  **-la LOAD_ADAPTER, --load_adapter LOAD_ADAPTER** Adapter to load
+Folder that contains preprocessed data to be used in experiment.
 
-  **-co CONFIG_OUTPUT, --config_output CONFIG_OUTPUT** File to write config to
+``` shell
+$ pyhton run.py -c configs/config_file.json --data_folder /path/to/data/folder/
+```
 
-  **-df DATA_FOLDER, --data_folder DATA_FOLDER** Data folder path
+#### Example
 
-  **-tbs TRAIN_BATCH_SIZE, --train_batch_size TRAIN_BATCH_SIZE** Training batch size
+``` shell
+$ python run.py -c configs/config_debates_key_point_barhaim21.json --data_folder /home/dima/Projects/data/ --config_output ./output.json
+```
 
-  **-te TRAIN_EPOCHS, --train_epochs TRAIN_EPOCHS** Number of training epochs
+### Load model checkpoints
 
-  **-tlr TRAIN_LEARNING_RATE, --train_learning_rate TRAIN_LEARNING_RATE** Learning rate
+Adapter can be loaded using `--load_adapter` flag with path to adapter folder or name.
 
-  **-to TRAIN_OPTIM, --train_optim TRAIN_OPTIM** Optimizer
+``` shell
+$ pyhton run.py -c configs/config_file.json --load_adapter /path/to/adapter/folder/
 
-  **-tes TRAIN_EVALUATION_STRATEGY, --train_evaluation_strategy TRAIN_EVALUATION_STRATEGY** Evaluation strategy
+```
 
-  **-tss TRAIN_SAVE_STRATEGY, --train_save_strategy TRAIN_SAVE_STRATEGY** Save strategy
+Model can be loaded using `--load_model` flag with flag to model folder or name.
 
-  **-tev TRAIN_EVAL_STEPS, --train_eval_steps TRAIN_EVAL_STEPS** Eval steps
+``` shell
+$ pyhton run.py -c configs/config_file.json --load_model /path/to/adapter/folder/
+```
 
-  **-tsv TRAIN_SAVE_STEPS, --train_save_steps TRAIN_SAVE_STEPS** Save steps
+#### Example
 
-  **-tod TRAIN_OUTPUT_DIR, --train_output_dir TRAIN_OUTPUT_DIR** Output directory
+Load standard llama model for finetuning
 
-  **-stl TRAIN_SAVE_TOTAL_LIMIT, --train_save_total_limit TRAIN_SAVE_TOTAL_LIMIT** Maximum number of last checkpoint files to keep.
+``` shell
+$ python run.py -c configs/config_debates_key_point_barhaim21.json --load_model baffo32/decapoda-research-llama-7B-hf --load_adapter tloen/alpaca-lora-7b
+```
 
-  **-tw TRAIN_WARMUP_STEPS, --train_warmup_steps TRAIN_WARMUP_STEPS** Linear warmup over warmup_steps
+### Test set settings
 
-  **-tfp, --train_fp16**    Use float16 training
+Test dataset name can be specified with `--test_dataset_name` flag while dataset files to match inside dataset folder can be set using `--test_dataset_match` flag. If full evaluation of test datasets is not needed, it can be subsampled using `--test_subsample_amount` to subsample only `amount_sample` samples, or `--test_subsample_rate` to subsample a fraction `ratio_subsample` of datapoints.
 
-  **-tls TRAIN_LOGGING_STEPS, --train_logging_steps TRAIN_LOGGING_STEPS** Log & save metrics to tensorboard every logging_steps steps
+``` shell
+$ python run.py -c configs/config_file.json --test_dataset_name dataset_name --test_dataset_match match_file_string --test_subsample_amount amount_subsample --test_subsample_rate ratio_subsample
+```
 
-  **-tlst TRAIN_LR_SCHEDULER_TYPE, --train_lr_scheduler_type TRAIN_LR_SCHEDULER_TYPE** Learning rate scheduler type
+#### Example
 
-  **-tmfb TRAIN_METRIC_FOR_BEST_MODEL, --train_metric_for_best_model TRAIN_METRIC_FOR_BEST_MODEL** Metric for best model selection
+Use same config but with different test set with 50 datapoints:
 
-  **-tlbme, --train_load_best_model_at_end** Whether to load the best model at the end.
+``` shell
+$ python run.py -c configs/config_debates_key_point_barhaim21.json --test_dataset_name argument_unit_classificaiton_wikipedia_articles_lexisnexis_eindor20 --test_dataset_match argument_unit_classificaiton_wikipedia_articles_lexisnexis_eindor20 --test_subsample_amount 50
+```
 
-  **-tgbl, --train_group_by_length** Group sequences into batches with same length
+### Train set settings
 
-  **-tde, --train_do_eval** Whether to run evaluation during training
+With setting `--is_leave_one_out` all datasets except test set are taken into training set. In order to subsample each dataset `--train_subsample_amount` and `--train_subsample_rate` is used that function the same as with test set.
 
-  **-em EVAL_METRIC, --eval_metric EVAL_METRIC** Evaluation metric name
+``` shell
+$ python run.py -c configs/config_file.json --is_leave_one_out --train_subsample_rate subsample_rate --train_subsample_amount subsample_amount
+```
 
-  **-bs VALIDATION_BATCH_SIZE, --validation_batch_size VALIDATION_BATCH_SIZE** Batch size for evaluation
+If you only want to include certain subareas of datasets into training set `--include_subarea` can be used. 
 
-  **-fa FSCORE_AVERAGE, --fscore_average FSCORE_AVERAGE** F-score average mode
+``` shell
+$ python run.py -c configs/config_file.json --include_subarea subarea
+```
 
-  **-fb FSCORE_BETA, --fscore_beta FSCORE_BETA** Beta parameter for F-score
+If you want to include certain genres of datasets into training set `--include_generes` can be used.
 
-  **-ml MAX_LENGTH, --max_length MAX_LENGTH** Maximum sequence length during generation
+``` shell
+$ python run.py -c configs/config_file.json --include_genres genres
+```
 
-  **-mn MAX_NEW_TOKENS, --max_new_tokens MAX_NEW_TOKENS** Maximum number of new tokens to generate
+### Frequently used hyperparameters
 
-  **-min MIN_LENGTH, --min_length MIN_LENGTH** Minimum sequence length during generation
+Most hyperparameters can be also changed using command line arguments. The naming convention of them follows the parameter names of huggingface transformers API.
 
-  **-mnn MIN_NEW_TOKENS, --min_new_tokens MIN_NEW_TOKENS** Minimum number of new tokens to generate
+``` shell
+$ python run.py -c configs/config_file.json --train_batch_size batch_size --train_epochs train_epochs --train_learning_rate learning_rate
+```
 
-  **-es EARLY_STOPPING, --early_stopping EARLY_STOPPING** Early stopping condition
+#### Other hyperparameters
 
-  **-mt MAX_TIME, --max_time MAX_TIME** Maximum generation time in seconds
+You can find out about other parameters and hyperparameters using `--help` flag.
 
-  **-ds, --do_sample**      Use sampling method for generation
+``` shell
+$ pyhton run.py --help
+```
 
-  **-nb NUM_BEAMS, --num_beams NUM_BEAMS** Number of beams for beam search
+### Examples
 
-  **-nbg NUM_BEAM_GROUPS, --num_beam_groups NUM_BEAM_GROUPS** Number of beam groups for group beam search
+## Examples of running experiments
 
-  **-pa PENALTY_ALPHA, --penalty_alpha PENALTY_ALPHA** Alpha parameter for penalty function
+Running [leave one out](./evaluation.md) experiments:
 
-  **-uc, --use_cache**      Use cache during generation
-
-  **-temp TEMPERATURE, --temperature TEMPERATURE** Temperature parameter for sampling method
-
-  **-k TOP_K, --top_k TOP_K** Top-k sampling parameter
-
-  **-p TOP_P, --top_p TOP_P** Top-p (nucleus) sampling parameter
-
-  **-mp MIN_P, --min_p MIN_P** Minimum p value for typical (Tyers) sampling
-
-  **-tp TYPICAL_P, --typical_p TYPICAL_P** Typical p (Tyers) sampling parameter
-
-  **-ec EPSILON_CUTOFF, --epsilon_cutoff EPSILON_CUTOFF** Epsilon cutoff parameter
-
-  **-etac ETA_CUTOFF, --eta_cutoff ETA_CUTOFF** Eta cutoff parameter
-
-  **-dp DIVERSITY_PENALTY, --diversity_penalty DIVERSITY_PENALTY** Diversity penalty parameter
-
-  **-rp REPETITION_PENALTY, --repetition_penalty REPETITION_PENALTY** Repetition penalty parameter
-
-  **-lp LENGTH_PENALTY, --length_penalty LENGTH_PENALTY** Length penalty parameter
-
-  **-i8, --load_in_8bit**   Load model in 8-bit precision
-
-  **-i4, --load_in_4bit**   Load model in 4-bit precision
-
-  **-i8t LLM_INT8_THRESHOLD, --llm_int8_threshold LLM_INT8_THRESHOLD** LLM Int8 threshold for quantization
-
-  **-i8s LLM_INT8_SKIP_MODULES, --llm_int8_skip_modules LLM_INT8_SKIP_MODULES** List of modules to skip when using LLM Int8 quantization
-
-  **-f32o, --enable_fp32_cpu_offload** Enable FP32 CPU offloading for LLM Int8
-
-  **-f16w, --has_fp16_weight** Set if the model has FP16 weights for LLM Int8
-
-  **-4qt {fp4,nf4}, --bnb_4bit_quant_type {fp4,nf4}** BitsAndBytes 4-bit quantization type
-
-  **-dq, --double_quant**   Enable double quantization for BitsAndBytes 4-bit
-
-## Running config
+``` shell
+$ python run.py -c configs/config_leave_one_out.json -c configs/config_leave_one_out_barhaim17.json -co out_barhaim17.json -ie -la /home/dima/Projects/evaluations/leave-one-out-stance_classification_ibmsc_barhaim17/checkpoint-10/adapter/ -vsa 50
+```
+# Configuration file
 
 Running configuration should follow `RunConfig` data class in [config.py](config.py) in form of json. One json config can be shared between many runs specified by `.json` files.
 
+## Train dataset config
 
-## Changing Training data
+Train dataset config structure:
 
-### Train set
-
-In order to include datasets into training set from genres `train_datasets.include_genres` parameter need to be set.
-
-Multiple configuration files can be combined together
-
-``` shell
-$ python run.py -c configs/config_name.json -c configs/custom_config.json
-```
-
-
-``` json
+``` json-with-comments
 {
+    "leave_one_out": true, // If leave_one_out is present and true, then all datasets except test one will be used in training set
+    "include_genres": ["debates"], // Genres to take in training set
+    "include_subarea": ["mining"], // Subareas to take in training set
+    "include_task": ["argument_mining"] // Dataset with task to take
+    "subsample_rate": 0.3, // % of datapoints to take
+    "subsample_amount": 50, // Amount of training samples to take for each dataset file
+    "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:", // Template for compiling prompt
     "train_datasets": {
-        "include_genres": ["genre"]
+        "exclude_datasets": [ // List of datasets to exclude from training set
+            "counter_argument_generation_candela_hua19",
+            "counter_argument_generation_cmv_hua18"
+        ]
     }
 }
-
 ```
 
+Test dataset config structure:
 
-In order to include datasets into training set from subareas `train_datasets.include_subareas` parameter need to be set.
-
-``` json
+``` json-with-comments
 {
-    "train_datasets": {
-        "include_subareas": ["subarea"]
-    }
-}
-
-```
-
-### Test set
-
-Test dataset must be specified separatedly in `test_datasets` field.
-
-``` json
-"dataset_name": {
-    "name": "dataset_folder_name",
-    "match": "dataset_file_matrch",
-    "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
-    "subsample_amount": 50
+    "test_datasets": {
+        "name": "key_point_matching_argkp_2021_barhaim21", // Dataset name to use for testing
+        "match": "key_point_matching_argkp_2021_barhaim21", // Match for files of dataset files
+        "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:", // Template to compile dataset prompt
+        "subsample_amount": 50 // Amount of samples to take from test dataset
+        "subsample_rate": 0.3 // % of datapoints to take from test dataset
+    },
 }
 ```
+
