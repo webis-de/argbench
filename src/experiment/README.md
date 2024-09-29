@@ -148,11 +148,18 @@ $ pyhton run.py --help
 
 ## Examples of running experiments
 
-Running [leave one out](./evaluation.md) experiments:
+Running [leave one out](./evaluation.md) experiment evaluation:
 
 ``` shell
 $ python run.py -c configs/config_leave_one_out.json -c configs/config_leave_one_out_barhaim17.json -co out_barhaim17.json -ie -la /home/dima/Projects/evaluations/leave-one-out-stance_classification_ibmsc_barhaim17/checkpoint-10/adapter/ -vsa 50
 ```
+
+Running [leave one out](./evaluation.md) experiment training:
+
+``` shell
+$ python run.py -c configs/config_leave_one_out.json -c configs/config_leave_one_out_barhaim17.json -co out_barhaim17.json
+```
+
 # Configuration file
 
 Running configuration should follow `RunConfig` data class in [config.py](config.py) in form of json. One json config can be shared between many runs specified by `.json` files.
