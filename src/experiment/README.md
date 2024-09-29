@@ -1,3 +1,10 @@
+# Preprocessing data
+
+In order to run experiments, data must be preprocessed first into `ndjson` files.
+
+``` shell
+$ python process_jsonl.py -o /output/folder/
+```
 
 # Running experiment
 
@@ -158,6 +165,22 @@ Running [leave one out](./evaluation.md) experiment training:
 
 ``` shell
 $ python run.py -c configs/config_leave_one_out.json -c configs/config_leave_one_out_barhaim17.json -co out_barhaim17.json
+```
+
+## Running baselines
+
+Baseline files can be configured the same as `run.py` experiment script.
+
+### Majority Class
+
+``` shell
+$ python majority_class.py -c configs/config_debates_key_point_barhaim21.json 
+```
+
+### Random Label
+
+``` shell
+python random_labels.py -c configs/config_debates_key_point_barhaim21.json
 ```
 
 # Configuration file
