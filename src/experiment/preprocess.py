@@ -8,6 +8,9 @@ import os
 import pandas as pd
 
 class PandasDataset:
+    """
+    Class to convert pandas DataFrame into usable Dataset
+    """
 
     def __init__(self, dataframe):
         self.dataframe = dataframe
@@ -32,6 +35,7 @@ def tasks_path():
     return dataset_folder
 
 def get_metadata():
+    """Get metadata file"""
     with open(tasks_path() / "metadata.json", "r") as f:
         return json.load(f)
 
@@ -46,6 +50,20 @@ def collect_files(
         is_evaluate=False,
         exclude_datasets=None
 ):
+    """
+    Collects files for train and test sets
+
+    :param task_path: path to folder with task data
+    :param metadata: metadata dictionary
+    :param test_configs: test dataset configuration dict
+    :param include_genere: Genres to include it training set
+    :param include_subarea: Subareas to include it training set
+    :param include_task: Tasks to include it training set
+    :param is_leave_one_out: If this is set, take all datasets that are not test dataset
+    :param is_evaluate: Should only test set be retruned for evaluation
+    :param exclude_datasets: Remove datasets from train set
+    :returns: Tuple of train dataset files and test dataset files
+    """
     if include_genre:
         include_genre = set(include_genre)
     if include_subarea:
@@ -108,7 +126,13 @@ def collect_files(
 
 def compile_datasets(dataset_paths, prompt_template, subsample_amount=None, subsample_rate=None):
     """
-    Compile all datasets into a dataframe
+    Read dataset file and compile all datasets into one dataframe
+
+    :param dataset_paths: List of dataset file paths
+    :param prompt_template: Template to compile dataset variables into prompt
+    :param subsample_amount: Amount of samples to take from dataset file
+    :param subsample_rate: % of instances to take from dataset
+    :returns: Full compiled DataFrame of all datasets instances
     """
     def template_formatter(row):
         return prompt_template.format(
@@ -136,7 +160,10 @@ def compile_datasets(dataset_paths, prompt_template, subsample_amount=None, subs
 
 def collect_datasets(run_config):
     """
-    Collect all datasets to use in run
+    Use RunConfig to create train and test datasets
+
+    :param run_config: RunConfig with train_datasets and test_datasets config dicts
+    :returns: Tuple of train and test datasets in pandas DataFrame
     """
     train_config = run_config.train_datasets
     test_config = run_config.test_datasets

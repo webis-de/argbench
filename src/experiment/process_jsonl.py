@@ -6,6 +6,12 @@ import json
 import ndjson
 
 def process_task_file(output_path, task_file_path):
+    """
+    Read task file in .json format and process it into ndjson format
+
+    :param output_path: Path to output file
+    :param task_file_path: Original task file path
+    """
     with open(task_file_path, "r") as f:
         task_contents = json.load(f)
 

@@ -19,7 +19,7 @@ class CommonConfig:
 
 @dataclass
 class DataCollatorConfig(CommonConfig):
-    """COnfiguration args for DataCollatorForSeq2Seq"""
+    """Configuration args for DataCollatorForSeq2Seq"""
 
     padding: bool = True
 
@@ -271,6 +271,9 @@ class RunConfig:
 
     @staticmethod
     def register_cli(arg_parser):
+        """
+        Registers all cli parameters for RunConfig
+        """
         arg_parser.add_argument("-ie", "--is_evaluate", action="store_true", default=False, help="Should evaluation be performed")
         arg_parser.add_argument("-s", "--seed", type=int, help="Seed to use for running experiment")
         arg_parser.add_argument("-is", "--include_subarea", action="append", help="Training set subareas")
@@ -356,7 +359,13 @@ class RunConfig:
 
     @classmethod
     def from_file(cls, paths: List[Path], args):
-        """Read config from file"""
+        """
+        Initializes RunConfig from configuration file and cli parameters
+
+        :param paths: List of paths to RunConfig configuration files that will be compiled together
+        :param args: CLI arguments to overwrite onfiguration file
+        :returns: Initialized RunConfig
+        """
         config = {}
         for path in paths:
             with open(path, "r") as f:

@@ -20,8 +20,8 @@ from peft import (
     LoraConfig,
     get_peft_model,
 )
-from preprocess import collect_datasets, tasks_path, get_metadata, PandasDataset
-from evaluate import compute_precision_recall_fscore_support, compute_rouge_score, compute_bleu_score
+from preprocess import collect_datasets, PandasDataset
+from testing import compute_precision_recall_fscore_support, compute_rouge_score, compute_bleu_score
 from tqdm import tqdm
 from config import RunConfig
 import json
@@ -40,6 +40,11 @@ class Runner:
     """Model runner class"""
 
     def __init__(self, config: RunConfig):
+        """
+        Initializes experiment runner with configuration object for training or evaluation
+
+        :param config: RunConfig configuration object
+        """
         self.config = config
         self.tokenizer = LlamaTokenizerFast.from_pretrained(config.base_model, padding_side="left", unk_token="<unk>")
         self.tokenizer.pad_token_id = config.pad_token_id
@@ -69,6 +74,11 @@ class Runner:
 
 
     def prepare_trainer(self):
+        """
+        Tokenizes train and test datasets and returns initialized Trainer instance
+
+        :returns: Trainer initialized with configuration parameters from RunConfig object and tokenized data
+        """
         train_args = TrainingArguments(
             **self.config.training_args_config.to_conf()
         )
@@ -109,12 +119,21 @@ class Runner:
         return trainer
 
     def prepare_data(self):
+        """
+        Using configuration object collects train and test datasets
+        """
         return collect_datasets(
             self.config
         )
 
 
     def prepare_llama_for_causal_llm(self, base_model):
+        """
+        Initializes LlamaForCausalLM model and its quantization
+
+        :param base_model: huggingface model path or name
+        :returns: LlamaForCausalLM initialized from config
+        """
         quant_conf = BitsAndBytesConfig(**self.config.quant_config.to_conf())
         return LlamaForCausalLM.from_pretrained(
             base_model,
@@ -126,7 +145,12 @@ class Runner:
 
     def prepare_peft_model(self, model):
         """
-        Prepare one or many peft models from pretrained weights
+        loads one or many combined peft models
+
+        If RunConfig contains many PeftConfigs, then multiple peft adapeters are combined together
+
+        :param model: Base LLM model
+        :returns: PeftModel prepared for original model
         """
         if len(self.config.peft_configs) > 1:
             first_config = self.config.peft_configs[0]
@@ -150,9 +174,12 @@ class Runner:
 
     def prepare_new_peft_model(self, model):
         """
-        Prepares new peft model
+        Initializes new Peft adapter instead of loading ready one.
+
+        :param model: Base LLM model
+        :returns: PeftModel prepared for original model
         """
-        if adapter_config.adapter_type == "lora":
+        if self.config.peft_fresh_config.adapter_type == "lora":
             config = LoraConfig(**self.config.peft_fresh_config.config_args)
         else:
             raise RuntimeError(f"No such adapter type: {self.config.peft_fresh_config.adapter_type}")
@@ -162,6 +189,14 @@ class Runner:
 
 
     def tokenize(self, prompt, cutoff_len, add_eos_token=True):
+        """
+        Tokenize instance for training or testing
+
+        :param prompt: Input prompt string
+        :param cutoff_len: Max length of prompt in tokens
+        :param add_eos_token: Should end of string token be added
+        :returns: Dict with tokenization result
+        """
         result = self.tokenizer(prompt, truncation=True, max_length=cutoff_len, padding=False, return_tensors=None,
         )
         if (
@@ -178,6 +213,14 @@ class Runner:
 
 
     def generate_and_tokenize_prompt(self, data_point, cutoff_len, train=True):
+        """
+        Tokenizes data instance for feeding the model during training/testing
+
+        :param data_point: Dict with "input", "output" strings
+        :param cutoff_len: Prompt max length
+        :param train: Is instance for training
+        :returns: tokenized prompt
+        """
         input_prompt = self.tokenize(data_point['input'], cutoff_len)
         if train:
             full_prompt = self.tokenize(f"{data_point['input']}{data_point['output']}", cutoff_len)
@@ -192,12 +235,18 @@ class Runner:
 
 
     def train(self):
+        """
+        Calls train method of Trainer
+        """
         if self.trainer:
             print("Start training")
             self.trainer.train()
 
 
     def write_run(self, run_results):
+        """
+        Writes run results of training
+        """
         with open(self.config.run_config_path, "w") as f:
             run_data = {
                 "run_sesults": run_results
@@ -206,6 +255,9 @@ class Runner:
 
 
     def evaluate(self):
+        """
+        Performs model evaluation using test set and evaluation metric from ValidationConfig
+        """
         labels = self.test_instances["output"]
         dataset = PandasDataset(self.test_instances)
         predictions = []

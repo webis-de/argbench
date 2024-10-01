@@ -4,8 +4,18 @@ from sklearn.feature_selection import r_regression
 from scipy.stats import kendalltau
 import evaluate
 import re
+import numpy as np
 
 def compute_precision_recall_fscore_support(predictions, references, f1_average="macro", beta=1.0):
+    """
+    Perform F1 evaluation for model outputs
+
+    :param predictions: Model outputs
+    :param references: True labels
+    :param f1_average: Averaging method for f1 score
+    :param beta: Beta weight of f1
+    :returns: Tuple of precision, recall, f1 score, support and all labels
+    """
     labels = list(set(references))
     labels = sorted(labels, key=lambda r: len(r), reverse=True)
     label_mapping = {l: i for i, l in enumerate(labels)}
@@ -40,16 +50,36 @@ def compute_precision_recall_fscore_support(predictions, references, f1_average=
 
 
 def compute_rouge_score(predictions, references):
+    """
+    Compute ROUGE scores for model predictions
+
+    :param predictions: Model outputs
+    :param references: True labels
+    :returns: dict with different ROUGE scores
+    """
     rouge = evaluate.load("rouge")
     return rouge.compute(predictions=predictions, references=references)
 
 
 def compute_bleu_score(predictions, references):
+    """
+    Compute BLEU scores for model predictions
+
+    :param predictions: Model outputs
+    :param references: True labels
+    :returns: dict with different BLEU scores
+    """
     bleu = evaluate.load("bleu")
     return bleu.compute(predictions=predictions, references=references)
 
 
 def rank_string_to_matrix(rank_strings):
+    """
+    Convert string rankings to numpy matrix
+
+    :param rank_strings: List of strings with ranking
+    :returns: Numpy matrix with rankings
+    """
     rank_regex = re.compile("\d+")
     prediction_ranks = []
     for p in rank_strings:
@@ -60,6 +90,13 @@ def rank_string_to_matrix(rank_strings):
 
 
 def compute_kendall_tau(predictions, references):
+    """
+    Compute kendall tau metric
+
+    :param predictions: Model outputs
+    :param references: True labels
+    :returns: dict with different BLEU scores
+    """
     predictions = rank_string_to_matrix(predictions)
     references = rank_string_to_matrix(references)
     return kendalltau(predictions, references)
