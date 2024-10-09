@@ -9,4 +9,4 @@
 module load Miniconda3
 conda activate lang
 #python /mnt/home/yajjour/task-specific-argument-mining-and-generation/src/experiment/process_jsonl.py -o /mnt/home/yajjour/task-specific-argument-mining-and-generation-data/
-python /mnt/home/yajjour/task-specific-argument-mining-and-generation/src/experiment/run.py -c configs/config_leave_one_out_ajjour17.json
+python /mnt/home/yajjour/task-specific-argument-mining-and-generation/src/experiment/run.py -c /mnt/home/yajjour/task-specific-argument-mining-and-generation/src/experiment/configs/config_leave_one_out_ajjour17.json
