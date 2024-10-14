@@ -3,6 +3,10 @@ from typing import List
 from pathlib import Path
 import json
 
+from optuna import Trial
+from peft.config import PeftConfig
+from peft.mapping import PEFT_TYPE_TO_CONFIG_MAPPING
+
 def update_conf(config_update, config_other):
     for k, v in config_other.items():
         if isinstance(v, dict):
@@ -11,11 +15,34 @@ def update_conf(config_update, config_other):
             config_update[k] = v
     return config_update
 
+def hpo_to_suggestion(trial: Trial, hpo: dict):
+    """
+    Turn hyperparameter configuration to hpo suggestion
+
+    :param trial: Optuna Trial object
+    :param hpo: hyperparameter config dict
+    :returns: HP value
+    """
+    if hpo["type"] == "categorical":
+        return trial.suggest_categorical(hpo["name"], hpo["choices"])
+    if hpo["type"] == "int":
+        return trial.suggest_int(hpo["name"], hpo["low"], hpo["high"], step=hpo.get("step", 1), log=hpo.get("log", False))
+    if hpo["type"] == "float":
+        return trial.suggest_float(hpo["name"], hpo["low"], hpo["high"], step=hpo.get("step", None), log=hpo.get("log", False))
+
 class CommonConfig:
     """Methods for all config classes"""
 
-    def to_conf(self):
-        return {k: v for k, v in self.__dict__.items() if v is not None}
+    def to_conf(self, trial=None, suggested_hps=None):
+        """
+        Convert configuration object to dictionary
+        """
+        config_params = {k: v for k, v in self.__dict__.items() if v is not None}
+        if not suggested_hps or not trial:
+            return config_params
+        for hp in suggested_hps:
+            config_params[hp] = hpo_to_suggestion(trial, suggested_hps[hp])
+        return config_params
 
 @dataclass
 class DataCollatorConfig(CommonConfig):
@@ -104,14 +131,20 @@ class PeftPretrainedConfig(CommonConfig):
 
     adapter_name: str
 
+    adapter_type: str = None
+
     is_trainable: bool = True
 
     adapter_weight: float = None
 
-    def to_conf(self):
-        config = super().to_conf()
+    config: PeftConfig = None
+
+    def to_conf(self, trial=None, suggested_hps=None):
+        config = super().to_conf(trial, suggested_hps)
         if config.get("adapter_weight"):
             del config["adapter_weight"]
+        if config.get("adapter_type"):
+            del config["adapter_type"]
         return config
 
 @dataclass
@@ -128,8 +161,8 @@ class PeftAdapterConfig(CommonConfig):
 
     config_args: dict
 
-    def to_conf(self):
-        config = super().to_conf()
+    def to_conf(self, trial=None, suggested_hps=None):
+        config = super().to_conf(trial, suggested_hps)
         del config["adapter_type"]
         return config
 
@@ -231,6 +264,26 @@ class EarlyStoppingConfig(CommonConfig):
 
     early_stopping_threshold: float = 0.0
 
+class HPOConfig(CommonConfig):
+    """Config for HPO"""
+
+    n_trials: int
+
+    storage: str
+
+    study_name: str
+
+    direction: str
+
+    val_metric: str = None
+
+    llama_causal_config: dict = None
+    quant_config: dict = None
+    # Training configs
+    training_args_config: dict = None
+    early_stopping_config: dict = None
+    data_collator_config: dict = None
+
 @dataclass
 class RunConfig:
     """Config for instruction finetuning run"""
@@ -249,6 +302,8 @@ class RunConfig:
     base_model: str
     # Should only evaluation be performed
     is_eval: bool
+    # Should HPO be performed
+    is_hpo: bool
     # Run config path
     run_config_path: str = ""
     # Padding token id
@@ -268,6 +323,7 @@ class RunConfig:
     data_collator_config: DataCollatorConfig = None
     generation_config: ModelGenerationConfig = None
     validation_config: ValidationConfig = None
+    hpo_config: HPOConfig = None
 
     @staticmethod
     def register_cli(arg_parser):
@@ -275,6 +331,7 @@ class RunConfig:
         Registers all cli parameters for RunConfig
         """
         arg_parser.add_argument("-ie", "--is_evaluate", action="store_true", default=False, help="Should evaluation be performed")
+        arg_parser.add_argument("-ih", "--is_hpo", action="store_true", default=False, help="Should HPO be performed")
         arg_parser.add_argument("-s", "--seed", type=int, help="Seed to use for running experiment")
         arg_parser.add_argument("-is", "--include_subarea", action="append", help="Training set subareas")
         arg_parser.add_argument("-ig", "--include_generes", action="append", help="Training set genres")
@@ -288,6 +345,7 @@ class RunConfig:
         arg_parser.add_argument("-rc", "--resume_checkpoint", help="Resume training from checkpoint")
         arg_parser.add_argument("-lm", "--load_model", type=str, help="Model to load")
         arg_parser.add_argument("-la", "--load_adapter", action="append", help="Adapter to load")
+        arg_parser.add_argument("-an", "--adapter_name", action="append", help="Adapter name that is being loaded")
         arg_parser.add_argument("-co", "--config_output", type=Path, help="File to write config to")
         arg_parser.add_argument("-df", "--data_folder", type=Path, help="Data folder path")
         # Training arguments
@@ -372,14 +430,19 @@ class RunConfig:
                 conf_file = json.load(f)
                 update_conf(config, conf_file)
 
-        conf_obj = cls(is_eval=args.is_evaluate, **config)
+        conf_obj = cls(is_eval=args.is_evaluate, is_hpo=args.is_hpo, **config)
 
         if config.get("llama_causal_config"):
             conf_obj.llama_causal_config = LLamaCausalConfig(**conf_obj.llama_causal_config)
         if config.get("peft_configs"):
             peft_configs = []
             for conf in conf_obj.peft_configs:
-                peft_configs.append(PeftPretrainedConfig(**conf))
+                peft_conf = PeftPretrainedConfig(**conf)
+                if peft_conf.adapter_type:
+                    config_cls = PEFT_TYPE_TO_CONFIG_MAPPING[peft_conf.adapter_type]
+                    peft_conf.config = config_cls(**peft_conf.config)
+                peft_configs.append(peft_conf)
+
             conf_obj.peft_configs = peft_configs
         if config.get("training_args_config"):
             conf_obj.training_args_config = TrainingArgsConfig(**conf_obj.training_args_config)
@@ -395,6 +458,8 @@ class RunConfig:
             conf_obj.peft_fresh_config = PeftAdapterConfig(**conf_obj.peft_fresh_config)
         if config.get("quant_config"):
             conf_obj.quant_config = QuantConfig(**conf_obj.quant_config)
+        if config.get("hpo_config"):
+            conf_obj.hpo_config = HPOConfig(**conf_obj.hpo_config)
 
 
         # Runner config
@@ -426,10 +491,10 @@ class RunConfig:
             conf_obj.data_folder = args.data_folder
         if args.load_adapter:
             peft_configs = []
-            for adapter in args.load_adapter:
+            for i, adapter in enumerate(args.load_adapter):
                 peft_configs.append(PeftPretrainedConfig(
                     model_id=adapter,
-                    adapter_name=None,
+                    adapter_name=args.adapter_name[i],
                     is_trainable=not args.is_evaluate
                 ))
             conf_obj.peft_configs = peft_configs

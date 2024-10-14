@@ -9,11 +9,14 @@
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
         "exclude_datasets": [
             "counter_argument_generation_candela_hua19",
-            "counter_argument_generation_cmv_hua18"
+            "counter_argument_generation_cmv_hua18",
+            "argument_unit_segmentation_entity_ajjour17"
         ]
     },
     "test_datasets": {
-        "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:"
+        "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
+        "name": "argument_unit_segmentation_ajjour17",
+        "match": "argument_unit_segmentation"
     },
     "quant_config": {
         "load_in_4bit": true
@@ -65,7 +68,8 @@
         "fp16": false,
         "logging_steps": 10,
         "lr_scheduler_type": "linear",
-        "metric_for_best_model": "loss"
+        "metric_for_best_model": "loss",
+        "output_dir": "/home/dima/Projects/evaluations/leave-one-out-argument_unit_segmentation_ajjour17"
     },
     "early_stopping_config": {
         "early_stopping_patience": 3,
@@ -83,6 +87,7 @@
         "max_length": 1500
     },
     "validation_config": {
-        "batch_size": 2
+        "batch_size": 2,
+        "eval_metric": "rouge"
     }
 }

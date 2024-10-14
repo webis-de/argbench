@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from argparse import ArgumentParser
+from optuna import Trial, create_study
 from torch.utils.data import DataLoader
 from pathlib import Path
 from dataclasses import asdict
@@ -48,70 +49,79 @@ class Runner:
         self.config = config
         self.tokenizer = LlamaTokenizerFast.from_pretrained(config.base_model, padding_side="left", unk_token="<unk>")
         self.tokenizer.pad_token_id = config.pad_token_id
-        self.model = self.prepare_llama_for_causal_llm(
-            config.base_model
-        )
-        if config.is_eval:
-            self.model = prepare_model_for_kbit_training(self.model)
-            self.model.enable_input_require_grads()
-        print("Model loaded")
-        if config.peft_configs and config.peft_fresh_config:
-            raise RuntimeError("Cannot instantiate both fresh and trained models")
-        if config.peft_configs:
-            self.model = self.prepare_peft_model(self.model)
-        if config.peft_fresh_config:
-            self.model = self.prepare_new_peft_model(self.model)
-        print("LoRa loaded")
 
-        self.train_instances, self.test_instances = self.prepare_data()
-
-        if (not self.config.is_eval) and self.config.training_args_config:
-            self.trainer = self.prepare_trainer()
-        else:
-            self.trainer = None
+        self.prepare_data()
+        print("Data prepared!")
 
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
 
 
-    def prepare_trainer(self):
+    def prepare_model(self,
+                      trial=None,
+                      quant_hpo=None,
+                      llama_causal_hpo=None):
+        """
+        Prepare a model using configuration or HPO trial
+
+        :param trial: Optuna trial object
+        :param quant_hpo: Quantization hyperparameters
+        :param llama_causal_hpo: Model hyperparameters
+        :param peft_hpo: PEFT model hyperparameters
+        :param new_peft_hpo: New peft hyperparameters
+        :returns: Model to be trained
+        """
+        print("Prepare model")
+        model = self.prepare_llama_for_causal_llm(
+            self.config.base_model,
+            self.config.quant_config.to_conf(trial, quant_hpo),
+            self.config.llama_causal_config.to_conf(trial, llama_causal_hpo)
+        )
+        if self.config.is_eval:
+            model = prepare_model_for_kbit_training(model)
+            model.enable_input_require_grads()
+        print("Model loaded")
+        if self.config.peft_configs and self.config.peft_fresh_config:
+            raise RuntimeError("Cannot instantiate both fresh and trained models")
+        if self.config.peft_configs:
+            model = self.prepare_peft_model(model)
+        if self.config.peft_fresh_config:
+            model = self.prepare_new_peft_model(model)
+
+        return model
+
+
+    def prepare_trainer(self,
+                        model,
+                        trial=None,
+                        training_arg_hpo=None,
+                        data_collator_hpo=None,
+                        early_stopping_hpo=None):
         """
         Tokenizes train and test datasets and returns initialized Trainer instance
 
         :returns: Trainer initialized with configuration parameters from RunConfig object and tokenized data
         """
         train_args = TrainingArguments(
-            **self.config.training_args_config.to_conf()
+            **self.config.training_args_config.to_conf(trial, training_arg_hpo)
         )
 
         data_collator = DataCollatorForSeq2Seq(
             self.tokenizer,
-            **self.config.data_collator_config.to_conf()
+            **self.config.data_collator_config.to_conf(trial, data_collator_hpo)
         )
 
         callbacks = []
 
         if config.early_stopping_config:
             callbacks = [
-                EarlyStoppingCallback(**self.config.early_stopping_config.to_conf())
+                EarlyStoppingCallback(**self.config.early_stopping_config.to_conf(trial, early_stopping_hpo))
             ]
 
-        train_data = []
-        for row in self.train_instances.iterrows():
-            row = row[1]
-            processed = self.generate_and_tokenize_prompt(row, config.cutoff_len)
-            train_data.append(processed)
-
-        test_data = []
-        for row in self.test_instances.iterrows():
-            row = row[1]
-            processed = self.generate_and_tokenize_prompt(row, config.cutoff_len, False)
-            test_data.append(processed)
-
         trainer = Trainer(
-            model=self.model,
+            model=model,
             callbacks=callbacks,
-            train_dataset=train_data,
-            eval_dataset=test_data,
+            train_dataset=self.train_data,
+            eval_dataset=self.test_data,
             args=train_args,
             data_collator=data_collator,
         )
@@ -122,24 +132,38 @@ class Runner:
         """
         Using configuration object collects train and test datasets
         """
-        return collect_datasets(
+        self.train_instances, self.test_instances = collect_datasets(
             self.config
         )
 
+        self.train_data = []
+        for row in self.train_instances.iterrows():
+            row = row[1]
+            processed = self.generate_and_tokenize_prompt(row, config.cutoff_len)
+            self.train_data.append(processed)
 
-    def prepare_llama_for_causal_llm(self, base_model):
+        self.test_data = []
+        for row in self.test_instances.iterrows():
+            row = row[1]
+            processed = self.generate_and_tokenize_prompt(row, config.cutoff_len, False)
+            self.test_data.append(processed)
+
+
+    def prepare_llama_for_causal_llm(self, base_model, quant_config, model_config):
         """
         Initializes LlamaForCausalLM model and its quantization
 
         :param base_model: huggingface model path or name
+        :param quant_config: Quantization config
+        :param model_config: Configuration parameters for model
         :returns: LlamaForCausalLM initialized from config
         """
-        quant_conf = BitsAndBytesConfig(**self.config.quant_config.to_conf())
+        quant_conf = BitsAndBytesConfig(**quant_config)
         return LlamaForCausalLM.from_pretrained(
             base_model,
             torch_dtype=torch.float16,
             quantization_config=quant_conf,
-            **self.config.llama_causal_config.to_conf()
+            **model_config
         )
 
 
@@ -168,7 +192,11 @@ class Runner:
             )
             return model
 
-        model = PeftModel.from_pretrained(model, **self.config.peft_configs[0].to_conf())
+        # model = get_peft_model(model, **self.config.peft_configs[0].to_conf())
+        model = PeftModel.from_pretrained(
+            model,
+            **self.config.peft_configs[0].to_conf()
+        )
         return model
 
 
@@ -185,7 +213,6 @@ class Runner:
             raise RuntimeError(f"No such adapter type: {self.config.peft_fresh_config.adapter_type}")
 
         return get_peft_model(model, config, self.config.peft_fresh_config.adapter_name)
-
 
 
     def tokenize(self, prompt, cutoff_len, add_eos_token=True):
@@ -234,13 +261,61 @@ class Runner:
         return input_prompt
 
 
-    def train(self):
+    def load_model(self):
+        """Loads model checkpoint"""
+        model = self.prepare_model()
+        return self.prepare_trainer(model)
+
+
+    def hpo_objective(self, trial: Trial):
+
+        model = self.prepare_model(
+            trial,
+            self.config.hpo_config.quant_config,
+            self.config.hpo_config.llama_causal_config
+        )
+
+        trainer = self.prepare_trainer(
+            model,
+            trial,
+            self.config.hpo_config.training_args_config,
+            self.config.hpo_config.data_collator_config,
+            self.config.hpo_config.early_stopping_config
+        )
+
+        trainer.train()
+
+        test_result = self.evaluate(trainer)
+
+        if self.config.hpo_config.val_metric:
+            return test_result[self.config.hpo_config.val_metric]
+        return test_result
+
+
+    def perform_hpo(self):
+        """Perform HPO search"""
+
+        study = create_study(
+            storage=self.config.hpo_config.storage,
+            study_name=self.config.hpo_config.study_name,
+            direction=self.config.hpo_config.direction
+        )
+
+        study.optimize(self.hpo_objective, self.config.hpo_config.n_trials)
+
+
+    def execute(self):
         """
-        Calls train method of Trainer
+        Execute training, hpo or evaluation
         """
-        if self.trainer:
-            print("Start training")
+        if self.config.is_hpo:
+            self.perform_hpo()
+            return
+
+        self.trainer = self.load_model()
+        if not self.config.is_eval:
             self.trainer.train()
+        return self.evaluate(self.trainer)
 
 
     def write_run(self, run_results):
@@ -254,7 +329,7 @@ class Runner:
             json.dump(run_data, f)
 
 
-    def evaluate(self):
+    def evaluate(self, trainer):
         """
         Performs model evaluation using test set and evaluation metric from ValidationConfig
         """
@@ -275,7 +350,7 @@ class Runner:
             text = data["input"]
             prompt = self.tokenizer(text=text, return_tensors="pt", padding=True)
             inputs = prompt["input_ids"].cuda()
-            generated = self.model.generate(
+            generated = trainer.model.generate(
                 input_ids=inputs,
                 generation_config=self.generation_config,
                 return_dict_in_generate=True
@@ -317,10 +392,7 @@ if __name__ == "__main__":
 
     runner = Runner(config)
 
-    if not args.is_evaluate:
-        runner.train()
-
-    score = runner.evaluate()
+    score = runner.execute()
 
     if runner.config.validation_config.eval_metric == "fscore":
         runner.write_run({
