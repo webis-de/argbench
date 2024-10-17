@@ -25,6 +25,7 @@ from preprocess import collect_datasets, PandasDataset
 from testing import compute_precision_recall_fscore_support, compute_rouge_score, compute_bleu_score
 from tqdm import tqdm
 from config import RunConfig
+import numpy as np
 import json
 import torch
 
@@ -50,7 +51,7 @@ class Runner:
         self.tokenizer = LlamaTokenizerFast.from_pretrained(config.base_model, padding_side="left", unk_token="<unk>")
         self.tokenizer.pad_token_id = config.pad_token_id
 
-        self.prepare_data()
+        # self.prepare_data()
         print("Data prepared!")
 
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
@@ -286,7 +287,6 @@ class Runner:
         trainer.train()
 
         test_result = self.evaluate(trainer)
-
         if self.config.hpo_config.val_metric:
             return test_result[self.config.hpo_config.val_metric]
         return test_result
@@ -322,7 +322,7 @@ class Runner:
         """
         Writes run results of training
         """
-        with open(self.config.run_config_path, "w") as f:
+        with open(self.config.run_output_path, "w") as f:
             run_data = {
                 "run_sesults": run_results
             }

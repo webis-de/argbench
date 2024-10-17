@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List
 from pathlib import Path
 import json
@@ -264,6 +264,7 @@ class EarlyStoppingConfig(CommonConfig):
 
     early_stopping_threshold: float = 0.0
 
+@dataclass
 class HPOConfig(CommonConfig):
     """Config for HPO"""
 
@@ -277,12 +278,12 @@ class HPOConfig(CommonConfig):
 
     val_metric: str = None
 
-    llama_causal_config: dict = None
-    quant_config: dict = None
+    llama_causal_config: dict = field(default_factory=dict)
+    quant_config: dict = field(default_factory=dict)
     # Training configs
-    training_args_config: dict = None
-    early_stopping_config: dict = None
-    data_collator_config: dict = None
+    training_args_config: dict = field(default_factory=dict)
+    early_stopping_config: dict = field(default_factory=dict)
+    data_collator_config: dict = field(default_factory=dict)
 
 @dataclass
 class RunConfig:
@@ -305,11 +306,13 @@ class RunConfig:
     # Should HPO be performed
     is_hpo: bool
     # Run config path
-    run_config_path: str = ""
+    run_output_path: str
     # Padding token id
     pad_token_id: int = 0
     # Peft combination type
     combination_type: str = None
+    # Data type
+    data_type: str = "ndjson"
 
     llama_causal_config: LLamaCausalConfig = None
     quant_config: QuantConfig = None
@@ -486,7 +489,7 @@ class RunConfig:
         if args.load_model:
             conf_obj.base_model = args.load_model
         if args.config_output:
-            conf_obj.run_config_path = args.config_output
+            conf_obj.run_output_path = args.config_output
         if args.data_folder:
             conf_obj.data_folder = args.data_folder
         if args.load_adapter:

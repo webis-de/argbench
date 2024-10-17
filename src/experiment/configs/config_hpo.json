@@ -4,6 +4,22 @@
     "cutoff_len": 1000,
     "data_folder": "/home/dima/Data/data/",
     "data_type": "parquet",
+    "run_output_path": "./out.json",
+    "hpo_config": {
+        "n_trials": 40,
+        "storage": "sqlite:///db.sqlite3",
+        "study_name": "start_study",
+        "direction": "maximize",
+        "val_metric": "fscore",
+        "training_args_config": {
+            "learning_rate": {
+                "type": "float",
+                "name": "learning_rate",
+                "low": 0.0001,
+                "high": 0.001
+            }
+        }
+    },
     "train_datasets": {
         "leave_one_out": true,
         "subsample_amount": 50,
