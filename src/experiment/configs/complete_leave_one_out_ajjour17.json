@@ -1,9 +1,9 @@
 {
     "seed": 42,
-    "base_model": "baffo32/decapoda-research-llama-7B-hf",
-    "cutoff_len": 1000,
-    "data_folder": "/home/dima/Data/data/",
-    "data_type": "parquet",
+    "base_model": "/bigwork/nhwpajjy/pre-trained-models/baffo32/decapoda-research-llama-7B-hf",
+    "cutoff_len": 2000,
+    "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data",
+    "data_type": "ndjson",
     "train_datasets": {
         "leave_one_out": true,
         "subsample_amount": 50,
@@ -27,12 +27,12 @@
     },
     "peft_configs": [
         {
-            "model_id": "/home/dima/Data/alpaca-lora-7b/",
+            "model_id": "/bigwork/nhwpajjy/pre-trained-models/alpaca-lora-7b/",
             "adapter_name": "adapter",
             "is_trainable": true,
             "adapter_type": "LORA",
             "config": {
-                "base_model_name_or_path": "decapoda-research/llama-7b-hf",
+                "base_model_name_or_path": "/bigwork/nhwpajjy/pre-trained-models/baffo32/decapoda-research-llama-7B-hf",
                 "bias": "none",
                 "fan_in_fan_out": false,
                 "inference_mode": true,
