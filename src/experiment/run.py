@@ -113,7 +113,7 @@ class Runner:
 
         callbacks = []
 
-        if config.early_stopping_config:
+        if self.config.early_stopping_config:
             callbacks = [
                 EarlyStoppingCallback(**self.config.early_stopping_config.to_conf(trial, early_stopping_hpo))
             ]
@@ -140,13 +140,13 @@ class Runner:
         self.train_data = []
         for row in self.train_instances.iterrows():
             row = row[1]
-            processed = self.generate_and_tokenize_prompt(row, config.cutoff_len)
+            processed = self.generate_and_tokenize_prompt(row, self.config.cutoff_len)
             self.train_data.append(processed)
 
         self.test_data = []
         for row in self.test_instances.iterrows():
             row = row[1]
-            processed = self.generate_and_tokenize_prompt(row, config.cutoff_len, False)
+            processed = self.generate_and_tokenize_prompt(row, self.config.cutoff_len, False)
             self.test_data.append(processed)
 
 
