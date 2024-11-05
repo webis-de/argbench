@@ -1,7 +1,8 @@
 {
     "seed": 42,
-    "base_model": "/bigwork/nhwpajjy/pre-trained-models/baffo32/decapoda-research-llama-7B-hf",
+    "base_model": "/bigwork/nhwpajjy/pre-trained-models/decapoda-research-llama-7B-hf",
     "cutoff_len": 2000,
+    "run_output_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/output/output.out",
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data",
     "data_type": "ndjson",
     "train_datasets": {
