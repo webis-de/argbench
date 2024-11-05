@@ -51,7 +51,7 @@ class Runner:
         self.tokenizer = LlamaTokenizerFast.from_pretrained(config.base_model, padding_side="left", unk_token="<unk>")
         self.tokenizer.pad_token_id = config.pad_token_id
 
-        # self.prepare_data()
+        self.prepare_data()
         print("Data prepared!")
 
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
