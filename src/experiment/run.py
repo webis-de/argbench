@@ -54,7 +54,7 @@ class Runner:
         # self.prepare_data()
         print("Data prepared!")
 
-        self.generation_config = GenerationConfig(**config.generation_config.to_conf())
+        self.generation_config = GenerationConfig(**config.generation_config)
 
 
     def prepare_model(self,
