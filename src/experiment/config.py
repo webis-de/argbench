@@ -438,7 +438,7 @@ class RunConfig:
                 conf_file = json.load(f)
                 update_conf(config, conf_file)
         if args == None:
-            return cls(**config)
+            conf_obj =  cls(**config)
         else:
             conf_obj = cls(is_eval=args.is_evaluate, is_hpo=args.is_hpo, **config)
 
@@ -471,7 +471,8 @@ class RunConfig:
         if config.get("hpo_config"):
             conf_obj.hpo_config = HPOConfig(**conf_obj.hpo_config)
 
-
+        if not args:
+            return conf_obj
         # Runner config
         if args.seed:
             conf_obj.seed = args.seed
