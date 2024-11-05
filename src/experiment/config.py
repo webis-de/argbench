@@ -419,7 +419,7 @@ class RunConfig:
 
 
     @classmethod
-    def from_file(cls, paths: List[Path], args):
+    def from_file(cls, paths: List[Path], args=None):
         """
         Initializes RunConfig from configuration file and cli parameters
 
@@ -432,8 +432,10 @@ class RunConfig:
             with open(path, "r") as f:
                 conf_file = json.load(f)
                 update_conf(config, conf_file)
-
-        conf_obj = cls(is_eval=args.is_evaluate, is_hpo=args.is_hpo, **config)
+        if not args:
+            return cls(**config)
+        else:
+            conf_obj = cls(is_eval=args.is_evaluate, is_hpo=args.is_hpo, **config)
 
         if config.get("llama_causal_config"):
             conf_obj.llama_causal_config = LLamaCausalConfig(**conf_obj.llama_causal_config)
