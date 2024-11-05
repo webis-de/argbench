@@ -432,7 +432,7 @@ class RunConfig:
             with open(path, "r") as f:
                 conf_file = json.load(f)
                 update_conf(config, conf_file)
-        if not args:
+        if args == None:
             return cls(**config)
         else:
             conf_obj = cls(is_eval=args.is_evaluate, is_hpo=args.is_hpo, **config)
