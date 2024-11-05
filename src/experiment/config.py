@@ -256,6 +256,11 @@ class ModelGenerationConfig(CommonConfig):
 
     length_penalty: float = 1
 
+    def to_conf(self):
+        config = super().to_conf()
+
+        return config
+
 @dataclass
 class EarlyStoppingConfig(CommonConfig):
     """Config for early stopping"""
