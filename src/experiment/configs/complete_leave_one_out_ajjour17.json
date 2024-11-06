@@ -5,7 +5,6 @@
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data",
     "data_type": "ndjson",
     "train_datasets": {
-        "leave_one_out": true,
         "subsample_amount": 50,
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
         "exclude_datasets": [
@@ -13,7 +12,9 @@
             "counter_argument_generation_cmv_hua18",
             "argument_unit_segmentation_entity_ajjour17"
         ],
-        "match": "stance"
+        "include_tasks": [
+            "argument_unit_classification_essays_stab17"
+        ]
     },
     "test_datasets": {
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
