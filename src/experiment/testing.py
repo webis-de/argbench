@@ -100,3 +100,7 @@ def compute_kendall_tau(predictions, references):
     predictions = rank_string_to_matrix(predictions)
     references = rank_string_to_matrix(references)
     return kendalltau(predictions, references)
+
+def compute_meteor_score(predictions, references):
+    rouge = evaluate.load("meteor")
+    return rouge.compute(predictions=predictions, references=references)
