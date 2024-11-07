@@ -407,7 +407,7 @@ if __name__ == "__main__":
     with profiler.profile(with_stack=True, profile_memory=True) as prof:
         runner = Runner(config)
         score = runner.execute()
-
+        prof.key_averages(group_by_stack_n=5).table(sort_by='self_cpu_time_total', row_limit=5)
     if runner.config.validation_config.eval_metric == "fscore":
         runner.write_run({
             "precision": score[0],
