@@ -8,7 +8,7 @@
     "hpo_config": {
         "n_trials": 50,
         "storage": "sqlite:///db.sqlite3",
-        "study_name": "argument_unit_segmentation_ajjour17_study",
+        "study_name": "frame_identification_webis_stance_classification_19_ajjour19_study",
         "direction": "maximize",
         "val_metric": "rouge2",
         "training_args_config": {
@@ -39,13 +39,13 @@
         "exclude_datasets": [
             "counter_argument_generation_candela_hua19",
             "counter_argument_generation_cmv_hua18",
-            "argument_unit_segmentation_entity_ajjour17"
+            "frame_identification_webis_stance_classification_19_ajjour19"
         ]
     },
     "test_datasets": {
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
-        "name": "argument_unit_segmentation_ajjour17",
-        "match": "argument_unit_segmentation",
+        "name": "frame_identification_webis_stance_classification_19_ajjour19",
+        "match": "frame_identification_webis_stance_classification_19_ajjour19",
         "subsample_amount": 20
     },
     "quant_config": {
@@ -98,7 +98,7 @@
         "fp16": false,
         "logging_steps": 10,
         "metric_for_best_model": "loss",
-        "output_dir": "/bigwork/nhwpbozd/leave-one-out-argument_unit_segmentation_ajjour17"
+        "output_dir": "/bigwork/nhwpbozd/leave-one-out-frame_identification_webis_stance_classification_19_ajjour19"
     },
     "early_stopping_config": {
         "early_stopping_patience": 3,
