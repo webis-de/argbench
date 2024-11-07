@@ -404,10 +404,13 @@ if __name__ == "__main__":
     args = arg_parser.parse_args()
 
     config = RunConfig.from_file(args.config, args)
+
+    task_metrics = json.loads(open("configs/config_task_metrics.json"))
     with profiler.profile(with_stack=True, profile_memory=True) as prof:
         runner = Runner(config)
         score = runner.execute()
         prof.key_averages(group_by_stack_n=5).table(sort_by='self_cpu_time_total', row_limit=5)
+
     if runner.config.validation_config.eval_metric == "fscore":
         runner.write_run({
             "precision": score[0],
