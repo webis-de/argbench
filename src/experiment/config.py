@@ -258,6 +258,11 @@ class ModelGenerationConfig(CommonConfig):
 
     length_penalty: float = 1
 
+    def to_conf(self):
+        config = super().to_conf()
+
+        return config
+
 @dataclass
 class EarlyStoppingConfig(CommonConfig):
     """Config for early stopping"""
@@ -421,7 +426,7 @@ class RunConfig:
 
 
     @classmethod
-    def from_file(cls, paths: List[Path], args):
+    def from_file(cls, paths: List[Path], args=None):
         """
         Initializes RunConfig from configuration file and cli parameters
 
@@ -434,8 +439,10 @@ class RunConfig:
             with open(path, "r") as f:
                 conf_file = json.load(f)
                 update_conf(config, conf_file)
-
-        conf_obj = cls(is_eval=args.is_evaluate, is_hpo=args.is_hpo, **config)
+        if args == None:
+            conf_obj =  cls(**config)
+        else:
+            conf_obj = cls(is_eval=args.is_evaluate, is_hpo=args.is_hpo, **config)
 
         if config.get("llama_causal_config"):
             conf_obj.llama_causal_config = LLamaCausalConfig(**conf_obj.llama_causal_config)
@@ -466,7 +473,8 @@ class RunConfig:
         if config.get("hpo_config"):
             conf_obj.hpo_config = HPOConfig(**conf_obj.hpo_config)
 
-
+        if not args:
+            return conf_obj
         # Runner config
         if args.seed:
             conf_obj.seed = args.seed
