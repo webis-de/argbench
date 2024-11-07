@@ -53,7 +53,7 @@ class Runner:
         :param config: RunConfig configuration object
         """
         self.config = config
-        self.tokenizer = LlamaTokenizerFast.from_pretrained(config.base_model, padding_side="left", unk_token="<unk>")
+        self.tokenizer = LlamaTokenizerFast.from_pretrained(config.base_model, padding_side="left", unk_token="<unk>", truncation=True)
         self.tokenizer.pad_token_id = config.pad_token_id
         with profiler.record_function("preparing data"):
             self.prepare_data()
