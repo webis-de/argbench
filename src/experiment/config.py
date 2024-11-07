@@ -82,6 +82,8 @@ class TrainingArgsConfig(CommonConfig):
 
     save_total_limit: int = 3
 
+    weight_decay: float = 0.0
+
     per_device_eval_batch_size: int = 8
 
     adam_beta1: float = 0.9
@@ -98,7 +100,7 @@ class TrainingArgsConfig(CommonConfig):
 
     logging_steps: int = 10
 
-    lr_scheduler_type: str = None
+    lr_scheduler_type: str = "constant_with_warmup"
 
     metric_for_best_model: str = None
 

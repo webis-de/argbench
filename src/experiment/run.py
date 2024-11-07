@@ -15,6 +15,7 @@ from transformers import (
     EarlyStoppingCallback,
     BitsAndBytesConfig
 )
+from optuna.samplers import TPESampler
 from peft import (
     PeftModel,
     prepare_model_for_kbit_training,
@@ -51,7 +52,7 @@ class Runner:
         self.tokenizer = LlamaTokenizerFast.from_pretrained(config.base_model, padding_side="left", unk_token="<unk>")
         self.tokenizer.pad_token_id = config.pad_token_id
 
-        # self.prepare_data()
+        self.prepare_data()
         print("Data prepared!")
 
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
@@ -77,7 +78,7 @@ class Runner:
             self.config.quant_config.to_conf(trial, quant_hpo),
             self.config.llama_causal_config.to_conf(trial, llama_causal_hpo)
         )
-        if self.config.is_eval:
+        if not self.config.is_eval:
             model = prepare_model_for_kbit_training(model)
             model.enable_input_require_grads()
         print("Model loaded")
@@ -298,7 +299,9 @@ class Runner:
         study = create_study(
             storage=self.config.hpo_config.storage,
             study_name=self.config.hpo_config.study_name,
-            direction=self.config.hpo_config.direction
+            direction=self.config.hpo_config.direction,
+            sampler=TPESampler(),
+            load_if_exists=True
         )
 
         study.optimize(self.hpo_objective, self.config.hpo_config.n_trials)
@@ -342,9 +345,10 @@ class Runner:
             batch_size=self.config.validation_config.batch_size,
             shuffle=True,
             collate_fn=eval_collate,
-            pin_memory=True,
-            num_workers=6
+            pin_memory=True
         )
+
+        trainer.model.eval()
 
         for data in tqdm(loader):
             text = data["input"]
@@ -359,6 +363,8 @@ class Runner:
             # output = self.tokenizer.decode(gen_diff[0])
             output = [o[len(text[i]):] for i, o in enumerate(output)]
             predictions += output
+
+        trainer.model.train()
 
         if self.config.validation_config.eval_metric == "fscore":
             return compute_precision_recall_fscore_support(
