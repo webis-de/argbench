@@ -4,6 +4,10 @@ from optuna import Trial, create_study
 from torch.utils.data import DataLoader
 from pathlib import Path
 from dataclasses import asdict
+
+import torch.autograd.profiler as profiler
+
+
 from transformers import (
     LlamaForCausalLM,
     LlamaTokenizer,
@@ -50,8 +54,8 @@ class Runner:
         self.config = config
         self.tokenizer = LlamaTokenizerFast.from_pretrained(config.base_model, padding_side="left", unk_token="<unk>")
         self.tokenizer.pad_token_id = config.pad_token_id
-
-        self.prepare_data()
+        with profiler.record_function("preparing data"):
+            self.prepare_data()
         print("Data prepared!")
 
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
@@ -311,10 +315,13 @@ class Runner:
         if self.config.is_hpo:
             self.perform_hpo()
             return
+        with profiler.record_function("loading model"):
+            self.trainer = self.load_model()
 
-        self.trainer = self.load_model()
         if not self.config.is_eval:
-            self.trainer.train()
+            with profiler.record_function("loading model"):
+                self.trainer.train()
+
         return self.evaluate(self.trainer)
 
 
@@ -391,10 +398,9 @@ if __name__ == "__main__":
     args = arg_parser.parse_args()
 
     config = RunConfig.from_file(args.config, args)
-
-    runner = Runner(config)
-
-    score = runner.execute()
+    with profiler.profile(with_stack=True, profile_memory=True) as prof:
+        runner = Runner(config)
+        score = runner.execute()
 
     if runner.config.validation_config.eval_metric == "fscore":
         runner.write_run({
