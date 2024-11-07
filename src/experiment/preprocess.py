@@ -1,4 +1,5 @@
 from argparse import ArgumentParser
+from collections import defaultdict
 import json
 from pathlib import Path
 from torch import _convert_indices_from_coo_to_csr
@@ -74,15 +75,17 @@ def collect_files(
         exclude_datasets = []
 
 
-    test_files = []
+    test_files = {test_configs["name"]: []}
     for file in metadata[test_configs["name"]]["file_list"]:
         if test_configs["match"] in file:
-            test_files.append(task_path / test_configs["name"] / file)
+            test_files[test_configs["name"]].append(
+                task_path / test_configs["name"] / file
+            )
 
     if is_evaluate:
-        return [], test_files
+        return {}, test_files
 
-    train_files = []
+    train_files = defaultdict(list)
     for task in os.listdir(task_path):
         task_data_path = task_path / task
 
@@ -108,24 +111,24 @@ def collect_files(
             if include_task:
                 select_task = next((task_file for t_s in include_task if t_s in task_file), None)
                 if select_task:
-                    train_files.append(task_file_path)
+                    train_files[task].append(task_file_path)
 
             if is_leave_one_out:
-                train_files.append(task_file_path)
+                train_files[task].append(task_file_path)
                 continue
 
             if include_genre and include_genre.intersection(genres):
-                train_files.append(task_file_path)
+                train_files[task].append(task_file_path)
                 continue
 
             if include_subarea and include_subarea.intersection(subareas):
-                train_files.append(task_file_path)
+                train_files[task].append(task_file_path)
 
     return train_files, test_files
 
 
 def compile_datasets(
-        dataset_paths,
+        task_datasets,
         prompt_template,
         subsample_amount=None,
         subsample_rate=None,
@@ -133,7 +136,7 @@ def compile_datasets(
     """
     Read dataset file and compile all datasets into one dataframe
 
-    :param dataset_paths: List of dataset file paths
+    :param task_datasets: List of dataset file paths for each dataset
     :param prompt_template: Template to compile dataset variables into prompt
     :param subsample_amount: Amount of samples to take from dataset file
     :param subsample_rate: % of instances to take from dataset
@@ -145,12 +148,16 @@ def compile_datasets(
             definition=row["definition"])
 
     datasets = []
-    for task_path in dataset_paths:
-        print(task_path)
-        if filetype == "ndjson":
-            task_data = pd.read_json(task_path, lines=True)
-        elif filetype == "parquet":
-            task_data = pd.read_parquet(task_path)
+    for dataset in task_datasets:
+        total_datasets = []
+        for task_path in task_datasets[dataset]:
+            print(task_path)
+            if filetype == "ndjson":
+                total_datasets.append(pd.read_json(task_path, lines=True))
+            elif filetype == "parquet":
+                total_datasets.append(pd.read_parquet(task_path))
+
+        task_data = pd.concat(total_datasets, axis=0).reset_index(drop=True)
 
         if subsample_amount:
             task_data = task_data.sample(subsample_amount, axis=0)
