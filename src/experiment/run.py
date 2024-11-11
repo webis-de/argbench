@@ -386,8 +386,8 @@ class Runner:
             return compute_bleu_score(predictions, labels)
         elif config.validation_config.eval_metric == "meteor":
             return compute_meteor_score(predictions, labels)
-        elif config.validation_config.eval_metric == "segmentation-fscore":
-            return compute_segmentation_f1_score(predictions, labels, dataset["input"].values())
+        elif config.validation_config.eval_metric == "bio-fscore":
+            return compute_bio_f1_score(predictions, labels, dataset["input"].values())
         else:
             raise RuntimeError(f"No such metric: {self.config.validation_config.eval_metric}")
 
