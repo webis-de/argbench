@@ -125,7 +125,7 @@ def convert_to_bio(input, output):
         labels.extend(["Arg-O" for _ in range(last_argument_index,len(input_tokens)+1)])
     return labels
 
-def compute_segmentation_f1_score(predictions, references, inputs):
+def compute_bio_f1_score(predictions, references, inputs):
     all_labels = [ ]
     all_predictions = []
     for i, document in enumerate(inputs):
