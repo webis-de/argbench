@@ -27,7 +27,7 @@ from peft import (
     get_peft_model,
 )
 from preprocess import collect_datasets, PandasDataset
-from testing import compute_precision_recall_fscore_support, compute_rouge_score, compute_bleu_score, compute_meteor_score
+from testing import *
 from tqdm import tqdm
 from config import RunConfig
 import numpy as np
@@ -386,6 +386,8 @@ class Runner:
             return compute_bleu_score(predictions, labels)
         elif config.validation_config.eval_metric == "meteor":
             return compute_meteor_score(predictions, labels)
+        elif config.validation_config.eval_metric == "segmentation-fscore":
+            return compute_segmentation_f1_score(predictions, labels, dataset["input"].values())
         else:
             raise RuntimeError(f"No such metric: {self.config.validation_config.eval_metric}")
 
@@ -420,6 +422,12 @@ if __name__ == "__main__":
             "labels": score[4]
         })
         print(f"Precision: {score[0]} Recall: {score[1]} Fscore: {score[2]} Support: {score[3]} Labels: {score[4]}")
+    elif runner.config.validation_config.eval_metric == "bio-fscore":
+        runner.write_run({"fscore": score["fscore"],
+                          "argb-fscore" : score["agb-fscore"],
+                          "argi-fscore" : score["agi-fscore"],
+                          "argo-fscore" : score["ago-fscore"],
+                          })
     else:
         runner.write_run(score)
         print(f"Score: {score}")
