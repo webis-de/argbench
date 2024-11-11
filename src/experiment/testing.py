@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 from sklearn.metrics import precision_recall_fscore_support
 from sklearn.feature_selection import r_regression
+from sklearn.metrics import f1_score
 from scipy.stats import kendalltau
+from nltk import word_tokenize
 import evaluate
 import re
 import numpy as np
@@ -104,3 +106,44 @@ def compute_kendall_tau(predictions, references):
 def compute_meteor_score(predictions, references):
     rouge = evaluate.load("meteor")
     return rouge.compute(predictions=predictions, references=references)
+
+
+
+def convert_to_bio(input, output):
+    labels = []
+    input_tokens = word_tokenize(input)
+    last_argument_index = 0
+    for i, input_token in enumerate(input_tokens):
+        for argument in output.split("\n"):
+            argument_tokens = word_tokenize(argument)
+            if argument_tokens[0] == input_token and " ".join(argument_tokens) == " ".join(input_tokens[i:i+len(argument_tokens)]):
+                labels.extend(["Arg-O" for _ in range(last_argument_index,i)])
+                labels.append("Arg-B")
+                labels.extend(["Arg-I" for _ in range(i+1, i+len(argument_tokens))])
+                last_argument_index = i + len(argument_tokens) + 1
+    if last_argument_index <= len(input_tokens):
+        labels.extend(["Arg-O" for _ in range(last_argument_index,len(input_tokens)+1)])
+    return labels
+
+def compute_segmentation_f1_score(predictions, references, inputs):
+    all_labels = [ ]
+    all_predictions = []
+    for i, document in enumerate(inputs):
+        prediction = predictions[i]
+        reference = references[i]
+        input = inputs[i]
+        groudn_truth_labels = convert_to_bio(input, reference)
+        predictions_labels = convert_to_bio(input, prediction)
+        all_labels.extend(groudn_truth_labels)
+        all_predictions.extend(predictions_labels)
+    #print(precision_recall_fscore_support(all_labels,all_predictions, average=None, labels=['Arg-I']))
+    #print(f" Arg-B f1 {f1_score(all_labels, all_predictions, average=None, labels=['Arg-B'])}")
+    #print(f" Arg-I f1 {f1_score(all_labels, all_predictions, average=None, labels=['Arg-I'])}")
+    #print(f" Arg-O f1 {f1_score(all_labels, all_predictions, average=None, labels=['Arg-O'])}")
+    macro_f1 = f1_score(all_labels, all_predictions, average='macro')
+    argb_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-B'])
+    argi_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-I'])
+    argo_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-O'])
+    metrics = {"fscore": macro_f1, "argb-fscore" : argb_f1, "argo-fscore": argo_f1, "argi-fscore": argi_f1}
+    return metrics
+
