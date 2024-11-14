@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os.path
 from argparse import ArgumentParser
 from optuna import Trial, create_study
 from torch.utils.data import DataLoader
@@ -362,8 +363,11 @@ class Runner:
 
         adapter_path = self.config.training_args_config["output_dir"]
         llm = LLM(model=base_model, enable_lora=True)
-        lora_request = LoRARequest("adapter", 1, adapter_path)
-        sampling_params = SamplingParams(temperature=0, top_p=0, lora_request=lora_request)
+        if os.path.exists(adapter_path):
+            lora_request = LoRARequest("adapter", 1, adapter_path)
+            sampling_params = SamplingParams(temperature=0, top_p=0, lora_request=lora_request)
+        else:
+            raise ValueError("no model is trained !")
 
         for data in tqdm(loader):
             text = data["input"]
