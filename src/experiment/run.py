@@ -3,6 +3,8 @@ from argparse import ArgumentParser
 from optuna import Trial, create_study
 from torch.utils.data import DataLoader
 from pathlib import Path
+from vllm import LLM, SamplingParams
+from vllm.lora.request import LoRARequest
 from dataclasses import asdict
 
 import torch.autograd.profiler as profiler
@@ -354,24 +356,33 @@ class Runner:
             collate_fn=eval_collate,
             pin_memory=True
         )
+        base_model = config.base_model
 
-        trainer.model.eval()
+        #trainer.model.eval()
+
+        adapter_path = self.config.training_args_config["output_dir"]
+        llm = LLM(model=base_model, enable_lora=True)
+        lora_request = LoRARequest("adapter", 1, adapter_path)
+        sampling_params = SamplingParams(temperature=0, top_p=0, lora_request=lora_request)
 
         for data in tqdm(loader):
             text = data["input"]
-            prompt = self.tokenizer(text=text, return_tensors="pt", padding=True)
-            inputs = prompt["input_ids"].cuda()
-            generated = trainer.model.generate(
-                input_ids=inputs,
-                generation_config=self.generation_config,
-                return_dict_in_generate=True
-            )
-            output = self.tokenizer.batch_decode(generated.sequences, skip_special_tokens=True)
+            #prompt = self.tokenizer(text=text, return_tensors="pt", padding=True)
+            #inputs = prompt["input_ids"].cuda()
+
+            #generated = trainer.model.generate(
+            #    input_ids=inputs,
+            #    generation_config=self.generation_config,
+            #    return_dict_in_generate=True
+            #)
+            #output = self.tokenizer.batch_decode(generated.sequences, skip_special_tokens=True)
             # output = self.tokenizer.decode(gen_diff[0])
+        outputs = llm.generate(data["input"].values, sampling_params=sampling_params)
+        for output in outputs:
             output = [o[len(text[i]):] for i, o in enumerate(output)]
             predictions += output
 
-        trainer.model.train()
+        #trainer.model.train()
 
         if self.config.validation_config.eval_metric == "fscore":
             return compute_precision_recall_fscore_support(
