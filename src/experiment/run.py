@@ -357,7 +357,7 @@ class Runner:
             collate_fn=eval_collate,
             pin_memory=True
         )
-        base_model = config.base_model
+        base_model = self.config.base_model
 
         #trainer.model.eval()
 
