@@ -361,7 +361,7 @@ class Runner:
 
         #trainer.model.eval()
 
-        adapter_path = self.config.training_args_config["output_dir"]
+        adapter_path = self.config.training_args_config.output_dir
         llm = LLM(model=base_model, enable_lora=True)
         if os.path.exists(adapter_path):
             lora_request = LoRARequest("adapter", 1, adapter_path)

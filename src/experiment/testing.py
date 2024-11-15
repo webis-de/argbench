@@ -147,3 +147,25 @@ def compute_bio_f1_score(predictions, references, inputs):
     metrics = {"fscore": macro_f1, "argb-fscore" : argb_f1, "argo-fscore": argo_f1, "argi-fscore": argi_f1}
     return metrics
 
+
+def extract_sentence_labels(text):
+    sentences = text.split("\n")
+    labels = []
+    for sentence in sentences:
+        tokens = sentence.split(":")
+        labels.append(tokens[0])
+    return labels
+
+def compute_sentence_f1(predictions, references, inputs):
+    all_labels = [ ]
+    all_predictions = []
+    for i, document in enumerate(inputs):
+        prediction = predictions[i]
+        reference = references[i]
+        input = inputs[i]
+        prediction_labels = extract_sentence_labels(prediction)
+        ground_truth_labels = extract_sentence_labels(reference)
+        all_labels.extend(ground_truth_labels)
+        all_predictions.extend(prediction_labels)
+    macro_f1 = f1_score(all_labels, all_predictions, average='macro')
+    return {"macro-f1" : macro_f1}
