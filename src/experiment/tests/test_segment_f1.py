@@ -17,3 +17,26 @@ class TestF1Segment(TestCase):
         print(f"expcted Arg-O {o_f1}")
         expected_f1 = (0 + i_f1 + o_f1) /3
         self.assertEqual(expected_f1, metrics["fscore"])
+
+
+class TestF1Sentence(TestCase):
+    def test_f1_score_sent(self):
+        document = "I always like playing footbal\nGo to the moon babyboy.\nHit the beast"
+        prediction = """Anecdote: I always like playing footbal
+        Common Ground: Go to the moon babyboy. 
+        Common Ground: Hit the beast"""
+        ground_truth_argumnet = """Anecdote: I always like playing footbal
+        Anecdote: Go to the moon babyboy.
+        Common Ground: Hit the beast"""
+        metrics = compute_sentence_f1([prediction], [ground_truth_argumnet], [document])
+        anecdote_recall =  0.5
+        anecdote_precision = 1
+        common_ground_recall = 1
+        common_ground_precision = 0.5
+        a_f1 =  2* anecdote_precision * anecdote_recall/(anecdote_precision + anecdote_recall)
+        print(f"expcted anecdote {a_f1}")
+        c_f1 = 2*common_ground_recall*common_ground_precision/(common_ground_precision + common_ground_recall)
+        print(f"expcted cc {c_f1}")
+        expected_f1 = ( a_f1 + c_f1) / 2
+        self.assertEqual(expected_f1, metrics["fscore"])
+

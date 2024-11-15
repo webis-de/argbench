@@ -362,7 +362,7 @@ class Runner:
         #trainer.model.eval()
 
         adapter_path = self.config.training_args_config.output_dir
-        llm = LLM(model=base_model, enable_lora=True)
+        llm = LLM(model=base_model, enable_lora=True, tokenizer_mode="slow")
         if os.path.exists(adapter_path):
             lora_request = LoRARequest("adapter", 1, adapter_path)
             sampling_params = SamplingParams(temperature=0, top_p=0, lora_request=lora_request)
@@ -403,6 +403,8 @@ class Runner:
             return compute_meteor_score(predictions, labels)
         elif config.validation_config.eval_metric == "bio-fscore":
             return compute_bio_f1_score(predictions, labels, dataset["input"].values())
+        elif config.validation_config.eval_metric == "sentence-fscore":
+            return compute_sentence_f1(predictions, labels, dataset["input"].values())
         else:
             raise RuntimeError(f"No such metric: {self.config.validation_config.eval_metric}")
 
@@ -437,6 +439,9 @@ if __name__ == "__main__":
             "labels": score[4]
         })
         print(f"Precision: {score[0]} Recall: {score[1]} Fscore: {score[2]} Support: {score[3]} Labels: {score[4]}")
+    elif runner.config.validation_config.eval_metric == "sentence-fscore":
+        runner.write_run({"fscore": score["fscore"],
+                          })
     elif runner.config.validation_config.eval_metric == "bio-fscore":
         runner.write_run({"fscore": score["fscore"],
                           "argb-fscore" : score["agb-fscore"],

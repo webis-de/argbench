@@ -152,8 +152,9 @@ def extract_sentence_labels(text):
     sentences = text.split("\n")
     labels = []
     for sentence in sentences:
-        tokens = sentence.split(":")
-        labels.append(tokens[0])
+        if sentence.strip():
+            tokens = sentence.split(":")
+            labels.append(tokens[0].strip().lower())
     return labels
 
 def compute_sentence_f1(predictions, references, inputs):
@@ -167,5 +168,9 @@ def compute_sentence_f1(predictions, references, inputs):
         ground_truth_labels = extract_sentence_labels(reference)
         all_labels.extend(ground_truth_labels)
         all_predictions.extend(prediction_labels)
+    cc_f1 = f1_score(all_labels, all_predictions, average=None, labels=['anecdote'])
+    aa_f1 = f1_score(all_labels, all_predictions, average=None, labels=['common ground'])
+    print(f"{cc_f1=}")
+    print(f"{aa_f1=}")
     macro_f1 = f1_score(all_labels, all_predictions, average='macro')
-    return {"macro-f1" : macro_f1}
+    return {"fscore" : macro_f1}
