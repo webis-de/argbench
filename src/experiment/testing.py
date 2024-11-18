@@ -3,11 +3,11 @@ from sklearn.metrics import precision_recall_fscore_support
 from sklearn.feature_selection import r_regression
 from sklearn.metrics import f1_score
 from scipy.stats import kendalltau
+from IPython.core.debugger import set_trace
 from nltk import word_tokenize
 import evaluate
 import re
 import numpy as np
-
 def compute_precision_recall_fscore_support(predictions, references, f1_average="macro", beta=1.0):
     """
     Perform F1 evaluation for model outputs
@@ -110,6 +110,7 @@ def compute_meteor_score(predictions, references):
 
 
 def convert_to_bio(input, output):
+    set_trace()
     labels = []
     input_tokens = word_tokenize(input)
     last_argument_index = 0
