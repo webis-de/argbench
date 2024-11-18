@@ -476,4 +476,4 @@ if __name__ == "__main__":
             runner.write_run(score)
             print(f"Score: {score}")
 
-        runner.to("cpu")
+
