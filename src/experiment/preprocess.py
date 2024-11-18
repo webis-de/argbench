@@ -164,7 +164,7 @@ def compile_datasets(
         if subsample_rate:
             task_data = task_data.sample(frac=subsample_rate, axis=0)
 
-        task_data = task_data.rename(columns={"input":"document"}, inplace=True)
+        task_data.rename(columns={"input": "document"}, inplace=True)
 
         task_data["input"] = task_data.apply(template_formatter, axis=1)
 
