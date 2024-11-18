@@ -285,7 +285,7 @@ class Runner:
 
 
     def free_model(self):
-        del self.model
+        del self.base_model
         del self.peft_model
         torch.cuda.empty_cache()
         gc.collect()
