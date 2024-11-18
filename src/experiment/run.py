@@ -395,7 +395,7 @@ class Runner:
             #)
             #output = self.tokenizer.batch_decode(generated.sequences, skip_special_tokens=True)
             # output = self.tokenizer.decode(gen_diff[0])
-        outputs = llm.generate(data["input"].values, sampling_params=sampling_params, lora_request=lora_request)
+        outputs = llm.generate(data["input"], sampling_params=sampling_params, lora_request=lora_request)
         for output in outputs:
             output = [o[len(text[i]):] for i, o in enumerate(output)]
             predictions += output
