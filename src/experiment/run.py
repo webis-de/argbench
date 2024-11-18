@@ -212,6 +212,7 @@ class Runner:
             model,
             **self.config.peft_configs[0].to_conf()
         )
+
         return model
 
 
@@ -282,11 +283,13 @@ class Runner:
         model = self.prepare_model()
         return self.prepare_trainer(model)
 
+
     def free_model(self):
         del self.model
         del self.peft_model
         torch.cuda.empty_cache()
         gc.collect()
+
 
     def hpo_objective(self, trial: Trial):
 
@@ -339,7 +342,7 @@ class Runner:
         if not self.config.is_eval:
             with profiler.record_function("loading model"):
                 self.trainer.train()
-
+        self.trainer.save_model(self.config.training_args_config.output_dir // "best-model")
         metrics = self.evaluate(self.trainer)
         self.free_model()
         return metrics
@@ -375,7 +378,7 @@ class Runner:
 
         #trainer.model.eval()
 
-        adapter_path = self.config.training_args_config.output_dir
+        adapter_path = self.config.training_args_config.output_dir // "best-model"
         llm = LLM(model=base_model, enable_lora=True, tokenizer_mode="slow")
         if os.path.exists(adapter_path):
             lora_request = LoRARequest("adapter", 1, adapter_path)
