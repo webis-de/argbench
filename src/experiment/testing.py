@@ -146,8 +146,8 @@ def compute_bio_f1_score(predictions, references, inputs):
     argb_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-B'])
     argi_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-I'])
     argo_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-O'])
-    set_trace()
-    metrics = {"fscore": macro_f1, "argb-fscore" : argb_f1, "argo-fscore": argo_f1, "argi-fscore": argi_f1}
+
+    metrics = {"fscore": macro_f1, "argb-fscore" : argb_f1[0], "argo-fscore": argo_f1[0], "argi-fscore": argi_f1[0]}
     return metrics
 
 
