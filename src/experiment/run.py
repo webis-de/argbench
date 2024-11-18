@@ -449,7 +449,7 @@ if __name__ == "__main__":
     task_metrics = json.loads(open("configs/config_task_metrics_sample.json"))
     for task in task_metrics:
         runner.config.validation_config.eval_metric = task_metrics[task]
-        runner.config.train_datasets["include_tasks"].append(task)
+        runner.config.test_datasets["name"] = task
         if runner.config.validation_config.eval_metric == "fscore":
             runner.write_run({
                 "task": task,
