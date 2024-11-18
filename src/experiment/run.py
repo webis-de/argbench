@@ -379,7 +379,7 @@ class Runner:
         llm = LLM(model=base_model, enable_lora=True, tokenizer_mode="slow")
         if os.path.exists(adapter_path):
             lora_request = LoRARequest("adapter", 1, adapter_path)
-            sampling_params = SamplingParams(temperature=0, top_p=0)
+            sampling_params = SamplingParams(temperature=0, top_p=0.01)
         else:
             raise ValueError("no model is trained !")
 
