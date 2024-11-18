@@ -1,5 +1,5 @@
 {
-  "argument_ranking_claim_revisions_skitalinskaya23": "pearson",
+  "argument_ranking_claim_revisions_skitalinskaya23": "kendalltau",
   "argument_unit_classification_essays_stab17": "sentence-fscore",
   "argument_unit_segmentation_ajjour17": "bio-fscore",
   "premise_generation_microtexts_v1_skeppstedt18": "bleu",
