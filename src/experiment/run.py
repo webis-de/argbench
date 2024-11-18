@@ -7,6 +7,8 @@ from pathlib import Path
 from vllm import LLM, SamplingParams
 from vllm.lora.request import LoRARequest
 from dataclasses import asdict
+import gc
+
 
 import torch.autograd.profiler as profiler
 
@@ -80,11 +82,14 @@ class Runner:
         :returns: Model to be trained
         """
         print("Prepare model")
+
         model = self.prepare_llama_for_causal_llm(
             self.config.base_model,
             self.config.quant_config.to_conf(trial, quant_hpo),
             self.config.llama_causal_config.to_conf(trial, llama_causal_hpo)
         )
+        self.base_model = model
+
         if not self.config.is_eval:
             model = prepare_model_for_kbit_training(model)
             model.enable_input_require_grads()
@@ -96,6 +101,7 @@ class Runner:
         if self.config.peft_fresh_config:
             model = self.prepare_new_peft_model(model)
 
+        self.peft_model = model
         return model
 
 
@@ -272,9 +278,15 @@ class Runner:
 
     def load_model(self):
         """Loads model checkpoint"""
+
         model = self.prepare_model()
         return self.prepare_trainer(model)
 
+    def free_model(self):
+        del self.model
+        del self.peft_model
+        torch.cuda.empty_cache()
+        gc.collect()
 
     def hpo_objective(self, trial: Trial):
 
@@ -328,7 +340,9 @@ class Runner:
             with profiler.record_function("loading model"):
                 self.trainer.train()
 
-        return self.evaluate(self.trainer)
+        metrics = self.evaluate(self.trainer)
+        self.free_model()
+        return metrics
 
 
     def write_run(self, run_results):
@@ -410,6 +424,7 @@ class Runner:
 
 
 
+
 if __name__ == "__main__":
     arg_parser = ArgumentParser(description="Run peft finetuning experiment")
 
@@ -456,3 +471,5 @@ if __name__ == "__main__":
         else:
             runner.write_run(score)
             print(f"Score: {score}")
+
+        runner.to("cpu")
