@@ -342,7 +342,7 @@ class Runner:
         if not self.config.is_eval:
             with profiler.record_function("loading model"):
                 self.trainer.train()
-        self.trainer.save_model(self.config.training_args_config.output_dir + "best-model")
+        self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
         metrics = self.evaluate(self.trainer)
         self.free_model()
         return metrics
@@ -381,7 +381,7 @@ class Runner:
         adapter_path = self.config.training_args_config.output_dir + "best-model"
         llm = LLM(model=base_model, enable_lora=True, tokenizer_mode="slow")
         if os.path.exists(adapter_path):
-            lora_request = LoRARequest("adapter", 1, adapter_path)
+            lora_request = LoRARequest("adapter", 1, adapter_path+"/adapter")
             sampling_params = SamplingParams(temperature=0, top_p=1, top_k=1)
         else:
             raise ValueError("no model is trained !")
