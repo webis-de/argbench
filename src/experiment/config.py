@@ -263,6 +263,7 @@ class ModelGenerationConfig(CommonConfig):
 
         return config
 
+
 @dataclass
 class EarlyStoppingConfig(CommonConfig):
     """Config for early stopping"""
@@ -291,6 +292,12 @@ class HPOConfig(CommonConfig):
     training_args_config: dict = field(default_factory=dict)
     early_stopping_config: dict = field(default_factory=dict)
     data_collator_config: dict = field(default_factory=dict)
+
+@dataclass
+class VLLMGenerationConfig(CommonConfig):
+    temperature: float
+    top_p: float
+    top_k: int
 
 @dataclass
 class RunConfig:
@@ -334,7 +341,7 @@ class RunConfig:
     generation_config: ModelGenerationConfig = None
     validation_config: ValidationConfig = None
     hpo_config: HPOConfig = None
-
+    vllm_config: VLLMGenerationConfig = None
     @staticmethod
     def register_cli(arg_parser):
         """
