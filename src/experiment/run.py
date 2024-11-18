@@ -424,30 +424,35 @@ if __name__ == "__main__":
 
     config = RunConfig.from_file(args.config, args)
 
-    task_metrics = json.loads(open("configs/config_task_metrics_complete.json"))
     with profiler.profile(with_stack=True, profile_memory=True) as prof:
         runner = Runner(config)
         score = runner.execute()
         prof.key_averages(group_by_stack_n=5).table(sort_by='self_cpu_time_total', row_limit=5)
-
-    if runner.config.validation_config.eval_metric == "fscore":
-        runner.write_run({
-            "precision": score[0],
-            "recall": score[1],
-            "fscore": score[2],
-            "support": score[3],
-            "labels": score[4]
-        })
-        print(f"Precision: {score[0]} Recall: {score[1]} Fscore: {score[2]} Support: {score[3]} Labels: {score[4]}")
-    elif runner.config.validation_config.eval_metric == "sentence-fscore":
-        runner.write_run({"fscore": score["fscore"],
-                          })
-    elif runner.config.validation_config.eval_metric == "bio-fscore":
-        runner.write_run({"fscore": score["fscore"],
-                          "argb-fscore" : score["agb-fscore"],
-                          "argi-fscore" : score["agi-fscore"],
-                          "argo-fscore" : score["ago-fscore"],
-                          })
-    else:
-        runner.write_run(score)
-        print(f"Score: {score}")
+    task_metrics = json.loads(open("configs/config_task_metrics_sample.json"))
+    for task in task_metrics:
+        runner.config.validation_config.eval_metric = task_metrics[task]
+        runner.config.train_datasets["include_tasks"].append(task)
+        if runner.config.validation_config.eval_metric == "fscore":
+            runner.write_run({
+                "task": task,
+                "precision": score[0],
+                "recall": score[1],
+                "fscore": score[2],
+                "support": score[3],
+                "labels": score[4]
+            })
+            print(f"Precision: {score[0]} Recall: {score[1]} Fscore: {score[2]} Support: {score[3]} Labels: {score[4]}")
+        elif runner.config.validation_config.eval_metric == "sentence-fscore":
+            runner.write_run({"task":task,
+                              "fscore": score["fscore"],
+                              })
+        elif runner.config.validation_config.eval_metric == "bio-fscore":
+            runner.write_run({"task": task,
+                              "fscore": score["fscore"],
+                              "argb-fscore" : score["agb-fscore"],
+                              "argi-fscore" : score["agi-fscore"],
+                              "argo-fscore" : score["ago-fscore"],
+                              })
+        else:
+            runner.write_run(score)
+            print(f"Score: {score}")
