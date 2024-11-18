@@ -447,7 +447,7 @@ if __name__ == "__main__":
         runner = Runner(config)
         score = runner.execute()
         prof.key_averages(group_by_stack_n=5).table(sort_by='self_cpu_time_total', row_limit=5)
-    task_metrics = json.loads(open("configs/config_task_metrics_sample.json"))
+    task_metrics = json.load(open("configs/config_task_metrics_sample.json"))
     for task in task_metrics:
         runner.config.validation_config.eval_metric = task_metrics[task]
         runner.config.test_datasets["name"] = task
