@@ -1,0 +1,11 @@
+{
+  "argument_summarization_open_debate_evidence_roush23": ["bleu", "rouge"],
+  "argument_ranking_claim_revisions_skitalinskaya23": ["pearson", "spearman", "mrr"],
+  "argument_unit_classification_editorials_ajjour17": ["bleu", "rouge"],
+  "argument_unit_classification_essays_stab17": ["bleu", "rouge"],
+  "argument_unit_classification_ibm_claim_evidence_aharoni14": ["bleu", "rouge"],
+  "argument_unit_relation_identification_essays_stab17": ["bleu", "rouge"],
+  "argument_unit_segmentation_ajjour17": ["bleu", "rouge"],
+  "premise_generation_microtexts_v1_skeppstedt18": ["bleu", "rouge"],
+  "warrant_identification_semeval_2018_task_12_habernal18": ["f1-score"]
+}

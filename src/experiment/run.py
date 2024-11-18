@@ -424,7 +424,7 @@ if __name__ == "__main__":
 
     config = RunConfig.from_file(args.config, args)
 
-    task_metrics = json.loads(open("configs/config_task_metrics.json"))
+    task_metrics = json.loads(open("configs/config_task_metrics_complete.json"))
     with profiler.profile(with_stack=True, profile_memory=True) as prof:
         runner = Runner(config)
         score = runner.execute()
