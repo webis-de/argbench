@@ -110,7 +110,7 @@ def compute_meteor_score(predictions, references):
 
 
 def convert_to_bio(input, output):
-    set_trace()
+    #set_trace()
     labels = []
     input_tokens = word_tokenize(input)
     last_argument_index = 0
