@@ -401,7 +401,7 @@ class Runner:
         outputs = llm.generate(data["input"], sampling_params=sampling_params, lora_request=lora_request)
         for output in outputs:
             #output = [o[len(text[i]):] for i, o in enumerate(output)]
-            prediction = output[0].text
+            prediction = output.outputs[0].text
             predictions += prediction
 
         #trainer.model.train()
