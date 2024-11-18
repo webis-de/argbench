@@ -1,0 +1,17 @@
+[Nov 18]
++ tested bio f1-score (worked) wrong number
++ test sentence f1-score (did not work)b
+
+- Finished leave-one-out evaluation for multiple tasks. I focused on five sample tasks. This should be scaled [TODO]
+  "argument_unit_classification_essays_stab17"
+  "argument_unit_segmentation_ajjour17"
+  "premise_generation_microtexts_v1_skeppstedt18"
+  "warrant_identification_semeval_2018_task_12_habernal18"
+  "stance_classification_ibmsc_barhaim17"
+
+- generation strategies depend on the test task. These parameters for each task are saved in one file for each task.
+- No implementation for pearson and ranking metrics [TODO]
+- Kendalltau metrics is not working                 [TODO]
+- Evaluation of unit type classification is not working since the model is generating less text
+- We face in a leave-one-out setting the problem that the model might not output the desired output.
+ It seems like evaluation framework should validate the output of the model. [TODO]
