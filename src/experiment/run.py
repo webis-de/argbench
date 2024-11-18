@@ -423,6 +423,8 @@ class Runner:
             return compute_bio_f1_score(predictions, labels, data["document"])
         elif self.config.validation_config.eval_metric == "sentence-fscore":
             return compute_sentence_f1(predictions, labels, data["document"])
+        elif self.config.validation_config.eval_metric == "kendalltau":
+            return compute_kendall_tau(predictions, labels)
         else:
             raise RuntimeError(f"No such metric: {self.config.validation_config.eval_metric}")
 
