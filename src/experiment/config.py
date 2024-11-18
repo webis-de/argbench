@@ -479,7 +479,8 @@ class RunConfig:
             conf_obj.quant_config = QuantConfig(**conf_obj.quant_config)
         if config.get("hpo_config"):
             conf_obj.hpo_config = HPOConfig(**conf_obj.hpo_config)
-
+        if config.get("vllm_config"):
+            conf_obj.vllm_config = VLLMGenerationConfig(**conf_obj.vllm_config)
         if not args:
             return conf_obj
         # Runner config
