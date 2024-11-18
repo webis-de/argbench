@@ -116,12 +116,13 @@ def convert_to_bio(input, output):
     last_argument_index = 0
     for i, input_token in enumerate(input_tokens):
         for argument in output.split("\n"):
-            argument_tokens = word_tokenize(argument)
-            if argument_tokens[0] == input_token and " ".join(argument_tokens) == " ".join(input_tokens[i:i+len(argument_tokens)]):
-                labels.extend(["Arg-O" for _ in range(last_argument_index,i)])
-                labels.append("Arg-B")
-                labels.extend(["Arg-I" for _ in range(i+1, i+len(argument_tokens))])
-                last_argument_index = i + len(argument_tokens) + 1
+            if argument.strip():
+                argument_tokens = word_tokenize(argument)
+                if argument_tokens[0] == input_token and " ".join(argument_tokens) == " ".join(input_tokens[i:i+len(argument_tokens)]):
+                    labels.extend(["Arg-O" for _ in range(last_argument_index,i)])
+                    labels.append("Arg-B")
+                    labels.extend(["Arg-I" for _ in range(i+1, i+len(argument_tokens))])
+                    last_argument_index = i + len(argument_tokens) + 1
     if last_argument_index <= len(input_tokens):
         labels.extend(["Arg-O" for _ in range(last_argument_index,len(input_tokens)+1)])
     return labels
