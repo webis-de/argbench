@@ -164,9 +164,11 @@ def compile_datasets(
         if subsample_rate:
             task_data = task_data.sample(frac=subsample_rate, axis=0)
 
+        task_data = task_data.rename(columns={"input":"document"}, inplace=True)
+
         task_data["input"] = task_data.apply(template_formatter, axis=1)
 
-        datasets.append(task_data[["id", "input", "output"]])
+        datasets.append(task_data[["id","document", "input", "output"]])
 
     if datasets:
         return pd.concat(datasets, axis=0).reset_index(drop=True)
