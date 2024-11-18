@@ -365,7 +365,7 @@ class Runner:
         llm = LLM(model=base_model, enable_lora=True, tokenizer_mode="slow")
         if os.path.exists(adapter_path):
             lora_request = LoRARequest("adapter", 1, adapter_path)
-            sampling_params = SamplingParams(temperature=0, top_p=0, lora_request=lora_request)
+            sampling_params = SamplingParams(temperature=0, top_p=0)
         else:
             raise ValueError("no model is trained !")
 
@@ -381,7 +381,7 @@ class Runner:
             #)
             #output = self.tokenizer.batch_decode(generated.sequences, skip_special_tokens=True)
             # output = self.tokenizer.decode(gen_diff[0])
-        outputs = llm.generate(data["input"].values, sampling_params=sampling_params)
+        outputs = llm.generate(data["input"].values, sampling_params=sampling_params, lora_request=lora_request)
         for output in outputs:
             output = [o[len(text[i]):] for i, o in enumerate(output)]
             predictions += output
