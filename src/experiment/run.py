@@ -435,8 +435,6 @@ class Runner:
 
 
 if __name__ == "__main__":
-    transformers.logging.set_verbosity(logging.CRITICAL)
-    transformers.logging.set_verbosity_error()
     arg_parser = ArgumentParser(description="Run peft finetuning experiment")
 
     arg_parser.add_argument("-c", "--config", type=Path, action="append", help="Path to experiment config")
