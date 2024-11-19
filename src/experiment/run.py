@@ -6,10 +6,12 @@ from torch.utils.data import DataLoader
 from pathlib import Path
 from vllm import LLM, SamplingParams
 from vllm.lora.request import LoRARequest
+
 from dataclasses import asdict
 import gc
+
 import transformers
-import logging
+from .filter_warnings import  *
 
 
 import torch.autograd.profiler as profiler
@@ -435,6 +437,7 @@ class Runner:
 
 
 if __name__ == "__main__":
+    turn_off_warnings()
     arg_parser = ArgumentParser(description="Run peft finetuning experiment")
 
     arg_parser.add_argument("-c", "--config", type=Path, action="append", help="Path to experiment config")
