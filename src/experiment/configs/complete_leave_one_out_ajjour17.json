@@ -97,5 +97,11 @@
     "validation_config": {
         "batch_size": 8,
         "eval_metric": "bio-fscore"
+    },
+    "vllm_config": {
+        "temperature": 0.2,
+        "top_p": 1,
+        "top_k": 1,
+        "max_tokens": 2000
     }
 }
