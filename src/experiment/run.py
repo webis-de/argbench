@@ -11,7 +11,7 @@ from dataclasses import asdict
 import gc
 
 import transformers
-from .filter_warnings import  *
+from filter_warnings import  *
 
 
 import torch.autograd.profiler as profiler
