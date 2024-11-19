@@ -1,6 +1,8 @@
 [Nov 18]
 + tested bio f1-score (worked) wrong number
 + test sentence f1-score (did not work)b
++ Switched to VLLM for generation. However with a slow tokenizer due to dependency issues [TODO]
++ Added VLLM Configuration for sampling params
 
 - Finished leave-one-out evaluation for multiple tasks. I focused on five sample tasks. This should be scaled [TODO]
   "argument_unit_classification_essays_stab17"
@@ -9,9 +11,11 @@
   "warrant_identification_semeval_2018_task_12_habernal18"
   "stance_classification_ibmsc_barhaim17"
 
-- generation strategies depend on the test task. These parameters for each task are saved in one file for each task.
+- Decoding strategies depend on the test task. These parameters for each task are saved in one file for each task.
 - No implementation for pearson and ranking metrics [TODO]
 - Kendalltau metrics is not working                 [TODO]
 - Evaluation of unit type classification is not working since the model is generating less text
 - We face in a leave-one-out setting the problem that the model might not output the desired output.
- It seems like evaluation framework should validate the output of the model. [TODO]
+  It seems like evaluation framework should validate the output of the model. [TODO]
+- Evaluation metrics for relation identification is missing
+- some tasks naming are still confusing
