@@ -8,6 +8,8 @@ from vllm import LLM, SamplingParams
 from vllm.lora.request import LoRARequest
 from dataclasses import asdict
 import gc
+import transformers
+import logging
 
 
 import torch.autograd.profiler as profiler
@@ -433,6 +435,7 @@ class Runner:
 
 
 if __name__ == "__main__":
+    transformers.logging.set_verbosity(logging.CRITICAL)
     arg_parser = ArgumentParser(description="Run peft finetuning experiment")
 
     arg_parser.add_argument("-c", "--config", type=Path, action="append", help="Path to experiment config")
