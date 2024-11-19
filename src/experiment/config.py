@@ -298,7 +298,8 @@ class VLLMGenerationConfig(CommonConfig):
     temperature: float
     top_p: float
     top_k: int
-    max_token: int
+    max_tokens: int
+
 @dataclass
 class RunConfig:
     """Config for instruction finetuning run"""
