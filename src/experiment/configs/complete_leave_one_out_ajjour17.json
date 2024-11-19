@@ -61,7 +61,7 @@
         "num_train_epochs": 2,
         "learning_rate": 0.0003,
         "optim": "adamw_bnb_8bit",
-        "evaluation_strategy": "steps",
+        "eval_strategy": "steps",
         "save_strategy": "steps",
         "eval_steps": 10,
         "save_steps": 10,
@@ -88,11 +88,8 @@
         "max_length": 500 
     },
     "generation_config": {
-        "top_k": 20,
-        "length_penalty": 1.5,
-        "num_beams": 1,
         "max_length": 1500,
-	"max_new_tokens": 1000
+	    "max_new_tokens": 1000
     },
     "validation_config": {
         "batch_size": 2,
