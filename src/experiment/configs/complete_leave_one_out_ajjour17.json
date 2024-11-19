@@ -61,7 +61,7 @@
         "num_train_epochs": 2,
         "learning_rate": 0.0003,
         "optim": "adamw_bnb_8bit",
-        "eval_strategy": "steps",
+        "evaluation_strategy": "steps",
         "save_strategy": "steps",
         "eval_steps": 10,
         "save_steps": 10,
