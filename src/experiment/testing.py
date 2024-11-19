@@ -10,6 +10,9 @@ from sklearn.feature_selection import r_regression
 from sklearn.metrics import f1_score
 from scipy.stats import kendalltau
 from nltk import word_tokenize
+
+logger = logging.getLogger(__name__)
+
 def compute_precision_recall_fscore_support(predictions, references, f1_average="macro", beta=1.0):
     """
     Perform F1 evaluation for model outputs
@@ -174,7 +177,12 @@ def compute_sentence_f1(predictions, references, inputs):
         assert (len(prediction_labels) == len(ground_truth_labels))
         for i, prediction_sentence in prediction_sentences:
             assert(prediction_sentence == reference_sentences[i])
-
+            if not (prediction_sentence == reference_sentences[i]):
+                logger.log(level=logging.ERROR, message=f"model did not output all needed documents for evaluation predicted sentences count ")
+                logger.log(level=logging.ERROR, message=f"predicted sentences count {len(prediction_sentences)}")
+                logger.log(level=logging.ERROR, message=f"reference sentences count {len(reference_sentences)}")
+                logger.log(level=logging.ERROR, message=f"predicted sentences {prediction_sentence}")
+                logger.log(level=logging.ERROR, message=f"predicted sentences {ground_truth_labels}")
         all_labels.extend(ground_truth_labels)
         all_predictions.extend(prediction_labels)
     cc_f1 = f1_score(all_labels, all_predictions, average=None, labels=['anecdote'])
