@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 import os.path
+import logging
 from argparse import ArgumentParser
 from optuna import Trial, create_study
 from torch.utils.data import DataLoader
 from pathlib import Path
 from vllm import LLM, SamplingParams
 from vllm.lora.request import LoRARequest
+
+logger = logging.getLogger(__name__)
 
 from dataclasses import asdict
 import gc
