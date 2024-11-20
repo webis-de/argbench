@@ -5,7 +5,7 @@
     "base_model": "/bigwork/nhwpajjy/pre-trained-models/decapoda-research-llama-7B-hf",
     "cutoff_len": 2000,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/datasets",
-    "run-output-path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/multiple-datasets",
+    "run_output_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/multiple-datasets",
     "data_type": "ndjson",
     "train_datasets": {
         "subsample_amount": 50,
