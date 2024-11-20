@@ -450,7 +450,7 @@ class RunConfig:
         if args == None:
             conf_obj =  cls(**config)
         else:
-            conf_obj = cls(is_eval=args.is_evaluate, is_hpo=args.is_hpo, **config)
+            conf_obj = cls(is_hpo=args.is_hpo, **config)
 
         if config.get("llama_causal_config"):
             conf_obj.llama_causal_config = LLamaCausalConfig(**conf_obj.llama_causal_config)
