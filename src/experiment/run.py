@@ -46,6 +46,10 @@ import numpy as np
 import json
 import torch
 
+
+logger = logging.getLogger(__name__)
+
+
 def eval_collate(batch):
     out_batch = {k: [] for k in batch[0]}
 
@@ -406,12 +410,12 @@ class Runner:
             #)
             #output = self.tokenizer.batch_decode(generated.sequences, skip_special_tokens=True)
             # output = self.tokenizer.decode(gen_diff[0])
-        outputs = llm.generate(data["input"], sampling_params=sampling_params, lora_request=lora_request)
+        outputs = llm.generate(text, sampling_params=sampling_params, lora_request=lora_request)
         for output in outputs:
             #output = [o[len(text[i]):] for i, o in enumerate(output)]
             prediction = output.outputs[0].text
             predictions += prediction
-
+            logger.log(level=logging.INFO, message=f"got the prediction {prediction} for input{text}")
         #trainer.model.train()
 
         if self.config.validation_config.eval_metric == "fscore":

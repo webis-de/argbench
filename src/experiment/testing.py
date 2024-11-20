@@ -183,11 +183,9 @@ def compute_sentence_f1(predictions, references, inputs):
                 logger.log(level=logging.ERROR, message=f"reference sentences count {len(reference_sentences)}")
                 logger.log(level=logging.ERROR, message=f"predicted sentences {prediction_sentence}")
                 logger.log(level=logging.ERROR, message=f"predicted sentences {ground_truth_labels}")
+
         all_labels.extend(ground_truth_labels)
         all_predictions.extend(prediction_labels)
-    cc_f1 = f1_score(all_labels, all_predictions, average=None, labels=['anecdote'])
-    aa_f1 = f1_score(all_labels, all_predictions, average=None, labels=['common ground'])
-    print(f"{cc_f1=}")
-    print(f"{aa_f1=}")
     macro_f1 = f1_score(all_labels, all_predictions, average='macro')
+    logger.log(level=logging.INFO,message=f"{macro_f1=}")
     return {"fscore" : macro_f1}
