@@ -461,11 +461,12 @@ if __name__ == "__main__":
 
 
     task_metrics = json.load(open("/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_task_metrics_sample.json"))
-    config_list = ["/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_task_metrics_sample.json"]
-    for task in task_metrics:
 
+    for task in task_metrics:
+        config_list = ["/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_leave_one_out.json"]
         config_list.append(f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/{task}.json")
         config = RunConfig.from_file(config_list)
+        print(config)
         runner = Runner(config)
 
         runner.config.validation_config.eval_metric = task_metrics[task]
