@@ -461,9 +461,9 @@ if __name__ == "__main__":
 
 
     task_metrics = json.load(open("configs/config_task_metrics_sample.json"))
-
+    config_list = ["configs/config_task_metrics_sample.json"]
     for task in task_metrics:
-        config_list = args.config
+
         config_list.append(f"configs/{task}.json")
         config = RunConfig.from_file(config_list, args)
         runner = Runner(config)

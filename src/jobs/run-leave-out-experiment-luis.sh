@@ -10,4 +10,4 @@
 module load Miniconda3
 conda activate task-specific
 #python /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/process_data.py -o /bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/
-python /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/run.py -c /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/complete_leave_one_out_ajjour17.json
+python /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/run.py
