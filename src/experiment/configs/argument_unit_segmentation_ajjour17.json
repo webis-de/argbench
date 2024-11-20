@@ -11,7 +11,7 @@
         "max_length": 1500
     },
     "validation_config": {
-        "eval_metric": "rouge"
+        "eval_metric": "bio-fscore"
     },
     "vllm_config": {
         "temperature": 0.2,
