@@ -46,6 +46,10 @@ import numpy as np
 import json
 import torch
 
+
+logger = logging.getLogger(__name__)
+
+
 def eval_collate(batch):
     out_batch = {k: [] for k in batch[0]}
 
@@ -406,12 +410,12 @@ class Runner:
             #)
             #output = self.tokenizer.batch_decode(generated.sequences, skip_special_tokens=True)
             # output = self.tokenizer.decode(gen_diff[0])
-        outputs = llm.generate(data["input"], sampling_params=sampling_params, lora_request=lora_request)
+        outputs = llm.generate(text, sampling_params=sampling_params, lora_request=lora_request)
         for output in outputs:
             #output = [o[len(text[i]):] for i, o in enumerate(output)]
             prediction = output.outputs[0].text
             predictions += prediction
-
+            logger.log(level=logging.INFO, message=f"got the prediction {prediction} for input{text}")
         #trainer.model.train()
 
         if self.config.validation_config.eval_metric == "fscore":
@@ -452,16 +456,21 @@ if __name__ == "__main__":
 
     args = arg_parser.parse_args()
 
-    config = RunConfig.from_file(args.config, args)
 
-    with profiler.profile(with_stack=True, profile_memory=True) as prof:
-        runner = Runner(config)
-        score = runner.execute()
-        prof.key_averages(group_by_stack_n=5).table(sort_by='self_cpu_time_total', row_limit=5)
+
+
+
     task_metrics = json.load(open("configs/config_task_metrics_sample.json"))
+
     for task in task_metrics:
+        config_list = args.config
+        config_list.append(f"configs/{task}.json")
+        config = RunConfig.from_file(config_list, args)
+        runner = Runner(config)
+
         runner.config.validation_config.eval_metric = task_metrics[task]
         runner.config.test_datasets["name"] = task
+        score = runner.execute()
         if runner.config.validation_config.eval_metric == "fscore":
             runner.write_run({
                 "task": task,
