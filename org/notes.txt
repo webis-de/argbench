@@ -31,3 +31,32 @@ Couldn't find a module script at /bigwork/nhwpajjy/task-specific-argument-mining
 [NOV 20]
 + Currently we save only one adapter per task.
 + One should optimize the training parameters and generation parameters. Currently, we consider only the training parameters.
++ ans the corresponding file may hold incorrect parameterization and should be fixed.
+    warnings.warn(
+  Loading checkpoint shards: 100%|██████████| 33/33 [02:42<00:00,  4.91s/it]
+  Traceback (most recent call last):
+    File "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/run.py", line 474, in <module>
+      score = runner.execute()
+              ^^^^^^^^^^^^^^^^
+    File "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/run.py", line 355, in execute
+      self.trainer.train()
+    File "/home/nhwpajjy/.conda/envs/task-specific/lib/python3.11/site-packages/transformers/trainer.py", line 1938, in train
+      return inner_training_loop(
+             ^^^^^^^^^^^^^^^^^^^^
+    File "/home/nhwpajjy/.conda/envs/task-specific/lib/python3.11/site-packages/transformers/trainer.py", line 1967, in _inner_training_loop
+      train_dataloader = self.get_train_dataloader()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/nhwpajjy/.conda/envs/task-specific/lib/python3.11/site-packages/transformers/trainer.py", line 905, in get_train_dataloader
+      dataloader_params["sampler"] = self._get_train_sampler()
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/nhwpajjy/.conda/envs/task-specific/lib/python3.11/site-packages/transformers/trainer.py", line 875, in _get_train_sampler
+      return RandomSampler(self.train_dataset)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/nhwpajjy/.conda/envs/task-specific/lib/python3.11/site-packages/torch/utils/data/sampler.py", line 140, in __init__
+      raise ValueError(f"num_samples should be a positive integer value, but got num_samples={self.num_samples}")
+  ValueError: num_samples should be a positive integer value, but got num_samples=0
+
+
+when executing the
+
+sbatch jobs/run-leave-out-experiment-luis.sh
