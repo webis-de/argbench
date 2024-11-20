@@ -28,3 +28,6 @@
 
 Couldn't find a module script at /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/rouge/rouge.py. Module 'rouge' doesn't exist on the Hugging Face Hub either.
 
+[NOV 20]
++ Currently we save only one adapter per task.
++ One should optimize the training parameters and generation parameters. Currently, we consider only the training parameters.
