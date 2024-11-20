@@ -465,7 +465,7 @@ if __name__ == "__main__":
     for task in task_metrics:
 
         config_list.append(f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/{task}.json")
-        config = RunConfig.from_file(config_list, args)
+        config = RunConfig.from_file(config_list)
         runner = Runner(config)
 
         runner.config.validation_config.eval_metric = task_metrics[task]
