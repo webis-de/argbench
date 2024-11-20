@@ -6,7 +6,6 @@
     "cutoff_len": 2000,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/datasets",
     "data_type": "ndjson",
-    "output_dapater_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models/segmentation",
     "train_datasets": {
         "subsample_amount": 50,
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
@@ -16,7 +15,6 @@
             "argument_unit_segmentation_entity_ajjour17"
         ],
         "include_task": [
-            "argument_unit_classification_essays_stab17"
         ]
     },
     "test_datasets": {
@@ -76,7 +74,7 @@
         "logging_steps": 10,
         "lr_scheduler_type": "linear",
         "metric_for_best_model": "loss",
-        "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models/unit-classification"
+        "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models/multiple-tasks-sample"
     },
     "early_stopping_config": {
         "early_stopping_patience": 3,
