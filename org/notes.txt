@@ -19,3 +19,12 @@
   It seems like evaluation framework should validate the output of the model. [TODO]
 - Evaluation metrics for relation identification is missing
 - some tasks naming are still confusing
+
+
+[Nov 19]
++ Enabled logging in project by filtering unneeded warnings
++ validated sentence f1 score problems when sentences are not equal
++ faced evaluation problem with rouge
+
+Couldn't find a module script at /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/rouge/rouge.py. Module 'rouge' doesn't exist on the Hugging Face Hub either.
+
