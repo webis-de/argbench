@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 from pathlib import Path
 from vllm import LLM, SamplingParams
 from vllm.lora.request import LoRARequest
-
+from IPython.core.debugger import set_trace
 logger = logging.getLogger(__name__)
 
 from dataclasses import asdict
@@ -374,6 +374,7 @@ class Runner:
         """
         Performs model evaluation using test set and evaluation metric from ValidationConfig
         """
+        set_trace()
         labels = self.test_instances["output"]
         dataset = PandasDataset(self.test_instances)
         predictions = []
@@ -446,7 +447,7 @@ class Runner:
 if __name__ == "__main__":
     turn_off_warnings()
     arg_parser = ArgumentParser(description="Run peft finetuning experiment")
-
+    logger.log(level=logging.INFO)
     arg_parser.add_argument("-c", "--config", type=Path, action="append", help="Path to experiment config")
 
     torch.backends.cuda.matmul.allow_tf32 = True
