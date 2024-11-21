@@ -174,7 +174,8 @@ def compute_sentence_f1(predictions, references, inputs):
         input = inputs[i]
         prediction_labels, prediction_sentences = extract_sentence_labels(prediction)
         ground_truth_labels, reference_sentences = extract_sentence_labels(reference)
-        assert (len(prediction_labels) == len(ground_truth_labels))
+        logger.log(level=logging.ERROR, message=f"reference token size {len(reference.split())}")
+        logger.log(level=logging.ERROR, message=f"prediction token size {len(prediction.split())}")
         for i, prediction_sentence in prediction_sentences:
             if not (prediction_sentence == reference_sentences[i]):
                 logger.log(level=logging.ERROR, message=f"model did not output all needed documents for evaluation predicted sentences count ")
@@ -183,7 +184,7 @@ def compute_sentence_f1(predictions, references, inputs):
                 logger.log(level=logging.ERROR, message=f"predicted sentences {prediction_sentence}")
                 logger.log(level=logging.ERROR, message=f"predicted sentences {ground_truth_labels}")
             assert(prediction_sentence == reference_sentences[i])
-
+        assert (len(prediction_labels) == len(ground_truth_labels))
         all_labels.extend(ground_truth_labels)
         all_predictions.extend(prediction_labels)
     macro_f1 = f1_score(all_labels, all_predictions, average='macro')
