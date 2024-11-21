@@ -145,7 +145,8 @@ def compile_datasets(
     def template_formatter(row):
         return prompt_template.format(
             instance_input=row["document"],
-            definition=row["definition"])
+            definition=row["definition"],
+        )
 
     datasets = []
     for dataset in task_datasets:
