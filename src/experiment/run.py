@@ -415,7 +415,7 @@ class Runner:
             #output = [o[len(text[i]):] for i, o in enumerate(output)]
             prediction = output.outputs[0].text
             predictions += prediction
-            logger.log(level=logging.INFO, message=f"got the prediction {prediction} for input{text}")
+            logger.log(level=logging.INFO, msg=f"got the prediction {prediction} for input{text}")
         #trainer.model.train()
 
         if self.config.validation_config.eval_metric == "fscore":
