@@ -73,8 +73,8 @@ class Runner:
         self.tokenizer.pad_token_id = config.pad_token_id
         with profiler.record_function("preparing data"):
             self.prepare_data()
-        print("Data prepared!")
-
+        logger.log(level=logging.INFO, msg="Data prepared!")
+        logger.log(level=logging.INFO, msg=f"counting {len(self.train_data)}")
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
 
 
@@ -92,7 +92,7 @@ class Runner:
         :param new_peft_hpo: New peft hyperparameters
         :returns: Model to be trained
         """
-        print("Prepare model")
+        logger.log(level=logging.INFO,msg="Prepare model")
 
         model = self.prepare_llama_for_causal_llm(
             self.config.base_model,
@@ -104,7 +104,7 @@ class Runner:
         if not self.config.is_eval:
             model = prepare_model_for_kbit_training(model)
             model.enable_input_require_grads()
-        print("Model loaded")
+        logger.log(level=logging.INFO,msg="Model loaded")
         if self.config.peft_configs and self.config.peft_fresh_config:
             raise RuntimeError("Cannot instantiate both fresh and trained models")
         if self.config.peft_configs:
