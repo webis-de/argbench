@@ -8,7 +8,7 @@
     "run_output_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/multiple-datasets",
     "data_type": "ndjson",
     "train_datasets": {
-        "subsample_amount": 50,
+        "subsample_amount": 2000,
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
         "exclude_datasets": [
             "counter_argument_generation_candela_hua19",
