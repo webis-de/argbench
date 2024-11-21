@@ -1,4 +1,9 @@
 {
+    "test_datasets": {
+        "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
+        "name": "argument_unit_classification_essays_stab17",
+        "match": "argument_unit_classification_essays_stab17"
+    },
     "data_collator_config": {
         "padding": true,
         "return_tensors": "pt",
