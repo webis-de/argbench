@@ -16,6 +16,7 @@
             "argument_unit_segmentation_entity_ajjour17"
         ],
         "include_task": [
+            "aspect_detection_ukp_aspect_schiller21"
         ]
     },
     "test_datasets": {
