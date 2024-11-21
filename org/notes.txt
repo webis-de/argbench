@@ -31,6 +31,7 @@ Couldn't find a module script at /bigwork/nhwpajjy/task-specific-argument-mining
 [NOV 20]
 + Currently we save only one adapter per task.
 + One should optimize the training parameters and generation parameters. Currently, we consider only the training parameters.
+
 + ans the corresponding file may hold incorrect parameterization and should be fixed.
     warnings.warn(
   Loading checkpoint shards: 100%|██████████| 33/33 [02:42<00:00,  4.91s/it]
@@ -60,3 +61,11 @@ Couldn't find a module script at /bigwork/nhwpajjy/task-specific-argument-mining
 when executing the
 
 sbatch jobs/run-leave-out-experiment-luis.sh
+
+[NOV 21]
+- aspect_detection_ukp_aspect_schiller21 not loading
++ test dataset
++ we should do one shot classification for the model to learn the format
++ the current code fine-tune the models multiple times. One should move forward to store the task name
+when compiling the test files and recalling this to get the needed evaluation metric
++ premise generation datasets are missing
