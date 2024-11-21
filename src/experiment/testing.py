@@ -174,15 +174,15 @@ def compute_sentence_f1(predictions, references, inputs):
         input = inputs[i]
         prediction_labels, prediction_sentences = extract_sentence_labels(prediction)
         ground_truth_labels, reference_sentences = extract_sentence_labels(reference)
-        logger.log(level=logging.ERROR, message=f"reference token size {len(reference.split())}")
-        logger.log(level=logging.ERROR, message=f"prediction token size {len(prediction.split())}")
+        logger.log(level=logging.INFO, msg=f"reference token size {len(reference.split())}")
+        logger.log(level=logging.INFO, msg=f"prediction token size {len(prediction.split())}")
         for i, prediction_sentence in prediction_sentences:
             if not (prediction_sentence == reference_sentences[i]):
-                logger.log(level=logging.ERROR, message=f"model did not output all needed documents for evaluation predicted sentences count ")
-                logger.log(level=logging.ERROR, message=f"predicted sentences count {len(prediction_sentences)}")
-                logger.log(level=logging.ERROR, message=f"reference sentences count {len(reference_sentences)}")
-                logger.log(level=logging.ERROR, message=f"predicted sentences {prediction_sentence}")
-                logger.log(level=logging.ERROR, message=f"predicted sentences {ground_truth_labels}")
+                logger.log(level=logging.ERROR, msg=f"model did not output all needed documents for evaluation predicted sentences count ")
+                logger.log(level=logging.ERROR, msg=f"predicted sentences count {len(prediction_sentences)}")
+                logger.log(level=logging.ERROR, msg=f"reference sentences count {len(reference_sentences)}")
+                logger.log(level=logging.ERROR, msg=f"predicted sentences {prediction_sentence}")
+                logger.log(level=logging.ERROR, msg=f"predicted sentences {ground_truth_labels}")
             assert(prediction_sentence == reference_sentences[i])
         assert (len(prediction_labels) == len(ground_truth_labels))
         all_labels.extend(ground_truth_labels)
