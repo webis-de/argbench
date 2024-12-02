@@ -9,7 +9,7 @@ from collections import defaultdict
 from pathlib import Path
 from torch import _convert_indices_from_coo_to_csr
 from yaml import load, Loader
-
+from IPython.core.debugger import set_trace
 
 logger = logging.getLogger(__name__)
 
@@ -70,6 +70,7 @@ def collect_files(
     :param exclude_datasets: Remove datasets from train set
     :returns: Tuple of train dataset files and test dataset files
     """
+    set_trace()
     if include_genre:
         include_genre = set(include_genre)
     if include_subarea:
