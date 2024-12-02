@@ -43,7 +43,7 @@ def compute_precision_recall_fscore_support(predictions, references, f1_average=
     precision, recall, fscore, support = precision_recall_fscore_support(
             label_targets,
             label_predictions,
-            labels=[label_mapping[l] for l in labels],
+#            labels=[label_mapping[l] for l in labels],
             beta=beta,
             average=f1_average
         )
