@@ -1,6 +1,6 @@
 {
-  "argument_unit_classification_essays_stab17": "sentence-fscore",
   "argument_unit_segmentation_ajjour17": "bio-fscore",
+  "argument_unit_classification_essays_stab17": "sentence-fscore",
   "conclusion_generation_belief_generation_alshomary21": "bleu",
   "warrant_identification_semeval_2018_task_12_habernal18": "fscore",
   "stance_classification_ibmsc_barhaim17" : "fscore"
