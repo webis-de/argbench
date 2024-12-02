@@ -1,10 +1,15 @@
+import json
+import logging
+import ndjson
+import os
+import pandas as pd
+
 from argparse import ArgumentParser
 from pathlib import Path
 from preprocess import tasks_path
-import pandas as pd
-import os
-import json
-import ndjson
+
+logger = logging.getLogger(__name__)
+
 
 def process_task_file(output_path, task_file_path, filetype="ndjson"):
     """
