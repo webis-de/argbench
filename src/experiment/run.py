@@ -374,7 +374,7 @@ class Runner:
         """
         Performs model evaluation using test set and evaluation metric from ValidationConfig
         """
-        set_trace()
+        #set_trace()
         labels = self.test_instances["output"]
         dataset = PandasDataset(self.test_instances)
         predictions = []
