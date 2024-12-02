@@ -398,7 +398,7 @@ class Runner:
 
         else:
             raise ValueError("no model is trained !")
-
+        set_trace()
         for data in tqdm(loader):
             text = data["input"]
             #prompt = self.tokenizer(text=text, return_tensors="pt", padding=True)
