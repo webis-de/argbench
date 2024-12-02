@@ -83,10 +83,9 @@ def collect_files(
 
     test_files = {test_configs["name"]: []}
     for file in metadata[test_configs["name"]]["file_list"]:
-        if test_configs["match"] in file:
-            test_files[test_configs["name"]].append(
-                task_path / test_configs["name"] / file
-            )
+        test_files[test_configs["name"]].append(
+            task_path / test_configs["name"] / file)
+
 
     if is_evaluate:
         return {}, test_files
