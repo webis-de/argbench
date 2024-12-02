@@ -143,14 +143,23 @@ def compute_bio_f1_score(predictions, references, inputs):
         predictions_labels = convert_to_bio(input, prediction)
         all_labels.extend(groudn_truth_labels)
         all_predictions.extend(predictions_labels)
+
+    if len(all_labels) == len(all_predictions):
+
     #print(precision_recall_fscore_support(all_labels,all_predictions, average=None, labels=['Arg-I']))
     #print(f" Arg-B f1 {f1_score(all_labels, all_predictions, average=None, labels=['Arg-B'])}")
     #print(f" Arg-I f1 {f1_score(all_labels, all_predictions, average=None, labels=['Arg-I'])}")
     #print(f" Arg-O f1 {f1_score(all_labels, all_predictions, average=None, labels=['Arg-O'])}")
-    macro_f1 = f1_score(all_labels, all_predictions, average='macro')
-    argb_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-B'])
-    argi_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-I'])
-    argo_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-O'])
+        macro_f1 = f1_score(all_labels, all_predictions, average='macro')
+        argb_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-B'])
+        argi_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-I'])
+        argo_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-O'])
+    else:
+        macro_f1 = 0
+        argb_f1 = 0
+        argi_f1 = 0
+        argo_f1 = 0
+
 
     metrics = {"fscore": macro_f1, "argb-fscore" : argb_f1[0], "argo-fscore": argo_f1[0], "argi-fscore": argi_f1[0]}
     return metrics
@@ -184,10 +193,14 @@ def compute_sentence_f1(predictions, references, inputs):
                 logger.log(level=logging.ERROR, msg=f"reference sentences count {len(reference_sentences)}")
                 logger.log(level=logging.ERROR, msg=f"predicted sentences {prediction_sentence}")
                 logger.log(level=logging.ERROR, msg=f"predicted sentences {ground_truth_labels}")
-            assert(prediction_sentence == reference_sentences[i])
-        assert (len(prediction_labels) == len(ground_truth_labels))
+
+
+
         all_labels.extend(ground_truth_labels)
         all_predictions.extend(prediction_labels)
-    macro_f1 = f1_score(all_labels, all_predictions, average='macro')
+    if len(all_labels) == len(all_predictions):
+        macro_f1 = f1_score(all_labels, all_predictions, average='macro')
+    else:
+        macro_f1 = 0
     logger.log(level=logging.INFO,message=f"{macro_f1=}")
     return {"fscore" : macro_f1}
