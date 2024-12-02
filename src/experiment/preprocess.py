@@ -1,12 +1,17 @@
-from argparse import ArgumentParser
-from collections import defaultdict
 import json
-from pathlib import Path
-from torch import _convert_indices_from_coo_to_csr
-from yaml import load, Loader
+import logging
 import ndjson
 import os
 import pandas as pd
+
+from argparse import ArgumentParser
+from collections import defaultdict
+from pathlib import Path
+from torch import _convert_indices_from_coo_to_csr
+from yaml import load, Loader
+
+
+logger = logging.getLogger(__name__)
 
 class PandasDataset:
     """
@@ -95,7 +100,7 @@ def collect_files(
             continue
 
         if task not in metadata:
-            print(f"{task} not in metadata!")
+            logger.log(level=logging.INFO, msg=f"{task} not in metadata!")
             continue
         genres = metadata[task].get("genre", set())
         subareas = metadata[task].get("subareas", set())
@@ -152,7 +157,7 @@ def compile_datasets(
     for dataset in task_datasets:
         total_datasets = []
         for task_path in task_datasets[dataset]:
-            print(task_path)
+            logger.log(level=logging.INFO, msg=task_path)
             if filetype == "ndjson":
                 total_datasets.append(pd.read_json(task_path, lines=True))
             elif filetype == "parquet":
@@ -201,7 +206,8 @@ def collect_datasets(run_config):
         train_config.get("exclude_datasets")
     )
 
-    print("Train datasets collected:")
+    logger.log(level=logging.INFO, msg="Train datasets collected:")
+
     train_dataset = compile_datasets(
         train_tasks,
         train_config["prompt_template"],
@@ -209,7 +215,8 @@ def collect_datasets(run_config):
         train_config.get("subsample_rate", None),
         run_config.data_type
     )
-    print("Test datasets collected:")
+    logger.log(level=logging.INFO,msg="Test datasets collected:")
+
     test_dataset = compile_datasets(
         test_tasks,
         test_config["prompt_template"],
