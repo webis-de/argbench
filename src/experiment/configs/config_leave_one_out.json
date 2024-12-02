@@ -22,9 +22,7 @@
         ]
     },
     "test_datasets": {
-        "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
-        "name": "argument_unit_segmentation_ajjour17",
-        "match": "argument_unit_segmentation"
+        "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:"
     },
     "quant_config": {
         "load_in_4bit": true
