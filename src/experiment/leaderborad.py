@@ -4,7 +4,9 @@ import pandas as pd
 from datetime import datetime
 
 class Leaderboard:
-
+    """
+    This class keeps track of LLM models' score for one experiment for example leave five tasks evaluation
+    """
     def __init__(self, output_path):
         self.output_path = output_path
         self.read_file()
@@ -13,9 +15,19 @@ class Leaderboard:
         if os.path.exists(self.output_path):
             self.df_results = pd.read_csv(self.output_path)
         else:
-            self.df_results = pd.DataFrame(columns=["model", "training_data", "test-task", "metric", "time"])
+            self.df_results = pd.DataFrame(columns=["model", "training_data", "test_task", "metric", "time"])
 
     def add_results(self, results):
+        """
+        added
+        :param results: a dictionary that contains
+        model name which is a string
+        training_data: on which data is the model trained
+        test_task: the test task to evaluate the model on
+        metric: is a float number the model scored on the test task
+        time: the time when the experiment finished
+        :return:
+        """
         df_record = pd.DataFrame([results])
         now = datetime.now()
         time_now = now.strftime("%m-%d-%H:%M:%S")
