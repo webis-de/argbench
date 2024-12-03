@@ -16,7 +16,7 @@ class Leaderboard:
             self.df_results = pd.DataFrame(columns=["model", "training_data", "test-task", "metric", "time"])
 
     def add_results(self, results):
-        df_record = pd.DataFrame(results)
+        df_record = pd.DataFrame([results])
         now = datetime.now()
         time_now = now.strftime("%m-%d-%H:%M:%S")
         results["time"] = time_now
