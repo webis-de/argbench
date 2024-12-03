@@ -1,6 +1,8 @@
 import os.path
 
 import pandas as pd
+from datetime import datetime
+
 class Leaderboard:
 
     def __init__(self, output_path):
@@ -11,10 +13,14 @@ class Leaderboard:
         if os.path.exists(self.output_path):
             self.df_results = pd.read_csv(self.output_path)
         else:
-            self.df_results = pd.DataFrame(columns=["model", "training_data", "task", "metric"])
+            self.df_results = pd.DataFrame(columns=["model", "training_data", "task", "metric", "time"])
 
     def add_results(self, results):
         df_record = pd.DataFrame(results)
+        now = datetime.now()
+        time_now = now.strftime("%m-%d-%H:%M:%S")
+        results["time"] = time_now
+
         self.df_results = pd.concat([self.df_results, df_record])
 
     def save_file(self,results):
