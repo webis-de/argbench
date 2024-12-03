@@ -6,7 +6,7 @@ from optuna import Trial, create_study
 from torch.utils.data import DataLoader
 from pathlib import Path
 from vllm import LLM, SamplingParams
-from vllm.lora.request import LoRARequest
+from vllm.  lora.request import LoRARequest
 from IPython.core.debugger import set_trace
 logger = logging.getLogger(__name__)
 
@@ -76,7 +76,7 @@ class Runner:
         logger.log(level=logging.INFO, msg="Data prepared!")
         logger.log(level=logging.INFO, msg=f"counting {len(self.train_data)}")
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
-
+        self.task_metrics = json.load(open(config.task_metrics_path))
 
     def prepare_model(self,
                       trial=None,
@@ -147,7 +147,6 @@ class Runner:
             model=model,
             callbacks=callbacks,
             train_dataset=self.train_data,
-            eval_dataset=self.test_data,
             args=train_args,
             data_collator=data_collator,
         )
@@ -158,21 +157,26 @@ class Runner:
         """
         Using configuration object collects train and test datasets
         """
-        self.train_instances, self.test_instances = collect_datasets(
+        self.train_datsets, self.test_datsets = collect_datasets(
             self.config
         )
 
         self.train_data = []
-        for row in self.train_instances.iterrows():
-            row = row[1]
-            processed = self.generate_and_tokenize_prompt(row, self.config.cutoff_len)
-            self.train_data.append(processed)
+        for train_dataset in self.train_datsets:
+            train_df = self.train_datsets[train_dataset].df
+            for row in train_df.iterrows():
+                row = row[1]
+                processed = self.generate_and_tokenize_prompt(row, self.config.cutoff_len)
+                self.train_data.append(processed)
 
-        self.test_data = []
-        for row in self.test_instances.iterrows():
-            row = row[1]
-            processed = self.generate_and_tokenize_prompt(row, self.config.cutoff_len, False)
-            self.test_data.append(processed)
+        self.test_data = {}
+        for test_dataset in self.test_datsets:
+            test_df = self.test_datsets[test_dataset].df
+            self.test_data[test_dataset] = []
+            for row in test_df.iterrows():
+                row = row[1]
+                processed = self.generate_and_tokenize_prompt(row, self.config.cutoff_len, False)
+                self.test_data[test_dataset].append(processed)
 
 
     def prepare_llama_for_causal_llm(self, base_model, quant_config, model_config):
@@ -354,9 +358,13 @@ class Runner:
             with profiler.record_function("loading model"):
                 self.trainer.train()
         self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
-        metrics = self.evaluate(self.trainer)
+        test_datasets_metrics = {}
+        for test_dataset in self.test_data:
+            task_data =  self.test_data[test_dataset]
+            metrics = self.evaluate(self.trainer, test_dataset, task_data)
+            test_datasets_metrics[test_dataset] = metrics
         self.free_model()
-        return metrics
+        return test_datasets_metrics
 
 
     def write_run(self, run_results):
@@ -370,13 +378,14 @@ class Runner:
             json.dump(run_data, f)
 
 
-    def evaluate(self, trainer):
+    def evaluate(self, trainer, test_dataset, task_data):
         """
-        Performs model evaluation using test set and evaluation metric from ValidationConfig
+        Performs model evaluation using the test datasets and evaluation metric from ValidationConfig. The test
+        dataset is the name of the test task and task_data is the test data points
         """
         #set_trace()
         labels = self.test_instances["output"]
-        dataset = PandasDataset(self.test_instances)
+        dataset = PandasDataset(task_data)
         predictions = []
 
         loader = DataLoader(
@@ -392,12 +401,14 @@ class Runner:
 
         adapter_path = self.config.training_args_config.output_dir + "/best-model"
         llm = LLM(model=base_model, enable_lora=True, tokenizer_mode="slow")
+
         if os.path.exists(adapter_path):
             lora_request = LoRARequest("adapter", 1, adapter_path+"/adapter")
             sampling_params = SamplingParams(**self.config.vllm_config.to_conf())
 
         else:
             raise ValueError("no model is trained !")
+
         set_trace()
         for data in tqdm(loader):
             text = data["input"]
@@ -419,24 +430,28 @@ class Runner:
                 logger.log(level=logging.INFO, msg=f"got the prediction {prediction} for input{text}")
         #trainer.model.train()
 
-        if self.config.validation_config.eval_metric == "fscore":
+        metric = self.task_metrics[test_dataset]
+
+        if metric == "fscore-detailed":
             return compute_precision_recall_fscore_support(
                 predictions,
                 labels,
                 f1_average=self.config.validation_config.fscore_average,
                 beta=self.config.validation_config.fscore_beta
             )
-        elif self.config.validation_config.eval_metric == "rouge":
+        elif metric == "fscore":
+            return f1_score(predictions, labels, average = "macro")
+        elif metric == "rouge":
             return compute_rouge_score(predictions, labels)
-        elif self.config.validation_config.eval_metric == "bleu":
+        elif metric == "bleu":
             return compute_bleu_score(predictions, labels)
-        elif self.config.validation_config.eval_metric == "meteor":
+        elif metric == "meteor":
             return compute_meteor_score(predictions, labels)
-        elif self.config.validation_config.eval_metric == "bio-fscore":
+        elif metric == "bio-fscore":
             return compute_bio_f1_score(predictions, labels, data["document"])
-        elif self.config.validation_config.eval_metric == "sentence-fscore":
+        elif metric == "sentence-fscore":
             return compute_sentence_f1(predictions, labels, data["document"])
-        elif self.config.validation_config.eval_metric == "kendalltau":
+        elif metric == "kendalltau":
             return compute_kendall_tau(predictions, labels)
         else:
             raise RuntimeError(f"No such metric: {self.config.validation_config.eval_metric}")

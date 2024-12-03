@@ -5,13 +5,15 @@ import os
 import pandas as pd
 
 from argparse import ArgumentParser
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 from pathlib import Path
 from torch import _convert_indices_from_coo_to_csr
 from yaml import load, Loader
 from IPython.core.debugger import set_trace
 
 logger = logging.getLogger(__name__)
+
+Dataset = namedtuple("Dataset","name df")
 
 class PandasDataset:
     """
@@ -137,7 +139,7 @@ def compile_datasets(
         prompt_template,
         subsample_amount=None,
         subsample_rate=None,
-        filetype="ndjson"):
+        filetype="ndjson", return_metadata=True):
     """
     Read dataset file and compile all datasets into one dataframe
 
@@ -153,7 +155,7 @@ def compile_datasets(
             definition=row["definition"],
         )
 
-    datasets = []
+    datasets = {}
     for dataset in task_datasets:
         total_datasets = []
         for task_path in task_datasets[dataset]:
@@ -174,11 +176,15 @@ def compile_datasets(
 
         task_data["input"] = task_data.apply(template_formatter, axis=1)
 
-        datasets.append(task_data[["id","document", "input", "output"]])
+        task_df=task_data[["id","document", "input", "output"]]
 
-    if datasets:
-        return pd.concat(datasets, axis=0).reset_index(drop=True)
-    return pd.DataFrame()
+        task = Dataset(dataset, task_df)
+
+        datasets[dataset] = task
+
+#    if datasets:
+#        return pd.concat(datasets, axis=0).reset_index(drop=True)
+    return datasets
 
 
 def collect_datasets(run_config):
@@ -208,7 +214,7 @@ def collect_datasets(run_config):
 
     logger.log(level=logging.INFO, msg="Train datasets collected:")
 
-    train_dataset = compile_datasets(
+    train_datasets = compile_datasets(
         train_tasks,
         train_config["prompt_template"],
         train_config.get("subsample_amount", None),
@@ -217,7 +223,7 @@ def collect_datasets(run_config):
     )
     logger.log(level=logging.INFO,msg="Test datasets collected:")
 
-    test_dataset = compile_datasets(
+    test_datasets = compile_datasets(
         test_tasks,
         test_config["prompt_template"],
         test_config.get("subsample_amount", None),
@@ -225,4 +231,4 @@ def collect_datasets(run_config):
         run_config.data_type
     )
 
-    return train_dataset, test_dataset
+    return train_datasets, test_datasets
