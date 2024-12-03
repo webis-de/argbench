@@ -307,8 +307,16 @@ class RunConfig:
     # Experiment results path
     leaderboard_path: str
 
-    # Dataset metrics
+    # Dataset metrics a dictionary that contains for each task which metric will be used
     task_metrics_path: str
+
+
+    # Model Task-specific configuration config path
+
+    generation_config_path: str
+    task_generation_config: dict
+
+    # task-specific
 
     # Seed to use
     seed: int
@@ -459,6 +467,12 @@ class RunConfig:
             conf_obj =  cls(**config)
         else:
             conf_obj = cls(is_hpo=args.is_hpo, **config)
+        conf_obj.task_generation_config = {}
+
+        if config.get("generation_config_path"):
+            task_specific_generation_configs = json.load(config.get("generation_config_path"))
+            for task in task_specific_generation_configs:
+                conf_obj.task_generation_config[task] = VLLMGenerationConfig(**task_specific_generation_configs[task])
 
         if config.get("llama_causal_config"):
             conf_obj.llama_causal_config = LLamaCausalConfig(**conf_obj.llama_causal_config)

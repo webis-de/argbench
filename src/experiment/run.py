@@ -411,10 +411,18 @@ class Runner:
 
         adapter_path = self.config.training_args_config.output_dir + "/best-model"
         llm = LLM(model=base_model, enable_lora=True, tokenizer_mode="slow")
-
+        if test_dataset in self.config.task_generation_config:
+            logger.log(level=logging.INFO, msg=f"using generation config for {test_dataset}")
+            task_specific_vllm_config = self.config.task_generation_config[test_dataset]
+        elif "default" in self.config.task_generation_config:
+            logger.log(level=logging.INFO, msg=f"using default generation config")
+            task_specific_vllm_config = self.config.task_generation_config["default"]
+        else:
+            task_specific_vllm_config = self.config.vllm_config.to_conf()
+            logger.log(level=logging.INFO, msg=f"using central generation config")
         if os.path.exists(adapter_path):
             lora_request = LoRARequest("adapter", 1, adapter_path+"/adapter")
-            sampling_params = SamplingParams(**self.config.vllm_config.to_conf())
+            sampling_params = SamplingParams(**task_specific_vllm_config.to_conf())
 
         else:
             raise ValueError("no model is trained !")
