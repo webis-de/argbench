@@ -9,7 +9,7 @@ from vllm import LLM, SamplingParams
 from vllm.  lora.request import LoRARequest
 from IPython.core.debugger import set_trace
 
-from src.experiment.leaderborad import Leaderboard
+from leaderborad import  Leaderboard
 
 logger = logging.getLogger(__name__)
 
