@@ -384,7 +384,7 @@ class Runner:
         dataset is the name of the test task and task_data is the test data points
         """
         #set_trace()
-        labels = self.test_instances["output"]
+
         dataset = PandasDataset(task_data)
         predictions = []
 
@@ -411,6 +411,7 @@ class Runner:
 
         set_trace()
         for data in tqdm(loader):
+            labels = test_dataset["output"]
             text = data["input"]
             #prompt = self.tokenizer(text=text, return_tensors="pt", padding=True)
             #inputs = prompt["input_ids"].cuda()
