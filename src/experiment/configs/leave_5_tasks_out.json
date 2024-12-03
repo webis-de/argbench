@@ -27,6 +27,7 @@
     },
     "test_datasets": {
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
+        "subsample_amount": 10,
         "tasks": [
             "argument_unit_segmentation_ajjour17",
             "argument_unit_classification_essays_stab17",
