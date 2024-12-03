@@ -359,9 +359,9 @@ class Runner:
                 self.trainer.train()
         self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
         test_datasets_metrics = {}
-        for test_dataset in self.test_data:
-            task_data =  self.test_data[test_dataset]
-            metrics = self.evaluate(self.trainer, test_dataset, task_data)
+        for test_dataset in self.test_datsets:
+            task_df =  self.test_datsets[test_dataset].df
+            metrics = self.evaluate(self.trainer, test_dataset, task_df)
             test_datasets_metrics[test_dataset] = metrics
         self.free_model()
         return test_datasets_metrics
