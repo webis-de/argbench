@@ -161,8 +161,8 @@ def compute_bio_f1_score(predictions, references, inputs):
         argo_f1 = 0
 
 
-    metrics = {"fscore": macro_f1, "argb-fscore" : argb_f1[0], "argo-fscore": argo_f1[0], "argi-fscore": argi_f1[0]}
-    return metrics
+
+    return macro_f1
 
 
 def extract_sentence_labels(text):
