@@ -304,6 +304,12 @@ class VLLMGenerationConfig(CommonConfig):
 class RunConfig:
     """Config for instruction finetuning run"""
 
+    # Experiment results path
+    results_path: str
+
+    # Dataset metrics
+    task_metrics_path: str
+
     # Seed to use
     seed: int
     # Prompt cutoff length
@@ -312,6 +318,8 @@ class RunConfig:
     train_datasets: dict
     # Test datasets
     test_datasets: dict
+
+
     # Data folder
     data_folder: str
     # Base model path
