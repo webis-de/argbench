@@ -480,7 +480,7 @@ class Runner:
 if __name__ == "__main__":
     turn_off_warnings()
     arg_parser = ArgumentParser(description="Run peft finetuning experiment")
-    logger.log(level=logging.INFO)
+
     arg_parser.add_argument("-c", "--config", type=Path, action="append", help="Path to experiment config")
 
     torch.backends.cuda.matmul.allow_tf32 = True
@@ -489,46 +489,9 @@ if __name__ == "__main__":
     RunConfig.register_cli(arg_parser)
 
     args = arg_parser.parse_args()
-
-
-
-
-
-    task_metrics = json.load(open("/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_task_metrics_sample.json"))
-
-    for task in task_metrics:
-        config_list = ["/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_leave_one_out.json"]
-        config_list.append(f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/{task}.json")
-        config = RunConfig.from_file(config_list)
-        print(config)
-        runner = Runner(config)
-
-        runner.config.validation_config.eval_metric = task_metrics[task]
-        runner.config.test_datasets["name"] = task
-        score = runner.execute()
-        if runner.config.validation_config.eval_metric == "fscore":
-            runner.write_run({
-                "task": task,
-                "precision": score[0],
-                "recall": score[1],
-                "fscore": score[2],
-                "support": score[3],
-                "labels": score[4]
-            })
-            print(f"Precision: {score[0]} Recall: {score[1]} Fscore: {score[2]} Support: {score[3]} Labels: {score[4]}")
-        elif runner.config.validation_config.eval_metric == "sentence-fscore":
-            runner.write_run({"task":task,
-                              "fscore": score["fscore"],
-                              })
-        elif runner.config.validation_config.eval_metric == "bio-fscore":
-            runner.write_run({"task": task,
-                              "fscore": score["fscore"],
-                              "argb-fscore" : score["agb-fscore"],
-                              "argi-fscore" : score["agi-fscore"],
-                              "argo-fscore" : score["ago-fscore"],
-                              })
-        else:
-            runner.write_run(score)
-            print(f"Score: {score}")
+    config_list = ["/home/yamen/projects/task-specific-argument-mining-and-generation/src/experiment/configs/complete_leave_one_out_ajjour17.json"]
+    config = RunConfig.from_file(config_list)
+    runner = Runner(config)
+    score = runner.execute()
 
 

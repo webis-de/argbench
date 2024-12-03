@@ -314,7 +314,7 @@ class RunConfig:
     # Model Task-specific configuration config path
 
     generation_config_path: str
-    task_generation_config: dict
+
 
     # task-specific
 
@@ -359,6 +359,7 @@ class RunConfig:
     validation_config: ValidationConfig = None
     hpo_config: HPOConfig = None
     vllm_config: VLLMGenerationConfig = None
+    task_generation_config = {}
     @staticmethod
     def register_cli(arg_parser):
         """
@@ -470,7 +471,8 @@ class RunConfig:
         conf_obj.task_generation_config = {}
 
         if config.get("generation_config_path"):
-            task_specific_generation_configs = json.load(config.get("generation_config_path"))
+            with open(config.get("generation_config_path")) as task_config_stream:
+                task_specific_generation_configs = json.load(task_config_stream)
             for task in task_specific_generation_configs:
                 conf_obj.task_generation_config[task] = VLLMGenerationConfig(**task_specific_generation_configs[task])
 
