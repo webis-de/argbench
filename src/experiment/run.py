@@ -8,6 +8,9 @@ from pathlib import Path
 from vllm import LLM, SamplingParams
 from vllm.  lora.request import LoRARequest
 from IPython.core.debugger import set_trace
+
+from src.experiment.leaderborad import Leaderboard
+
 logger = logging.getLogger(__name__)
 
 from dataclasses import asdict
@@ -77,6 +80,7 @@ class Runner:
         logger.log(level=logging.INFO, msg=f"counting {len(self.train_data)}")
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
         self.task_metrics = json.load(open(config.task_metrics_path))
+        self.leaderborad = Leaderboard(config.leaderboard_path)
 
     def prepare_model(self,
                       trial=None,
@@ -358,13 +362,18 @@ class Runner:
             with profiler.record_function("loading model"):
                 self.trainer.train()
         self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
-        test_datasets_metrics = {}
+        all_results = []
         for test_dataset in self.test_datsets:
             task_df =  self.test_datsets[test_dataset].df
-            metrics = self.evaluate(self.trainer, test_dataset, task_df)
-            test_datasets_metrics[test_dataset] = metrics
+            metric = self.evaluate(self.trainer, test_dataset, task_df)
+
+            results = {"task": test_dataset, "metric" : metric, "training_data": "MOC",  "model" : self.config.base_model }
+            all_results.append(results)
+            self.leaderborad.add_results(results)
+            self.leaderborad.save_file()
+
         self.free_model()
-        return test_datasets_metrics
+        return all_results
 
 
     def write_run(self, run_results):

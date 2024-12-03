@@ -305,7 +305,7 @@ class RunConfig:
     """Config for instruction finetuning run"""
 
     # Experiment results path
-    results_path: str
+    leaderboard_path: str
 
     # Dataset metrics
     task_metrics_path: str
