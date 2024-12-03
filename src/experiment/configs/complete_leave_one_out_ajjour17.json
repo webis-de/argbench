@@ -8,6 +8,7 @@
     "run_output_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/unit-segmentation",
     "data_type": "ndjson",
     "results_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/tasks-sample-results.csv",
+    "leaderboard_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/tasks-sample-results.csv",
     "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_task_metrics_sample.json",
     "train_datasets": {
         "subsample_amount": 10,
