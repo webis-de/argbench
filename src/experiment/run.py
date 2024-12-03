@@ -367,7 +367,7 @@ class Runner:
             task_df =  self.test_datsets[test_dataset].df
             metric = self.evaluate(self.trainer, test_dataset, task_df)
 
-            results = {"test-task": test_dataset, "metric" : metric, "training_data": "MOC",  "model" : self.config.base_model }
+            results = {"test_task": test_dataset, "metric" : metric, "training_data": "MOC",  "model" : self.config.base_model }
             all_results.append(results)
             self.leaderborad.add_results(results)
             self.leaderborad.save_file()
