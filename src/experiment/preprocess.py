@@ -91,7 +91,7 @@ def collect_files(
 
         for file in metadata[test_task]["file_list"]:
             test_files[test_task].append(
-                task_path / test_configs["name"] / file)
+                task_path / test_task / file)
 
 
     if is_evaluate:
