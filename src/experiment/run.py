@@ -395,7 +395,7 @@ class Runner:
         #set_trace()
 
         dataset = PandasDataset(task_data)
-        labels = task_data["output"]
+        labels = task_data["output"].tolist()
         predictions = []
 
         loader = DataLoader(
