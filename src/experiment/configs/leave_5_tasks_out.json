@@ -19,6 +19,8 @@
             "counter_argument_generation_cmv_hua18",
             "argument_unit_segmentation_entity_ajjour17"
         ],
+
+
         "include_task": [
             "argument_unit_classification_essays_stab17"
         ]
@@ -27,10 +29,12 @@
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
         "tasks": [
             "argument_unit_segmentation_ajjour17",
-            ""
-        ],
+            "argument_unit_classification_essays_stab17",
+            "conclusion_generation_belief_generation_alshomary21",
+            "warrant_identification_semeval_2018_task_12_habernal18",
+            "stance_classification_ibmsc_barhaim17"
+        ]
 
-        "match": "argument_unit_segmentation"
     },
     "quant_config": {
         "load_in_4bit": true
