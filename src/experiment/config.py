@@ -528,7 +528,7 @@ class RunConfig:
         if args.test_dataset_match:
             conf_obj.test_datasets["match"] = args.test_dataset_match
         if args.test_dataset_name:
-            conf_obj.test_datasets["name"] = args.test_dataset_name
+            conf_obj.test_datasets["tasks"] = [args.test_dataset_name]
         if args.load_model:
             conf_obj.base_model = args.load_model
         if args.config_output:

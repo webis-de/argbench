@@ -82,8 +82,13 @@ def collect_files(
     if not exclude_datasets:
         exclude_datasets = []
 
+    test_tasks = test_configs["tasks"]
 
-    test_files = {test_configs["name"]: []}
+    test_files = {}
+
+    for test_task in test_tasks:
+        test_files[test_task] = []
+
     for file in metadata[test_configs["name"]]["file_list"]:
         test_files[test_configs["name"]].append(
             task_path / test_configs["name"] / file)
