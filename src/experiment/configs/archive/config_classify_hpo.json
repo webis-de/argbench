@@ -51,7 +51,7 @@
     "quant_config": {
         "load_in_8bit": true
     },
-    "llama_causal_config": {
+    "model_config": {
         "device_map": "cuda:0"
     },
     "peft_configs": [
