@@ -367,7 +367,7 @@ class Runner:
         all_results = []
         for test_dataset in self.test_datsets:
             task_df =  self.test_datsets[test_dataset].df
-            metrics = self.evaluate(self.trainer, test_dataset, task_df)
+            metrics = self.evaluate(test_dataset, task_df)
             for metric in metrics:
                 results = {"test_task": test_dataset, "metric" : metric, "score": metrics[metric], "training_data": "MOC",  "model" : self.config.base_model }
                 all_results.append(results)
