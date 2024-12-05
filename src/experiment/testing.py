@@ -137,7 +137,7 @@ def convert_to_bio(input, output):
 def compute_bio_f1_score(predictions, references, inputs):
     all_labels = [ ]
     all_predictions = []
-    set_trace()
+    #set_trace()
     for i, document in enumerate(inputs):
         prediction = predictions[i]
         reference = references[i]
