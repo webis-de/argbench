@@ -360,6 +360,7 @@ class RunConfig:
     hpo_config: HPOConfig = None
     vllm_config: VLLMGenerationConfig = None
     task_generation_config = {}
+
     @staticmethod
     def register_cli(arg_parser):
         """

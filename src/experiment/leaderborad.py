@@ -15,7 +15,7 @@ class Leaderboard:
         if os.path.exists(self.output_path):
             self.df_results = pd.read_csv(self.output_path)
         else:
-            self.df_results = pd.DataFrame(columns=["model", "training_data", "test_task", "metric", "time"])
+            self.df_results = pd.DataFrame(columns=["model", "training_data", "test_task", "metric", "score", "time"])
 
     def add_results(self, results):
         """
