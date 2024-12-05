@@ -299,7 +299,7 @@ class Runner:
         """Loads model checkpoint"""
 
         model = self.prepare_model()
-        return self.prepare_trainer(model)
+        return model
 
 
     def free_model(self):
@@ -354,13 +354,14 @@ class Runner:
         if self.config.is_hpo:
             self.perform_hpo()
             return
-        with profiler.record_function("loading model"):
-            self.trainer = self.load_model()
+        with (profiler.record_function("loading model")):
+            model = self.load_model()
 
         if not self.config.is_eval:
-            with profiler.record_function("loading model"):
+            with profiler.record_function("loading trainer and training"):
+                self.trainer = self.prepare_trainer(model)
                 self.trainer.train()
-        self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
+            self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
         all_results = []
         for test_dataset in self.test_datsets:
             task_df =  self.test_datsets[test_dataset].df
@@ -386,7 +387,7 @@ class Runner:
             json.dump(run_data, f)
 
 
-    def evaluate(self, trainer, test_dataset, task_data):
+    def evaluate(self,  test_dataset, task_data):
         """
         Performs model evaluation using the test datasets and evaluation metric from ValidationConfig. The test
         dataset is the name of the test task and task_data is the test data points
