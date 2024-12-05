@@ -410,7 +410,11 @@ class Runner:
         #trainer.model.eval()
 
         adapter_path = self.config.training_args_config.output_dir + "/best-model"
-        llm = LLM(model=base_model, enable_lora=True, tokenizer_mode="slow")
+        if self.config.peft_configs:
+            llm = LLM(model=base_model, enable_lora=True, tokenizer_mode="slow")
+        else:
+            llm = LLM(model=base_model)
+
         if test_dataset in self.config.task_generation_config:
             logger.log(level=logging.INFO, msg=f"using generation config for {test_dataset}")
             task_specific_vllm_config = self.config.task_generation_config[test_dataset]
