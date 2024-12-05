@@ -47,14 +47,15 @@ def compute_precision_recall_fscore_support(predictions, references, f1_average=
             beta=beta,
             average=f1_average
         )
-    return (
-        precision,
-        recall,
-        fscore,
-        support,
-        labels
-    )
+    scores = {}
+    for i, label in enumerate(labels):
+        scores.update({f"{label}-precision": precision[i], f"{label}-recall": recall[i], f"{label}-fscore": fscore[i] })
+    return scores
 
+
+def compute_f1_score(predictions, references):
+    score = f1_score(predictions, references, average = "macro")
+    return {"fscore": score}
 
 def compute_rouge_score(predictions, references):
     """
@@ -65,8 +66,8 @@ def compute_rouge_score(predictions, references):
     :returns: dict with different ROUGE scores
     """
     rouge = evaluate.load("rouge")
-    return rouge.compute(predictions=predictions, references=references)
-
+    rouge_score = rouge.compute(predictions=predictions, references=references)
+    return {"rouge": rouge_score}
 
 def compute_bleu_score(predictions, references):
     """
@@ -77,8 +78,8 @@ def compute_bleu_score(predictions, references):
     :returns: dict with different BLEU scores
     """
     bleu = evaluate.load("bleu")
-    return bleu.compute(predictions=predictions, references=references)
-
+    bleu_score = bleu.compute(predictions=predictions, references=references)
+    return {"bleu": bleu_score}
 
 def rank_string_to_matrix(rank_strings):
     """
@@ -106,12 +107,13 @@ def compute_kendall_tau(predictions, references):
     """
     predictions = rank_string_to_matrix(predictions)
     references = rank_string_to_matrix(references)
-    return kendalltau(predictions, references)
+    kendall_score =  kendalltau(predictions, references)
+    return {"kendall" : kendall_score}
 
 def compute_meteor_score(predictions, references):
-    rouge = evaluate.load("meteor")
-    return rouge.compute(predictions=predictions, references=references)
-
+    meteor = evaluate.load("meteor")
+    meteor_score = meteor.compute(predictions=predictions, references=references)
+    return {"meteor" : meteor_score}
 
 
 def convert_to_bio(input, output):
@@ -163,7 +165,7 @@ def compute_bio_f1_score(predictions, references, inputs):
 
 
 
-    return macro_f1
+    return {"fscore": macro_f1, "argb_fscore": argb_f1, "argi_fscore": argi_f1, "argo_fscore": argo_f1}
 
 
 def extract_sentence_labels(text):
@@ -203,5 +205,5 @@ def compute_sentence_f1(predictions, references, inputs):
         macro_f1 = f1_score(all_labels, all_predictions, average='macro')
     else:
         macro_f1 = 0
-    logger.log(level=logging.INFO,message=f"{macro_f1=}")
+    logger.log(level=logging.INFO,msg=f"{macro_f1=}")
     return {"fscore" : macro_f1}

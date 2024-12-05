@@ -365,11 +365,11 @@ class Runner:
         all_results = []
         for test_dataset in self.test_datsets:
             task_df =  self.test_datsets[test_dataset].df
-            metric = self.evaluate(self.trainer, test_dataset, task_df)
-
-            results = {"test_task": test_dataset, "metric" : metric, "training_data": "MOC",  "model" : self.config.base_model }
-            all_results.append(results)
-            self.leaderborad.add_results(results)
+            metrics = self.evaluate(self.trainer, test_dataset, task_df)
+            for metric in metrics:
+                results = {"test_task": test_dataset, "metric" : metric, "score": metrics[metric], "training_data": "MOC",  "model" : self.config.base_model }
+                all_results.append(results)
+                self.leaderborad.add_results(results)
             self.leaderborad.save_file()
 
         self.free_model()
@@ -462,7 +462,7 @@ class Runner:
                 beta=self.config.validation_config.fscore_beta
             )
         elif metric == "fscore":
-            return f1_score(predictions, labels, average = "macro")
+            return compute_f1_score(predictions, labels, average = "macro")
         elif metric == "rouge":
             return compute_rouge_score(predictions, labels)
         elif metric == "bleu":
