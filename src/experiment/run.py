@@ -24,9 +24,8 @@ import torch.autograd.profiler as profiler
 
 
 from transformers import (
-    LlamaForCausalLM,
-    LlamaTokenizer,
-    LlamaTokenizerFast,
+    AutoModelForCausalLM,
+    AutoTokenizer,
     TrainingArguments,
     Trainer,
     DataCollatorForSeq2Seq,
@@ -72,7 +71,7 @@ class Runner:
         :param config: RunConfig configuration object
         """
         self.config = config
-        self.tokenizer = LlamaTokenizerFast.from_pretrained(config.base_model, padding_side="left", unk_token="<unk>", truncation=True, max_length = config.data_collator_config.max_length)
+        self.tokenizer = AutoTokenizer.from_pretrained(config.base_model, padding_side="left", unk_token="<unk>", truncation=True, max_length = config.data_collator_config.max_length)
         self.tokenizer.pad_token_id = config.pad_token_id
         with profiler.record_function("preparing data"):
             self.prepare_data()
@@ -98,10 +97,10 @@ class Runner:
         """
         logger.log(level=logging.INFO,msg="Prepare model")
 
-        model = self.prepare_llama_for_causal_llm(
+        model = self.prepare_model_for_causal_llm(
             self.config.base_model,
             self.config.quant_config.to_conf(trial, quant_hpo),
-            self.config.llama_causal_config.to_conf(trial, llama_causal_hpo)
+            self.config.model_config.to_conf(trial, llama_causal_hpo)
         )
         self.base_model = model
 
@@ -183,17 +182,17 @@ class Runner:
                 self.test_data[test_dataset].append(processed)
 
 
-    def prepare_llama_for_causal_llm(self, base_model, quant_config, model_config):
+    def prepare_model_for_causal_llm(self, base_model, quant_config, model_config):
         """
-        Initializes LlamaForCausalLM model and its quantization
+        Initializes ModelForCausalLM model and its quantization
 
         :param base_model: huggingface model path or name
         :param quant_config: Quantization config
         :param model_config: Configuration parameters for model
-        :returns: LlamaForCausalLM initialized from config
+        :returns: ModelForCausalLM initialized from config
         """
         quant_conf = BitsAndBytesConfig(**quant_config)
-        return LlamaForCausalLM.from_pretrained(
+        return AutoModelForCausalLM.from_pretrained(
             base_model,
             torch_dtype=torch.float16,
             quantization_config=quant_conf,
@@ -315,7 +314,7 @@ class Runner:
         model = self.prepare_model(
             trial,
             self.config.hpo_config.quant_config,
-            self.config.hpo_config.llama_causal_config
+            self.config.hpo_config.model_config
         )
 
         trainer = self.prepare_trainer(

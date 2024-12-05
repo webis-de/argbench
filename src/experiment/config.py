@@ -286,7 +286,7 @@ class HPOConfig(CommonConfig):
 
     val_metric: str = None
 
-    llama_causal_config: dict = field(default_factory=dict)
+    model_config: dict = field(default_factory=dict)
     quant_config: dict = field(default_factory=dict)
     # Training configs
     training_args_config: dict = field(default_factory=dict)
@@ -345,7 +345,7 @@ class RunConfig:
     # Data type
     data_type: str = "ndjson"
 
-    llama_causal_config: LLamaCausalConfig = None
+    model_config: LLamaCausalConfig = None
     quant_config: QuantConfig = None
     # Peft finetuning configs
     peft_configs: List[PeftPretrainedConfig] = None
@@ -477,8 +477,8 @@ class RunConfig:
             for task in task_specific_generation_configs:
                 conf_obj.task_generation_config[task] = VLLMGenerationConfig(**task_specific_generation_configs[task])
 
-        if config.get("llama_causal_config"):
-            conf_obj.llama_causal_config = LLamaCausalConfig(**conf_obj.llama_causal_config)
+        if config.get("model_config"):
+            conf_obj.model_config = LLamaCausalConfig(**conf_obj.model_config)
         if config.get("peft_configs"):
             peft_configs = []
             for conf in conf_obj.peft_configs:

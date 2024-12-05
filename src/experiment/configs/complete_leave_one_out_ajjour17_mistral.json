@@ -36,7 +36,7 @@
     "quant_config": {
         "load_in_4bit": true
     },
-    "llama_causal_config": {
+    "model_config": {
         "device_map": "cuda:0"
     },
     "training_args_config": {
