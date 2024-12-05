@@ -73,8 +73,9 @@ class Runner:
         self.config = config
         self.tokenizer = AutoTokenizer.from_pretrained(config.base_model, padding_side="left", unk_token="<unk>", truncation=True, max_length = config.data_collator_config.max_length)
         self.tokenizer.pad_token_id = config.pad_token_id
-        with profiler.record_function("preparing data"):
+        with profiler.record_function("preparing data") as prf:
             self.prepare_data()
+            print(prf.key_averages().table())
         logger.log(level=logging.INFO, msg="Data prepared!")
         logger.log(level=logging.INFO, msg=f"counting {len(self.train_data)}")
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
@@ -354,14 +355,17 @@ class Runner:
         if self.config.is_hpo:
             self.perform_hpo()
             return
-        with (profiler.record_function("loading model")):
+        with profiler.record_function("loading model") as prf:
             model = self.load_model()
+            print(prf.key_averages().table())
 
         if not self.config.is_eval:
-            with profiler.record_function("loading trainer and training"):
+            with profiler.record_function("loading trainer and training") as prf:
                 self.trainer = self.prepare_trainer(model)
                 self.trainer.train()
+                print(prf.key_averages().table())
             self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
+
         all_results = []
         for test_dataset in self.test_datsets:
             task_df =  self.test_datsets[test_dataset].df
