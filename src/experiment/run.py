@@ -98,7 +98,7 @@ class Runner:
         self.task_metrics = json.load(open(config.task_metrics_path))
         self.leaderborad = Leaderboard(config.leaderboard_path)
 
-    def prepare_model(self,
+    def prepare_model_for_training(self,
                       trial=None,
                       quant_hpo=None,
                       llama_causal_hpo=None):
@@ -315,7 +315,7 @@ class Runner:
     def load_model(self):
         """Loads model checkpoint"""
 
-        model = self.prepare_model()
+        model = self.prepare_model_for_training()
         return model
 
 
@@ -372,27 +372,35 @@ class Runner:
             self.perform_hpo()
             return
 
-        log_mem("before loading model")
-
-        model = self.load_model()
-
-        log_mem("after loading model")
 
 
         if not self.config.is_eval:
-            log_mem("before training")
+            log_mem("before loading model")
+
+            model = self.load_model()
+
+            log_mem("after loading model and before training")
+
             self.trainer = self.prepare_trainer(model)
+
             self.trainer.train()
             log_mem("after training")
 
             self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
 
+        base_model = self.config.base_model
+        log_mem("before loading vllm model")
+        if self.config.peft_configs:
+            llm = LLM(model=base_model, enable_lora=True, tokenizer_mode="slow")
+        else:
+            llm = LLM(model=base_model)
+        log_mem("after loading vllm model")
         all_results = []
         for test_dataset in self.test_datsets:
             task_df =  self.test_datsets[test_dataset].df
             log_mem(f"before testing on {test_dataset}")
 
-            metrics = self.evaluate(test_dataset, task_df)
+            metrics = self.evaluate(llm, test_dataset, task_df)
 
             log_mem(f"after testing on {test_dataset}")
             for metric in metrics:
@@ -416,7 +424,7 @@ class Runner:
             json.dump(run_data, f)
 
 
-    def evaluate(self,  test_dataset, task_data):
+    def evaluate(self, llm,  test_dataset, task_data):
         """
         Performs model evaluation using the test datasets and evaluation metric from ValidationConfig. The test
         dataset is the name of the test task and task_data is the test data points
@@ -434,15 +442,11 @@ class Runner:
             collate_fn=eval_collate,
             pin_memory=True
         )
-        base_model = self.config.base_model
+
 
         #trainer.model.eval()
 
         adapter_path = self.config.training_args_config.output_dir + "/best-model"
-        if self.config.peft_configs:
-            llm = LLM(model=base_model, enable_lora=True, tokenizer_mode="slow")
-        else:
-            llm = LLM(model=base_model)
 
         if test_dataset in self.config.task_generation_config:
             logger.log(level=logging.INFO, msg=f"using generation config for {test_dataset}")
