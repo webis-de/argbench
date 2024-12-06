@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os.path
 import logging
+import psutil
 from argparse import ArgumentParser
 from optuna import Trial, create_study
 from torch.utils.data import DataLoader
@@ -8,7 +9,7 @@ from pathlib import Path
 from vllm import LLM, SamplingParams
 from vllm.  lora.request import LoRARequest
 from IPython.core.debugger import set_trace
-
+import torch.autograd.profiler as profiler
 from leaderborad import  Leaderboard
 
 logger = logging.getLogger(__name__)
@@ -20,7 +21,19 @@ import transformers
 from filter_warnings import  *
 
 
-import torch.autograd.profiler as profiler
+
+
+logger.setLevel(level=logging.WARNING)
+def log_mem(message):
+    t = torch.cuda.mem_get_info()
+    free_gpu, total_gpu = (t[0]/(1024**3),t[1]/(1024**3))
+    used_cpu = (psutil.virtual_memory()[3]/1024**3)
+    perc_memory = psutil.virtual_memory()[2]/100
+    free_cpu_perc = 1 - perc_memory
+    total_cpu = (1/perc_memory)*used_cpu
+    free_cpu = total_cpu * free_cpu_perc
+    logger.log(level=logging.WARNING,msg=f"GPU Memory {message}: {free_gpu:2.0f} GB free from {total_gpu:2.0f} GB  |  "
+                                         f" CPU Memory: {free_cpu:2.0f} GB free from {total_cpu:2.0f} GB")
 
 
 from transformers import (
@@ -52,6 +65,7 @@ import torch
 logger = logging.getLogger(__name__)
 
 
+
 def eval_collate(batch):
     out_batch = {k: [] for k in batch[0]}
 
@@ -73,8 +87,11 @@ class Runner:
         self.config = config
         self.tokenizer = AutoTokenizer.from_pretrained(config.base_model, padding_side="left", unk_token="<unk>", truncation=True, max_length = config.data_collator_config.max_length)
         self.tokenizer.pad_token_id = config.pad_token_id
-        with profiler.record_function("preparing data"):
-            self.prepare_data()
+
+        log_mem("before preparing data")
+        self.prepare_data()
+        log_mem("after preparing data")
+
         logger.log(level=logging.INFO, msg="Data prepared!")
         logger.log(level=logging.INFO, msg=f"counting {len(self.train_data)}")
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
@@ -354,20 +371,30 @@ class Runner:
         if self.config.is_hpo:
             self.perform_hpo()
             return
-        with (profiler.record_function("loading model")):
-            model = self.load_model()
+
+        log_mem("before loading model")
+
+        model = self.load_model()
+
+        log_mem("after loading model")
+
 
         if not self.config.is_eval:
-            with profiler.record_function("loading trainer and training"):
-                self.trainer = self.prepare_trainer(model)
-                self.trainer.train()
+            log_mem("before training")
+            self.trainer = self.prepare_trainer(model)
+            self.trainer.train()
+            log_mem("after training")
 
-            self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
+        self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
 
         all_results = []
         for test_dataset in self.test_datsets:
             task_df =  self.test_datsets[test_dataset].df
+            log_mem(f"before testing on {test_dataset}")
+
             metrics = self.evaluate(test_dataset, task_df)
+
+            log_mem(f"after testing on {test_dataset}")
             for metric in metrics:
                 results = {"test_task": test_dataset, "metric" : metric, "score": metrics[metric], "training_data": "MOC",  "model" : self.config.base_model }
                 all_results.append(results)
