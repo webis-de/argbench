@@ -97,7 +97,7 @@
     },
     "data_collator_config": {
 	"padding": true,
-        "return_tensors": "pt",
+        "return_tensors": "pt"
 
     },
     "generation_config": {
