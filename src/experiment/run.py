@@ -463,7 +463,7 @@ class Runner:
 
         sampling_params = SamplingParams(**task_specific_vllm_config.to_conf())
 
-        set_trace()
+        #set_trace()
         for data in tqdm(loader):
             text = data["input"]
             #prompt = self.tokenizer(text=text, return_tensors="pt", padding=True)
