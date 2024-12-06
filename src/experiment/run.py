@@ -22,8 +22,8 @@ from filter_warnings import  *
 
 
 
+logging.basicConfig(level=logging.INFO, format='%(message)s')
 
-logger.setLevel(level=logging.WARNING)
 def log_mem(message):
     t = torch.cuda.mem_get_info()
     free_gpu, total_gpu = (t[0]/(1024**3),t[1]/(1024**3))
@@ -32,7 +32,7 @@ def log_mem(message):
     free_cpu_perc = 1 - perc_memory
     total_cpu = (1/perc_memory)*used_cpu
     free_cpu = total_cpu * free_cpu_perc
-    logger.log(level=logging.WARNING,msg=f"GPU Memory {message}: {free_gpu:2.0f} GB free from {total_gpu:2.0f} GB  |  "
+    logger.log(level=logging.INFO,msg=f"GPU Memory {message}: {free_gpu:2.0f} GB free from {total_gpu:2.0f} GB  |  "
                                          f" CPU Memory: {free_cpu:2.0f} GB free from {total_cpu:2.0f} GB")
 
 
