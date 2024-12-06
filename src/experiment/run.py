@@ -457,12 +457,11 @@ class Runner:
         else:
             task_specific_vllm_config = self.config.vllm_config.to_conf()
             logger.log(level=logging.INFO, msg=f"using central generation config")
-        if self.config.peft_configs and os.path.exists(adapter_path):
-            lora_request = LoRARequest("adapter", 1, adapter_path+"/adapter")
-            sampling_params = SamplingParams(**task_specific_vllm_config.to_conf())
 
-        else:
-            raise ValueError("no model is trained !")
+        if os.path.exists(adapter_path):
+            lora_request = LoRARequest("adapter", 1, adapter_path+"/adapter")
+
+        sampling_params = SamplingParams(**task_specific_vllm_config.to_conf())
 
         set_trace()
         for data in tqdm(loader):
@@ -477,7 +476,11 @@ class Runner:
             #)
             #output = self.tokenizer.batch_decode(generated.sequences, skip_special_tokens=True)
             # output = self.tokenizer.decode(gen_diff[0])
-            outputs = llm.generate(text, sampling_params=sampling_params, lora_request=lora_request)
+            if self.config.peft_configs:
+                outputs = llm.generate(text, sampling_params=sampling_params, lora_request=lora_request)
+            else:
+                outputs = llm.generate(text, sampling_params=sampling_params)
+
             for output in outputs:
                 #output = [o[len(text[i]):] for i, o in enumerate(output)]
                 prediction = [output.outputs[0].text]
