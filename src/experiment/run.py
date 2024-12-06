@@ -408,8 +408,8 @@ class Runner:
                 all_results.append(results)
                 self.leaderborad.add_results(results)
             self.leaderborad.save_file()
-
-        self.free_model()
+        if self.base_model:
+            self.free_model()
         return all_results
 
 
