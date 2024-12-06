@@ -3,7 +3,7 @@
     "is_hpo": false,
     "seed": 42,
     "base_model": "/bigwork/nhwpajjy/pre-trained-models/decapoda-research-llama-7B-hf",
-    "cutoff_len": 2000,
+    "cutoff_len": 1000,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "data_type": "ndjson",
     "run_output_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/multiple-datasets",
@@ -97,7 +97,8 @@
     },
     "data_collator_config": {
 	"padding": true,
-        "return_tensors": "pt"
+        "return_tensors": "pt",
+
     },
     "generation_config": {
         "max_length": 1500,
