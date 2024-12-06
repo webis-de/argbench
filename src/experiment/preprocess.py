@@ -72,7 +72,7 @@ def collect_files(
     :param exclude_datasets: Remove datasets from train set
     :returns: Tuple of train dataset files and test dataset files
     """
-    set_trace()
+    #set_trace()
     if include_genre:
         include_genre = set(include_genre)
     if include_subarea:
