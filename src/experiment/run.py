@@ -385,7 +385,7 @@ class Runner:
             self.trainer.train()
             log_mem("after training")
 
-        self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
+            self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
 
         all_results = []
         for test_dataset in self.test_datsets:
