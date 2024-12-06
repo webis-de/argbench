@@ -457,7 +457,7 @@ class Runner:
         else:
             task_specific_vllm_config = self.config.vllm_config.to_conf()
             logger.log(level=logging.INFO, msg=f"using central generation config")
-        if os.path.exists(adapter_path):
+        if self.config.peft_configs and os.path.exists(adapter_path):
             lora_request = LoRARequest("adapter", 1, adapter_path+"/adapter")
             sampling_params = SamplingParams(**task_specific_vllm_config.to_conf())
 
