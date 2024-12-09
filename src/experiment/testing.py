@@ -194,8 +194,8 @@ def compute_sentence_f1(predictions, references, inputs):
                 logger.log(level=logging.ERROR, msg=f"model did not output all needed documents for evaluation predicted sentences count ")
                 logger.log(level=logging.ERROR, msg=f"predicted sentences count {len(prediction_sentences)}")
                 logger.log(level=logging.ERROR, msg=f"reference sentences count {len(reference_sentences)}")
-                logger.log(level=logging.ERROR, msg=f"predicted sentences {prediction_sentence}")
-                logger.log(level=logging.ERROR, msg=f"predicted sentences {ground_truth_labels}")
+                logger.log(level=logging.ERROR, msg=f"predicted labels {prediction_labels}")
+                logger.log(level=logging.ERROR, msg=f"ground labels {ground_truth_labels}")
 
 
 
