@@ -26,7 +26,7 @@
     },
     "test_datasets": {
         "subsample_amount": 10,
-        "prompt_template": "<s>[INST]{definition} {instance_input}[/INST]",
+        "prompt_template": "<s>[INST]{definition}\n {instance_input}[/INST]",
         "tasks": [
             "argument_unit_segmentation_ajjour17"
         ],
