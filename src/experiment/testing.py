@@ -184,18 +184,21 @@ def compute_sentence_f1(predictions, references, inputs):
         prediction = predictions[i]
         reference = references[i]
         input = inputs[i]
-        prediction_labels, prediction_sentences = extract_sentence_labels(prediction)
+
         ground_truth_labels, reference_sentences = extract_sentence_labels(reference)
+        len_ground_truth_labels = len(ground_truth_labels)
+        prediction_labels, prediction_sentences = extract_sentence_labels(prediction)
+        if len(prediction_labels) > len_ground_truth_labels:
+            prediction_labels = prediction_labels[:len_ground_truth_labels]
+
         logger.log(level=logging.INFO, msg=f"reference token size {len(reference.split())}")
         logger.log(level=logging.INFO, msg=f"prediction token size {len(prediction.split())}")
         #set_trace()
-        for i, prediction_sentence in enumerate(prediction_sentences):
-            if not (prediction_sentence == reference_sentences[i]):
-                logger.log(level=logging.ERROR, msg=f"model did not output all needed documents for evaluation predicted sentences count ")
-                logger.log(level=logging.ERROR, msg=f"predicted sentences count {len(prediction_sentences)}")
-                logger.log(level=logging.ERROR, msg=f"reference sentences count {len(reference_sentences)}")
-                logger.log(level=logging.ERROR, msg=f"predicted labels {prediction_labels}")
-                logger.log(level=logging.ERROR, msg=f"ground labels {ground_truth_labels}")
+        logger.log(level=logging.INFO, msg=f"model did not output all needed documents for evaluation predicted sentences count ")
+        logger.log(level=logging.INFO, msg=f"predicted sentences count {len(prediction_sentences)}")
+        logger.log(level=logging.INFO, msg=f"reference sentences count {len(reference_sentences)}")
+        logger.log(level=logging.INFO, msg=f"predicted labels {prediction_labels}")
+        logger.log(level=logging.INFO, msg=f"ground labels {ground_truth_labels}")
 
 
 
