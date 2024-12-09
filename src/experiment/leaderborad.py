@@ -13,7 +13,7 @@ class Leaderboard:
 
     def read_file(self):
         if os.path.exists(self.output_path):
-            self.df_results = pd.read_csv(self.output_path)
+            self.df_results = pd.read_csv(self.output_path, sep="\t")
         else:
             self.df_results = pd.DataFrame(columns=["model", "training_data", "test_task", "metric", "score", "time"])
 
@@ -28,11 +28,11 @@ class Leaderboard:
         time: the time when the experiment finished
         :return:
         """
-        df_record = pd.DataFrame([results])
+
         now = datetime.now()
         time_now = now.strftime("%m-%d-%H:%M:%S")
         results["time"] = time_now
-
+        df_record = pd.DataFrame([results])
         self.df_results = pd.concat([self.df_results, df_record])
 
     def save_file(self):
