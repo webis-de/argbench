@@ -506,9 +506,9 @@ class Runner:
         elif metric == "meteor":
             return compute_meteor_score(predictions, labels)
         elif metric == "bio-fscore":
-            return compute_bio_f1_score(predictions, labels, task_data["document"])
+            return compute_bio_f1_score(predictions, labels, task_data["document"].tolist())
         elif metric == "sentence-fscore":
-            return compute_sentence_f1(predictions, labels, task_data["document"])
+            return compute_sentence_f1(predictions, labels, task_data["document"].tolist())
         elif metric == "kendalltau":
             return compute_kendall_tau(predictions, labels)
         else:
