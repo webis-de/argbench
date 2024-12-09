@@ -36,4 +36,4 @@ class Leaderboard:
         self.df_results = pd.concat([self.df_results, df_record])
 
     def save_file(self):
-        self.df_results.to_csv(self.output_path, sep="\t")
+        self.df_results.to_csv(self.output_path, sep="\t", index=False)
