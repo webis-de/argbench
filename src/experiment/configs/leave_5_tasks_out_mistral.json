@@ -43,32 +43,7 @@
     "model_config": {
         "device_map": "cuda:0"
     },
-    "peft_configs": [
-        {
-            "model_id": "/bigwork/nhwpajjy/pre-trained-models/alpaca-lora-7b/",
-            "adapter_name": "adapter",
-            "is_trainable": true,
-            "adapter_type": "LORA",
-            "config": {
-                "base_model_name_or_path": "/bigwork/nhwpajjy/pre-trained-models/baffo32/decapoda-research-llama-7B-hf",
-                "bias": "none",
-                "fan_in_fan_out": false,
-                "inference_mode": true,
-                "lora_alpha": 16,
-                "lora_dropout": 0.05,
-                "modules_to_save": null,
-                "peft_type": "LORA",
-                "r": 16,
-                "target_modules": [
-                    "q_proj",
-                    "k_proj",
-                    "v_proj",
-                    "o_proj"
-                ],
-                "task_type": "CAUSAL_LM"
-            }
-        }
-    ],
+
     "training_args_config": {
         "per_device_train_batch_size": 32,
         "num_train_epochs": 2,
