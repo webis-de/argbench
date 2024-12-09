@@ -158,6 +158,7 @@ def compile_datasets(
         return prompt_template.format(
             instance_input=row["document"],
             definition=row["definition"],
+            example=row["example"]
         )
 
     datasets = {}
@@ -176,12 +177,17 @@ def compile_datasets(
             task_data = task_data.sample(subsample_amount, axis=0)
         if subsample_rate:
             task_data = task_data.sample(frac=subsample_rate, axis=0)
+        example_record = task_data.sample(n=1)
+        task_data = task_data[~task_data["index"].isin(example_record["index"])]
+
+        example_instance = f'{example_record["input"].values[0]} {example_record["output"].values[0]}'
 
         task_data.rename(columns={"input": "document"}, inplace=True)
+        task_data["example"] = example_instance
 
         task_data["input"] = task_data.apply(template_formatter, axis=1)
 
-        task_df=task_data[["id","document", "input", "output"]]
+        task_df = task_data[["id","document", "input", "output"]]
 
         task = Dataset(dataset, task_df)
 
