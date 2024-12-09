@@ -79,7 +79,7 @@ def compute_bleu_score(predictions, references):
     """
     bleu = evaluate.load("bleu")
     bleu_score = bleu.compute(predictions=predictions, references=references)
-    return {"bleu": bleu_score["blue"]}
+    return {"bleu": bleu_score["bleu"]}
 
 def rank_string_to_matrix(rank_strings):
     """
