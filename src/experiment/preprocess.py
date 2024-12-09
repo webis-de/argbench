@@ -177,8 +177,10 @@ def compile_datasets(
             task_data = task_data.sample(subsample_amount, axis=0)
         if subsample_rate:
             task_data = task_data.sample(frac=subsample_rate, axis=0)
+
         example_record = task_data.sample(n=1)
-        task_data = task_data[~task_data["index"].isin(example_record["index"])]
+
+        task_data = task_data[~task_data.index.isin(example_record.index)]
 
         example_instance = f'{example_record["input"].values[0]} {example_record["output"].values[0]}'
 
