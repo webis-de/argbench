@@ -498,7 +498,7 @@ class Runner:
                 beta=self.config.validation_config.fscore_beta
             )
         elif metric == "fscore":
-            return compute_f1_score(predictions, labels, average = "macro")
+            return compute_f1_score(predictions, labels)
         elif metric == "rouge":
             return compute_rouge_score(predictions, labels)
         elif metric == "bleu":
@@ -506,9 +506,9 @@ class Runner:
         elif metric == "meteor":
             return compute_meteor_score(predictions, labels)
         elif metric == "bio-fscore":
-            return compute_bio_f1_score(predictions, labels, data["document"])
+            return compute_bio_f1_score(predictions, labels, task_data["document"])
         elif metric == "sentence-fscore":
-            return compute_sentence_f1(predictions, labels, data["document"])
+            return compute_sentence_f1(predictions, labels, task_data["document"])
         elif metric == "kendalltau":
             return compute_kendall_tau(predictions, labels)
         else:
