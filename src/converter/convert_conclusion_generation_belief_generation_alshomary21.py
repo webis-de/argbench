@@ -20,9 +20,9 @@ def process_dataset(bows_dataset, metadata, dataset_name, dataset_file, dataset_
             if issue_label == "3":
                 topic_str = f"{bows_dataset['topic'][i]}: Pro"
                 total_topic_rel.append(topic_str)
-            else:
-                topic_str = f"{bows_dataset['topic'][i]}: N/A"
-                total_topic_rel.append(topic_str)
+#            else:
+#                topic_str = f"{bows_dataset['topic'][i]}: N/A"
+#                total_topic_rel.append(topic_str)
 
         total_topic_rel = "; ".join(total_topic_rel)
         prompt = f"Topic: {row['topic']}\nTopic Stances: {total_topic_rel}"

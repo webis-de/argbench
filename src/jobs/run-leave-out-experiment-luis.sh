@@ -9,5 +9,5 @@
 #SBATCH --gpus=1
 module load Miniconda3
 conda activate task-specific
-#python /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/process_data.py -o /bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/
-python /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/run.py
+python /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/process_data.py -o /bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/
+#python /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/run.py
