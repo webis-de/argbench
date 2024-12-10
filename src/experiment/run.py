@@ -2,6 +2,8 @@
 import os.path
 import logging
 import psutil
+import torch.autograd.profiler as profiler
+
 from argparse import ArgumentParser
 from optuna import Trial, create_study
 from torch.utils.data import DataLoader
@@ -9,9 +11,9 @@ from pathlib import Path
 from vllm import LLM, SamplingParams
 from vllm.  lora.request import LoRARequest
 from IPython.core.debugger import set_trace
-import torch.autograd.profiler as profiler
-from leaderborad import  Leaderboard
 
+from leaderborad import  Leaderboard
+from datetime import datetime
 logger = logging.getLogger(__name__)
 
 from dataclasses import asdict
@@ -434,6 +436,8 @@ class Runner:
             logger.log(level=logging.INFO, msg= f"best params are {best_params}")
             logger.log(level=logging.INFO, msg= f"best value is {best_value}")
             return
+        now = datetime.now()
+        starting_time = now.strftime("%m-%d-%H:%M:%S")
 
 
 
@@ -467,7 +471,7 @@ class Runner:
 
             log_mem(f"after testing on {test_dataset}")
             for metric in metrics:
-                results = {"test_task": test_dataset, "metric" : metric, "score": metrics[metric], "training_data": "MOC",  "model" : self.config.base_model }
+                results = {"test_task": test_dataset, "metric" : metric, "score": metrics[metric], "training_data": "MOC",  "model" : self.config.base_model , "start_time": starting_time}
                 all_results.append(results)
                 self.leaderborad.add_results(results)
             self.leaderborad.save_file()
