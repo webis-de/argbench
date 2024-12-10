@@ -53,7 +53,10 @@ def compute_precision_recall_fscore_support(predictions, references, f1_average=
     return scores
 
 
+
+
 def compute_f1_score(predictions, references):
+    predictions = clean(predictions)
     score = f1_score(predictions, references, average = "macro")
     return {"fscore": score}
 
