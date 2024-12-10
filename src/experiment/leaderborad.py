@@ -34,8 +34,14 @@ class Leaderboard:
         results["time"] = time_now
         df_record = pd.DataFrame([results])
         self.df_results = pd.concat([self.df_results, df_record])
+
     def pivot(self):
-        return self.df_results.pivot(index=["model","time"],values=["score"],columns="metric")
+        all_data_frames =  []
+        for _, df_results_task in self.df_results.groupby("test_task"):
+            pivoted_df = df_results_task.pivot(index=["model","time","training_data"],values=["score"],columns="metric")
+            all_data_frames.append(pivoted_df)
+        return pd.concat(all_data_frames)
+
     def save_file(self):
         pivated_results = self.pivot()
-        self.pivated_results.to_csv(self.output_path, sep="\t", index=False)
+        pivated_results.to_csv(self.output_path, sep="\t", index=False)
