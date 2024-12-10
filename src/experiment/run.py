@@ -458,6 +458,7 @@ class Runner:
 
 
         log_mem("before loading vllm model")
+
         llm = self.prepare_model_for_generation()
 
         log_mem("after loading vllm model")
