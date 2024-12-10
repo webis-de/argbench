@@ -472,7 +472,7 @@ class Runner:
 
             log_mem(f"after testing on {test_dataset}")
             for metric in metrics:
-                results = {"test_task": test_dataset, "metric" : metric, "score": metrics[metric], "training_data": "MOC",  "model" : self.config.base_model , "start_time": starting_time}
+                results = {"test_task": test_dataset, "metric" : metric, "score": metrics[metric], "training_data": "5 tasks",  "model" : self.config.base_model , "start_time": starting_time}
                 all_results.append(results)
                 self.leaderborad.add_results(results)
             self.leaderborad.save_file()
