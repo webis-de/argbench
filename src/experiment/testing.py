@@ -59,7 +59,7 @@ def compute_f1_score(predictions, references):
     labels = set(references)
     for i,prediction in enumerate(predictions):
         for label in labels:
-            if prediction.lower().startswith(label.lower()):
+            if prediction.strip().lower().startswith(label.lower().strip()):
                 predictions[i] = label
     set_trace()
     score = f1_score(references,predictions, average = "macro")
