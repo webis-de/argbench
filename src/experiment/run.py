@@ -135,6 +135,37 @@ class Runner:
         self.peft_model = model
         return model
 
+    def prepare_model_for_generation(self):
+        base_model = self.config.base_model
+        if self.config.peft_configs:
+            llm = LLM(model=base_model, enable_lora=True, tokenizer_mode="slow")
+        else:
+            llm = LLM(model=base_model)
+
+        return llm
+
+    def load_sampling_params(self, test_dataset, trial=None, hpo_config=None):
+
+        task_specific_vllm_config = None
+        for decoding_setup in self.config.task_generation_config:
+            if decoding_setup in test_dataset:
+                task_specific_vllm_config = self.config.task_generation_config[decoding_setup]
+                logger.log(level=logging.INFO, msg=f"using generation config for {test_dataset}")
+
+        if not task_specific_vllm_config  and "default" in self.config.task_generation_config:
+            logger.log(level=logging.INFO, msg=f"using default generation config")
+            task_specific_vllm_config = self.config.task_generation_config["default"]
+
+        elif not task_specific_vllm_config :
+            task_specific_vllm_config = self.config.vllm_config
+            logger.log(level=logging.INFO, msg=f"using central generation config")
+        task_specific_vllm_config = task_specific_vllm_config.to_conf(trial, hpo_config)
+
+        logger.log(level=logging.INFO, msg= f"using {task_specific_vllm_config}")
+
+        sampling_params = SamplingParams(**task_specific_vllm_config)
+
+        return sampling_params
 
     def prepare_trainer(self,
                         model,
@@ -327,7 +358,9 @@ class Runner:
 
     def hpo_objective_generation(self, trial: Trial):
 
-        metrics = self.evaluate(self.llm, self.test_dataset, self.task_df)
+
+        sampling_params = self.load_sampling_params(self.test_dataset, trial, self.config.hpo_config.vllm_config)
+        metrics = self.evaluate(self.llm, sampling_params, self.test_dataset, self.task_df)
         return metrics[self.config.hpo_config.val_metric]
 
 
@@ -336,12 +369,8 @@ class Runner:
 
         self.test_dataset= test_dataset
         self.task_df =  self.test_datsets[test_dataset].df
-        base_model = self.config.base_model
+        self.llm = self.prepare_model_for_generation()
 
-        if self.config.peft_configs:
-            self.llm = LLM(model=base_model, enable_lora=True, tokenizer_mode="slow")
-        else:
-            self.llm = LLM(model=base_model)
 
         study = create_study(
             storage=self.config.hpo_config.storage,
@@ -422,19 +451,19 @@ class Runner:
 
             self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
 
-        base_model = self.config.base_model
+
+
         log_mem("before loading vllm model")
-        if self.config.peft_configs:
-            llm = LLM(model=base_model, enable_lora=True, tokenizer_mode="slow")
-        else:
-            llm = LLM(model=base_model)
+        llm = self.prepare_model_for_generation()
+
         log_mem("after loading vllm model")
         all_results = []
         for test_dataset in self.test_datsets:
             task_df =  self.test_datsets[test_dataset].df
             log_mem(f"before testing on {test_dataset}")
+            sampling_params= self.load_sampling_params(test_dataset )
 
-            metrics = self.evaluate(llm, test_dataset, task_df)
+            metrics = self.evaluate(llm, sampling_params, test_dataset, task_df)
 
             log_mem(f"after testing on {test_dataset}")
             for metric in metrics:
@@ -457,7 +486,7 @@ class Runner:
             json.dump(run_data, f)
 
 
-    def evaluate(self, llm,  test_dataset, task_data):
+    def evaluate(self,llm, sampling_params, test_dataset, task_data, trial=None):
         """
         Performs model evaluation using the test datasets and evaluation metric from ValidationConfig. The test
         dataset is the name of the test task and task_data is the test data points
@@ -478,24 +507,13 @@ class Runner:
 
 
         #trainer.model.eval()
-        task_specific_vllm_config = None
-        adapter_path = self.config.training_args_config.output_dir + "/best-model"
-        for decoding_setup in self.config.task_generation_config:
-            if decoding_setup in test_dataset:
-                task_specific_vllm_config = self.config.task_generation_config[decoding_setup]
-                logger.log(level=logging.INFO, msg=f"using generation config for {test_dataset}")
 
-        if not task_specific_vllm_config  and "default" in self.config.task_generation_config:
-            logger.log(level=logging.INFO, msg=f"using default generation config")
-            task_specific_vllm_config = self.config.task_generation_config["default"]
-        elif not task_specific_vllm_config :
-            task_specific_vllm_config = self.config.vllm_config
-            logger.log(level=logging.INFO, msg=f"using central generation config")
+        adapter_path = self.config.training_args_config.output_dir + "/best-model"
+
 
         if os.path.exists(adapter_path):
             lora_request = LoRARequest("adapter", 1, adapter_path+"/adapter")
 
-        sampling_params = SamplingParams(**task_specific_vllm_config.to_conf())
 
         #set_trace()
         for data in tqdm(loader):
@@ -563,7 +581,7 @@ if __name__ == "__main__":
     RunConfig.register_cli(arg_parser)
 
     args = arg_parser.parse_args()
-    config_list = ["/home/yamen/projects/task-specific-argument-mining-and-generation/src/experiment/configs/complete_leave_one_out_ajjour17.json"]
+    config_list = ["/home/yamen/projects/task-specific-argument-mining-and-generation/src/experiment/configs/complete_leave_one_out_ajjour17_hpo.json"]
     config = RunConfig.from_file(config_list)
     runner = Runner(config)
     score = runner.execute()
