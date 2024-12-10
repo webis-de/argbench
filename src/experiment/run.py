@@ -325,6 +325,38 @@ class Runner:
         torch.cuda.empty_cache()
         gc.collect()
 
+    def hpo_objective_generation(self, trial: Trial):
+
+        metrics = self.evaluate(self.llm, self.test_dataset, self.task_df)
+        return metrics[self.config.hpo_config.val_metric]
+
+
+
+    def perform_hpo_generation(self, test_dataset):
+
+        self.test_dataset= test_dataset
+        self.task_df =  self.test_datsets[test_dataset].df
+        base_model = self.config.base_model
+
+        if self.config.peft_configs:
+            self.llm = LLM(model=base_model, enable_lora=True, tokenizer_mode="slow")
+        else:
+            self.llm = LLM(model=base_model)
+
+        study = create_study(
+            storage=self.config.hpo_config.storage,
+            study_name=self.config.hpo_config.study_name,
+            direction=self.config.hpo_config.direction,
+            sampler=TPESampler(),
+            load_if_exists=True
+        )
+
+        study.optimize(self.hpo_objective_generation, self.config.hpo_config.n_trials)
+
+        return study.best_params, study.best_value
+
+
+### This function is deprecated since it does not use VLLMs and is still dependent on one test dataset
 
     def hpo_objective(self, trial: Trial):
 
@@ -369,7 +401,9 @@ class Runner:
         Execute training, hpo or evaluation
         """
         if self.config.is_hpo:
-            self.perform_hpo()
+            best_params, best_value = self.perform_hpo_generation("argument_unit_segmentation_ajjour17")
+            logger.log(level=logging.INFO, msg= f"best params are {best_params}")
+            logger.log(level=logging.INFO, msg= f"best value is {best_value}")
             return
 
 
