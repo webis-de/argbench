@@ -444,13 +444,14 @@ class Runner:
 
 
         #trainer.model.eval()
-
+        task_specific_vllm_config = None
         adapter_path = self.config.training_args_config.output_dir + "/best-model"
+        for decoding_setup in self.config.task_generation_config:
+            if decoding_setup in test_dataset:
+                task_specific_vllm_config = self.config.task_generation_config[decoding_setup]
+                logger.log(level=logging.INFO, msg=f"using generation config for {test_dataset}")
 
-        if self.config.task_generation_config in test_dataset:
-            logger.log(level=logging.INFO, msg=f"using generation config for {test_dataset}")
-            task_specific_vllm_config = self.config.task_generation_config[test_dataset]
-        elif "default" in self.config.task_generation_config:
+        if task_specific_vllm_config == None and "default" in self.config.task_generation_config:
             logger.log(level=logging.INFO, msg=f"using default generation config")
             task_specific_vllm_config = self.config.task_generation_config["default"]
         else:
