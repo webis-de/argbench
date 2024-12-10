@@ -6,6 +6,7 @@ import json
 from optuna import Trial
 from peft.config import PeftConfig
 from peft.mapping import PEFT_TYPE_TO_CONFIG_MAPPING
+from IPython.core.debugger import set_trace
 
 def update_conf(config_update, config_other):
     for k, v in config_other.items():
@@ -505,6 +506,7 @@ class RunConfig:
         if config.get("quant_config"):
             conf_obj.quant_config = QuantConfig(**conf_obj.quant_config)
         if config.get("hpo_config"):
+            set_trace()
             conf_obj.hpo_config = HPOConfig(**conf_obj.hpo_config)
         if config.get("vllm_config"):
             conf_obj.vllm_config = VLLMGenerationConfig(**conf_obj.vllm_config)
