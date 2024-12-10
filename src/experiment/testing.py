@@ -61,8 +61,8 @@ def compute_f1_score(predictions, references):
         for label in labels:
             if prediction.lower().startswith(label.lower()):
                 predictions[i] = label
-
-    score = f1_score(predictions, references, average = "macro")
+    set_trace()
+    score = f1_score(references,predictions, average = "macro")
     return {"fscore": score}
 
 def compute_rouge_score(predictions, references):
