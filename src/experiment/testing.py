@@ -57,7 +57,7 @@ def compute_precision_recall_fscore_support(predictions, references, f1_average=
 
 def compute_f1_score(predictions, references):
     labels = set(references)
-    for i,prediction in predictions:
+    for i,prediction in enumerate(predictions):
         for label in labels:
             if prediction.lower().startswith(label.lower()):
                 predictions[i] = label
