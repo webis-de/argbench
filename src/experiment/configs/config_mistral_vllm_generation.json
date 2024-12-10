@@ -21,10 +21,10 @@
   },
 
   "warrant_identification": {
-    "temperature": 0.2,
+    "temperature": 0,
     "top_p": 1,
     "top_k": 1,
-    "max_tokens": 40
+    "max_tokens": 4
   },
 
   "conclusion_generation":
