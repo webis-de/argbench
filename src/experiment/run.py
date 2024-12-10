@@ -451,10 +451,10 @@ class Runner:
                 task_specific_vllm_config = self.config.task_generation_config[decoding_setup]
                 logger.log(level=logging.INFO, msg=f"using generation config for {test_dataset}")
 
-        if task_specific_vllm_config  and "default" in self.config.task_generation_config:
+        if not task_specific_vllm_config  and "default" in self.config.task_generation_config:
             logger.log(level=logging.INFO, msg=f"using default generation config")
             task_specific_vllm_config = self.config.task_generation_config["default"]
-        elif task_specific_vllm_config :
+        elif not task_specific_vllm_config :
             task_specific_vllm_config = self.config.vllm_config
             logger.log(level=logging.INFO, msg=f"using central generation config")
 
