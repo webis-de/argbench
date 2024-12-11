@@ -15,7 +15,7 @@ class Leaderboard:
         if os.path.exists(self.output_path):
             self.df_results = pd.read_csv(self.output_path, sep="\t")
         else:
-            self.df_results = pd.DataFrame(columns=["model", "training_data",  "metric", "score", "start_time"])
+            self.df_results = pd.DataFrame(columns=["model", "training_data", "test_task",  "metric", "score", "start_time"])
 
     def add_results(self, results):
         """
@@ -36,7 +36,7 @@ class Leaderboard:
 
     def pivot(self):
 
-        #self.df_results["metric"] = self.df_results.apply(lambda record: record["test_task"]+"_"+record["metric"],axis=1)
+        self.df_results["metric"] = self.df_results.apply(lambda record: record["test_task"]+"_"+record["metric"],axis=1)
         pivoted_df = self.df_results.pivot(index=["model", "training_data", "start_time"],values="score",columns="metric").reset_index()
 
 
