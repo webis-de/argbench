@@ -471,6 +471,7 @@ class Runner:
             metrics = self.evaluate(llm, sampling_params, test_dataset, task_df)
 
             log_mem(f"after testing on {test_dataset}")
+
             for metric in metrics:
                 results = {"test_task": test_dataset, "metric" : metric, "score": metrics[metric], "training_data": "5 tasks",  "model" : self.config.base_model , "start_time": starting_time}
                 all_results.append(results)
@@ -546,7 +547,7 @@ class Runner:
         #trainer.model.train()
 
         metric = self.task_metrics[test_dataset]
-
+        set_trace()
         if metric == "fscore-detailed":
             return compute_precision_recall_fscore_support(
                 predictions,

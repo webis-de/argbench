@@ -36,7 +36,7 @@ class Leaderboard:
 
     def pivot(self):
 
-        self.df_results["metric"] = self.df_results.apply(lambda record: record["test_task"]+"_"+record["metric"],axis=1)
+        #self.df_results["metric"] = self.df_results.apply(lambda record: record["test_task"]+"_"+record["metric"],axis=1)
         pivoted_df = self.df_results.pivot(index=["model", "training_data", "start_time"],values="score",columns="metric").reset_index()
 
 
