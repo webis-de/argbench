@@ -6,35 +6,20 @@ from random import shuffle
 dataset_name = "argument_ranking_claim_revisions_skitalinskaya23"
 dataset_file = "argument_ranking_claim_revisions_skitalinskaya23.json"
 
+mapping = {0: "Worse", 1: "Better"}
 
 def process_data(dataset, metadata):
     output = Output(dataset_name)
-    output.append_definition("Rank the following reformulations of the same claim according to their quality. All the arguments should be included and listed using identifiers, in descending order of relevance. The output format should be [] > [], e.g., [4] > [2]. Only respond with the ranking results, do not say any word or explain.")
+    output.append_definition("""Given the following argument pair, is the first argument better or worse 
+    than the second argument. Only respond with better or worse, do not say any word or explain. 
+    Only respond with better or worse, do not say any word or explain.""")
 
-    dataset_claims = dataset["claim_id"].unique()
 
-    for claim in dataset_claims:
-        print(claim)
-        prompt = "Claims:"
-        response = ""
-        claim_revisions = [
-            (row["claim_id"], row["claim_text"], row["revision_id"])
-            for _, row in dataset[dataset["claim_id"] == claim].iloc[:1].iterrows() # Cut to only 2 arguments
-        ]
-        shuffle(claim_revisions)
+    for i, record in dataset.iterrows():
 
-        claim_revisions = [(i, claim_id, text, rev_id) for i, (claim_id, text, rev_id) in enumerate(claim_revisions)]
+        prompt = f"Argument 1: {record['v2_text']}\nArgument 2: {record['v1_text']}"
 
-        for i, _, text, _ in claim_revisions:
-            prompt += f" [{i}] {text}"
-
-        claim_revisions = sorted(claim_revisions, key=lambda x: x[3], reverse=True)
-
-        print(len(prompt))
-
-        response = " > ".join([f"[{i}]" for i, _, _, _ in claim_revisions])
-
-        output.append_instance(claim_revisions[0][1], prompt, [response])
+        output.append_instance(record['v1_id'] + record['v2_id'], prompt, [mapping[record["label"]]])
 
     output.append_genre(Genres.DEBATES)
     output.append_subarea(Subareas.RANKING)
@@ -48,7 +33,7 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    data_path = datasets_path() / "claim-revisions-arg-ranking" / "eacl21_list_for_ranking.csv"
+    data_path = datasets_path() / "claim-revisions-arg-ranking" / "eacl21_extended.csv"
 
     metadata = Metadata(dataset_name)
 

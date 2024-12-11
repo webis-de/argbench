@@ -12,35 +12,38 @@ QUALITY_MAPPING = {
     "High": 3
 }
 
-RANK_MAPPING = [
-    "[0] > [1]",
-    "[1] > [0]",
-    "[0] = [1]"
+labels = [
+    "Better",
+    "Worse",
+    "Same"
 ]
 
 def make_output(dataset, metadata, column, aspect_description, dataset_name):
     output = Output(DATASET_NAME)
 
-    output.append_definition(f"Rank the following arguments on the given topic according to quality aspect: {column}. Quality aspect description: {aspect_description} Both arguments should be included and listed using identifiers, in descending order of relevance. The output format should be: [0] > [1], [1] > [0] or [0] = [1] if both arguments are equally good. Only respond with the ranking results, do not say any word or explain.")
+    output.append_definition(f"""Given the following argument pair, is the first argument better, same, or worse than
+     the second argument according to quality aspect: {column}.
+     Quality aspect description: {aspect_description}.
+     Only respond with better, same, or worse, do not say any word or explain.""")
 
     arguments = dataset.groupby(["argument"]).apply(lambda row: row[column].value_counts().index[0]).reset_index()
 
     for row in arguments.iterrows():
         row = row[1]
         compare_argument = arguments.sample(1).iloc[0]
-        prompt = f"Arguments:\n[0] {row['argument']}\n[1] {compare_argument['argument']}"
+        prompt = f"Argument 1: {row['argument']}\nArgument 2: {compare_argument['argument']}"
         row_label = p.findall(row[0])[0]
         compare_label = p.findall(compare_argument[0])[0]
         id = str(uuid.uuid4())
 
         if QUALITY_MAPPING[row_label] == QUALITY_MAPPING[compare_label]:
-            rank_mapping = RANK_MAPPING[2]
+            label = labels[2]
         elif QUALITY_MAPPING[row_label] > QUALITY_MAPPING[compare_label]:
-            rank_mapping = RANK_MAPPING[0]
+            label = labels[0]
         else:
-            rank_mapping = RANK_MAPPING[1]
+            label = labels[1]
 
-        output.append_instance(id, prompt, [rank_mapping])
+        output.append_instance(id, prompt, [label])
 
     metadata.add_dataset(dataset_name)
     output.append_genre(Genres.DEBATES)

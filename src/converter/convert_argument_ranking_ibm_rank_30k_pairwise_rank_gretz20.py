@@ -8,22 +8,23 @@ DATASET_NAME = "argument_ranking_ibm_rank_30k_pairvise_rank_gretz20"
 TOLERANCE = 0.05
 
 RANK_MAPPING = [
-    "[0] > [1]",
-    "[1] > [0]",
-    "[0] = [1]"
+    "Better",
+    "Worse",
+    "Same"
 ]
 
 def make_output(dataset, dataset_name):
     output = Output(DATASET_NAME)
 
-    output.append_definition("Rank the following arguments on the given topic according to their quality. All the arguments should be included and listed using identifiers, in descending order of relevance. The output format should be: [0] > [1], [1] > [0] or [0] = [1] if both arguments are equally good. Only respond with the ranking results, do not say any word or explain.")
+    output.append_definition("""Given the following argument pairs, is the first argument better, same, or worse than 
+    the second argument in terms of quality. Only respond with better or worse, do not say any word or explain.""")
 
     for idx, row in dataset.iterrows():
         compare_arg = (dataset[dataset["topic"] == row["topic"]]
                         .drop([idx])
                         .sample(1)
                         .iloc[0])
-        prompt = f"Topic: {row['topic']}\nArguments:\n[0] {row['argument']}\n[1] {compare_arg['argument']}"
+        prompt = f"Topic: {row['topic']}\nArgument 1: {row['argument']}\nArgument 2: {compare_arg['argument']}"
 
         id = str(uuid.uuid4())
 

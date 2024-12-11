@@ -15,7 +15,7 @@ class Leaderboard:
         if os.path.exists(self.output_path):
             self.df_results = pd.read_csv(self.output_path, sep="\t")
         else:
-            self.df_results = pd.DataFrame(columns=["model", "training_data", "test_task", "metric", "score", "start_time"])
+            self.df_results = pd.DataFrame(columns=["model", "training_data",  "metric", "score", "start_time"])
 
     def add_results(self, results):
         """
@@ -31,16 +31,16 @@ class Leaderboard:
 
         now = datetime.now()
         df_record = pd.DataFrame([results])
+
         self.df_results = pd.concat([self.df_results, df_record])
 
     def pivot(self):
-        all_data_frames =  []
-        for test_task, df_results_task in self.df_results.groupby("test_task"):
-            pivoted_df = df_results_task.pivot(index=["model", "training_data", "start_time"],values="score",columns="metric")
-            now = datetime.now()
-            pivoted_df["test_task"] = test_task
-            all_data_frames.append(pivoted_df.reset_index())
-        return pd.concat(all_data_frames)
+
+        self.df_results["metric"] = self.df_results.apply(lambda record: record["test_task"]+"_"+record["metric"],axis=1)
+        pivoted_df = self.df_results.pivot(index=["model", "training_data", "start_time"],values="score",columns="metric").reset_index()
+
+
+        return pivoted_df
 
     def save_file(self):
         self.df_results.to_csv(self.output_path, sep="\t", index=False)
