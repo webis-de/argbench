@@ -40,3 +40,23 @@ class TestF1Sentence(TestCase):
         expected_f1 = ( a_f1 + c_f1) / 2
         self.assertEqual(expected_f1, metrics["fscore"])
 
+class TestF1Score(TestCase):
+    def test_f1_score(self):
+        predictions = ["pro", "Con I", "pro"]
+        ground_truth= ["pro", "con", "con"]
+        f1 = compute_f1_score(predictions, ground_truth)
+
+        pro_precision = 0.5
+        con_precision = 1
+        pro_recall = 1
+        con_recall = 0.5
+
+        con_f1 = 2*con_precision*con_recall/(con_recall + con_precision)
+        pro_f1 = 2*pro_precision*pro_recall/(pro_recall + pro_precision)
+
+        expected_f1 = (con_f1 + pro_f1)/2
+        returned_f1 = f1["fscore"]
+        print(f"returned {returned_f1}")
+        print(f"expected {expected_f1}")
+        self.assertEqual(returned_f1, expected_f1)
+        self.assertTrue(True)

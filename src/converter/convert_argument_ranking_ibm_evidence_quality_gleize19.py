@@ -6,12 +6,10 @@ import uuid
 def convert_dataset(data_path, data_file, metadata):
     dataset = read_tabular(data_path)
     output = Output(dataset_name)
-    output.append_definition("Given topic, rank two evidences according to their convincingness. " +
-                             "All the arguments should be included and listed using identifiers, in descending order of convincingness. " +
-                             "The output format should be: [0] > [1], [1] > [0]. " +
-                             "Only respond with the ranking results, do not say any word or explain.")
+    output.append_definition("Given the topic and the two evidences, is the first evidence more convincing than" +
+                             "the second evidence. Only respond with better or worse, do not say any word or explain.")
 
-    dataset["label"] = dataset["label"].map({1: "[0] > [1]", 2: "[1] > [0]"})
+    dataset["label"] = dataset["label"].map({1: "Better", 2: "Worse"})
 
     for row in dataset.iterrows():
         row = row[1]
@@ -19,7 +17,7 @@ def convert_dataset(data_path, data_file, metadata):
         evidence_0 = row["evidence_1"]
         evidence_1 = row["evidence_2"]
         label = row["label"]
-        prompt = f"Topic: {topic}\nEvidence: [0] {evidence_0} [1] {evidence_1}"
+        prompt = f"Topic: {topic}\nEvidence 1: {evidence_0} \nEvidence 2: {evidence_1}"
         id = str(uuid.uuid4())
         output.append_instance(id, prompt, [label])
 

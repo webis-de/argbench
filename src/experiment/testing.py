@@ -57,12 +57,27 @@ def compute_precision_recall_fscore_support(predictions, references, f1_average=
 
 def compute_f1_score(predictions, references):
     labels = set(references)
-    for i,prediction in enumerate(predictions):
-        for label in labels:
-            if prediction.strip().lower().startswith(label.lower().strip()):
-                predictions[i] = label
-    set_trace()
-    score = f1_score(references,predictions, average = "macro")
+    labels_lowered = {label.lower().strip() for label in labels}
+    mappings = {}
+    counter = 0
+    for label in labels_lowered:
+        mappings[label] = counter
+        counter = counter + 1
+    predictions_int = []
+    for i, prediction in enumerate(predictions):
+        found = False
+        for label in labels_lowered:
+            if prediction.strip().lower().startswith(label):
+                predictions_int.append(mappings[label])
+                found = True
+                break
+        if not found:
+            predictions_int.append(-1)
+    references_int = [mappings[reference.lower()] for reference in references]
+
+
+    score = f1_score(references_int, predictions_int, average = "macro")
+
     return {"fscore": score}
 
 def compute_rouge_score(predictions, references):
