@@ -20,7 +20,6 @@
             "argument_unit_segmentation_entity_ajjour17"
         ],
         "include_task": [
-            "argument_unit_classification_essays_stab17"
         ]
     },
     "test_datasets": {
