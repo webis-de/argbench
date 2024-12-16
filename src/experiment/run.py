@@ -200,6 +200,7 @@ class Runner:
             model=model,
             callbacks=callbacks,
             train_dataset=self.train_data,
+            eval_dataset=self.test_data,
             args=train_args,
             data_collator=data_collator,
         )
