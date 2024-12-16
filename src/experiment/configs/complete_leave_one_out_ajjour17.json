@@ -10,9 +10,10 @@
     "leaderboard_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/tasks-sample-results.csv",
     "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_task_metrics_sample.json",
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_alpaca_vllm_generation.json",
-    "leave_ont_out": true,
+
     "train_datasets": {
-        "subsample_amount": 10,
+        "leave_ont_out": true,
+        "subsample_amount": 50,
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
         "exclude_datasets": [
             "counter_argument_generation_candela_hua19",
