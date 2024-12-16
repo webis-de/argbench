@@ -18,8 +18,6 @@
             "counter_argument_generation_candela_hua19",
             "counter_argument_generation_cmv_hua18",
             "argument_unit_segmentation_entity_ajjour17"
-        ],
-        "include_task": [
         ]
     },
     "test_datasets": {
