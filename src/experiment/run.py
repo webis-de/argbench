@@ -92,7 +92,12 @@ class Runner:
         self.tokenizer = AutoTokenizer.from_pretrained(config.base_model, padding_side="left", unk_token="<unk>", truncation=True, max_length = config.data_collator_config.max_length)
         self.tokenizer.pad_token_id = config.pad_token_id
 
+        log_mem("before preparing data")
+        self.prepare_data()
+        log_mem("after preparing data")
 
+        logger.log(level=logging.INFO, msg="Data prepared!")
+        logger.log(level=logging.INFO, msg=f"counting {len(self.train_data)}")
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
         self.task_metrics = json.load(open(config.task_metrics_path))
         self.leaderborad = Leaderboard(config.leaderboard_path)
@@ -413,11 +418,6 @@ class Runner:
 
     def perform_hpo(self):
         """Perform HPO search"""
-        log_mem("before preparing data")
-        self.prepare_data()
-        log_mem("after preparing data")
-        logger.log(level=logging.INFO, msg="Data prepared!")
-        logger.log(level=logging.INFO, msg=f"counting {len(self.train_data)}")
 
         study = create_study(
             storage=self.config.hpo_config.storage,
@@ -434,10 +434,6 @@ class Runner:
         """
         Execute training, hpo or evaluation
         """
-        log_mem("before preparing data")
-        self.prepare_data()
-        log_mem("after preparing data")
-
         if self.config.is_hpo:
             best_params, best_value = self.perform_hpo_generation("argument_unit_segmentation_ajjour17")
             logger.log(level=logging.INFO, msg= f"best params are {best_params}")
