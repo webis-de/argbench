@@ -8,12 +8,14 @@ from argparse import ArgumentParser
 from optuna import Trial, create_study
 from torch.utils.data import DataLoader
 from pathlib import Path
+from tqdm import tqdm
 from vllm import LLM, SamplingParams
 from vllm.  lora.request import LoRARequest
 from IPython.core.debugger import set_trace
 
 from leaderborad import  Leaderboard
 from datetime import datetime
+
 logger = logging.getLogger(__name__)
 
 from dataclasses import asdict
@@ -90,9 +92,6 @@ class Runner:
         self.tokenizer = AutoTokenizer.from_pretrained(config.base_model, padding_side="left", unk_token="<unk>", truncation=True, max_length = config.data_collator_config.max_length)
         self.tokenizer.pad_token_id = config.pad_token_id
 
-        log_mem("before preparing data")
-        self.prepare_data()
-        log_mem("after preparing data")
 
         logger.log(level=logging.INFO, msg="Data prepared!")
         logger.log(level=logging.INFO, msg=f"counting {len(self.train_data)}")
@@ -216,7 +215,7 @@ class Runner:
         )
 
         self.train_data = []
-        for train_dataset in self.train_datsets:
+        for train_dataset in tqdm(self.train_datsets):
             train_df = self.train_datsets[train_dataset].df
             for row in train_df.iterrows():
                 row = row[1]
@@ -224,7 +223,7 @@ class Runner:
                 self.train_data.append(processed)
 
         self.test_data = {}
-        for test_dataset in self.test_datsets:
+        for test_dataset in tqdm(self.test_datsets):
             test_df = self.test_datsets[test_dataset].df
             self.test_data[test_dataset] = []
             for row in test_df.iterrows():
@@ -416,6 +415,9 @@ class Runner:
 
     def perform_hpo(self):
         """Perform HPO search"""
+        log_mem("before preparing data")
+        self.prepare_data()
+        log_mem("after preparing data")
 
         study = create_study(
             storage=self.config.hpo_config.storage,
@@ -432,6 +434,10 @@ class Runner:
         """
         Execute training, hpo or evaluation
         """
+        log_mem("before preparing data")
+        self.prepare_data()
+        log_mem("after preparing data")
+
         if self.config.is_hpo:
             best_params, best_value = self.perform_hpo_generation("argument_unit_segmentation_ajjour17")
             logger.log(level=logging.INFO, msg= f"best params are {best_params}")
