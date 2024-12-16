@@ -61,7 +61,8 @@ def main():
     output = Output(dataset_name)
     metadata = Metadata(dataset_name)
     output.append_definition(
-        "Classify each sentence into facts, testimony, values, policies, or resources. Keep the order of the sentences as provided in the text.")
+        """Classify each sentence into facts, testimony, values, policies, or resources.
+         Keep the order of the sentences as provided in the text.""")
 
     # Read JSON file and process
     process_json_file(data_path, output)

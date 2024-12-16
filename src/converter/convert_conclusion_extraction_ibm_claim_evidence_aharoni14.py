@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
     metadata = Metadata(dataset_name)
     output = Output(dataset_name)
-    output.append_definition("Given the following Wikipedia section and context, extract all claims on the given context. A claim is an assertion that an argument tries to prove. ")
+    output.append_definition("Given the following Wikipedia section, extract all claims  the given context. A claim is an assertion that an argument tries to prove. ")
 
     dataset = read_tabular(data_path)
 
@@ -68,7 +68,7 @@ if __name__ == "__main__":
         row = row[1]
         id = str(uuid.uuid4())
         topic = row["Topic"]
-        prompt = f"Topic: {topic}\nEvidence: {row['CDE']}\nArticle: {row['wiki_article']}"
+        prompt = f"Topic: {topic} \nArticle: {row['wiki_article']}"
         label = row["Claim"]
         output.append_instance(id, prompt, [label])
 

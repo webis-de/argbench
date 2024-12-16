@@ -6,7 +6,7 @@ dataset_name = "aspect_detection_ukp_aspect_schiller21"
 
 def process_split(dataset_file, output_file, metadata, dataset_split):
     output = Output(dataset_name)
-    output.append_definition("Extract aspects of the argument. Aspect is a small substring of original text that can characterize the argument.")
+    output.append_definition("Extract a list of aspects for the given argument. An aspect is a small substring of original text that characterizes the argument.")
 
     with open(dataset_file, "r") as f:
         dataset = ndjson.load(f)
