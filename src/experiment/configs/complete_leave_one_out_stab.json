@@ -25,10 +25,10 @@
         "subsample_amount": 10,
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
         "tasks": [
-            "argument_unit_classification_essays_stab17"
+            "argument_unit_segmentation_ajjour17"
         ],
 
-        "match": "argument_unit_classification_essays_stab17"
+        "match": "argument_unit_segmentation"
     },
     "quant_config": {
         "load_in_4bit": true
