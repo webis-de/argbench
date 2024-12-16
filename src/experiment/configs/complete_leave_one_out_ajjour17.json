@@ -3,7 +3,7 @@
     "is_hpo": false,
     "seed": 42,
     "base_model": "/bigwork/nhwpajjy/pre-trained-models/decapoda-research-llama-7B-hf",
-    "cutoff_len": 2000,
+    "cutoff_len": 100,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "run_output_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/unit-segmentation",
     "data_type": "ndjson",
