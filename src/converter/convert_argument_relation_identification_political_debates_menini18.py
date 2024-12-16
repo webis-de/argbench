@@ -17,19 +17,20 @@ if __name__ == "__main__":
     # Class for collecting dataset file data
     # Dataset name specifies folder where dataset will be written
     output = Output(dataset_name)
-    output.append_definition("Given the following two arguments that are labeled with [1] and [2] on the given topic:\n" +
-                             "- mark the argument pair as [1] --> [2] if the first argument supports the second.\n" +
-                             "- mark the argument pair as [1] /-> [2] if the first argument attacks the second.\n" +
-                             "- mark the argument pair as [1] --- [2] if there are no relation between the pair")
+    output.append_definition(
+        """Given the following two arguments on the given topic:\n 
+        "Detect whether the first argument supports, attacks, or is unrelated to the second argument.
+        Only output support, attack, or unrelated.
+        """)
 
     metadata = Metadata(dataset_name)
 
     dataset = read_tabular(data_path, "\t")
-    dataset["input"] = "Topic: " + dataset["topic"] + " Arguments: [1] " + dataset["argument1"] + " [2] " + dataset["argument2"]
+    dataset["input"] = "Topic: " + dataset["topic"] + "\nArgument 1:" + dataset["argument1"] + "\nArgument 2:" + dataset["argument2"]
     dataset["output"] = dataset["relation"].map({
-        "no_relation": "[1] --- [2]",
-        "support": "[1] --> [2]",
-        "attack": "[1] /-> [2]"
+        "no_relation": "Unrelated",
+        "support": "Support",
+        "attack": "Attack"
     })
 
     for row in dataset.iterrows():

@@ -52,7 +52,10 @@ if __name__ == "__main__":
     output = Output(DATASET_NAME)
     output.append_genre(Genres.DEBATE_PORTALS)
     output.append_subarea(Subareas.GENERATION)
-    output.append_definition("Given argument type, topic, stance and template generate an argument that fills template variables with facts while taking other data into account.")
+    output.append_definition(
+        """Given argument type, topic, stance and template generate an argument that fills template
+     variables with facts while taking the argument template into account."""
+    )
     for arg in arguments:
         output.append_instance(arg.id, arg.prompt, [arg.output])
 

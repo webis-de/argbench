@@ -72,7 +72,10 @@ def process_all_txt_files_in_directory(directory_path, instances_dict):
             process_txt_file(txt_file_path, instances_dict, dataset_name)
 
 def main():
-    arg_parser = ArgumentParser(description="Classify sentences into different types of evidence.")
+    arg_parser = ArgumentParser(description=
+    """Classify each sentence in the given document into the following classes:
+    Common Ground, Assumption, Testimony, Statistics, Anecdote, or Other.,  
+     """)
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args)

@@ -1,56 +1,49 @@
-from uuid import uuid4
-from common import Output, datasets_path, Metadata, add_seed_arg, set_seed, Subareas, Genres
+import json
+from common import Output, add_seed_arg, set_seed, datasets_path, Metadata, Genres, Subareas
 from argparse import ArgumentParser
-import ndjson
 
 
-def parse_support(support):
-    if not support:
-        return []
-    total_supports = []
-    for support_id in support:
-        if "_" in support_id:
-            support_start, support_end = support_id.split("_")
-            support_start = int(support_start)
-            support_end = int(support_end)
-            for r_id in range(support_start, support_end + 1):
-                total_supports.append(r_id)
-        else:
-             total_supports.append(int(support_id))
-    return total_supports
+def process_json_file(json_file_path, output):
+    """Process the JSON file and append examples to the output."""
+    with open(json_file_path, 'r') as f:
+        for line in f:
+            data = json.loads(line.strip())
+            comment_id = data.get("commentID")
+            propositions = data.get("propositions", [])
 
-def preprocess_propositions(propositions):
-    proposition_data = {}
-    for proposition in propositions:
-        proposition_data[proposition["id"]] = proposition
-        proposition_data[proposition["id"]]["reasons"] = parse_support(proposition["reasons"])
-        proposition_data[proposition["id"]]["evidence"] = parse_support(proposition["evidence"])
-        proposition_data[proposition["id"]]["comments"] = []
+            proposition_texts = {prop.get("id"): prop.get("text") for prop in propositions}
 
-    labeled_propositons = []
-    for prop_1, prop_2 in ((p_1, p_2) for p_1 in proposition_data for p_2 in proposition_data if p_1 != p_2):
-        comment_text = ""
+            relations = []
 
-        if prop_2 in proposition_data[prop_1]["reasons"] or prop_2 in proposition_data[prop_1]["evidence"]:
-            label = "[0] --> [1]"
-        else:
-            label = "[0] --- [1]"
+            for proposition in propositions:
+                current_text = proposition.get("text")
 
-        for prop in proposition_data:
-            if prop == prop_1:
-                comment_text += f" [1] {proposition_data[prop]['text']}"
-            if prop == prop_2:
-                comment_text += f" [0] {proposition_data[prop]['text']}"
-            else:
-                comment_text += f" {proposition_data[prop]['text']}"
+                supporting_sentences = proposition.get("reasons")
+                if supporting_sentences:
+                    for support_id in supporting_sentences:
+                        support_id = int(support_id)
+                        supporting_text = proposition_texts.get(support_id)
+                        if supporting_text:
+                            relations.append(f"Reason:\n{current_text}\n{supporting_text}\n")
 
-        comment_text = comment_text.strip()
-        labeled_propositons.append((comment_text, label))
+                evidence_sentences = proposition.get("evidence")
+                if evidence_sentences:
+                    for evidence_id in evidence_sentences:
+                        evidence_id = int(evidence_id)
+                        evidence_text = proposition_texts.get(evidence_id)
+                        if evidence_text:
+                            relations.append(f"Evidence:\n{current_text}\n{evidence_text}\n")
+            if relations:
+                output.append_instance(
+                    comment_id,
+                    ' '.join([prop.get("text") for prop in propositions]),  # 拼接所有的句子作为input
+                    ["\n".join(relations)]
+                )
 
-    return labeled_propositons
+            print(f"Processed commentID: {comment_id}")
 
 
-if __name__ == "__main__":
+def main():
     arg_parser = ArgumentParser(description="What dataset will be processed?")
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
@@ -59,33 +52,32 @@ if __name__ == "__main__":
     data_path = (datasets_path() /
                  "erulemaking" /
                  "cdcp_type_edge_annot.jsonlist")
-    # Set name of the dataset to identify it and files of that dataset
-    dataset_name = "argument_relation_identification_erulemaking_park18"
-    dataset_file = "argument_relation_identification_erulemaking_park18.json"
 
-    # Class for collecting dataset file data
-    # Dataset name specifies folder where dataset will be written
+    dataset_name = "argument_relation_identification_erulemaking_extract_park18"
+    dataset_file = "argument_relation_identification_erulemaking_extract_park18.json"
+
     output = Output(dataset_name)
-    output.append_definition("Given the following document and the given argument units with the given ids, mark an argument unit referenced with [0] that supports another argument unit that referenced with [1] with the following [0] --> [1]. " +
-        "If the argment unit [0] is not related to argument unit [1], mark it with [0] --- [1]"
+    metadata = Metadata(dataset_name)
+    output.append_definition(
+        """Detect which sentences provide a reason (support) or evidence for another sentence within the comment.
+        Output first Reason or Evidence and then output the sentence pair separated by a new line."""
     )
 
-    metadata = Metadata(dataset_name)
+    process_json_file(data_path, output)
 
-    with open(data_path, "r") as f:
-        reader = ndjson.reader(f)
-
-        for row in reader:
-            propositions = preprocess_propositions(row['propositions'])
-            for prop_text, prop_label in propositions:
-                id = str(row["commentID"]) + "-" + str(uuid4())
-                output.append_instance(id, prop_text, [prop_label])
-
-    metadata.add_dataset(dataset_file)
-    metadata.add_evaluation_metric("f1_macro")
     output.append_genre(Genres.DEBATE_PORTALS)
     output.append_subarea(Subareas.REASONING)
+    output.write_output(dataset_file)
+
+    metadata.add_dataset(dataset_file)
+    metadata.add_evaluation_metric("rouge")
+
     metadata.add_genre(Genres.DEBATE_PORTALS)
     metadata.add_subarea(Subareas.REASONING)
-    output.write_output(dataset_file)
     metadata.write_metadata()
+
+    print(f"All files processed and saved to {dataset_file}")
+
+
+if __name__ == "__main__":
+    main()

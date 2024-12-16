@@ -86,7 +86,8 @@ def main():
 
     output = Output(dataset_name)
     output.append_definition(
-        "Given the following essay list of pairs of sentences where the second sentence supports or attacks the first. Mark the pair with Support or Attack.")
+        """Given the following essay list of pairs of sentences where the second sentence supports or attacks the first.
+         Output first Support or Attack and then output the sentence pair separated by a new line.""")
 
     # Process XMI files
     process_xmi_files(xmi_directory, output)

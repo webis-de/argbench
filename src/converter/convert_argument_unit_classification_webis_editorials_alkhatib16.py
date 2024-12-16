@@ -5,8 +5,8 @@ from argparse import ArgumentParser
 from pathlib import Path
 from dataclasses import dataclass, field
 
-DATASET_NAME = "argument_unit_segmentation_webis_editorials_alkhatib16"
-DATASET_PATH = "argument_unit_segmentation_webis_editorials_alkhatib16.json"
+DATASET_NAME = "argument_unit_classification_webis_editorials_alkhatib16"
+DATASET_PATH = "argument_unit_classification_webis_editorials_alkhatib16.json"
 
 SEGMENT_LABEL_MAPPING = {
     "statistics": "Statistics",
@@ -86,7 +86,7 @@ if __name__ == "__main__":
                              "Testimony -  The unit gives evidence by stating or quoting that a proposition was made by some expert, authority, witness, group, organization, or similar.\n" +
                              "Statistics - The unit gives evidence by stating or quoting the results or conclusions of quantitative research, studies, empirical data analyses, or similar. A reference may but needs not always be given.\n" +
                              "Anecdote - The unit gives evidence by stating personal experience of the author, an anecdote, a concrete example, an instance, a specific event, or similar.\n" +
-                             "Output should be in the form: Argument Unit: argument contents separated by newlines.")
+                             "Output should be in the form: Argument Unit Type (e.g., Assumption): argument contents separated by newlines.")
 
     editorials = process_folder(dataset_path)
 
