@@ -13,7 +13,7 @@
 
     "train_datasets": {
         "leave_one_out": true,
-        "subsample_amount": 50,
+        "subsample_amount": 1,
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
         "exclude_datasets": [
             "counter_argument_generation_candela_hua19",
