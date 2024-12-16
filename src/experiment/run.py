@@ -93,8 +93,6 @@ class Runner:
         self.tokenizer.pad_token_id = config.pad_token_id
 
 
-        logger.log(level=logging.INFO, msg="Data prepared!")
-        logger.log(level=logging.INFO, msg=f"counting {len(self.train_data)}")
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
         self.task_metrics = json.load(open(config.task_metrics_path))
         self.leaderborad = Leaderboard(config.leaderboard_path)
@@ -418,6 +416,8 @@ class Runner:
         log_mem("before preparing data")
         self.prepare_data()
         log_mem("after preparing data")
+        logger.log(level=logging.INFO, msg="Data prepared!")
+        logger.log(level=logging.INFO, msg=f"counting {len(self.train_data)}")
 
         study = create_study(
             storage=self.config.hpo_config.storage,
