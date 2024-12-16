@@ -105,7 +105,7 @@ def collect_files(
             continue
         if not os.path.isdir(task_data_path):
             continue
-
+        set_trace()
         if task not in metadata:
             logger.log(level=logging.INFO, msg=f"{task} not in metadata!")
             continue
