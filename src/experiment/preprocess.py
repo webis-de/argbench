@@ -1,19 +1,23 @@
 import json
 import logging
+import datasets
 import ndjson
 import os
 import pandas as pd
 
-from argparse import ArgumentParser
-from collections import defaultdict, namedtuple
+
+from collections import defaultdict
 from pathlib import Path
+
+from datasets import DatasetDict, Dataset
 from torch import _convert_indices_from_coo_to_csr
 from yaml import load, Loader
-from IPython.core.debugger import set_trace
+
 
 logger = logging.getLogger(__name__)
 
-Dataset = namedtuple("Dataset","name df")
+
+
 
 class PandasDataset:
     """
@@ -144,7 +148,7 @@ def compile_datasets(
         prompt_template,
         subsample_amount=None,
         subsample_rate=None,
-        filetype="ndjson", return_metadata=True):
+        filetype="ndjson", training=True):
     """
     Read dataset file and compile all datasets into one dataframe
 
@@ -161,7 +165,8 @@ def compile_datasets(
             example=row["example"]
         )
 
-    datasets = {}
+    test_dataset_dict = {}
+    training_datasets = []
     for dataset in task_datasets:
         total_datasets = []
         for task_path in task_datasets[dataset]:
@@ -190,14 +195,22 @@ def compile_datasets(
         task_data["input"] = task_data.apply(template_formatter, axis=1)
 
         task_df = task_data[["id","document", "input", "output"]]
-        task_df = PandasDataset(task_df)
-        task = Dataset(dataset, task_df)
 
-        datasets[dataset] = task
+        if training:
+            task_df["task"] = dataset
+            training_datasets.append(task_df)
+        else:
+            task_hf_dataset = Dataset.from_pandas(task_df)
+            task_hf_dataset.info["task"] = dataset
 
-#    if datasets:
-#        return pd.concat(datasets, axis=0).reset_index(drop=True)
-    return datasets
+            test_dataset_dict[dataset] = task_hf_dataset
+
+    if training:
+        all_training_df = pd.concat(training_datasets, axis=0).reset_index(drop=True)
+
+        return Dataset.from_pandas(all_training_df)
+    else:
+        return DatasetDict(test_dataset_dict)
 
 
 def collect_datasets(run_config):
@@ -241,7 +254,7 @@ def collect_datasets(run_config):
         test_config["prompt_template"],
         test_config.get("subsample_amount", None),
         test_config.get("subsample_rate", None),
-        run_config.data_type
+        run_config.data_type,training = False
     )
 
     return train_datasets, test_datasets

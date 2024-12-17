@@ -4,26 +4,27 @@ import logging
 import time
 
 import psutil
-import torch.autograd.profiler as profiler
+
 
 from argparse import ArgumentParser
+from datasets import concatenate_datasets
 from optuna import Trial, create_study
 from torch.utils.data import DataLoader
 from pathlib import Path
-from tqdm import tqdm
+
 from vllm import LLM, SamplingParams
 from vllm.  lora.request import LoRARequest
-from IPython.core.debugger import set_trace
+
 
 from leaderborad import  Leaderboard
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
-from dataclasses import asdict
+
 import gc
 
-import transformers
+
 from filter_warnings import  *
 
 
@@ -59,11 +60,11 @@ from peft import (
     LoraConfig,
     get_peft_model,
 )
-from preprocess import collect_datasets, PandasDataset
+from preprocess import collect_datasets
 from testing import *
 from tqdm import tqdm
 from config import RunConfig
-import numpy as np
+
 import json
 import torch
 
@@ -221,32 +222,47 @@ class Runner:
         )
 
         return trainer
+
+
     @with_timing
     def prepare_data(self):
+
         """
         Using configuration object collects train and test datasets
         """
-        self.train_datsets, self.test_datsets = collect_datasets(
+        cutoff_len = self.config.cutoff_len
+        train = True
+        def generate_and_tokenize_prompt(data_point):
+            """
+            Tokenizes data instance for feeding the model during training/testing
+
+            :param data_point: Dict with "input", "output" strings
+            :returns: tokenized prompt
+            """
+            input_prompt = self.tokenize(data_point['input'], cutoff_len)
+            if train:
+                full_prompt = self.tokenize(f"{data_point['input']}{data_point['output']}", cutoff_len)
+                instruction_len = len(input_prompt) - 1
+                full_prompt["labels"] = [-100] * instruction_len + full_prompt["labels"][instruction_len:]
+                return full_prompt
+            return input_prompt
+
+        self.train_datasets, self.test_datasets = collect_datasets(
             self.config
         )
 
-        self.train_data = []
-        for train_dataset in tqdm(self.train_datsets):
-            train_df = self.train_datsets[train_dataset].df
-            for row in train_df.iterrows():
-                row = row[1]
-                processed = self.generate_and_tokenize_prompt(row, self.config.cutoff_len)
-                self.train_data.append(processed)
 
-        self.test_data = {}
-        for test_dataset in tqdm(self.test_datsets):
-            test_df = self.test_datsets[test_dataset].df
-            self.test_data[test_dataset] = []
-            for row in test_df.iterrows():
-                row = row[1]
-                processed = self.generate_and_tokenize_prompt(row, self.config.cutoff_len, False)
-                self.test_data[test_dataset].append(processed)
+        self.train_data = self.train_datasets.map(generate_and_tokenize_prompt)
 
+
+        train  = False
+
+
+
+        for test_dataset in tqdm(self.test_datasets):
+            self.test_datasets[test_dataset] = self.test_datasets[test_dataset].map(generate_and_tokenize_prompt)
+
+        self.test_data = concatenate_datasets(self.test_datasets.values())
 
     def prepare_model_for_causal_llm(self, base_model, quant_config, model_config):
         """
@@ -382,7 +398,7 @@ class Runner:
     def perform_hpo_generation(self, test_dataset):
 
         self.test_dataset= test_dataset
-        self.task_df =  self.test_datsets[test_dataset].df
+        self.task_df =  self.test_datasets[test_dataset].df
         self.llm = self.prepare_model_for_generation()
 
 
@@ -475,12 +491,12 @@ class Runner:
 
         log_mem("after loading vllm model")
         all_results = []
-        for test_dataset in self.test_datsets:
-            task_df =  self.test_datsets[test_dataset].df
+        for test_dataset in self.test_datasets:
+            task_dataset =  self.test_datasets[test_dataset]
             log_mem(f"before testing on {test_dataset}")
             sampling_params= self.load_sampling_params(test_dataset )
 
-            metrics = self.evaluate(llm, sampling_params, test_dataset, task_df)
+            metrics = self.evaluate(llm, sampling_params, test_dataset, task_dataset)
 
             log_mem(f"after testing on {test_dataset}")
 
@@ -504,15 +520,15 @@ class Runner:
             json.dump(run_data, f)
 
 
-    def evaluate(self,llm, sampling_params, test_dataset, task_data, trial=None):
+    def evaluate(self,llm, sampling_params, test_dataset, task_data):
         """
         Performs model evaluation using the test datasets and evaluation metric from ValidationConfig. The test
         dataset is the name of the test task and task_data is the test data points
         """
         #set_trace()
 
-        dataset = PandasDataset(task_data)
-        labels = task_data["output"].tolist()
+        dataset = task_data
+        labels = task_data["output"]
         predictions = []
 
         loader = DataLoader(
