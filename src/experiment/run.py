@@ -424,7 +424,7 @@ class Runner:
 
     def hpo_objective(self, trial: Trial):
 
-        model = self.prepare_model(
+        model = self.prepare_model_for_training(
             trial,
             self.config.hpo_config.quant_config,
             self.config.hpo_config.model_config
@@ -439,6 +439,8 @@ class Runner:
         )
 
         trainer.train()
+        self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
+        self.vllm = self.prepare_model_for_generation()
 
         test_result = self.evaluate(trainer)
         if self.config.hpo_config.val_metric:
@@ -525,7 +527,7 @@ class Runner:
             json.dump(run_data, f)
 
 
-    def evaluate(self,llm, sampling_params, test_dataset, task_data):
+    def evaluate(self,vllm, sampling_params, test_dataset, task_data):
         """
         Performs model evaluation using the test datasets and evaluation metric from ValidationConfig. The test
         dataset is the name of the test task and task_data is the test data points
@@ -568,9 +570,9 @@ class Runner:
             #output = self.tokenizer.batch_decode(generated.sequences, skip_special_tokens=True)
             # output = self.tokenizer.decode(gen_diff[0])
             if self.config.peft_configs:
-                outputs = llm.generate(text, sampling_params=sampling_params, lora_request=lora_request)
+                outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request)
             else:
-                outputs = llm.generate(text, sampling_params=sampling_params)
+                outputs = vllm.generate(text, sampling_params=sampling_params)
 
             for output in outputs:
                 #output = [o[len(text[i]):] for i, o in enumerate(output)]
