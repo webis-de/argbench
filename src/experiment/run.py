@@ -395,7 +395,7 @@ class Runner:
 
 
         sampling_params = self.load_sampling_params(self.test_dataset, trial, self.config.hpo_config.vllm_config)
-        metrics = self.evaluate(self.llm, sampling_params, self.test_dataset, self.task_df)
+        metrics = self.evaluate(self.vllm, sampling_params, self.test_dataset, self.task_df)
         return metrics[self.config.hpo_config.val_metric]
 
 
@@ -403,8 +403,8 @@ class Runner:
     def perform_hpo_generation(self, test_dataset):
 
         self.test_dataset= test_dataset
-        self.task_df =  self.test_datasets[test_dataset].df
-        self.llm = self.prepare_model_for_generation()
+        self.task_df =  self.test_datasets[test_dataset]
+        self.vllm = self.prepare_model_for_generation()
 
 
         study = create_study(
@@ -440,16 +440,20 @@ class Runner:
 
         trainer.train()
         self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
+        self.free_model()
         self.vllm = self.prepare_model_for_generation()
 
-        test_result = self.evaluate(trainer)
-        if self.config.hpo_config.val_metric:
-            return test_result[self.config.hpo_config.val_metric]
-        return test_result
+
+        sampling_params = self.load_sampling_params(self.test_dataset, trial, self.config.hpo_config.vllm_config)
+        metrics = self.evaluate(self.vllm, sampling_params, self.test_dataset, self.test_hf_dataset)
+        return metrics[self.config.hpo_config.val_metric]
 
 
-    def perform_hpo(self):
+
+    def perform_hpo(self, test_dataset):
         """Perform HPO search"""
+        self.test_dataset= test_dataset
+        self.test_hf_dataset =  self.test_datasets[test_dataset]
 
         study = create_study(
             storage=self.config.hpo_config.storage,
