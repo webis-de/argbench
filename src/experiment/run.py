@@ -157,7 +157,7 @@ class Runner:
     def prepare_model_for_generation(self):
         base_model = self.config.base_model
         if self.config.peft_configs:
-            llm = LLM(model=base_model, enable_lora=True, tokenizer_mode="slow")
+            llm = LLM(model=base_model, enable_lora=True)
         else:
             llm = LLM(model=base_model)
 

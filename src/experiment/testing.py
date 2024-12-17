@@ -165,6 +165,9 @@ def compute_bio_f1_score(predictions, references, inputs):
         prediction = predictions[i]
         reference = references[i]
         input = inputs[i]
+        if len(prediction) > len(input):
+            prediction = prediction[:len(input)]
+
         groudn_truth_labels = convert_to_bio(input, reference)
         predictions_labels = convert_to_bio(input, prediction)
         all_labels.extend(groudn_truth_labels)
