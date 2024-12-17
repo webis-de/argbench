@@ -97,6 +97,7 @@ class Runner:
     """Model runner class"""
     base_model = None
     peft_model = None
+    vllm = None
     def __init__(self, config: RunConfig):
         """
         Initializes experiment runner with configuration object for training or evaluation
@@ -385,6 +386,8 @@ class Runner:
             del self.base_model
         if self.peft_model:
             del self.peft_model
+        if self.vllm:
+            del self.vllm
         torch.cuda.empty_cache()
         gc.collect()
 
@@ -489,7 +492,7 @@ class Runner:
 
         log_mem("before loading vllm model")
 
-        llm = self.prepare_model_for_generation()
+        self.vllm = self.prepare_model_for_generation()
 
         log_mem("after loading vllm model")
         all_results = []
@@ -498,7 +501,7 @@ class Runner:
             log_mem(f"before testing on {test_dataset}")
             sampling_params= self.load_sampling_params(test_dataset )
 
-            metrics = self.evaluate(llm, sampling_params, test_dataset, task_dataset)
+            metrics = self.evaluate(self.vllm, sampling_params, test_dataset, task_dataset)
 
             log_mem(f"after testing on {test_dataset}")
 
