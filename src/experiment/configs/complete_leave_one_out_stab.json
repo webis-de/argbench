@@ -13,12 +13,13 @@
 
     "train_datasets": {
         "leave_one_out": true,
-        "subsample_amount": 100,
+        "subsample_amount": 1,
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
         "exclude_datasets": [
             "counter_argument_generation_candela_hua19",
             "counter_argument_generation_cmv_hua18",
-            "argument_unit_segmentation_entity_ajjour17"
+            "argument_unit_segmentation_entity_ajjour17",
+            "argument_unit_classification_essays_stab17"
         ]
     },
     "test_datasets": {
