@@ -95,7 +95,8 @@ def eval_collate(batch):
 
 class Runner:
     """Model runner class"""
-
+    base_model = None
+    peft_model = None
     def __init__(self, config: RunConfig):
         """
         Initializes experiment runner with configuration object for training or evaluation
