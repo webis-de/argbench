@@ -193,14 +193,15 @@ def compile_datasets(
         task_data["example"] = example_instance
 
         task_data["input"] = task_data.apply(template_formatter, axis=1)
+        for column in task_data.columns:
+            task_data[column] = task_data[column].astype(str)
+
         if training:
             task_data["task"] = dataset
             task_df = task_data[["id","document", "input", "output", "task"]]
         else:
             task_df = task_data[["id","document", "input", "output"]]
 
-        for column in task_df.columns:
-            task_df[column] = task_df[column].astype(str)
 
         if training:
             training_datasets.append(task_df)
