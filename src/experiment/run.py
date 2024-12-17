@@ -576,7 +576,6 @@ class Runner:
         #trainer.model.train()
 
         metric = self.task_metrics[test_dataset]
-        set_trace()
         if metric == "fscore-detailed":
             return compute_precision_recall_fscore_support(
                 predictions,
