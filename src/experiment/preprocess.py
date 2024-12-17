@@ -204,7 +204,7 @@ def compile_datasets(
             training_datasets.append(task_df)
         else:
             task_hf_dataset = Dataset.from_pandas(task_df)
-            task_hf_dataset.info["task"] = dataset
+#            task_hf_dataset.info["task"] = dataset
 
             test_dataset_dict[dataset] = task_hf_dataset
 
