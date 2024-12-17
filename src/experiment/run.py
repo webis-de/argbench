@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import os.path
 import logging
+import time
+
 import psutil
 import torch.autograd.profiler as profiler
 
@@ -68,6 +70,17 @@ import torch
 
 logger = logging.getLogger(__name__)
 
+
+def with_timing(fn):
+    def wrapper(*args, **kwargs):
+        t = time.perf_counter()
+        try:
+            return fn(*args, **kwargs)
+        finally:
+            e= time.perf_counter()
+            print(f"Time for {fn} is {e-t:2.2f}")
+            logger.log (level=logging.INFO, msg=f"Time for {fn} is {e-t:2.2f}")
+    return wrapper
 
 
 def eval_collate(batch):
@@ -208,7 +221,7 @@ class Runner:
         )
 
         return trainer
-
+    @with_timing
     def prepare_data(self):
         """
         Using configuration object collects train and test datasets
@@ -339,11 +352,7 @@ class Runner:
         if train:
             full_prompt = self.tokenize(f"{data_point['input']}{data_point['output']}", cutoff_len)
             instruction_len = len(input_prompt) - 1
-            full_prompt["labels"] = [
-                -100
-            ] * instruction_len + full_prompt["labels"][
-                instruction_len:
-            ]
+            full_prompt["labels"] = [-100] * instruction_len + full_prompt["labels"][instruction_len:]
             return full_prompt
         return input_prompt
 
