@@ -38,7 +38,7 @@ def log_mem(message):
     free_cpu_perc = 1 - perc_memory
     total_cpu = (1/perc_memory)*used_cpu
     free_cpu = total_cpu * free_cpu_perc
-    logger.log(level=logging.INFO,msg=f"GPU Memory {message}: {free_gpu:2.0f} GB free from {total_gpu:2.0f} GB  |  "
+    logger.log(level=logging.INFO,msg=f"*** GPU Memory {message}: {free_gpu:2.0f} GB free from {total_gpu:2.0f} GB  |  "
                                          f" CPU Memory: {free_cpu:2.0f} GB free from {total_cpu:2.0f} GB")
 
 
@@ -78,8 +78,8 @@ def with_timing(fn):
             return fn(*args, **kwargs)
         finally:
             e= time.perf_counter()
-            print(f"Time for {fn} is {e-t:2.2f}")
-            logger.log (level=logging.INFO, msg=f"Time for {fn} is {e-t:2.2f}")
+            print(f"$$$ Time: for {fn} is {e-t:2.2f}")
+            logger.log (level=logging.INFO, msg=f"Time: for {fn} is {e-t:2.2f}")
     return wrapper
 
 
