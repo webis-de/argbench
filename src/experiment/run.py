@@ -380,8 +380,10 @@ class Runner:
 
 
     def free_model(self):
-        del self.base_model
-        del self.peft_model
+        if self.base_model:
+            del self.base_model
+        if self.peft_model:
+            del self.peft_model
         torch.cuda.empty_cache()
         gc.collect()
 
@@ -470,7 +472,7 @@ class Runner:
 
         if not self.config.is_eval:
             log_mem("before loading model")
-
+            self.free_model()
             model = self.load_model()
 
             log_mem("after loading model and before training")
