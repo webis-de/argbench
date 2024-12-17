@@ -193,14 +193,16 @@ def compile_datasets(
         task_data["example"] = example_instance
 
         task_data["input"] = task_data.apply(template_formatter, axis=1)
-
-        task_df = task_data[["id","document", "input", "output"]]
+        if training:
+            task_data["task"] = dataset
+            task_df = task_data[["id","document", "input", "output", "task"]]
+        else:
+            task_df = task_data[["id","document", "input", "output"]]
 
         for column in task_df.columns:
             task_df[column] = task_df[column].astype(str)
 
         if training:
-            task_df["task"] = dataset
             training_datasets.append(task_df)
         else:
             task_hf_dataset = Dataset.from_pandas(task_df)
