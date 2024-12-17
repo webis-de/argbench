@@ -170,24 +170,24 @@ def compute_bio_f1_score(predictions, references, inputs):
 
         groudn_truth_labels = convert_to_bio(input, reference)
         predictions_labels = convert_to_bio(input, prediction)
+        if len(predictions_labels) < len(groudn_truth_labels):
+            for i in range(len(groudn_truth_labels) - len(predictions_labels)):
+                predictions_labels.append(np.random.choice(predictions_labels))
+        else:
+            predictions_labels = predictions_labels[:len(groudn_truth_labels)]
+
         all_labels.extend(groudn_truth_labels)
         all_predictions.extend(predictions_labels)
 
-    if len(all_labels) == len(all_predictions):
 
     #print(precision_recall_fscore_support(all_labels,all_predictions, average=None, labels=['Arg-I']))
     #print(f" Arg-B f1 {f1_score(all_labels, all_predictions, average=None, labels=['Arg-B'])}")
     #print(f" Arg-I f1 {f1_score(all_labels, all_predictions, average=None, labels=['Arg-I'])}")
     #print(f" Arg-O f1 {f1_score(all_labels, all_predictions, average=None, labels=['Arg-O'])}")
-        macro_f1 = f1_score(all_labels, all_predictions, average='macro')
-        argb_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-B'])
-        argi_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-I'])
-        argo_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-O'])
-    else:
-        macro_f1 = 0
-        argb_f1 = 0
-        argi_f1 = 0
-        argo_f1 = 0
+    macro_f1 = f1_score(all_labels, all_predictions, average='macro')
+    argb_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-B'])
+    argi_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-I'])
+    argo_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-O'])
 
 
 
@@ -216,7 +216,9 @@ def compute_sentence_f1(predictions, references, inputs):
         prediction_labels, prediction_sentences = extract_sentence_labels(prediction)
         if len(prediction_labels) > len_ground_truth_labels:
             prediction_labels = prediction_labels[:len_ground_truth_labels]
-
+        elif len(prediction_labels) < len_ground_truth_labels:
+            for i in range(len_ground_truth_labels - len(prediction_labels)):
+                prediction_labels.append(np.random.choice(prediction_labels))
         logger.log(level=logging.INFO, msg=f"reference token size {len(reference.split())}")
         logger.log(level=logging.INFO, msg=f"prediction token size {len(prediction.split())}")
         #set_trace()
