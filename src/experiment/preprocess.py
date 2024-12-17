@@ -196,6 +196,9 @@ def compile_datasets(
 
         task_df = task_data[["id","document", "input", "output"]]
 
+        for column in task_df.columns:
+            task_df[column] = task_df[column].astype(str)
+
         if training:
             task_df["task"] = dataset
             training_datasets.append(task_df)
