@@ -252,15 +252,14 @@ class Runner:
         )
 
 
-        self.train_data = self.train_datasets.map(generate_and_tokenize_prompt)
-
+        self.train_data = self.train_datasets.map(generate_and_tokenize_prompt, num_proc=12, load_from_cache_file=f"/tmp/training_dataset.arrow")
 
         train  = False
 
 
 
         for test_dataset in tqdm(self.test_datasets):
-            self.test_datasets[test_dataset] = self.test_datasets[test_dataset].map(generate_and_tokenize_prompt)
+            self.test_datasets[test_dataset] = self.test_datasets[test_dataset].map(generate_and_tokenize_prompt, num_proc=12, load_from_cache_file=f"/tmp/{test_dataset}.arrow")
 
         self.test_data = concatenate_datasets(self.test_datasets.values())
 
