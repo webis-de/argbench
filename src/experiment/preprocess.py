@@ -190,7 +190,7 @@ def compile_datasets(
         task_data["input"] = task_data.apply(template_formatter, axis=1)
 
         task_df = task_data[["id","document", "input", "output"]]
-
+        task_df = PandasDataset(task_df)
         task = Dataset(dataset, task_df)
 
         datasets[dataset] = task
