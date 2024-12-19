@@ -2,6 +2,7 @@
 from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from argparse import ArgumentParser
 import uuid
+import csv
 import pandas as pd
 
 DATASET_NAME = "stance_classification_ukp_sentential_stab18"
@@ -38,7 +39,8 @@ if __name__ == "__main__":
     datasets = []
 
     for dataset in dataset_path.iterdir():
-        data = read_tabular(dataset, separator="\t")
+        print(dataset)
+        data = read_tabular(dataset, separator="\t", quoting=csv.QUOTE_NONE)
         datasets.append(data)
 
     datasets = pd.concat(datasets)
