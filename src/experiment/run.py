@@ -83,7 +83,6 @@ def with_timing(fn):
             logger.log (level=logging.INFO, msg=f"Time: for {fn} is {e-t:2.2f}")
     return wrapper
 
-
 def eval_collate(batch):
     out_batch = {k: [] for k in batch[0]}
 
@@ -398,8 +397,6 @@ class Runner:
         metrics = self.evaluate(self.vllm, sampling_params, self.test_dataset, self.task_df)
         return metrics[self.config.hpo_config.val_metric]
 
-
-
     def perform_hpo_generation(self, test_dataset):
 
         self.test_dataset= test_dataset
@@ -419,7 +416,6 @@ class Runner:
 
         return study.best_params, study.best_value
 
-
 ### This function is deprecated since it does not use VLLMs and is still dependent on one test dataset
 
     def hpo_objective(self, trial: Trial):
@@ -429,7 +425,7 @@ class Runner:
             self.config.hpo_config.quant_config,
             self.config.hpo_config.model_config
         )
-
+        log_mem(f"created model for training")
         trainer = self.prepare_trainer(
             model,
             trial,
@@ -439,19 +435,24 @@ class Runner:
         )
 
         trainer.train()
+        log_mem(f"trained model")
+
         self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
         self.free_model()
-        self.vllm = self.prepare_model_for_generation()
+        log_mem(f"saved and free model")
 
+        self.vllm = self.prepare_model_for_generation()
+        log_mem(f"created vllm for generation")
 
         sampling_params = self.load_sampling_params(self.test_dataset, trial, self.config.hpo_config.vllm_config)
         metrics = self.evaluate(self.vllm, sampling_params, self.test_dataset, self.test_hf_dataset)
+        log_mem(f"finished evaluation")
+        
         return metrics[self.config.hpo_config.val_metric]
-
-
 
     def perform_hpo(self, test_dataset):
         """Perform HPO search"""
+        log_mem(f"doing hpo for {test_dataset}")
         self.test_dataset= test_dataset
         self.test_hf_dataset =  self.test_datasets[test_dataset]
 
@@ -465,13 +466,14 @@ class Runner:
 
         study.optimize(self.hpo_objective, self.config.hpo_config.n_trials)
 
-
     def execute(self):
         """
         Execute training, hpo or evaluation
         """
         if self.config.is_hpo:
-            best_params, best_value = self.perform_hpo_generation("argument_unit_segmentation_ajjour17")
+            # this should be changed to account for multiple datasets
+            test_dataset = self.test_datasets[0]
+            best_params, best_value = self.perform_hpo(test_dataset)
             logger.log(level=logging.INFO, msg= f"best params are {best_params}")
             logger.log(level=logging.INFO, msg= f"best value is {best_value}")
             return
@@ -519,7 +521,6 @@ class Runner:
 
         return all_results
 
-
     def write_run(self, run_results):
         """
         Writes run results of training
@@ -529,7 +530,6 @@ class Runner:
                 "run_sesults": run_results
             }
             json.dump(run_data, f)
-
 
     def evaluate(self,vllm, sampling_params, test_dataset, task_data):
         """
@@ -609,9 +609,6 @@ class Runner:
             return compute_kendall_tau(predictions, labels)
         else:
             raise RuntimeError(f"No such metric: {self.config.validation_config.eval_metric}")
-
-
-
 
 if __name__ == "__main__":
     turn_off_warnings()
