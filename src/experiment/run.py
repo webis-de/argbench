@@ -466,6 +466,7 @@ class Runner:
         )
 
         study.optimize(self.hpo_objective, self.config.hpo_config.n_trials)
+        return study.best_params, study.best_trial.value
 
     def execute(self):
         """
