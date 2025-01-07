@@ -426,7 +426,7 @@ class Runner:
             self.config.hpo_config.model_config
         )
         log_mem(f"created model for training")
-        trainer = self.prepare_trainer(
+        self.trainer = self.prepare_trainer(
             model,
             trial,
             self.config.hpo_config.training_args_config,
@@ -434,7 +434,7 @@ class Runner:
             self.config.hpo_config.early_stopping_config
         )
 
-        trainer.train()
+        self.trainer.train()
         log_mem(f"trained model")
 
         self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
