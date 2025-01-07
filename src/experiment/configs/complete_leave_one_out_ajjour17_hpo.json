@@ -13,7 +13,7 @@
 
     "train_datasets": {
         "subsample_amount": 50,
-        "prompt_template": "### Instruction:\n{definition}\nExample:\n {example}\n### Input: {instance_input}\n### Response:",
+        "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
         "exclude_datasets": [
             "counter_argument_generation_candela_hua19",
             "counter_argument_generation_cmv_hua18",
@@ -25,7 +25,7 @@
     },
     "test_datasets": {
         "subsample_amount": 10,
-        "prompt_template": "### Instruction:\n{definition}\nExample:\n {example}\n### Input: {instance_input}\n### Response:",
+        "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
         "tasks": [
             "argument_unit_segmentation_ajjour17"
         ],
@@ -40,11 +40,11 @@
     },
 
     "hpo_config": {
-        "n_trials": 50,
+        "n_trials": 1,
         "storage": "sqlite:///db.sqlite3",
         "study_name": "argument_unit_segmentation",
         "direction": "maximize",
-        "val_metric": "fscore",
+        "val_metric": "bio-fscore",
         "vllm_config": {
             "top_p": {
                 "name": "top_p",
