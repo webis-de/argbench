@@ -13,7 +13,8 @@ from torch.utils.data import DataLoader
 from pathlib import Path
 
 from vllm import LLM, SamplingParams
-from vllm.  lora.request import LoRARequest
+from vllm.lora.request import LoRARequest
+from vllm.model_executor.parallel_utils.parallel_state import destroy_model_parallel
 
 
 from leaderborad import  Leaderboard
@@ -386,7 +387,12 @@ class Runner:
         if self.peft_model:
             del self.peft_model
         if self.vllm:
+            destroy_model_parallel()
             del self.vllm
+            gc.collect()
+            torch.cuda.empty_cache()
+            torch.distributed.destroy_process_group()
+
         torch.cuda.empty_cache()
         gc.collect()
 
@@ -420,14 +426,14 @@ class Runner:
 
     def hpo_objective(self, trial: Trial):
 
-        model = self.prepare_model_for_training(
+        self.model = self.prepare_model_for_training(
             trial,
             self.config.hpo_config.quant_config,
             self.config.hpo_config.model_config
         )
         log_mem(f"created model for training")
         self.trainer = self.prepare_trainer(
-            model,
+            self.model,
             trial,
             self.config.hpo_config.training_args_config,
             self.config.hpo_config.data_collator_config,
