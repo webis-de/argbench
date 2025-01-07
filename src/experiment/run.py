@@ -602,7 +602,7 @@ class Runner:
             return compute_bleu_score(predictions, labels)
         elif metric == "meteor":
             return compute_meteor_score(predictions, labels)
-        elif metric == "bio-fscore":
+        elif metric == "["bio-fsc"]ore":
             return compute_bio_f1_score(predictions, labels, task_data["document"])
         elif metric == "sentence-fscore":
             return compute_sentence_f1(predictions, labels, task_data["document"])
