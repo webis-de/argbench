@@ -473,7 +473,7 @@ class Runner:
         """
         if self.config.is_hpo:
             # this should be changed to account for multiple datasets
-            test_dataset = self.test_datasets[0]
+            test_dataset = self.test_datasets.keys()[0]
             best_params, best_value = self.perform_hpo(test_dataset)
             logger.log(level=logging.INFO, msg= f"best params are {best_params}")
             logger.log(level=logging.INFO, msg= f"best value is {best_value}")
