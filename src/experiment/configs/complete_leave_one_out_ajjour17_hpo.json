@@ -44,7 +44,7 @@
         "storage": "sqlite:///db.sqlite3",
         "study_name": "argument_unit_segmentation",
         "direction": "maximize",
-        "val_metric": "fscore",
+        "val_metric": "bio-fscore",
         "vllm_config": {
             "top_p": {
                 "name": "top_p",

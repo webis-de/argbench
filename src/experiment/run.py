@@ -447,8 +447,9 @@ class Runner:
         sampling_params = self.load_sampling_params(self.test_dataset, trial, self.config.hpo_config.vllm_config)
         metrics = self.evaluate(self.vllm, sampling_params, self.test_dataset, self.test_hf_dataset)
         log_mem(f"finished evaluation")
+        logger.log(level=logging.INFO, msg=f"metrics are {metrics}")
 
-        return metrics[self.config.hpo_config.val_metric]
+        return metrics[self.config.hpo_config.val_metric]["fscore"]
 
     def perform_hpo(self, test_dataset):
         """Perform HPO search"""
