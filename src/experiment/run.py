@@ -449,7 +449,7 @@ class Runner:
         log_mem(f"finished evaluation")
         logger.log(level=logging.INFO, msg=f"metrics are {metrics}")
 
-        return metrics[self.config.hpo_config.val_metric]["fscore"]
+        return metrics[self.config.hpo_config.val_metric]
 
     def perform_hpo(self, test_dataset):
         """Perform HPO search"""
