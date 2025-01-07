@@ -2,10 +2,15 @@
 from common import Genres, Output, Subareas, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 from dataclasses import dataclass
+from pathlib import Path
 import uuid
 import re
 
-DATASET_NAME = "premise_generation_arc_chakarbarty21"
+DATASET_ARC_NAME = "premise_generation_arc_chakarbarty21" # D1
+DATASET_ART_NAME = "premise_generation_art_chakarbarty21" # training
+DATASET_MICROTEXT_NAME = "premise_generation_microtext_1_chakarbarty21" # D3
+DATASET_IDEOLOGICAL_DEBATE_NAME = "premise_generation_ideological_debate_chakarbarty21" # D2
+
 
 @dataclass
 class Record:
@@ -42,9 +47,14 @@ def read_para_comet(path, para_comet_path):
     return target_records, comet_records
 
 
-def make_outputs(target_data, para_comet_data):
-    target_output = Output(DATASET_NAME)
-    output_para_comet = Output(DATASET_NAME)
+def make_outputs(target_data, para_comet_data, dataset_name, para_comet_name, metadata, genres = None, subareas = None):
+    if not genres:
+        genres = []
+    if not subareas:
+        subareas = []
+
+    target_output = Output(dataset_name)
+    output_para_comet = Output(dataset_name)
 
     target_output.append_definition("Given a reason and a claim, generate an enthymeme.")
     output_para_comet.append_definition("Given a reason and a claim, generate an enthymeme using ptovided context.")
@@ -57,10 +67,16 @@ def make_outputs(target_data, para_comet_data):
         target_output.append_instance(id, prompt, [output])
         output_para_comet.append_instance(id, prompt_para_comet, [output])
 
-    target_output.append_genre(Genres.DEBATES)
-    target_output.append_subarea(Subareas.GENERATION)
-    output_para_comet.append_genre(Genres.DEBATES)
-    output_para_comet.append_subarea(Subareas.GENERATION)
+    for genre in genres:
+        target_output.append_genre(genre)
+        output_para_comet.append_genre(genre)
+        metadata.add_genre(genre)
+
+    for subarea in subareas:
+        target_output.append_subarea(subarea)
+        output_para_comet.append_subarea(subarea)
+        metadata.add_subarea(subarea)
+
     return target_output, output_para_comet
 
 
@@ -70,11 +86,9 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    data_path = (datasets_path() / "art")
+    data_path = Path("/run/media/dima/Scratch/EnthymemesEMNLP2021-main/")
 
     output_path = tasks_path()
-
-    metadata = Metadata(DATASET_NAME)
 
     d1test_data = data_path / "D1test" / "semevaldata.target"
     d1test_data_para_comet = data_path / "D1test" / "semevaldataparacomet.source"
@@ -91,53 +105,131 @@ if __name__ == "__main__":
     art_data_val_source = data_path / "enthymemes-paracomet1" / "val.source"
     art_data_val_target = data_path / "enthymemes-paracomet1" / "val.target"
 
+    # D1test arc
+
+    d1test_name = "premise_generation_arc_chakarbarty21"
+    d1test_para_comet_name = "premise_generation_arc_para_comet_chakarbarty21"
+
+    d1test_file = d1test_name + ".json"
+    d1test_para_comet_file = d1test_para_comet_name + ".json"
+
+    metadata = Metadata(d1test_name)
+
     d1test_data, d1test_data_para_comet = read_para_comet(d1test_data, d1test_data_para_comet)
-    d1test_data, d1test_data_para_comet = make_outputs(d1test_data, d1test_data_para_comet)
+    d1test_data, d1test_data_para_comet = make_outputs(
+        d1test_data,
+        d1test_data_para_comet,
+        d1test_name,
+        d1test_para_comet_name,
+        metadata,
+        [Genres.DEBATES],
+        [Subareas.MINING]
+    )
 
-    d1test_data.write_output("premise_generation_arc_test_chakarbarty21.json")
-    d1test_data_para_comet.write_output("premise_generation_arc_test_para_comet_chakarbarty21.json")
+    d1test_data.write_output(d1test_file)
+    d1test_data_para_comet.write_output(d1test_para_comet_file)
 
-    metadata.add_dataset("premise_generation_arc_chakarbarty21.json", "test")
-    metadata.add_dataset("premise_generation_arc_para_comet_chakarbarty21.json", "test")
+    metadata.add_dataset(d1test_file)
+    metadata.add_dataset(d1test_para_comet_file)
 
+    metadata.write_metadata()
+    # D2test ideological_debate
+
+    d2test_name = "premise_generation_ideological_debate_chakarbarty21"
+    d2test_para_comet_name = "premise_generation_ideological_debate_para_comet_chakarbarty21"
+
+    d2test_file = d1test_name + ".json"
+    d2test_para_comet_file = d1test_para_comet_name + ".json"
+
+    metadata = Metadata(d2test_name)
     d2test_data, d2test_data_para_comet = read_para_comet(d2test_data, d2test_data_para_comet)
-    d2test_data, d2test_data_para_comet = make_outputs(d2test_data, d2test_data_para_comet)
+    d2test_data, d2test_data_para_comet = make_outputs(
+        d2test_data,
+        d2test_data_para_comet,
+        d2test_name,
+        d2test_para_comet_name,
+        metadata,
+        [Genres.DEBATE_PORTALS],
+        [Subareas.MINING]
+    )
 
-    d2test_data.write_output("premise_generation_ideolological_debate_test_chakarbarty21.json")
-    d2test_data_para_comet.write_output("premise_generation_ideolological_debate_test_para_comet_chakarbarty21.json")
+    d2test_data.write_output(d2test_file)
+    d2test_data_para_comet.write_output(d2test_para_comet_file)
 
-    metadata.add_dataset("premise_generation_ideolological_debate_test_chakarbarty21.json", "test")
-    metadata.add_dataset("premise_generation_ideolological_debate_test_para_comet_chakarbarty21.json", "test")
+    metadata.add_dataset(d2test_file)
+    metadata.add_dataset(d2test_para_comet_file)
 
+    metadata.write_metadata()
+    # D3 microtext_1
+
+    d3test_name = "premise_generation_microtexts_1_chakarbarty21"
+    d3test_para_comet_name = "premise_generation_microtexts_1_para_comet_chakarbarty21"
+
+    d3test_file = d3test_name + ".json"
+    d3test_para_comet_file = d3test_para_comet_name + ".json"
+
+    metadata = Metadata(d3test_name)
     d3test_data, d3test_data_para_comet = read_para_comet(d3test_data, d3test_data_para_comet)
-    d3test_data, d3test_data_para_comet = make_outputs(d3test_data, d3test_data_para_comet)
+    d3test_data, d3test_data_para_comet = make_outputs(
+        d3test_data,
+        d3test_data_para_comet,
+        d3test_name,
+        d3test_para_comet_name,
+        metadata,
+        [Genres.DEBATES],
+        [Subareas.MINING]
+    )
 
-    d3test_data.write_output("premise_generation_microtexts1_test_chakarbarty21.json")
-    d3test_data_para_comet.write_output("premise_generation_microtexts1_test_para_comet_chakarbarty21.json")
+    d3test_data.write_output(d3test_file)
+    d3test_data_para_comet.write_output(d3test_para_comet_file)
 
-    metadata.add_dataset("premise_generation_microtexts1_test_chakarbarty21.json", "test")
-    metadata.add_dataset("premise_generation_microtexts1_test_para_comet_chakarbarty21.json", "test")
+    metadata.add_dataset(d3test_file)
+    metadata.add_dataset(d3test_para_comet_file)
 
+    metadata.write_metadata()
+    # training art dataset
+    train_name = "premise_generation_art_chakarbarty21"
+    train_para_comet_name = "premise_generation_art_para_comet_chakarbarty21"
+
+    train_train_file = "premise_generation_art_train_chakarbarty21.json"
+    train_train_para_comet_file = "premise_generation_art_para_comet_train_chakarbarty21.json"
+
+    train_val_file = "premise_generation_art_val_chakarbarty21.json"
+    train_val_para_comet_file = "premise_generation_art_para_comet_val_chakarbarty21.json"
+
+    metadata = Metadata(train_name)
     art_data_train_target, art_data_train_target_para_comet = read_para_comet(art_data_train_target, art_data_train_source)
-    art_data_train_target, art_data_train_target_para_comet = make_outputs(art_data_train_target, art_data_train_target_para_comet)
+    art_data_train_target, art_data_train_target_para_comet = make_outputs(
+        art_data_train_target,
+        art_data_train_target_para_comet,
+        train_name,
+        train_para_comet_name,
+        metadata,
+        [Genres.DEBATES],
+        [Subareas.GENERATION]
+    )
 
-    art_data_train_target.write_output("premise_generation_art_train_chakarbarty21.json")
-    art_data_train_target_para_comet.write_output("premise_generation_art_train_para_comet_chakarbarty21.json")
+    art_data_train_target.write_output(train_train_file)
+    art_data_train_target_para_comet.write_output(train_train_para_comet_file)
 
-    metadata.add_dataset("premise_generation_art_train_chakarbarty21.json", "train")
-    metadata.add_dataset("premise_generation_art_train_para_comet_chakarbarty21.json", "train")
+    metadata.add_dataset(train_train_file, "train")
+    metadata.add_dataset(train_train_para_comet_file, "train")
 
     art_data_val_target, art_data_val_target_para_comet = read_para_comet(art_data_val_target, art_data_val_source)
-    art_data_val_target, art_data_val_target_para_comet = make_outputs(art_data_val_target, art_data_val_target_para_comet)
+    art_data_val_target, art_data_val_target_para_comet = make_outputs(
+        art_data_val_target,
+        art_data_val_target_para_comet,
+        train_name,
+        train_para_comet_name,
+        metadata,
+        [Genres.DEBATES],
+        [Subareas.GENERATION]
+    )
 
-    art_data_val_target.write_output("premise_generation_art_val_chakarbarty21.json")
-    art_data_val_target_para_comet.write_output("premise_generation_art_val_para_comet_chakarbarty21.json")
+    art_data_val_target.write_output(train_val_file)
+    art_data_val_target_para_comet.write_output(train_val_para_comet_file)
 
-    metadata.add_dataset("premise_generation_art_val_chakarbarty21.json", "val")
-    metadata.add_dataset("premise_generation_ar_val_para_comet_chakarbarty21.json", "val")
-
-    metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.GENERATION)
-    metadata.add_evaluation_metric("rouge")
+    metadata.add_dataset(train_val_file, "val")
+    metadata.add_dataset(train_val_para_comet_file, "val")
 
     metadata.write_metadata()

@@ -8,9 +8,9 @@ import os
 import numpy as np
 from yaml import load, Loader
 
-def read_tabular(path, separator=","):
+def read_tabular(path, separator=",", **kwargs):
     """Reads tabular csv file"""
-    dataset = pd.read_csv(path, sep=separator)
+    dataset = pd.read_csv(path, sep=separator, **kwargs)
     return dataset
 
 def data_repo():

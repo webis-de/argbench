@@ -1,124 +1,66 @@
-from common import Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
+from common import Genres, Output, Subareas, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import uuid
 
-dataset_name = "fallacy_detection_logic_jin22"
 
-FALLACY_MAPPING = {
-    "AdHominem": "Ad Hominem",
-    "AppealtoAuthority": "Appeal To Authority",
-    "AppealtoEmotion": "Appeal To Emotion",
-    "FalseCause": "False Cause",
-    "Slipperyslope": "Slippery Slope",
-    "Slogans": "Slogans"
-}
+DATASET_NAME = "fallacy_detection_logic_jin22"
 
-def collect_fallacies(tokens, labels):
-    total_string = ""
-    fallacies = ""
-    is_fallacy = False
+def process_file(dataset_path, dataset_file, metadata):
+    output = Output(DATASET_NAME)
+    output.append_definition("Given article, output which logical fallacies does it have. Possible logical fallacies: " +
+                             "faulty generalization - an informal fallacy wherein a conclusion is drawn about all or many instances of a phenomenon on the basis of one or a few instances of that phenomenon. is an example of jumping to conclusions; " +
+                             "false causality - statement that jumps to a conclusion implying a causal relationship without supporting evidence; " +
+                             "circular reasoning - when the end of an argument comes back to the beginning without having proven itself; " +
+                             "ad populum - a fallacious argument which is based on affirming that something is real or better because the majority thinks so; " +
+                             "ad hominem -instead of addressing someone's argument or position, you irrelevantly attack the person or some aspect of the person who is making the argument; " +
+                             "fallacy of logic - an error in the logical structure of an argument; " +
+                             "appeal to emotion - manipulation of the recipient's emotions in order to win an argument; " +
+                             "false dilemma - presenting only two options or sides when there are many options or sides; " +
+                             "equivocation - when a key term or phrase in an argument is used in an ambiguous way, with one meaning in one portion of the argument and then another meaning in another portion of the argument; " +
+                             "fallacy of extension - attacking an exaggerated or caricatured version of your opponent's position; " +
+                             "fallacy of relevance - introducing premises or conclusions that have nothing to do with the subject matter; " +
+                             "fallacy of credibility - attempts to disprove an argument by attacking the character of the speaker; " +
+                             "miscellaneous - miscellaneous; " +
+                             "intentional - some intentional (sometimes subconscious) action/choice to incorrectly support an argument.")
 
-    for token, label in zip(tokens, labels):
-        total_string += f" {token}"
-        if label == "O":
-            is_fallacy = False
-        elif label[:2] == "B-":
-            fallacies += f"\n{FALLACY_MAPPING[label[2:]]}:"
-            is_fallacy = True
+    data = read_tabular(dataset_path)
 
-        if is_fallacy:
-            fallacies += f" {token}"
+    for row in data.iterrows():
+        row = row[1]
+        id = row["original_url"]
+        prompt = f"{row['source_article']}"
+        if "updated_label" in data.columns:
+            label = row["updated_label"]
+        else:
+            label = row["logical_fallacies"]
+        output.append_instance(id, prompt, [label])
 
-    return total_string.strip(), fallacies.strip()
-
-
-def process_dataset(dataset, data_file, dataset_type, metadata):
-    output = Output(dataset_name)
-    output.append_definition("Given argumentative text, extract argument units that are logical fallacies. " +
-                             "Possible logical fallacies:" +
-                             "Ad Hominem - an irrelevant attack towards the person or some aspect of the person who is making the argument, instead of addressing the argument or position directly. " +
-                             "Appeal To Authority - an appeal is made to some form of ethics, authority, or credibility. "  +
-                             "Appeal To Emotion - manipulation of the recipient’s emotions in order to win an argument. " +
-                             "False Cause - a statement that jumps to a conclusion implying a causal relationship without supporting evidence. " +
-                             "Slippery Slope - an informal fallacy wherein a conclusion is drawn about all or many instances of a phenomenon on the basis of one or a few instances of that phenomenon. is an example of jumping to conclusions. " +
-                             "Slogans - brief and striking phrase used to provoke excitement of the audience.")
-
-    for row in dataset:
-        total_string, collected_fallacies = collect_fallacies(row[0], row[1])
-        prompt = f"Text: {total_string}"
-        id = str(uuid.uuid4())
-        output.append_instance(id, prompt, [collected_fallacies])
-
-    output.append_genre(Genres.DEBATE_PORTALS)
-    output.append_genre(Genres.DEBATES)
-    output.append_subarea(Subareas.MINING)
-    output.write_output(data_file)
-    metadata.add_dataset(data_file, dataset_type)
-
-
-# Reader of CONLL file
-def read_conll_file(conll_path):
-    sentences = []
-    with open(conll_path, "r", encoding="utf-8") as f:
-        words, labels, arg_comp, arg_rel = [], [], [], []
-        for line in f:
-            line = line.strip()
-            if not line:
-                sentences.append((words, labels, arg_rel, arg_comp))
-                words, labels, arg_comp, arg_rel = [], [], [], []
-            else:
-                splits = line.split("\t")
-                ## We skip the Equivalent relationship due to insignificant num of occurrences
-                # if splits[2] != "Equivalent":
-                ## We skip the Equivalent relationship due to insignificant num of occurrences
-                # if splits[2] != "Equivalent":
-                words.append(splits[1])
-                arg_rel.append(splits[2])
-                arg_comp.append(splits[3])
-                labels.append(splits[-1])
-    return sentences
-
-
-def load_data(train_path, test_path, dev_path):
-
-    ########## LOADING DATA ##########
-
-    ## Labels definition
-
-    ## 1. Converting annotation in list of tokens and tags
-    train_data = read_conll_file(train_path)
-    dev_data = read_conll_file(dev_path)
-    test_data = read_conll_file(test_path)
-
-    return train_data, test_data, dev_data
+    output.append_genre(Genres.ESSAYS)
+    output.append_subarea(Subareas.REASONING)
+    metadata.add_dataset(dataset_file)
+    output.write_output(dataset_file)
 
 
 if __name__ == "__main__":
-    # Input arguments for dataset generation
     arg_parser = ArgumentParser(description="What dataset will be processed?")
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
 
-    data_path = datasets_path() / "argument-detection" / "jin22-logical-fallacy-detection" # path to data
-
-    train_data, test_data, dev_data = load_data(data_path / "train.conll", data_path / "test.conll", data_path / "dev.conll")
+    data_folder = datasets_path() / "logic"  # path to data
+    climate_dataset = data_folder / "climate_all.csv"
+    edu_dataset = data_folder / "edu_all.csv"
 
     # Set name of the dataset to identify it and files of that dataset
-    dataset_file_train = "fallacy_detection_logic_train_jin22.json"
-    dataset_file_test = "fallacy_detection_logic_test_jin22.json"
-    dataset_file_dev = "fallacy_detection_logic_dev_jin22.json"
+    climate_file = "fallacy_detection_logic_climate_jin22.json"
+    edu_file = "fallacy_detection_logic_edu_jin22.json"
+    metadata = Metadata(DATASET_NAME)
 
-    # Class for collecting dataset file data
-    # Dataset name specifies folder where dataset will be written
-    metadata = Metadata(dataset_name)
+    process_file(climate_dataset, climate_file, metadata)
+    process_file(edu_dataset, edu_file, metadata)
 
-    process_dataset(train_data, dataset_file_train, "train", metadata)
-    process_dataset(test_data, dataset_file_test, "test", metadata)
-    process_dataset(dev_data, dataset_file_dev, "dev", metadata)
+    metadata.add_evaluation_metric("f1_macro")
 
-    metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.MINING)
-    metadata.add_evaluation_metric("rouge")
+    metadata.add_genre(Genres.ESSAYS)
+    metadata.add_subarea(Subareas.REASONING)
     metadata.write_metadata()
