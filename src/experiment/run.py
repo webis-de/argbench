@@ -448,7 +448,7 @@ class Runner:
         metrics = self.evaluate(self.vllm, sampling_params, self.test_dataset, self.test_hf_dataset)
         log_mem(f"finished evaluation")
         logger.log(level=logging.INFO, msg=f"metrics are {metrics}")
-
+        self.free_model()
         return metrics[self.config.hpo_config.val_metric]
 
     def perform_hpo(self, test_dataset):
