@@ -1,5 +1,5 @@
 {
-    "is_eval": false,
+    "is_eval": true,
     "is_hpo": false,
     "seed": 42,
     "base_model": "/bigwork/nhwpajjy/pre-trained-models/decapoda-research-llama-7B-hf",
