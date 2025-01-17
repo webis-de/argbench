@@ -8,7 +8,7 @@ DATASET_NAME = "stance_classification_ibmsc_barhaim17"
 def process_dataset(dataset, path):
     output = Output(DATASET_NAME)
 
-    output.append_definition("Classify the following claim to Pro if the claim supports the topic or Con if the claim attacks the topic. Only answer with Con or Pro.")
+    output.append_definition("Classify the stance of the following claim into Pro or Con. Output Pro if the claim supports the topic and output Con if the claim attacks the topic. Only answer with Con or Pro.")
 
     for row in dataset.iterrows():
         row = row[1]
