@@ -14,7 +14,7 @@
     "train_datasets": {
         "subsample_amount": 50,
 
-        "prompt_template": "<s>[INST]{definition} {instance_input}[/INST]",
+        "prompt_template": "[INST]{definition} {instance_input}[/INST]",
         "exclude_datasets": [
             "counter_argument_generation_candela_hua19",
             "counter_argument_generation_cmv_hua18",
@@ -26,7 +26,7 @@
     },
     "test_datasets": {
         "subsample_amount": 10,
-        "prompt_template": "<s>[INST]{definition}\n {instance_input}[/INST]",
+        "prompt_template": "[INST]{definition} {instance_input}[/INST]",
         "tasks": [
             "argument_unit_segmentation_ajjour17"
         ],
