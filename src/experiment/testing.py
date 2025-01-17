@@ -74,7 +74,8 @@ def compute_f1_score(predictions, references):
         if not found:
             predictions_int.append(-1)
     references_int = [mappings[reference.lower()] for reference in references]
-
+    logger.log(level=logging.INFO, msg=f"referecnes {references_int}")
+    logger.log(level=logging.INFO, msg=f"predictions {predictions_int}")
 
     score = f1_score(references_int, predictions_int, average = "macro")
 
