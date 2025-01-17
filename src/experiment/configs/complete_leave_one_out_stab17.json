@@ -6,8 +6,8 @@
     "cutoff_len": 2000,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "data_type": "ndjson",
-    "run_output_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/multiple-datasets",
-    "leaderboard_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/tasks-sample-results.csv",
+    "run_output_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/stab17-prompting",
+    "leaderboard_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/stab17-prompting-results.csv",
     "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_task_metrics_sample.json",
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_alpaca_vllm_generation.json",
 
@@ -18,8 +18,7 @@
         "exclude_datasets": [
             "counter_argument_generation_candela_hua19",
             "counter_argument_generation_cmv_hua18",
-            "argument_unit_segmentation_entity_ajjour17",
-            "argument_unit_classification_essays_stab17"
+            "argument_unit_segmentation_entity_ajjour17"
         ]
     },
     "test_datasets": {
@@ -28,6 +27,7 @@
         "tasks": [
             "argument_unit_classification_essays_stab17"
         ],
+
         "match": "argument_unit_classification_essays_stab17"
     },
     "quant_config": {
@@ -64,7 +64,7 @@
     ],
     "training_args_config": {
         "per_device_train_batch_size": 1,
-        "num_train_epochs": 2,
+        "num_train_epochs": 1,
         "learning_rate": 0.0003,
         "optim": "adamw_bnb_8bit",
         "evaluation_strategy": "steps",
@@ -98,13 +98,13 @@
     },
     "validation_config": {
         "batch_size": 2,
-        "eval_metric": "bio-fscore"
+        "eval_metric": "fscore"
     },
     "vllm_config": {
-        "temperature": 0.2,
+        "temperature": 0,
         "top_p": 1,
         "top_k": 1,
-        "max_tokens": 2000
+        "max_tokens": 3
     }
 
 }

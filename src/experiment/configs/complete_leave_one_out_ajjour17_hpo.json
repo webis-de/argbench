@@ -55,7 +55,7 @@
 
             "top_k": {
                 "name": "top_k",
-                "type": "int",
+                "type": "float",
                 "low": 1000,
                 "high":2000
             },
@@ -141,9 +141,9 @@
         "eval_metric": "bio-fscore"
     },
     "vllm_config": {
-        "temperature": 0.2,
+        "temperature": 0,
         "top_p": 1,
         "top_k": 1,
-        "max_tokens": 2000
+        "max_tokens": 4
     }
 }
