@@ -9,8 +9,8 @@
   "stance_classification": {
     "temperature": 0,
     "top_p": 1,
-    "top_k": 10,
-    "max_tokens": 4
+    "top_k": -1,
+    "max_tokens": 1
   },
 
   "argument_unit_segmentation": {
