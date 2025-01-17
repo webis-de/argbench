@@ -211,8 +211,11 @@ def compile_datasets(
 
             test_dataset_dict[dataset] = task_hf_dataset
 
-    if training and len(training_datasets):
-        all_training_df = pd.concat(training_datasets, axis=0).reset_index(drop=True)
+    if training:
+        if len(training_datasets):
+            all_training_df = pd.concat(training_datasets, axis=0).reset_index(drop=True)
+        else:
+            all_training_df = pd.DataFrame()
         logger.log(level=logging.INFO,msg=all_training_df.info())
         return Dataset.from_pandas(all_training_df)
     else:
