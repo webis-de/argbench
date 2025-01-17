@@ -22,7 +22,7 @@
         ]
     },
     "test_datasets": {
-        "subsample_amount": 10,
+        "subsample_amount": 100,
         "prompt_template": "<s>[INST]{definition}\n {instance_input}[/INST]",
         "tasks": [
             "stance_classification_ibmsc_barhaim17"
