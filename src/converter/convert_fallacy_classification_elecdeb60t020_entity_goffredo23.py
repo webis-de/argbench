@@ -44,26 +44,14 @@ def process_dataset(data_file, output_file, metadata, split_name):
 
     for line in token_file:
         if line == "\n":
-            if temp_label_span:
-                temp_label_span.append(id + 1)
-                doc.label_spans.append(temp_label_span)
-                temp_label_span = []
-            docs.append(doc)
             doc = FallacyDoc()
             continue
-
         fields = line.split("\t")
-
         id = int(fields[0])
         token = fields[1]
         label = fields[4].strip()
-
-        if label[0] == "B":
-            temp_label_span.append(id)
-        elif label == "O" and temp_label_span:
-            temp_label_span.append(id)
-            doc.label_spans.append(temp_label_span)
-            temp_label_span = []
+        if id == 0:
+            doc = FallacyDoc()
 
         doc.tokens.append(token)
         doc.labels.append(label)
