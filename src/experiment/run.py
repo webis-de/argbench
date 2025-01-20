@@ -158,9 +158,11 @@ class Runner:
     def prepare_model_for_generation(self):
         base_model = self.config.base_model
         if self.config.peft_configs:
-            llm = LLM(model=base_model, enable_lora=True, seed=self.config.seed)
+            #llm = LLM(model=base_model, enable_lora=True, seed=self.config.seed)
+            llm = LLM(model=base_model, enable_lora=True)
         else:
-            llm = LLM(model=base_model, seed=self.config.seed)
+            #llm = LLM(model=base_model, seed=self.config.seed)
+            llm = LLM(model=base_model)
 
         return llm
 
@@ -488,7 +490,7 @@ class Runner:
             return
         now = datetime.now()
         starting_time = now.strftime("%m-%d-%H:%M:%S")
-        set_seed(self.config.seed)
+        #set_seed(self.config.seed)
 
 
         if not self.config.is_eval:
