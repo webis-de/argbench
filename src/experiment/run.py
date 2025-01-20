@@ -488,7 +488,7 @@ class Runner:
             return
         now = datetime.now()
         starting_time = now.strftime("%m-%d-%H:%M:%S")
-        set_seed(self.config["seed"])
+        set_seed(self.config.seed)
 
 
         if not self.config.is_eval:
@@ -584,7 +584,7 @@ class Runner:
             if self.config.peft_configs:
                 outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request)
             else:
-                outputs = vllm.generate(text, sampling_params=sampling_params, seed=self.config["seed"])
+                outputs = vllm.generate(text, sampling_params=sampling_params, seed=self.config.seed)
 
             for output in outputs:
                 #output = [o[len(text[i]):] for i, o in enumerate(output)]
