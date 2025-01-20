@@ -7,7 +7,7 @@ DATASET_NAME = "stance_classification_ibmsc_barhaim17"
 
 def process_dataset(dataset, path):
     output = Output(DATASET_NAME)
-
+    print(f"processing {path}")
     output.append_definition("""Classify the stance of the following claim into Pro or Con. Answer with Pro if the following claim supports the following topic. Answer with Con if the claim attacks the topic.
     Only answer with Pro or Con.""")
 
