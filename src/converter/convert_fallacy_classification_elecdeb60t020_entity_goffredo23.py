@@ -3,7 +3,7 @@ from common import Genres, Output, Subareas, datasets_path, Metadata, add_seed_a
 from argparse import ArgumentParser
 import uuid
 
-DATASET_NAME = "argument_fallacy_classification_elecdeb60t020_entity_goffredo23"
+DATASET_NAME = "fallacy_classification_elecdeb60t020_entity_goffredo23"
 
 @dataclass
 class FallacySnippet:
@@ -17,13 +17,15 @@ def process_dataset(data_file, output_file, metadata, split_name):
     Process elecdeb60t020 datafile
     """
     output = Output(DATASET_NAME)
-    output.append_definition("Given an argument snippet, replace words that are a part of a fallacy with fallacy name. " +
-                             "Available Fallacy names: AdHominem: When the argument becomes an excessive attack on an arguer’s position\n" +
-                             "AppealtoEmotion: The unessential loading of the argument with emotional language to exploit the audience emotional instinct.\n" +
-                             "AppealtoAuthority: It occurs when the arguer relies on the endorsement of an authority figure or a group consensus without providing sufficient evidence. It may also involve the citation of non-experts or the majority to support their claim.\n" +
-                             "Slipperyslope: This fallacy implies that an improbable or exaggerated consequence could result from a particular action.\n" +
-                             "FalseCause: The misinterpretation of the correlation of two events for causation.\n" +
-                             "Slogans: It is a brief and striking phrase used to provoke excitement of the audience, and is often accompanied by another type of fallacy called argument by repetition.")
+    output.append_definition("Given the following document, extract spans of text the cover a fallacy of the following fallacies."
+                             "Prepend the span with the fallacy name." +
+                             "Possible Fallacies are: "
+                             "Ad Hominem: When the span becomes an excessive attack on an arguer’s position\n" +
+                             "Appeal to Emotion: The span is loaded with emotional language to exploit the audience emotional instinct.\n" +
+                             "Appeal to Authority: the span occurs when the arguer relies on the endorsement of an authority figure or a group consensus without providing sufficient evidence. It may also involve the citation of non-experts or the majority to support their claim.\n" +
+                             "Slippery slope: This span implies that an improbable or exaggerated consequence could result from a particular action.\n" +
+                             "False Cause: The span is a  misinterpretation of the correlation of two events for causation.\n" +
+                             "Slogans: the span is a brief and striking phrase used to provoke excitement of the audience, and is often accompanied by another type of fallacy called argument by repetition.")
 
     token_file = open(data_file, "r")
 

@@ -55,7 +55,7 @@
         "logging_steps": 10,
         "lr_scheduler_type": "linear",
         "metric_for_best_model": "loss",
-        "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models/unit-classification"
+
     },
     "early_stopping_config": {
         "early_stopping_patience": 3,
