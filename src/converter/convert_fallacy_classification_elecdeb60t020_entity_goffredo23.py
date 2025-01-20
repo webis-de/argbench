@@ -68,7 +68,9 @@ def process_dataset(data_file, output_file, metadata, split_name):
 
         model_out = []
         for t, l in zip(doc.tokens, doc.labels):
-            if l == "O":
+
+            if l.startsWith("B"):
+                model_out.append(l[1:])
                 model_out.append(t)
             else:
                 model_out.append(l[2:])
