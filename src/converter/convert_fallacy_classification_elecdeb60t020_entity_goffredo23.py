@@ -6,7 +6,7 @@ import uuid
 DATASET_NAME = "fallacy_classification_elecdeb60t020_entity_goffredo23"
 
 @dataclass
-class FallacySnippet:
+class FallacyDoc:
     tokens: list = field(default_factory=list)
     labels: list = field(default_factory=list)
     label_spans: list = field(default_factory=list)
@@ -29,45 +29,45 @@ def process_dataset(data_file, output_file, metadata, split_name):
 
     token_file = open(data_file, "r")
 
-    snippets = []
+    docs = []
 
-    temp_snippet = FallacySnippet()
+    doc = FallacyDoc()
     temp_label_span = []
 
     for line in token_file:
         if line == "\n":
             if temp_label_span:
-                temp_label_span.append(snippet_idx + 1)
-                temp_snippet.label_spans.append(temp_label_span)
+                temp_label_span.append(id + 1)
+                doc.label_spans.append(temp_label_span)
                 temp_label_span = []
-            snippets.append(temp_snippet)
-            temp_snippet = FallacySnippet()
+            docs.append(doc)
+            doc = FallacyDoc()
             continue
 
         fields = line.split("\t")
 
-        snippet_idx = int(fields[0])
+        id = int(fields[0])
         token = fields[1]
         label = fields[4].strip()
 
         if label[0] == "B":
-            temp_label_span.append(snippet_idx)
+            temp_label_span.append(id)
         elif label == "O" and temp_label_span:
-            temp_label_span.append(snippet_idx)
-            temp_snippet.label_spans.append(temp_label_span)
+            temp_label_span.append(id)
+            doc.label_spans.append(temp_label_span)
             temp_label_span = []
 
-        temp_snippet.tokens.append(token)
-        temp_snippet.labels.append(label)
+        doc.tokens.append(token)
+        doc.labels.append(label)
 
 
-    for snippet in snippets:
+    for doc in docs:
         id = str(uuid.uuid4())
-        prompt = " ".join(snippet.tokens)
-        prompt = f"Snippet: {prompt}"
+        prompt = " ".join(doc.tokens)
+        prompt = f"Document: {prompt}"
 
         model_out = []
-        for t, l in zip(snippet.tokens, snippet.labels):
+        for t, l in zip(doc.tokens, doc.labels):
             if l == "O":
                 model_out.append(t)
             else:
