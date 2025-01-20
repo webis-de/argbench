@@ -2,7 +2,7 @@
     "is_eval": true,
     "is_hpo": false,
     "seed": 42,
-    "base_model": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.2",
+    "base_model": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
     "cutoff_len": 2000,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "data_type": "ndjson",
