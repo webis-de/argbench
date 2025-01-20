@@ -158,9 +158,9 @@ class Runner:
     def prepare_model_for_generation(self):
         base_model = self.config.base_model
         if self.config.peft_configs:
-            llm = LLM(model=base_model, enable_lora=True)
+            llm = LLM(model=base_model, enable_lora=True, seed=self.config.seed)
         else:
-            llm = LLM(model=base_model)
+            llm = LLM(model=base_model, seed=self.config.seed)
 
         return llm
 
@@ -584,7 +584,7 @@ class Runner:
             if self.config.peft_configs:
                 outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request)
             else:
-                outputs = vllm.generate(text, sampling_params=sampling_params, seed=self.config.seed)
+                outputs = vllm.generate(text, sampling_params=sampling_params)
 
             for output in outputs:
                 #output = [o[len(text[i]):] for i, o in enumerate(output)]
