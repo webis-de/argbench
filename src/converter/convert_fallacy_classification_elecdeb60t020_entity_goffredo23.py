@@ -3,8 +3,16 @@ from common import Genres, Output, Subareas, datasets_path, Metadata, add_seed_a
 from argparse import ArgumentParser
 import uuid
 
-DATASET_NAME = "fallacy_classification_elecdeb60t020_entity_goffredo23"
+DATASET_NAME = "fallacy_extraction_elecdeb60t020"
 
+map = {
+    "AdHominem": "Ad Hominem",
+    "AppealtoEmotion" : "Appeal to Emotion",
+    "AppealtoAuthority" : "Appeal to Authority",
+    "Slipperyslope" : "Slippery Slope",
+    "FalseCause" : "False Cause",
+    "Slogans" : "Slogans",
+}
 @dataclass
 class FallacyDoc:
     tokens: list = field(default_factory=list)
@@ -67,13 +75,20 @@ def process_dataset(data_file, output_file, metadata, split_name):
         prompt = f"Document: {prompt}"
 
         model_out = []
+        spans_start=False
         for t, l in zip(doc.tokens, doc.labels):
 
-            if l.startsWith("B"):
-                model_out.append(l[1:])
+            if l.startswith("B"):
+                spans_start=True
+                model_out.append(map[l[2:]]+":")
+                model_out.append(t)
+            elif l.startswith("I"):
                 model_out.append(t)
             else:
-                model_out.append(l[2:])
+                if spans_start:
+                    model_out.append("\n")
+                    spans_start = False
+
 
         model_out = " ".join(model_out)
 
