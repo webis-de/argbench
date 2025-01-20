@@ -79,7 +79,7 @@ class TrainingArgsConfig(CommonConfig):
 
     save_steps: int
 
-    output_dir: str
+    output_dir: str = None
 
     save_total_limit: int = 3
 
