@@ -14,7 +14,7 @@ from pathlib import Path
 
 from vllm import LLM, SamplingParams
 from vllm.lora.request import LoRARequest
-from vllm.model_executor.parallel_utils.parallel_state import destroy_model_parallel
+from vllm.distributed import destroy_model_parallel
 
 
 from leaderborad import  Leaderboard
@@ -93,7 +93,7 @@ def eval_collate(batch):
 
     return out_batch
 
-class Runner:
+class Runner:.
     """Model runner class"""
     base_model = None
     peft_model = None
