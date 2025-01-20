@@ -71,7 +71,7 @@
 	    "max_new_tokens": 1000
     },
     "validation_config": {
-        "batch_size": 2,
+        "batch_size": 1,
         "eval_metric": "bio-fscore"
     },
     "vllm_config": {
