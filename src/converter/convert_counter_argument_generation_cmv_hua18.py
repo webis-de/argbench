@@ -64,11 +64,14 @@ if __name__ == "__main__":
 
     print("Train")
     train = process_dataset(train_op_path, train_arg_path, train_kw_path)
+
     print("Valid")
     valid = process_dataset(valid_op_path, valid_arg_path, valid_kw_path)
     print("Test")
     test = process_dataset(test_op_path, test_arg_path, test_kw_path)
-
+    print(f"train {len(train.instances)}")
+    print(f"valid {len(valid.instances)}")
+    print(f"test {len(test.instances)}")
     train.append_genre(Genres.DEBATE_PORTALS)
     train.append_genre(Genres.WIKIPEDIA)
     train.append_subarea(Subareas.GENERATION)
