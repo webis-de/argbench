@@ -490,7 +490,7 @@ class Runner:
             return
         now = datetime.now()
         starting_time = now.strftime("%m-%d-%H:%M:%S")
-        #set_seed(self.config.seed)
+        set_seed(self.config.seed)
 
 
         if not self.config.is_eval:
