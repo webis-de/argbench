@@ -93,7 +93,7 @@ def eval_collate(batch):
 
     return out_batch
 
-class Runner:.
+class Runner:
     """Model runner class"""
     base_model = None
     peft_model = None
