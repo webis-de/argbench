@@ -556,7 +556,7 @@ class Runner:
         loader = DataLoader(
             dataset,
             batch_size=self.config.validation_config.batch_size,
-            shuffle=True,
+            shuffle=False,
             collate_fn=eval_collate,
             pin_memory=True
         )
