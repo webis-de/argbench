@@ -3,7 +3,7 @@ from common import Genres, Output, Subareas, datasets_path, Metadata, add_seed_a
 from argparse import ArgumentParser
 import uuid
 
-DATASET_NAME = "fallacy_extraction_elecdeb60t020_goffredo23"
+DATASET_NAME = "fallacy_detection_elecdeb60t020_goffredo23"
 
 map = {
     "AdHominem": "Ad Hominem",
@@ -100,21 +100,21 @@ if __name__ == "__main__":
 
     train_count = process_dataset(
         data_path / "train.conll",
-        "fallacy_extraction_elecdeb60t020_train_goffredo23.json",
+        "fallacy_detection_elecdeb60t020_train_goffredo23.json",
         metadata,
         "train"
     )
 
     test_count = process_dataset(
         data_path / "test.conll",
-        "fallacy_extraction_elecdeb60t020_test_goffredo23.json",
+        "fallacy_detection_elecdeb60t020_test_goffredo23.json",
         metadata,
         "test"
     )
 
     dev_count = process_dataset(
         data_path / "dev.conll",
-        "fallacy_extraction_elecdeb60t020_dev_goffredo23.json",
+        "fallacy_detection_elecdeb60t020_dev_goffredo23.json",
         metadata,
         "dev"
     )
