@@ -118,6 +118,11 @@ if __name__ == "__main__":
         metadata,
         "dev"
     )
+    print (f"""found {dev_count + train_count + test_count} docs
+                    {dev_count } dev docs\n
+                    {train_count} train doc\n
+                    {test_count} test doc\n
+           f""")
 
     metadata.add_genre(Genres.DEBATE_PORTALS)
     metadata.add_subarea(Subareas.MINING)

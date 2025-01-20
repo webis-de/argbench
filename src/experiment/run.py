@@ -584,6 +584,7 @@ class Runner:
             #output = self.tokenizer.batch_decode(generated.sequences, skip_special_tokens=True)
             # output = self.tokenizer.decode(gen_diff[0])
             if self.config.peft_configs:
+                logger.log(level=logging.INFO, msg=f"lora fuck")
                 outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request)
             else:
                 outputs = vllm.generate(text, sampling_params=sampling_params)
