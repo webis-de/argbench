@@ -56,6 +56,9 @@ def compute_precision_recall_fscore_support(predictions, references, f1_average=
 
 
 def compute_f1_score(predictions, references):
+    logger.log(level=logging.INFO, msg=f"referecnes {references}")
+    logger.log(level=logging.INFO, msg=f"predictions {predictions}")
+
     labels = set(references)
     labels_lowered = {label.lower().strip() for label in labels}
     mappings = {}
