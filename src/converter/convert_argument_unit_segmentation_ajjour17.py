@@ -87,7 +87,7 @@ def process_folder(path: Path):
 
 
 def convert_arguments(train_datasets, test_datasets):
-    prompt = "Given the following document, extract all argument units in it. An argument unit is a statement that is pushed to support or attack a specific position on a topic or another statement. Argument units must be separated by newline."
+    prompt = "Given the following document, extract all argument units in it. An argument unit is a statement that is pushed to support or attack a specific position on a topic or another statement. Argument units must be separated by newline. Do not add a new formating or enumeration. Just the argument units separated by line breaks."
 
     train_output = Output(DATASET_NAME)
     test_output = Output(DATASET_NAME)
