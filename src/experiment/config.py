@@ -130,9 +130,9 @@ class LLamaCausalConfig(CommonConfig):
 class PeftPretrainedConfig(CommonConfig):
     """PEFT configuration arguments"""
 
-    model_id: str = None
+    model_id: str
 
-    adapter_name: str = None
+    adapter_name: str
 
     adapter_type: str = None
 
