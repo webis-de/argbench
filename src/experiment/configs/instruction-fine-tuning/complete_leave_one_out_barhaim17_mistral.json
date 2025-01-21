@@ -12,7 +12,6 @@
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_mistral_vllm_generation.json",
 
     "train_datasets": {
-        "leave_one_out": true,
         "subsample_amount": 10,
         "prompt_template": "<s>[INST]{definition}\n{instance_input}\n[/INST]",
         "exclude_datasets": [
