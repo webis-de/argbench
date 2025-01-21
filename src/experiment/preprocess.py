@@ -8,7 +8,7 @@ import pandas as pd
 
 from collections import defaultdict
 from pathlib import Path
-
+from IPython.core.debugger import set_trace
 from datasets import DatasetDict, Dataset
 from torch import _convert_indices_from_coo_to_csr
 from yaml import load, Loader
@@ -100,7 +100,7 @@ def collect_files(
 
     if is_evaluate:
         return {}, test_files
-
+    logger.log(level=logging.INFO, msg=f"tasks {include_task} are specified")
     train_files = defaultdict(list)
     for task in os.listdir(task_path):
         task_data_path = task_path / task
@@ -115,7 +115,7 @@ def collect_files(
             continue
         genres = metadata[task].get("genre", set())
         subareas = metadata[task].get("subareas", set())
-
+        set_trace()
         for task_file in os.listdir(task_data_path):
             task_file_path = task_data_path / task_file
             if not os.path.isfile(task_file_path):
