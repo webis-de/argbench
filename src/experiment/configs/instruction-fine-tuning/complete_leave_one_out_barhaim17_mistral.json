@@ -76,7 +76,7 @@
         "do_eval": true,
 
         "warmup_steps": 200,
-        "fp16": true,
+        "fp16": fals,
         "logging_steps": 10,
         "lr_scheduler_type": "linear",
         "metric_for_best_model": "loss",
