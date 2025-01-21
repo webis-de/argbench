@@ -3,7 +3,7 @@ import pandas as pd
 from common import Output, Metadata, add_seed_arg, set_seed, datasets_path
 from argparse import ArgumentParser
 from datasets import load_dataset
-
+from tqdm import tqdm
 DATASET_NAME = "argument_summarization_open_debate_evidence_roush23"
 
 
@@ -24,7 +24,7 @@ def make_output(dataset, metadata, dataset_name, output_file):
 
 
 def process_dataset(cache_directory):
-    for file in os.listdir(cache_directory):
+    for file in tqdm(os.listdir(cache_directory)):
         if file.endswith("csv"):
             df = pd.read_csv(os.path.join(cache_directory,file))
             df = df.sample(5)
