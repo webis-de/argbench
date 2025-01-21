@@ -20,7 +20,7 @@
             "argument_unit_segmentation_entity_ajjour17"
         ],
         "include_task": [
-            "stance_classification_ukp_sentential_stab18"
+            "stance_classification_ukp_sentential"
         ]
     },
     "test_datasets": {
