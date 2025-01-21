@@ -1,6 +1,6 @@
 {
     "is_eval": false,
-    "is_hpo": false,
+    "is_hpo": true,
     "seed": 4112,
     "base_model": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
     "cutoff_len": 2000,
@@ -46,8 +46,8 @@
             {
                 "name": "learning_rate",
                 "type": "float",
-                "low": 0.001,
-                "high":0.000001
+                "low":0.000001,
+                "high": 0.001
             },
             "per_device_train_batch_size": {
                 "name": "batch_size",
