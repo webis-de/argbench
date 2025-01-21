@@ -39,28 +39,23 @@
     },
     "peft_fresh_config":
         {
-            "model_id": "/bigwork/nhwpajjy/pre-trained-models/mistral-instruct7b-stance/",
-            "adapter_name": "adapter",
-            "is_trainable": true,
-            "adapter_type": "LORA",
-            "config": {
-                "base_model_name_or_path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
-                "bias": "none",
-                "fan_in_fan_out": false,
-                "inference_mode": true,
-                "lora_alpha": 16,
-                "lora_dropout": 0.05,
-                "modules_to_save": null,
-                "peft_type": "LORA",
-                "r": 16,
-                "target_modules": [
-                    "q_proj",
-                    "k_proj",
-                    "v_proj",
-                    "o_proj"
-                ],
-                "task_type": "CAUSAL_LM"
-            }
+            "base_model_name_or_path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
+            "bias": "none",
+            "fan_in_fan_out": false,
+            "inference_mode": true,
+            "lora_alpha": 16,
+            "lora_dropout": 0.05,
+            "modules_to_save": null,
+            "peft_type": "LORA",
+            "r": 16,
+            "target_modules": [
+                "q_proj",
+                "k_proj",
+                "v_proj",
+                "o_proj"
+            ],
+            "task_type": "CAUSAL_LM"
+
         },
     "training_args_config": {
         "per_device_train_batch_size": 1,
