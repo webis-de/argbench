@@ -158,7 +158,7 @@ class Runner:
     def prepare_model_for_generation(self):
         base_model = self.config.base_model
         if self.config.peft_configs:
-            llm = LLM(model=base_model, enable_lora=True, seed=self.config.seed)
+            llm = LLM(model=base_model, enable_lora=True, seed=self.config.seed, use_tqdm=False)
             #llm = LLM(model=base_model, enable_lora=True)
         else:
             llm = LLM(model=base_model, seed=self.config.seed)
@@ -590,9 +590,9 @@ class Runner:
             # output = self.tokenizer.decode(gen_diff[0])
             if self.config.peft_configs:
                 logger.log(level=logging.INFO, msg=f"++++ lora input +++ ")
-                outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request)
+                outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
             else:
-                outputs = vllm.generate(text, sampling_params=sampling_params)
+                outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
 
             for output in outputs:
                 #output = [o[len(text[i]):] for i, o in enumerate(output)]
