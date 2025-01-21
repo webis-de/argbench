@@ -39,10 +39,6 @@
     },
     "peft_configs": [
         {
-            "model_id": "/bigwork/nhwpajjy/pre-trained-models/alpaca-lora-7b/",
-            "adapter_name": "adapter",
-            "is_trainable": true,
-            "adapter_type": "LORA",
             "config": {
                 "base_model_name_or_path": "/bigwork/nhwpajjy/pre-trained-models/baffo32/decapoda-research-llama-7B-hf",
                 "bias": "none",
