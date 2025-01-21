@@ -27,7 +27,7 @@ def process_dataset(cache_directory):
     for file in tqdm(os.listdir(cache_directory)):
         if file.endswith("csv"):
             df = pd.read_csv(os.path.join(cache_directory,file))
-            df = df.sample(5)
+            df = df.sample(100000)
             output_file = f"{DATASET_NAME}_with_tag_cleaned_{file}.json"
             metadata = Metadata(output_file)
             metadata.add_evaluation_metric("f1_macro")
