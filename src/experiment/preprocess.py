@@ -127,6 +127,7 @@ def collect_files(
             if include_task:
                 select_task = next((task_file for t_s in include_task if t_s in task_file), None)
                 if select_task:
+                    logger.log(level=logging.INFO, msg=f"adding {task_file_path} to training")
                     train_files[task].append(task_file_path)
 
             if is_leave_one_out:
