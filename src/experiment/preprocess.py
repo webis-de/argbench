@@ -115,7 +115,7 @@ def collect_files(
             continue
         genres = metadata[task].get("genre", set())
         subareas = metadata[task].get("subareas", set())
-#        set_trace()
+        logger.log(level=logging.INFO, msg=f"{task_data_path}")
         for task_file in os.listdir(task_data_path):
             task_file_path = task_data_path / task_file
             if not os.path.isfile(task_file_path):
