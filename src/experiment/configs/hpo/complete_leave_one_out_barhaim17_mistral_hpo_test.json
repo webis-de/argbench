@@ -13,15 +13,19 @@
 
     "train_datasets": {
         "leave_one_out": true,
+        "subsample_amount": 1000,
         "prompt_template": "<s>[INST]{definition}\n{instance_input}\n[/INST]",
         "exclude_datasets": [
             "counter_argument_generation_candela_hua19",
             "counter_argument_generation_cmv_hua18",
             "argument_unit_segmentation_entity_ajjour17"
+        ],
+        "include_task": [
+            "stance_classification_ukp_sentential"
         ]
     },
     "test_datasets": {
-
+        "subsample_amount": 100,
         "prompt_template": "<s>[INST]{definition}\n{instance_input}\n[/INST]",
         "tasks": [
             "stance_classification_ibmsc_barhaim17"
