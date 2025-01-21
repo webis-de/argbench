@@ -40,7 +40,7 @@
     "peft_fresh_config":
         {
             "adapter_name": "adapter",
-            "adapter_type": "LORA",
+            "adapter_type": "lora",
             "config_args": {
                 "base_model_name_or_path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
                 "bias": "none",
