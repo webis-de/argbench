@@ -12,8 +12,7 @@
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_mistral_vllm_generation.json",
 
     "train_datasets": {
-        "leave_one_out": true,
-        "subsample_amount": 1000,
+        "subsample_amount": 100,
         "prompt_template": "<s>[INST]{definition}\n{instance_input}\n[/INST]",
         "exclude_datasets": [
             "counter_argument_generation_candela_hua19",
@@ -25,7 +24,7 @@
         ]
     },
     "test_datasets": {
-        "subsample_amount": 100,
+        "subsample_amount": 10,
         "prompt_template": "<s>[INST]{definition}\n{instance_input}\n[/INST]",
         "tasks": [
             "stance_classification_ibmsc_barhaim17"
