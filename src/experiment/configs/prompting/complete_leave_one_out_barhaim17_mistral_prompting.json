@@ -1,0 +1,85 @@
+{
+    "is_eval": false,
+    "is_hpo": false,
+    "seed": 4112,
+    "base_model": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
+    "cutoff_len": 2000,
+    "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
+    "data_type": "ndjson",
+    "run_output_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/stab17-prompting",
+    "leaderboard_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/stab17-prompting-results.csv",
+    "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_task_metrics_sample.json",
+    "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_mistral_vllm_generation.json",
+
+    "train_datasets": {
+        "leave_one_out": true,
+        "subsample_amount": 10,
+        "prompt_template": "<s>[INST]{definition}\n{instance_input}\n[/INST]",
+        "exclude_datasets": [
+            "counter_argument_generation_candela_hua19",
+            "counter_argument_generation_cmv_hua18",
+            "argument_unit_segmentation_entity_ajjour17"
+        ],
+        "include_task": [
+            "stance_classification_ukp_sentential_stab18"
+        ]
+    },
+    "test_datasets": {
+        "subsample_amount": 10,
+        "prompt_template": "<s>[INST]{definition}\n{instance_input}\n[/INST]",
+        "tasks": [
+            "stance_classification_ibmsc_barhaim17"
+        ],
+        "match": "stance_classification_ibmsc_barhaim17"
+    },
+    "quant_config": {
+        "load_in_4bit": true
+    },
+    "model_config": {
+        "device_map": "cuda:0"
+    },"training_args_config": {
+        "per_device_train_batch_size": 1,
+        "num_train_epochs": 1,
+        "learning_rate": 0.0003,
+        "optim": "adamw_bnb_8bit",
+        "evaluation_strategy": "steps",
+        "save_strategy": "steps",
+        "eval_steps": 1000,
+        "save_steps": 1000,
+
+
+        "load_best_model_at_end": true,
+        "group_by_length": false,
+        "do_eval": true,
+
+        "warmup_steps": 200,
+        "fp16": true,
+        "logging_steps": 10,
+        "lr_scheduler_type": "linear",
+        "metric_for_best_model": "loss"
+
+    },
+    "early_stopping_config": {
+        "early_stopping_patience": 3,
+        "early_stopping_threshold": 0.01
+    },
+    "data_collator_config": {
+	"padding": true,
+        "return_tensors": "pt"
+    },
+    "generation_config": {
+        "max_length": 1500,
+	    "max_new_tokens": 1000
+    },
+    "validation_config": {
+        "batch_size": 1,
+        "eval_metric": "fscore"
+    },
+    "vllm_config": {
+        "temperature": 0,
+        "top_p": 1,
+        "top_k": 1,
+        "max_tokens": 1
+    }
+
+}
