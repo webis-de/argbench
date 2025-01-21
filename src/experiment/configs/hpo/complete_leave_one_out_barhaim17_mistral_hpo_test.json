@@ -1,6 +1,6 @@
 {
     "is_eval": false,
-    "is_hpo": false,
+    "is_hpo": true,
     "seed": 4112,
     "base_model": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
     "cutoff_len": 2000,
