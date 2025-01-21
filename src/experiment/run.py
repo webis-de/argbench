@@ -11,7 +11,7 @@ from datasets import concatenate_datasets
 from optuna import Trial, create_study
 from torch.utils.data import DataLoader
 from pathlib import Path
-
+from peft import get_peft_model
 from vllm import LLM, SamplingParams
 from vllm.lora.request import LoRARequest
 from vllm.distributed import destroy_model_parallel
@@ -296,19 +296,26 @@ class Runner:
         """
         if len(self.config.peft_configs) > 1:
             first_config = self.config.peft_configs[0]
-            # model.load_adapter(first_config.model_id, first_config.adapter_name)
-            # model = PeftMixedModel.from_pretrained(model, **first_config.to_conf())
-            model = PeftModel.from_pretrained(model, **first_config.to_conf())
-            for adapter in self.config.peft_configs[1:]:
-                model.load_adapter(adapter.model_id, adapter.adapter_name)
+            if config.peft_configs[0].model_id:
+                # model.load_adapter(first_config.model_id, first_config.adapter_name)
+                # model = PeftMixedModel.from_pretrained(model, **first_config.to_conf())
+                model = PeftModel.from_pretrained(model, **first_config.to_conf())
+                for adapter in self.config.peft_configs[1:]:
+                    model.load_adapter(adapter.model_id, adapter.adapter_name)
 
-            model.add_weighted_adapter(
-                [c.adapter_name for c in self.config.peft_configs],
-                [c.adapter_weight for c in self.config.peft_configs],
-                "full_adapter",
-                self.config.combination_type
-            )
-            return model
+                model.add_weighted_adapter(
+                    [c.adapter_name for c in self.config.peft_configs],
+                    [c.adapter_weight for c in self.config.peft_configs],
+                    "full_adapter",
+                    self.config.combination_type
+                )
+            else:
+                model = get_peft_model (model, **first_config.to_conf())
+                for name, param in model.named_parameters():
+                    if 'lora' in name or 'Lora' in name:
+                        param.requires_grad = True
+        return model
+
 
         # model = get_peft_model(model, **self.config.peft_configs[0].to_conf())
         model = PeftModel.from_pretrained(
