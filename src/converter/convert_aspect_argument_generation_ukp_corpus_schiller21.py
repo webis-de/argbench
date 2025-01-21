@@ -4,8 +4,8 @@ import uuid
 import ndjson
 import random
 
-DATASET_NAME = "aspect_argument_generation_ukp_aspect_schiller21"
-DATASET_FILE = "aspect_argument_generation_ukp_aspect_schiller21.json"
+DATASET_NAME = "aspect_argument_generation_ukp_corpus_schiller21"
+DATASET_FILE = "aspect_argument_generation_ukp_corpus_schiller21.json"
 
 def read_generated(path):
     con_path = path / "generated_training_data_CON_0.jsonl"

@@ -2,7 +2,7 @@ from common import Output, datasets_path, tasks_path, Metadata, add_seed_arg, se
 from argparse import ArgumentParser
 import ndjson
 
-dataset_name = "aspect_detection_ukp_aspect_schiller21"
+dataset_name = "aspect_detection_ukp_corpus_schiller21"
 
 def process_split(dataset_file, output_file, metadata, dataset_split):
     output = Output(dataset_name)
@@ -40,19 +40,19 @@ if __name__ == "__main__":
 
     process_split(
         data_path / "train.jsonl",
-        "aspect_detection_ukp_aspect_train_schiller21.json",
+        "aspect_detection_ukp_corpus_train_schiller21.json",
         metadata,
         "train"
     )
     process_split(
         data_path / "test.jsonl",
-        "aspect_detection_ukp_aspect_test_schiller21.json",
+        "aspect_detection_ukp_corpus_test_schiller21.json",
         metadata,
         "test"
     )
     process_split(
         data_path / "dev.jsonl",
-        "aspect_detection_ukp_aspect_dev_schiller21.json",
+        "aspect_detection_ukp_corpus_dev_schiller21.json",
         metadata,
         "dev"
     )
