@@ -332,7 +332,11 @@ class Runner:
         else:
             raise RuntimeError(f"No such adapter type: {self.config.peft_fresh_config.adapter_type}")
 
-        return get_peft_model(model, config, self.config.peft_fresh_config.adapter_name)
+        model = get_peft_model(model, config, self.config.peft_fresh_config.adapter_name)
+        for name, param in model.named_parameters():
+            if 'lora' in name or 'Lora' in name:
+                param.requires_grad = True
+        return model
 
 
     def tokenize(self, prompt, cutoff_len, add_eos_token=True):
