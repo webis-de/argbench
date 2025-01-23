@@ -560,7 +560,7 @@ class Runner:
         for data in tqdm(loader):
             text = data["input"]
             if model:
-                prompt = self.tokenizer(text=text, return_tensors="pt", padding=True)
+                prompt = self.tokenizer(text=text, return_tensors="pt")
                 inputs = prompt["input_ids"].cuda()
 
                 generated = model.generate(

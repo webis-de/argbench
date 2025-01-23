@@ -13,7 +13,7 @@
 
     "train_datasets": {
         "subsample_amount": 100,
-        "prompt_template": "<s>[INST]{definition}\n{instance_input}\n[/INST]",
+        "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
         "exclude_datasets": [
             "counter_argument_generation_candela_hua19",
             "counter_argument_generation_cmv_hua18",
