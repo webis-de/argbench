@@ -406,31 +406,6 @@ class Runner:
 
 
 
-    def hpo_objective_generation(self, trial: Trial):
-
-
-        sampling_params = self.load_sampling_params(self.test_dataset, trial, self.config.hpo_config.vllm_config)
-        metrics = self.evaluate(self.vllm, sampling_params, self.test_dataset, self.task_df)
-        return metrics[self.config.hpo_config.val_metric]
-
-    def perform_hpo_generation(self, test_dataset):
-
-        self.test_dataset= test_dataset
-        self.task_df =  self.test_datasets[test_dataset]
-        self.vllm = self.prepare_model_for_generation()
-
-
-        study = create_study(
-            storage=self.config.hpo_config.storage,
-            study_name=self.config.hpo_config.study_name,
-            direction=self.config.hpo_config.direction,
-            sampler=TPESampler(),
-            load_if_exists=True
-        )
-
-        study.optimize(self.hpo_objective_generation, self.config.hpo_config.n_trials)
-
-        return study.best_params, study.best_value
 
 ### This function is deprecated since it does not use VLLMs and is still dependent on one test dataset
 
@@ -453,18 +428,18 @@ class Runner:
         self.trainer.train()
         log_mem(f"trained model")
 
-        self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
+#        self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
         self.free_model()
         log_mem(f"saved and free model")
 
-        self.vllm = self.prepare_model_for_generation()
+
         log_mem(f"created vllm for generation")
 
         sampling_params = self.load_sampling_params(self.test_dataset, trial, self.config.hpo_config.vllm_config)
-        metrics = self.evaluate(self.vllm, sampling_params, self.test_dataset, self.test_hf_dataset)
+        metrics = self.evaluate(sampling_params, self.test_dataset, self.test_hf_dataset, self.trainer.model)
         log_mem(f"finished evaluation")
         logger.log(level=logging.INFO, msg=f"metrics are {metrics}")
-        self.free_vllm_model()
+
         log_mem(f"freed model")
         return metrics[self.config.hpo_config.val_metric]
 
@@ -473,7 +448,7 @@ class Runner:
         log_mem(f"doing hpo for {test_dataset}")
         self.test_dataset= test_dataset
         self.test_hf_dataset =  self.test_datasets[test_dataset]
-
+        self.vllm = self.prepare_model_for_generation()
         study = create_study(
             storage=self.config.hpo_config.storage,
             study_name=self.config.hpo_config.study_name,
@@ -529,7 +504,7 @@ class Runner:
             log_mem(f"before testing on {test_dataset}")
             sampling_params= self.load_sampling_params(test_dataset )
 
-            metrics = self.evaluate(self.vllm, sampling_params, test_dataset, task_dataset)
+            metrics = self.evaluate(sampling_params, test_dataset, task_dataset, self.vllm)
 
             log_mem(f"after testing on {test_dataset}")
 
@@ -551,7 +526,7 @@ class Runner:
             }
             json.dump(run_data, f)
 
-    def evaluate(self,vllm, sampling_params, test_dataset, task_data):
+    def evaluate(self, sampling_params, test_dataset, task_data, model=None, vllm=None):
         """
         Performs model evaluation using the test datasets and evaluation metric from ValidationConfig. The test
         dataset is the name of the test task and task_data is the test data points
@@ -573,37 +548,44 @@ class Runner:
 
         #trainer.model.eval()
         ## If an adapter will be fine-tuned then an output dir is there
-        if self.config.training_args_config.output_dir:
-            adapter_path = self.config.training_args_config.output_dir + "/best-model"
-            if os.path.exists(adapter_path):
-                lora_request = LoRARequest("adapter", 1, adapter_path+"/adapter")
+        if vllm:
+            if self.config.training_args_config.output_dir:
+                adapter_path = self.config.training_args_config.output_dir + "/best-model"
+                if os.path.exists(adapter_path):
+                    lora_request = LoRARequest("adapter", 1, adapter_path+"/adapter")
 
 
         #set_trace()
+        if model:
+            model.evaluate()
         for data in tqdm(loader):
             text = data["input"][0]
-            #prompt = self.tokenizer(text=text, return_tensors="pt", padding=True)
-            #inputs = prompt["input_ids"].cuda()
+            if model:
+                prompt = self.tokenizer(text=text, return_tensors="pt", padding=True)
+                inputs = prompt["input_ids"].cuda()
 
-            #generated = trainer.model.generate(
-            #    input_ids=inputs,
-            #    generation_config=self.generation_config,
-            #    return_dict_in_generate=True
-            #)
-            #output = self.tokenizer.batch_decode(generated.sequences, skip_special_tokens=True)
-            # output = self.tokenizer.decode(gen_diff[0])
-            if self.config.peft_configs:
-                logger.log(level=logging.INFO, msg=f"++++ lora input +++ ")
-                outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
-            else:
-                outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
+                generated = model.generate(
+                    input_ids=inputs,
+                    generation_config=self.generation_config,
+                    return_dict_in_generate=True
+                )
+                output = self.tokenizer.batch_decode(generated.sequences, skip_special_tokens=True)
+                #output = self.tokenizer.decode(gen_diff[0])
+                predictions.append(output)
+            if vllm:
+                if self.config.peft_configs:
+                    logger.log(level=logging.INFO, msg=f"++++ lora input +++ ")
+                    outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
+                else:
+                    outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
 
-            for output in outputs:
-                #output = [o[len(text[i]):] for i, o in enumerate(output)]
-                prediction = [output.outputs[0].text]
-                predictions += prediction
-                logger.log(level=logging.INFO, msg=f"got the prediction {prediction} for input{text}")
-        #trainer.model.train()
+                for output in outputs:
+                    #output = [o[len(text[i]):] for i, o in enumerate(output)]
+                    prediction = [output.outputs[0].text]
+                    predictions += prediction
+                    logger.log(level=logging.INFO, msg=f"got the prediction {prediction} for input{text}")
+        if model:
+            model.train()
 
         metric = self.task_metrics[test_dataset]
         if metric == "fscore-detailed":
