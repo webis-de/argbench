@@ -556,7 +556,7 @@ class Runner:
 
 
         #set_trace()
-        output_splitter = config.test_datasets["output_splitter"]
+        output_splitter = self.config.test_datasets["output_splitter"]
         for data in tqdm(loader):
             text = data["input"]
             if model:
