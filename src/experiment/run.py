@@ -504,6 +504,7 @@ class Runner:
         if not self.config.is_eval:
             log_mem("before loading model")
             self.free_model()
+            self.free_vllm_model()
             model = self.load_model()
 
             log_mem("after loading model and before training")
