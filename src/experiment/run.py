@@ -436,6 +436,7 @@ class Runner:
         log_mem(f"created vllm for generation")
 
         sampling_params = self.load_sampling_params(self.test_dataset, trial, self.config.hpo_config.vllm_config)
+        self.trainer.evaluate()
         metrics = self.evaluate(sampling_params, self.test_dataset, self.test_hf_dataset, self.trainer.model)
         log_mem(f"finished evaluation")
         logger.log(level=logging.INFO, msg=f"metrics are {metrics}")
@@ -555,8 +556,7 @@ class Runner:
 
 
         #set_trace()
-        if model:
-            model.evaluate()
+
         for data in tqdm(loader):
             text = data["input"][0]
             if model:
@@ -583,8 +583,7 @@ class Runner:
                     prediction = [output.outputs[0].text]
                     predictions += prediction
                     logger.log(level=logging.INFO, msg=f"got the prediction {prediction} for input{text}")
-        if model:
-            model.train()
+
 
         metric = self.task_metrics[test_dataset]
         if metric == "fscore-detailed":
