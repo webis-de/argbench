@@ -570,7 +570,8 @@ class Runner:
                 )
                 output = self.tokenizer.batch_decode(generated.sequences, skip_special_tokens=True)
                 #output = self.tokenizer.decode(gen_diff[0])
-                predictions.append(output)
+                set_trace()
+                predictions.append(output[0])
             if vllm:
                 if self.config.peft_configs:
                     logger.log(level=logging.INFO, msg=f"++++ lora input +++ ")
