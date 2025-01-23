@@ -22,7 +22,7 @@
     },
     "test_datasets": {
 
-        "prompt_template": "<s>[INST]{definition}\n{instance_input}\n[/INST]",
+        "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
         "tasks": [
             "stance_classification_ibmsc_barhaim17"
         ],
