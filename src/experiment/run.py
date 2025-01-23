@@ -157,11 +157,11 @@ class Runner:
 
     def prepare_model_for_generation(self):
         base_model = self.config.base_model
-        if self.config.peft_configs:
+        if self.config.peft_configs or self.config.peft_fresh_config:
             llm = LLM(model=base_model, enable_lora=True, seed=self.config.seed, use_tqdm=False)
             #llm = LLM(model=base_model, enable_lora=True)
         else:
-            llm = LLM(model=base_model, seed=self.config.seed)
+            llm = LLM(model=base_model, seed=self.config.seed, use_tqdm=False)
             #llm = LLM(model=base_model)
 
         return llm
@@ -393,6 +393,10 @@ class Runner:
             del self.base_model
         if self.peft_model:
             del self.peft_model
+        torch.cuda.empty_cache()
+        gc.collect()
+
+    def free_vllm_model(self):
         if self.vllm:
             destroy_model_parallel()
             del self.vllm
@@ -400,8 +404,7 @@ class Runner:
             torch.cuda.empty_cache()
             torch.distributed.destroy_process_group()
 
-        torch.cuda.empty_cache()
-        gc.collect()
+
 
     def hpo_objective_generation(self, trial: Trial):
 
@@ -461,7 +464,7 @@ class Runner:
         metrics = self.evaluate(self.vllm, sampling_params, self.test_dataset, self.test_hf_dataset)
         log_mem(f"finished evaluation")
         logger.log(level=logging.INFO, msg=f"metrics are {metrics}")
-        self.free_model()
+        self.free_vll_model()
         log_mem(f"freed model")
         return metrics[self.config.hpo_config.val_metric]
 
