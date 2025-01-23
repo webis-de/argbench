@@ -571,7 +571,7 @@ class Runner:
 
                 output = self.tokenizer.batch_decode(generated.sequences)
                 output = [o.split(output_splitter)[-1] for o in output]
-                set_trace()
+                #set_trace()
                 predictions.append(output[0])
             if vllm:
                 if self.config.peft_configs:
