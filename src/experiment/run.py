@@ -569,7 +569,7 @@ class Runner:
                     return_dict_in_generate=True
                 )
                 output = self.tokenizer.batch_decode(generated.sequences, skip_special_tokens=True)
-                #output = self.tokenizer.decode(gen_diff[0])
+                output = [o[len(text[i]):] for i, o in enumerate(output)]
                 set_trace()
                 predictions.append(output[0])
             if vllm:
@@ -580,7 +580,7 @@ class Runner:
                     outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
 
                 for output in outputs:
-                    #output = [o[len(text[i]):] for i, o in enumerate(output)]
+
                     prediction = [output.outputs[0].text]
                     predictions += prediction
                     logger.log(level=logging.INFO, msg=f"got the prediction {prediction} for input{text}")
