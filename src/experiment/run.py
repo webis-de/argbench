@@ -558,7 +558,7 @@ class Runner:
         #set_trace()
 
         for data in tqdm(loader):
-            text = data["input"][0]
+            text = data["input"]
             if model:
                 prompt = self.tokenizer(text=text, return_tensors="pt", padding=True)
                 inputs = prompt["input_ids"].cuda()
