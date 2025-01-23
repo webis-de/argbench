@@ -556,7 +556,7 @@ class Runner:
 
 
         #set_trace()
-
+        output_splitter = config.test_datasets["output_splitter"]
         for data in tqdm(loader):
             text = data["input"]
             if model:
@@ -568,8 +568,9 @@ class Runner:
                     generation_config=self.generation_config,
                     return_dict_in_generate=True
                 )
-                output = self.tokenizer.batch_decode(generated.sequences,skip_special_tokens=True)
-                output = [o[len(text[i]):] for i, o in enumerate(output)]
+
+                output = self.tokenizer.batch_decode(generated.sequences)
+                output = [o.split(output_splitter)[-1] for o in output]
                 set_trace()
                 predictions.append(output[0])
             if vllm:
