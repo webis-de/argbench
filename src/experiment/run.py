@@ -448,7 +448,6 @@ class Runner:
         log_mem(f"doing hpo for {test_dataset}")
         self.test_dataset= test_dataset
         self.test_hf_dataset =  self.test_datasets[test_dataset]
-        self.vllm = self.prepare_model_for_generation()
         study = create_study(
             storage=self.config.hpo_config.storage,
             study_name=self.config.hpo_config.study_name,
