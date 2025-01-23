@@ -568,7 +568,7 @@ class Runner:
                     generation_config=self.generation_config,
                     return_dict_in_generate=True
                 )
-                output = self.tokenizer.batch_decode(generated.sequences, skip_special_tokens=True)
+                output = self.tokenizer.batch_decode(generated.sequences)
                 output = [o[len(text[i]):] for i, o in enumerate(output)]
                 set_trace()
                 predictions.append(output[0])
