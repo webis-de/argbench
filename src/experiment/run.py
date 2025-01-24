@@ -624,7 +624,6 @@ if __name__ == "__main__":
     RunConfig.register_cli(arg_parser)
 
     args = arg_parser.parse_args()
-    config_list = ["/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/instruction-fine-tuning/complete_leave_one_out_barhaim17_mistral.json"]
     config = RunConfig.from_file(config_list)
     runner = Runner(config)
     score = runner.execute()

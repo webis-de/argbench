@@ -9,9 +9,14 @@ import random
 DATASET_NAME = "argument_unit_segmentation_ajjour17"
 
 @dataclass
+class Unit:
+    span: str
+    label: str
+
+@dataclass
 class Units:
     fragment_id: str
-    units: List[(str,str)] #( span, argumentative or non-argumentative)
+    units: List #( span, argumentative or non-argumentative)
     
     text: str
 
@@ -51,24 +56,27 @@ def extract_file(path: Path):
 
                 is_inside_non_arg = False
             idx += 1
-            units.units.append(("", "Argumentative"))
-            units.units[idx][0] += token
+            units.units.append(Unit("", "Argumentative"))
+            units.units[idx].span += token
+
         elif token_row[0] == "Arg-I":
-            units.units[idx] += token
+            units.units[idx].span += token
+
         elif token_row[0] == "Arg-O" and (last_token_label == "Arg-I" or i == 0):
             is_inside_non_arg = True
             idx += 1
-            units.units.append(("", "Non-argumentative"))
-            units.units[idx][0] += token
+            units.units.append(Unit("", "Non-argumentative"))
+            units.units[idx].span += token
+
         elif token_row[0] == "Arg-O" and is_inside_non_arg:
-            units.units[idx][0] += token
+            units.units[idx].span += token
 
 
         units.text += token
         last_token_label = token_row[0]
 
     units.text.strip()
-    units.units = [a[0].strip() for a in units.units]
+
     datafile.close()
     return units
 
@@ -101,11 +109,11 @@ def convert_arguments(train_datasets, test_datasets):
     test_output.append_definition(prompt)
 
     for dataset in train_datasets:
-        extracted_units = "".join([f"{b}: {a}\n" for (a,b) in dataset.units])
+        extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in dataset.units])
         train_output.append_instance(dataset.fragment_id, dataset.text, [extracted_units])
 
     for dataset in test_datasets:
-        extracted_units = "".join([f"{b}: {a}\n" for (a,b) in dataset.units])
+        extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in dataset.units])
         test_output.append_instance(dataset.fragment_id, dataset.text, [extracted_units])
 
     return train_output, test_output
