@@ -39,9 +39,9 @@
         "device_map": "cuda:0"
     },
     "hpo_config": {
-        "n_trials": 50,
+        "n_trials": 3,
         "storage": "sqlite:///db.sqlite3",
-        "study_name": "argument_unit_segmentation",
+        "study_name": "stance-barhaim17",
         "direction": "maximize",
         "val_metric": "fscore",
         "training_args_config": {
@@ -104,7 +104,7 @@
         "logging_steps": 10,
         "lr_scheduler_type": "linear",
         "metric_for_best_model": "loss",
-        "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models/stance-classification"
+        "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models/barhaim-stance-classification"
     },
     "early_stopping_config": {
         "early_stopping_patience": 3,
