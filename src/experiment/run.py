@@ -624,7 +624,7 @@ if __name__ == "__main__":
     RunConfig.register_cli(arg_parser)
 
     args = arg_parser.parse_args()
-    config = RunConfig.from_file(config_list)
+    config = RunConfig.from_file([])
     runner = Runner(config)
     score = runner.execute()
 
