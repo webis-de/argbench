@@ -437,7 +437,7 @@ class Runner:
 
         sampling_params = self.load_sampling_params(self.test_dataset, trial, self.config.hpo_config.vllm_config)
         self.trainer.evaluate()
-        metrics = self.evaluate(sampling_params, self.test_dataset, self.test_hf_dataset, self.trainer.model)
+        metrics = self.evaluate(sampling_params, self.test_dataset, self.test_hf_dataset, model=self.trainer.model)
         log_mem(f"finished evaluation")
         logger.log(level=logging.INFO, msg=f"metrics are {metrics}")
 
@@ -504,7 +504,7 @@ class Runner:
             log_mem(f"before testing on {test_dataset}")
             sampling_params= self.load_sampling_params(test_dataset )
 
-            metrics = self.evaluate(sampling_params, test_dataset, task_dataset, self.vllm)
+            metrics = self.evaluate(sampling_params, test_dataset, task_dataset, vllm=self.vllm)
 
             log_mem(f"after testing on {test_dataset}")
 
