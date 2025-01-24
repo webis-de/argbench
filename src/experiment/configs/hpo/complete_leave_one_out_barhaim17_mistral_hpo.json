@@ -6,12 +6,13 @@
     "cutoff_len": 2000,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "data_type": "ndjson",
-    "run_output_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/barhaim17-fine-tuning",
+    "run_output_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/barhaim17-fine-tuning-hpo",
     "leaderboard_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/stance-classification-barhaim17.csv",
     "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_task_metrics_sample.json",
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_mistral_vllm_generation.json",
 
     "train_datasets": {
+        "subsample_amount": 30,
         "leave_one_out": true,
         "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
         "output_splitter": "[/INST]",
@@ -38,9 +39,9 @@
         "device_map": "cuda:0"
     },
     "hpo_config": {
-        "n_trials": 50,
+        "n_trials": 3,
         "storage": "sqlite:///db.sqlite3",
-        "study_name": "argument_unit_segmentation",
+        "study_name": "stance-barhaim17",
         "direction": "maximize",
         "val_metric": "fscore",
         "training_args_config": {
@@ -103,7 +104,7 @@
         "logging_steps": 10,
         "lr_scheduler_type": "linear",
         "metric_for_best_model": "loss",
-        "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models/stance-classification"
+        "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models/barhaim-stance-classification"
     },
     "early_stopping_config": {
         "early_stopping_patience": 3,
@@ -114,8 +115,8 @@
         "return_tensors": "pt"
     },
     "generation_config": {
-        "max_length": 1500,
-	    "max_new_tokens": 1000
+
+	    "max_new_tokens": 1
     },
     "validation_config": {
         "batch_size": 1,
