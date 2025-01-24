@@ -187,8 +187,8 @@ def compile_datasets(
         example_record = task_data.sample(n=1)
 
         task_data = task_data[~task_data.index.isin(example_record.index)]
-
-        example_instance = f'Input: {example_record["input"].values[0]}\n Output: {example_record["output"].values[0]}'
+        set_trace()
+        example_instance = f'Input: {example_record["input"].values[0]}\nOutput: {example_record["output"].values[0]}'
 
         task_data.rename(columns={"input": "document"}, inplace=True)
         task_data["example"] = example_instance

@@ -575,7 +575,7 @@ class Runner:
                 predictions.append(output[0])
             if vllm:
                 if self.config.peft_configs:
-                    logger.log(level=logging.INFO, msg=f"++++ lora input +++ ")
+                    logger.log(level=logging.INFO, msg=f"++++ lora input ++++")
                     outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
                 else:
                     outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
