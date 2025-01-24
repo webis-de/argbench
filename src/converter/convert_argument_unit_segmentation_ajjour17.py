@@ -100,7 +100,12 @@ def process_folder(path: Path):
 
 
 def convert_arguments(train_datasets, test_datasets):
-    prompt = "Given the following document, extract all argument units in it. An argument unit is a statement that is pushed to support or attack a specific position on a topic or another statement. Argument units must be separated by newline. Do not add a new formating or enumeration. Just the argument units separated by line breaks."
+    prompt = """Given the following document, split all of the document into argumentative units and non-argumentative units.
+An argumentative unit is a statement that has an argumentative function for example a claim or anecdote.
+Prepend each argumentative unit with argumentative: and spans that are not Argumentative with Non-argumentative:.
+Output the extracted spans as they are orderded in the given document and separate them by a new line.
+Do not add a new formating or enumeration also do not rephrase the argument units. Order the output spans as they appear in the document.
+Input Doucment:"""
 
     train_output = Output(DATASET_NAME)
     test_output = Output(DATASET_NAME)
