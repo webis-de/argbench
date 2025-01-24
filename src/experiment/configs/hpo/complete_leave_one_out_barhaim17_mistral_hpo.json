@@ -12,6 +12,7 @@
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_mistral_vllm_generation.json",
 
     "train_datasets": {
+        "subsample_amount": 30,
         "leave_one_out": true,
         "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
         "output_splitter": "[/INST]",
@@ -114,8 +115,8 @@
         "return_tensors": "pt"
     },
     "generation_config": {
-        "max_length": 1500,
-	    "max_new_tokens": 1000
+
+	    "max_new_tokens": 1
     },
     "validation_config": {
         "batch_size": 1,
