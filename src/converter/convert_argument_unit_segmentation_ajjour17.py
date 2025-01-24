@@ -9,22 +9,22 @@ import random
 DATASET_NAME = "argument_unit_segmentation_ajjour17"
 
 @dataclass
-class TextArguments:
+class Units:
     fragment_id: str
-    arguments: List[str]
-    non_argument_seqs: List
+    units: List[(str,str)] #( span, argumentative or non-argumentative)
+    
     text: str
 
 def extract_file(path: Path):
     datafile = open(path, "r")
-    arguments = TextArguments(path.name, [], [], "")
+    units = Units(path.name, [], "")
 
     is_next_skip = False
-    argument_idx = -1
+    idx = -1
     last_token_label = None
     non_arg_start = 0
     is_inside_non_arg = False
-    for line in datafile:
+    for i, line in enumerate(datafile):
 
         token_row = line.split("\t\t")
 
@@ -48,24 +48,29 @@ def extract_file(path: Path):
 
         if token_row[0] == "Arg-B":
             if is_inside_non_arg:
-                arguments.non_argument_seqs.append((non_arg_start, len(arguments.text)))
-                is_inside_non_arg = False
-            argument_idx += 1
-            arguments.arguments.append("")
-            arguments.arguments[argument_idx] += token
-        elif token_row[0] == "Arg-I":
-            arguments.arguments[argument_idx] += token
-        elif token_row[0] == "Arg-O" and last_token_label == "Arg-I":
-            non_arg_start = len(arguments.text)
-            is_inside_non_arg = True
 
-        arguments.text += token
+                is_inside_non_arg = False
+            idx += 1
+            units.units.append(("", "Argumentative"))
+            units.units[idx][0] += token
+        elif token_row[0] == "Arg-I":
+            units.units[idx] += token
+        elif token_row[0] == "Arg-O" and (last_token_label == "Arg-I" or i == 0):
+            is_inside_non_arg = True
+            idx += 1
+            units.units.append(("", "Non-argumentative"))
+            units.units[idx][0] += token
+        elif token_row[0] == "Arg-O" and is_inside_non_arg:
+            units.units[idx][0] += token
+
+
+        units.text += token
         last_token_label = token_row[0]
 
-    arguments.text.strip()
-    arguments.arguments = [a.strip() for a in arguments.arguments]
+    units.text.strip()
+    units.units = [a[0].strip() for a in units.units]
     datafile.close()
-    return arguments
+    return units
 
 
 def process_folder(path: Path):
@@ -96,12 +101,12 @@ def convert_arguments(train_datasets, test_datasets):
     test_output.append_definition(prompt)
 
     for dataset in train_datasets:
-        extracted_arguments = "".join([f"{a}\n" for a in dataset.arguments])
-        train_output.append_instance(dataset.fragment_id, dataset.text, [extracted_arguments])
+        extracted_units = "".join([f"{b}: {a}\n" for (a,b) in dataset.units])
+        train_output.append_instance(dataset.fragment_id, dataset.text, [extracted_units])
 
     for dataset in test_datasets:
-        extracted_arguments = "".join([f"{a}\n" for a in dataset.arguments])
-        test_output.append_instance(dataset.fragment_id, dataset.text, [extracted_arguments])
+        extracted_units = "".join([f"{b}: {a}\n" for (a,b) in dataset.units])
+        test_output.append_instance(dataset.fragment_id, dataset.text, [extracted_units])
 
     return train_output, test_output
 
