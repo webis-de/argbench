@@ -3,10 +3,10 @@ from argparse import ArgumentParser
 import uuid
 import re
 
-dataset_name = "argument_unit_classification_ibm_claim_evidence_aharoni14"
-dataset_file_study = "argument_unit_classification_study_ibm_claim_evidence_aharoni14.json"
-dataset_file_anecdote = "argument_unit_classification_anecdote_ibm_claim_evidence_aharoni14.json"
-dataset_file_expert = "argument_unit_classification_expert_ibm_claim_evidence_aharoni14.json"
+dataset_name = "premise_extraction_ibm_claim_evidence_aharoni14"
+dataset_file_study = "premise_extraction_study_ibm_claim_evidence_aharoni14.json"
+dataset_file_anecdote = "premise_extraction_anecdote_ibm_claim_evidence_aharoni14.json"
+dataset_file_expert = "premise_extraction_expert_ibm_claim_evidence_aharoni14.json"
 space_remover = re.compile("\s+")
 
 if __name__ == "__main__":
