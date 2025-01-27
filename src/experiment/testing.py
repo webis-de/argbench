@@ -146,20 +146,35 @@ def compute_meteor_score(predictions, references):
 def convert_to_bio(input, output):
     #set_trace()
     labels = []
+
+    output_tokens = []
+    output_labels = []
+    for unit_idx, unit in enumerate(output.split("\n")):
+        unit_token_index = 0
+        if unit.strip():
+            text = unit.strip()
+            label = text.split(":")[0]
+            unit  = text.split(":")[1]
+            unit_tokens = word_tokenize(unit)
+            if unit_tokens[unit_token_index] == input_token:
+                if label == "Argumentative" and not argumentative_found:
+                    output_labels.append("Arg-B")
+                    argumentative_found = True
+                elif label == "Argumentative" and argumentative_found:
+                    output_labels.append("Arg-I")
+                elif label == "Non-argumentative":
+                    if argumentative_found:
+                        argumentative_found = False
+                    output_labels.append("Arg-O")
+                unit_token_index+= 1
+
     input_tokens = word_tokenize(input)
-    last_argument_index = 0
-    for i, input_token in enumerate(input_tokens):
-        for argument in output.split("\n"):
-            if argument.strip():
-                argument_tokens = word_tokenize(argument)
-                if argument_tokens[0] == input_token and " ".join(argument_tokens) == " ".join(input_tokens[i:i+len(argument_tokens)]):
-                    labels.extend(["Arg-O" for _ in range(last_argument_index,i)])
-                    labels.append("Arg-B")
-                    labels.extend(["Arg-I" for _ in range(i+1, i+len(argument_tokens))])
-                    last_argument_index = i + len(argument_tokens) + 1
-    if last_argument_index <= len(input_tokens):
-        labels.extend(["Arg-O" for _ in range(last_argument_index,len(input_tokens)+1)])
-    return labels
+
+for i, input_token in enumerate(input_tokens):
+        argumentative_found = False
+        start_found=False
+
+        return labels
 
 def compute_bio_f1_score(predictions, references, inputs):
     all_labels = [ ]
@@ -169,8 +184,6 @@ def compute_bio_f1_score(predictions, references, inputs):
         prediction = predictions[i]
         reference = references[i]
         input = inputs[i]
-        if len(prediction) > len(input):
-            prediction = prediction[:len(input)]
 
         groudn_truth_labels = convert_to_bio(input, reference)
         predictions_labels = convert_to_bio(input, prediction)

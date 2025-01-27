@@ -4,9 +4,11 @@ from ..testing import *
 class TestF1Segment(TestCase):
     def test_f1_score(self):
         document = "If you come to think about it, emails can be count as one of the most benefical results of modern technology"
-        argumnet = "emails can be count as one of the most benefical results of modern technology"
-        prediction = "think about it, emails can be count as one of the most benefical results of modern"
-        metrics = compute_bio_f1_score([prediction], [argumnet], [document])
+        Document = """Non-argumentative: If you come to think about it,\n 
+                      Argumentative: emails can be count as one of the most benefical results of modern technology"""
+        prediction = """Non-argumentative: If you come to\n
+        Argumentative: think about it, emails can be count as one of the most benefical results of modern"""
+        metrics = compute_bio_f1_score([prediction], [Document], [document])
         o_recall =  0.5
         o_precision = 0.8
         i_recall = 12/13
