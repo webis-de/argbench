@@ -143,38 +143,38 @@ def compute_meteor_score(predictions, references):
     return {"meteor" : meteor_score}
 
 
-def convert_to_bio(input, output):
-    #set_trace()
-    labels = []
-
-    output_tokens = []
-    output_labels = []
-    for unit_idx, unit in enumerate(output.split("\n")):
-        unit_token_index = 0
-        if unit.strip():
-            text = unit.strip()
-            label = text.split(":")[0]
-            unit  = text.split(":")[1]
-            unit_tokens = word_tokenize(unit)
-            if unit_tokens[unit_token_index] == input_token:
-                if label == "Argumentative" and not argumentative_found:
-                    output_labels.append("Arg-B")
-                    argumentative_found = True
-                elif label == "Argumentative" and argumentative_found:
-                    output_labels.append("Arg-I")
-                elif label == "Non-argumentative":
-                    if argumentative_found:
-                        argumentative_found = False
-                    output_labels.append("Arg-O")
-                unit_token_index+= 1
-
-    input_tokens = word_tokenize(input)
-
-for i, input_token in enumerate(input_tokens):
-        argumentative_found = False
-        start_found=False
-
-        return labels
+# def convert_to_bio(input, output):
+#     #set_trace()
+#     labels = []
+#
+#     output_tokens = []
+#     output_labels = []
+#     for unit_idx, unit in enumerate(output.split("\n")):
+#         unit_token_index = 0
+#         if unit.strip():
+#             text = unit.strip()
+#             label = text.split(":")[0]
+#             unit  = text.split(":")[1]
+#             unit_tokens = word_tokenize(unit)
+#             if unit_tokens[unit_token_index] == input_token:
+#                 if label == "Argumentative" and not argumentative_found:
+#                     output_labels.append("Arg-B")
+#                     argumentative_found = True
+#                 elif label == "Argumentative" and argumentative_found:
+#                     output_labels.append("Arg-I")
+#                 elif label == "Non-argumentative":
+#                     if argumentative_found:
+#                         argumentative_found = False
+#                     output_labels.append("Arg-O")
+#                 unit_token_index+= 1
+#
+#     input_tokens = word_tokenize(input)
+#
+#     for i, input_token in enumerate(input_tokens):
+#             argumentative_found = False
+#             start_found=False
+#
+#             return labels
 
 def compute_bio_f1_score(predictions, references, inputs):
     all_labels = [ ]
