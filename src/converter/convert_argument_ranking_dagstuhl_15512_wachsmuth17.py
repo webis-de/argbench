@@ -6,7 +6,7 @@ import uuid
 
 p = re.compile(r"\(([a-zA-Z]+)\)")
 QUALITY_SCORES = ["Low", "Average", "High"]
-DATASET_NAME = "argument_ranking_dagstuhl_15512_class_rank_wachsmuth17"
+DATASET_NAME = "argument_ranking_dagstuhl_15512_wachsmuth17"
 
 def make_output(dataset, metadata, column, aspect_description, dataset_name):
     output = Output(DATASET_NAME)

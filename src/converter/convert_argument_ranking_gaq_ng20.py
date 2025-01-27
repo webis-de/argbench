@@ -81,7 +81,7 @@ if __name__ == "__main__":
     data_path = datasets_path() / "gaq" / "all" # path to data
 
     # Set name of the dataset to identify it and files of that dataset
-    dataset_name = "argument_ranking_ng20"
+    dataset_name = "argument_ranking_gaq_ng20"
 
     # Class for collecting dataset file data
     # Dataset name specifies folder where dataset will be written

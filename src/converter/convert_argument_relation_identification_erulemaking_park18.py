@@ -53,8 +53,8 @@ def main():
                  "erulemaking" /
                  "cdcp_type_edge_annot.jsonlist")
 
-    dataset_name = "argument_relation_identification_erulemaking_extract_park18"
-    dataset_file = "argument_relation_identification_erulemaking_extract_park18.json"
+    dataset_name = "argument_relation_identification_erulemaking_park18"
+    dataset_file = "argument_relation_identification_erulemaking_park18.json"
 
     output = Output(dataset_name)
     metadata = Metadata(dataset_name)

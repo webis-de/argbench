@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 import uuid
 import pandas as pd
 
-DATASET_NAME = "argument_ranking_ibm_rank_30k_full_rank_gretz20"
+DATASET_NAME = "argument_ranking_ibm_rank_30k_gretz20"
 
 def make_output(dataset, dataset_name):
     output = Output(DATASET_NAME)

@@ -81,8 +81,8 @@ def main():
     set_seed(args)
 
     txt_directory_path = datasets_path() / "editorials" / "txt" / "txt" / "complete-annotated-final"
-    output_file = "argument_unit_classification_editorials_ajjour17.json"
-    dataset_name = "argument_unit_classification_editorials_ajjour17"
+    output_file = "argument_unit_classification_editorials_alkhatib16.json"
+    dataset_name = "argument_unit_classification_editorials_alkhatib16"
 
     instances_dict = defaultdict(list)
     process_all_txt_files_in_directory(txt_directory_path, instances_dict)

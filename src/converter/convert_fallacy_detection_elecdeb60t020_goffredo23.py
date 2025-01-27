@@ -1,20 +1,12 @@
 from dataclasses import dataclass, field
-from common import Genres, Output, Subareas, datasets_path, Metadata, add_seed_arg, set_seed
+from common import Output, datasets_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from argparse import ArgumentParser
 import uuid
 
-DATASET_NAME = "fallacy_detection_elecdeb60t020_goffredo23"
+DATASET_NAME = "argument_fallacy_detection_elecdeb60t020_goffredo23"
 
-map = {
-    "AdHominem": "Ad Hominem",
-    "AppealtoEmotion" : "Appeal to Emotion",
-    "AppealtoAuthority" : "Appeal to Authority",
-    "Slipperyslope" : "Slippery Slope",
-    "FalseCause" : "False Cause",
-    "Slogans" : "Slogans",
-}
 @dataclass
-class FallacyDoc:
+class FallacySnippet:
     tokens: list = field(default_factory=list)
     labels: list = field(default_factory=list)
     label_spans: list = field(default_factory=list)
@@ -25,68 +17,69 @@ def process_dataset(data_file, output_file, metadata, split_name):
     Process elecdeb60t020 datafile
     """
     output = Output(DATASET_NAME)
-    output.append_definition("Given the following document, extract a span of text the cover one fallacy of the following fallacies. Extract only one span of text. "
-                             "Prepend the span with the fallacy name and a colon. For example: Appeal to Emotion: he is a sick guy he can not be blamed.\n" +
-                             "Possible Fallacies are: "
-                             "Ad Hominem: When the span becomes an excessive attack on an arguer’s position\n" +
-                             "Appeal to Emotion: The span is loaded with emotional language to exploit the audience emotional instinct.\n" +
-                             "Appeal to Authority: the span occurs when the arguer relies on the endorsement of an authority figure or a group consensus without providing sufficient evidence. It may also involve the citation of non-experts or the majority to support their claim.\n" +
-                             "Slippery slope: This span implies that an improbable or exaggerated consequence could result from a particular action.\n" +
-                             "False Cause: The span is a misinterpretation of the correlation of two events for causation.\n" +
-                             "Slogans: the span is a brief and striking phrase used to provoke excitement of the audience, and is often accompanied by another type of fallacy called argument by repetition.")
+    output.append_definition("Given an argument snippet, extract substring that contains fallacy. Extracted fallacies should be separated by newlines and follow following format: [Fallacy Name]: [Extracted Substring].\n" +
+                             "Available Fallacy names: AdHominem: When the argument becomes an excessive attack on an arguer’s position\n" +
+                             "AppealtoEmotion: The unessential loading of the argument with emotional language to exploit the audience emotional instinct.\n" +
+                             "AppealtoAuthority: It occurs when the arguer relies on the endorsement of an authority figure or a group consensus without providing sufficient evidence. It may also involve the citation of non-experts or the majority to support their claim.\n" +
+                             "Slipperyslope: This fallacy implies that an improbable or exaggerated consequence could result from a particular action.\n" +
+                             "FalseCause: The misinterpretation of the correlation of two events for causation.\n" +
+                             "Slogans: It is a brief and striking phrase used to provoke excitement of the audience, and is often accompanied by another type of fallacy called argument by repetition.")
 
     token_file = open(data_file, "r")
 
-    docs = []
+    snippets = []
 
-
+    temp_snippet = FallacySnippet()
+    temp_label_span = []
 
     for line in token_file:
         if line == "\n":
+            if temp_label_span:
+                temp_label_span.append(snippet_idx + 1)
+                temp_snippet.label_spans.append(temp_label_span)
+                temp_label_span = []
+            snippets.append(temp_snippet)
+            temp_snippet = FallacySnippet()
             continue
+
         fields = line.split("\t")
-        id = int(fields[0])
+
+        snippet_idx = int(fields[0])
         token = fields[1]
         label = fields[4].strip()
-        if id == 0:
-            doc = FallacyDoc()
-            docs.append(doc)
-        doc.tokens.append(token)
-        doc.labels.append(label)
+
+        if label[0] == "B":
+            temp_label_span.append(snippet_idx)
+        elif label == "O" and temp_label_span:
+            temp_label_span.append(snippet_idx)
+            temp_snippet.label_spans.append(temp_label_span)
+            temp_label_span = []
+
+        temp_snippet.tokens.append(token)
+        temp_snippet.labels.append(label)
 
 
-    for doc in docs:
+    for snippet in snippets:
         id = str(uuid.uuid4())
-        prompt = " ".join(doc.tokens)
-        prompt = f"Document: {prompt}"
+        prompt = " ".join(snippet.tokens)
 
-        fallacies = []
-        fallacy = ""
-        spans_start=False
-        for t, l in zip(doc.tokens, doc.labels):
+        model_out = []
+        # print(snippet)
+        for label_span in snippet.label_spans:
+            span_class = snippet.labels[label_span[0]][2:]
+            span_tokens = " ".join(snippet.tokens[label_span[0]:label_span[1]])
+            model_out.append(f"{span_class}: {span_tokens}")
 
-            if l.startswith("B"):
-                spans_start=True
-                fallacy+= map[l[2:]]+":"
-                fallacy+= " " + t
-            elif l.startswith("I"):
-                fallacy+= " " + t
-            else:
-                if spans_start:
-                    spans_start = False
-                    fallacies.append(fallacy)
-                    fallacy = ""
+        model_out = "\n".join(model_out)
 
-
-
-        output.append_instance(id, prompt, fallacies)
+        output.append_instance(id, prompt, [model_out])
 
     output.append_genre(Genres.DEBATE_PORTALS)
     output.append_subarea(Subareas.MINING)
     output.write_output(output_file)
     metadata.add_evaluation_metric("f1_macro")
     metadata.add_dataset(output_file, split_name)
-    return len(docs)
+
 if __name__ == "__main__":
     arg_parser = ArgumentParser(description="What dataset will be processed?")
     add_seed_arg(arg_parser)
@@ -98,31 +91,26 @@ if __name__ == "__main__":
 
     metadata = Metadata(DATASET_NAME)
 
-    train_count = process_dataset(
+    process_dataset(
         data_path / "train.conll",
-        "fallacy_detection_elecdeb60t020_train_goffredo23.json",
+        "argument_fallacy_detection_elecdeb60t020_train_goffredo23.json",
         metadata,
         "train"
     )
 
-    test_count = process_dataset(
+    process_dataset(
         data_path / "test.conll",
-        "fallacy_detection_elecdeb60t020_test_goffredo23.json",
+        "argument_fallacy_detection_elecdeb60t020_test_goffredo23.json",
         metadata,
         "test"
     )
 
-    dev_count = process_dataset(
+    process_dataset(
         data_path / "dev.conll",
-        "fallacy_detection_elecdeb60t020_dev_goffredo23.json",
+        "argument_fallacy_detection_elecdeb60t020_dev_goffredo23.json",
         metadata,
         "dev"
     )
-    print (f"""found {dev_count + train_count + test_count} docs
-                    {dev_count } dev docs\n
-                    {train_count} train doc\n
-                    {test_count} test doc\n
-           f""")
 
     metadata.add_genre(Genres.DEBATE_PORTALS)
     metadata.add_subarea(Subareas.MINING)
