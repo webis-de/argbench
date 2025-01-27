@@ -143,58 +143,43 @@ def compute_meteor_score(predictions, references):
     return {"meteor" : meteor_score}
 
 
-# def convert_to_bio(input, output):
-#     #set_trace()
-#     labels = []
-#
-#     output_tokens = []
-#     output_labels = []
-#     for unit_idx, unit in enumerate(output.split("\n")):
-#         unit_token_index = 0
-#         if unit.strip():
-#             text = unit.strip()
-#             label = text.split(":")[0]
-#             unit  = text.split(":")[1]
-#             unit_tokens = word_tokenize(unit)
-#             if unit_tokens[unit_token_index] == input_token:
-#                 if label == "Argumentative" and not argumentative_found:
-#                     output_labels.append("Arg-B")
-#                     argumentative_found = True
-#                 elif label == "Argumentative" and argumentative_found:
-#                     output_labels.append("Arg-I")
-#                 elif label == "Non-argumentative":
-#                     if argumentative_found:
-#                         argumentative_found = False
-#                     output_labels.append("Arg-O")
-#                 unit_token_index+= 1
-#
-#     input_tokens = word_tokenize(input)
-#
-#     for i, input_token in enumerate(input_tokens):
-#             argumentative_found = False
-#             start_found=False
-#
-#             return labels
+def convert_to_bio(input, output):
+    output_label = []
+    for unit_idx, unit in enumerate(output.split("\n")):
+        if unit.strip():
+            text = unit.strip()
+            label = text.split(":")[0]
+            unit  = text.split(":")[1]
+            unit_tokens = word_tokenize(unit)
+            if label == "Argumentative" :
+                output_label.append(("Arg-B", unit_tokens[0]))
+                output_label.extend([("Arg-I", token) for token in unit_tokens[1:]])
+            else:
+                output_label.extend([("Arg-O", token) for token in unit_tokens])
+    return output_label
+
 
 def compute_bio_f1_score(predictions, references, inputs):
     all_labels = [ ]
     all_predictions = []
     #set_trace()
+    labels = ["Arg-B", "Arg-I", "Arg-O"]
     for i, document in enumerate(inputs):
         prediction = predictions[i]
         reference = references[i]
         input = inputs[i]
 
-        groudn_truth_labels = convert_to_bio(input, reference)
+        ground_truth_labels = convert_to_bio(input, reference)
         predictions_labels = convert_to_bio(input, prediction)
-        if len(predictions_labels) < len(groudn_truth_labels):
-            for i in range(len(groudn_truth_labels) - len(predictions_labels)):
-                predictions_labels.append(np.random.choice(predictions_labels))
+        if len(predictions_labels) < len(ground_truth_labels):
+            for i in range(len(ground_truth_labels) - len(predictions_labels)):
+                ground_truth_remaining = ground_truth_labels[len(predictions_labels):]
+                predictions_labels.extend([(np.random.choice(labels), token) for (_, token) in ground_truth_remaining])
         else:
-            predictions_labels = predictions_labels[:len(groudn_truth_labels)]
+            predictions_labels = predictions_labels[:len(ground_truth_labels)]
 
-        all_labels.extend(groudn_truth_labels)
-        all_predictions.extend(predictions_labels)
+        all_labels.extend([token[0] for token in ground_truth_labels])
+        all_predictions.extend([token[0] for token in predictions_labels])
 
 
     #print(precision_recall_fscore_support(all_labels,all_predictions, average=None, labels=['Arg-I']))
