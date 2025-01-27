@@ -2,8 +2,8 @@ from common import Output, read_tabular, datasets_path, tasks_path, Metadata, ad
 from argparse import ArgumentParser
 import uuid
 
-dataset_name = "key_point_matching_argkp_2021_barhaim21"
-dataset_file = "key_point_matching_argkp_2021_barhaim21.json"
+dataset_name = "key_point_matching_argkp_barhaim21"
+dataset_file = "key_point_matching_argkp_barhaim21.json"
 
 if __name__ == "__main__":
     arg_parser = ArgumentParser(description="Program to convert ajjour unit segmentation dataset into appropriate form")

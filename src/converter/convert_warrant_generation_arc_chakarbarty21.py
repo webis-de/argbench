@@ -6,10 +6,10 @@ from pathlib import Path
 import uuid
 import re
 
-DATASET_ARC_NAME = "premise_generation_arc_chakarbarty21" # D1
-DATASET_ART_NAME = "premise_generation_art_chakarbarty21" # training
-DATASET_MICROTEXT_NAME = "premise_generation_microtext_1_chakarbarty21" # D3
-DATASET_IDEOLOGICAL_DEBATE_NAME = "premise_generation_ideological_debate_chakarbarty21" # D2
+DATASET_ARC_NAME = "warrant_generation_arc_chakarbarty21" # D1
+DATASET_ART_NAME = "warrant_generation_art_chakarbarty21" # training
+DATASET_MICROTEXT_NAME = "warrant_generation_microtext_1_chakarbarty21" # D3
+DATASET_IDEOLOGICAL_DEBATE_NAME = "warrant_generation_ideological_debate_chakarbarty21" # D2
 
 
 @dataclass
@@ -107,8 +107,8 @@ if __name__ == "__main__":
 
     # D1test arc
 
-    d1test_name = "premise_generation_arc_chakarbarty21"
-    d1test_para_comet_name = "premise_generation_arc_para_comet_chakarbarty21"
+    d1test_name = "warrant_generation_arc_chakarbarty21"
+    d1test_para_comet_name = "warrant_generation_arc_para_comet_chakarbarty21"
 
     d1test_file = d1test_name + ".json"
     d1test_para_comet_file = d1test_para_comet_name + ".json"
@@ -135,8 +135,8 @@ if __name__ == "__main__":
     metadata.write_metadata()
     # D2test ideological_debate
 
-    d2test_name = "premise_generation_ideological_debate_chakarbarty21"
-    d2test_para_comet_name = "premise_generation_ideological_debate_para_comet_chakarbarty21"
+    d2test_name = "warrant_generation_ideological_debate_chakarbarty21"
+    d2test_para_comet_name = "warrant_generation_ideological_debate_para_comet_chakarbarty21"
 
     d2test_file = d1test_name + ".json"
     d2test_para_comet_file = d1test_para_comet_name + ".json"
@@ -162,8 +162,8 @@ if __name__ == "__main__":
     metadata.write_metadata()
     # D3 microtext_1
 
-    d3test_name = "premise_generation_microtexts_1_chakarbarty21"
-    d3test_para_comet_name = "premise_generation_microtexts_1_para_comet_chakarbarty21"
+    d3test_name = "warrant_generation_microtexts_1_chakarbarty21"
+    d3test_para_comet_name = "warrant_generation_microtexts_1_para_comet_chakarbarty21"
 
     d3test_file = d3test_name + ".json"
     d3test_para_comet_file = d3test_para_comet_name + ".json"
@@ -188,14 +188,14 @@ if __name__ == "__main__":
 
     metadata.write_metadata()
     # training art dataset
-    train_name = "premise_generation_art_chakarbarty21"
-    train_para_comet_name = "premise_generation_art_para_comet_chakarbarty21"
+    train_name = "warrant_generation_art_chakarbarty21"
+    train_para_comet_name = "warrant_generation_art_para_comet_chakarbarty21"
 
-    train_train_file = "premise_generation_art_train_chakarbarty21.json"
-    train_train_para_comet_file = "premise_generation_art_para_comet_train_chakarbarty21.json"
+    train_train_file = "warrant_generation_art_train_chakarbarty21.json"
+    train_train_para_comet_file = "warrant_generation_art_para_comet_train_chakarbarty21.json"
 
-    train_val_file = "premise_generation_art_val_chakarbarty21.json"
-    train_val_para_comet_file = "premise_generation_art_para_comet_val_chakarbarty21.json"
+    train_val_file = "warrant_generation_art_val_chakarbarty21.json"
+    train_val_para_comet_file = "warrant_generation_art_para_comet_val_chakarbarty21.json"
 
     metadata = Metadata(train_name)
     art_data_train_target, art_data_train_target_para_comet = read_para_comet(art_data_train_target, art_data_train_source)

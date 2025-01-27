@@ -3,12 +3,12 @@ from argparse import ArgumentParser
 import pandas as pd
 
 
-dataset_name = "claim_optimization_claim_revisions_skitalinskaya23"
+dataset_name = "conclusion_optimization_claim_revisions_skitalinskaya23"
 
 
 def process_split(dataset, metadata, split):
     output = Output(dataset_name)
-    dataset_file = f"claim_optimization_claim_revisions_{split}_skitalinskaya23.json"
+    dataset_file = f"conclusion_optimization_claim_revisions_{split}_skitalinskaya23.json"
     output.append_definition("Given the following input argumentative claim with context information on the " +
                              "debate, rewrite the claim such that the output claim improves upon input claim in terms of text quality " +
                              "and argument quality, and preserves the meaning of the claim as far as possible.")

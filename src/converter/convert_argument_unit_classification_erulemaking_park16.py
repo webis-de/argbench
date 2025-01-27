@@ -54,8 +54,8 @@ def main():
                  "cdcp_type_edge_annot.jsonlist")
 
     # Set name of the dataset to identify it and files of that dataset
-    dataset_name = "argument_unit_classification_erulemaking_classes_park16"
-    dataset_file = "argument_unit_classification_erulemaking_classes_park16.json"
+    dataset_name = "argument_unit_classification_erulemaking_park16"
+    dataset_file = "argument_unit_classification_erulemaking_park16.json"
 
     # Class for collecting dataset file data
     output = Output(dataset_name)

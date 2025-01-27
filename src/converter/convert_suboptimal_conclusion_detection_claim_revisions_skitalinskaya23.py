@@ -3,8 +3,8 @@ from argparse import ArgumentParser
 import uuid
 
 
-dataset_name = "suboptimal_claim_detection_claim_revisions_skitalinskaya23"
-dataset_file = "suboptimal_claim_detection_claim_revisions_skitalinskaya23.json"
+dataset_name = "suboptimal_conclusion_detection_claim_revisions_skitalinskaya23"
+dataset_file = "suboptimal_conclusion_detection_claim_revisions_skitalinskaya23.json"
 
 
 def process_data(dataset, metadata):

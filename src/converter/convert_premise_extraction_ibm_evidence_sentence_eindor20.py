@@ -3,8 +3,8 @@ from common import Genres, Output, Subareas, read_tabular, datasets_path, tasks_
 from argparse import ArgumentParser
 import uuid
 
-DATASET_NAME = "argument_unit_classificaiton_wikipedia_articles_lexisnexis_eindor20"
-DATASET_FILE = "argument_unit_classificaiton_wikipedia_articles_lexisnexis_eindor20.json"
+DATASET_NAME = "premise_extraction_ibm_evidence_sentence_eindor20"
+DATASET_FILE = "premise_extraction_ibm_evidence_sentence_eindor20.json"
 
 ACCEPTANCE_RATE = 0.7
 

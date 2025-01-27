@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 import random
 import uuid
 
-DATASET_NAME = "argument_ranking_ibm_rank_30k_pairvise_rank_gretz20"
+DATASET_NAME = "argument_ranking_ibm_rank_30k_gretz20"
 
 TOLERANCE = 0.05
 
@@ -55,15 +55,15 @@ if __name__ == "__main__":
 
     dataset = read_tabular(dataset_path)
     print("Train")
-    make_output(dataset[dataset["set"] == "train"], "argument_ranking_ibm_rank_30k_pairvise_rank_train_gretz20.json")
+    make_output(dataset[dataset["set"] == "train"], "argument_ranking_ibm_rank_30k_train_gretz20.json")
     print("Test")
-    make_output(dataset[dataset["set"] == "test"], "argument_ranking_ibm_rank_30k_pairvise_rank_test_gretz20.json")
+    make_output(dataset[dataset["set"] == "test"], "argument_ranking_ibm_rank_30k_test_gretz20.json")
     print("Dev")
-    make_output(dataset[dataset["set"] == "dev"], "argument_ranking_ibm_rank_30k_pairvise_rank_dev_gretz20.json")
+    make_output(dataset[dataset["set"] == "dev"], "argument_ranking_ibm_rank_30k_dev_gretz20.json")
 
-    metadata.add_dataset("argument_ranking_ibm_rank_30k_pairvise_rank_train_gretz20.json", "train")
-    metadata.add_dataset("argument_ranking_ibm_rank_30k_pairvise_rank_test_gretz20.json", "test")
-    metadata.add_dataset("argument_ranking_ibm_rank_30k_pairvise_rank_dev_gretz20.json", "dev")
+    metadata.add_dataset("argument_ranking_ibm_rank_30k_train_gretz20.json", "train")
+    metadata.add_dataset("argument_ranking_ibm_rank_30k_test_gretz20.json", "test")
+    metadata.add_dataset("argument_ranking_ibm_rank_30k_dev_gretz20.json", "dev")
 
     metadata.add_evaluation_metric("f1_macro")
     metadata.add_genre(Genres.DEBATES)

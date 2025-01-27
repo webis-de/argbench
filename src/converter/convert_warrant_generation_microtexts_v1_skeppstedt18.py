@@ -78,8 +78,8 @@ def format_argument_relations(argument_units, argument_relations):
             text += f"[{src_index}] /-> [{trgt_index}]\n"
     return text
 
-DATASET_NAME = "premise_generation_microtexts_v1_skeppstedt18"
-DATASET_FILE = "premise_generation_microtexts_v1_skeppstedt18.json"
+DATASET_NAME = "warrant_generation_microtexts_v1_skeppstedt18"
+DATASET_FILE = "warrant_generation_microtexts_v1_skeppstedt18.json"
 
 if __name__ == "__main__":
     argument_parser = ArgumentParser(description="Convert argument mining dataset")
