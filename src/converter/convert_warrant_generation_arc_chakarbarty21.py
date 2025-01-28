@@ -56,13 +56,13 @@ def make_outputs(target_data, para_comet_data, dataset_name, para_comet_name, me
     target_output = Output(dataset_name)
     output_para_comet = Output(dataset_name)
 
-    target_output.append_definition("Given a reason and a claim, generate an enthymeme.")
-    output_para_comet.append_definition("Given a reason and a claim, generate an enthymeme using ptovided context.")
+    target_output.append_definition("Given a premise and a claim, generate an enthymem. An enthymem is a reason with which the claim follows logically form the premise.")
+    output_para_comet.append_definition("Given a premise and a claim, generate an enthymem using provided context.  An enthymem is a reason with which the claim follows logically form the premise.")
 
     for i in range(len(target_data)):
-        prompt = f"Reason: {target_data[i].reason}\nClaim: {target_data[i].claim}"
-        prompt_para_comet = f"Reason: {target_data[i].reason}\nContext: {para_comet_data[i].enthymeme}\nClaim: {target_data[i].claim}"
-        output = target_data[i].reason + " " + target_data[i].enthymeme + ". " + target_data[i].claim
+        prompt = f"Premise: {target_data[i].reason}\nClaim: {target_data[i].claim}"
+        prompt_para_comet = f"Premise: {target_data[i].reason}\nContext: {para_comet_data[i].enthymeme}\nClaim: {target_data[i].claim}"
+        output = target_data[i].enthymeme
         id = str(uuid.uuid4())
         target_output.append_instance(id, prompt, [output])
         output_para_comet.append_instance(id, prompt_para_comet, [output])
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    data_path = Path("/run/media/dima/Scratch/EnthymemesEMNLP2021-main/")
+    data_path = Path("/bigwork/nhwpajjy/computational-argumentation-tasks-instructions/datasets/warrant-generation-chakrabarty21")
 
     output_path = tasks_path()
 
