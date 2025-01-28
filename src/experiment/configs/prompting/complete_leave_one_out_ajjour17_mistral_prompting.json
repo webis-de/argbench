@@ -13,7 +13,7 @@
 
     "train_datasets": {
         "subsample_amount": 50,
-        "prompt_template": "[INST]{definition}\n####\nExample:\n{example}\n####\n{instance_input}\n[/INST]",
+        "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
         "output_splitter": "[/INST]",
         "exclude_datasets": [
             "counter_argument_generation_candela_hua19",
@@ -24,7 +24,7 @@
     "test_datasets": {
         "subsample_amount": 10,
         "output_splitter": "[/INST]",
-        "prompt_template": "[INST]{definition}\n####\nExample:\n{example}\n####\n{instance_input}\n[/INST]",
+        "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
         "tasks": [
             "argument_unit_segmentation_ajjour17"
         ],
