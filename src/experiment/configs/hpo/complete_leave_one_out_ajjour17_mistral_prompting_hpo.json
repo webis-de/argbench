@@ -43,7 +43,7 @@
     "study_name": "segmentation-ajjour17",
     "direction": "maximize",
     "val_metric": "bio",
-    "training_args_config": {
+    "generation_config": {
         "max_length": {
             "name": "batch_size",
             "type": "int",
