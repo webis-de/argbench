@@ -467,14 +467,12 @@ class RunConfig:
             with open(path, "r") as f:
                 conf_file = json.load(f)
                 update_conf(config, conf_file)
-        if args == None:
-            conf_obj =  cls(**config)
-        else:
+        if args != None:
             if args.config:
                 with open(args.config[0] , "r") as f:
                     conf_file = json.load(f)
                     update_conf(config, conf_file)
-            conf_obj = cls(is_hpo=args.is_hpo, **config)
+        conf_obj =  cls(**config)
         conf_obj.task_generation_config = {}
 
         if config.get("generation_config_path"):
