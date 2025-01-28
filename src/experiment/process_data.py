@@ -57,7 +57,7 @@ if __name__ == "__main__":
     arg_parse = ArgumentParser(description="Convert tasks into ndjson format")
     arg_parse.add_argument("-o", "--output", required=True, type=Path, help="Output folder for processed tasks")
     arg_parse.add_argument("-f", "--filetype", default="ndjson", help="Output filetype to use")
-    arg_parse.add_argument("-t", "--task", default="ndjson", help="specific task to prorcess")
+    arg_parse.add_argument("-t", "--task",  help="specific task to prorcess")
 
     args = arg_parse.parse_known_args()[0]
 
@@ -68,9 +68,13 @@ if __name__ == "__main__":
     path = tasks_path()
 
     for item in os.listdir(path):
+
         if args.task and item!=args.task:
+            print(args.task)
+            print(item)
             continue
         task_path = path / item
+        print(task_path)
         if not os.path.isdir(task_path):
             continue
 
