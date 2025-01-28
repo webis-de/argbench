@@ -294,6 +294,7 @@ class HPOConfig(CommonConfig):
     early_stopping_config: dict = field(default_factory=dict)
     data_collator_config: dict = field(default_factory=dict)
     vllm_config: dict = field(default_factory=dict)
+    generation_config: dict = field(default_factory=dict)
 
 @dataclass
 class VLLMGenerationConfig(CommonConfig):
