@@ -104,8 +104,7 @@ def convert_arguments(train_datasets, test_datasets):
 An argumentative unit is a statement that has an argumentative function for example a claim or anecdote.
 Prepend each argumentative unit with argumentative: and spans that are not Argumentative with Non-argumentative:.
 Output the extracted spans as they are orderded in the given document and separate them by a new line.
-Do not add a new formating or enumeration also do not rephrase the argument units. Order the output spans as they appear in the document.
-Input Doucment:"""
+Do not add a new formating or enumeration also do not rephrase the argument units. Order the output spans as they appear in the document."""
 
     train_output = Output(DATASET_NAME)
     test_output = Output(DATASET_NAME)
