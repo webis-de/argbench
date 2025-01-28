@@ -584,8 +584,17 @@ class Runner:
 
                     prediction = [output.outputs[0].text]
                     predictions += prediction
-                    logger.log(level=logging.INFO, msg=f"got the prediction {prediction} for input{text}")
-
+                    logger.log(level=logging.INFO, msg=f"""got the
+                                                       #################################
+                                                        prediction:
+                                                       ################################# 
+                                                       f"{prediction}
+                                                       ##################################
+                                                       input
+                                                       ##################################
+                                                        {text}
+                                                        #################################
+                                                        """)
 
         metric = self.task_metrics[test_dataset]
         if metric == "fscore-detailed":
