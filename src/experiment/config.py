@@ -471,7 +471,7 @@ class RunConfig:
             conf_obj =  cls(**config)
         else:
             if args.config:
-                with open(args.config , "r") as f:
+                with open(args.config[0] , "r") as f:
                     conf_file = json.load(f)
                     update_conf(config, conf_file)
             conf_obj = cls(is_hpo=args.is_hpo, **config)
