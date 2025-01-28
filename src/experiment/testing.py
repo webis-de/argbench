@@ -148,6 +148,9 @@ def convert_to_bio(input, output):
     for unit_idx, unit in enumerate(output.split("\n")):
         if unit.strip():
             text = unit.strip()
+            if ":" not in text:
+                logger.log(level=logging.INFO, msg=f"argument unit segmentation eval error {text} does not contain a colon")
+                output_label.extend([("Arg-O", token) for token in word_tokenize(text)])
             label = text.split(":")[0]
             unit  = text.split(":")[1]
             unit_tokens = word_tokenize(unit)
