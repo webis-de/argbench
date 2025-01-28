@@ -470,6 +470,10 @@ class RunConfig:
         if args == None:
             conf_obj =  cls(**config)
         else:
+            if args.config:
+                with open(args.config , "r") as f:
+                    conf_file = json.load(f)
+                    update_conf(config, conf_file)
             conf_obj = cls(is_hpo=args.is_hpo, **config)
         conf_obj.task_generation_config = {}
 
