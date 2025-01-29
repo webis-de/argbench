@@ -43,8 +43,9 @@
     },
     "hpo_config": {
         "n_trials": 3,
-        "storage": "sqlite:///db.sqlite3",
         "study_name": "stance-barhaim17",
+        "hpo_fine_grained_output": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo/hpo-results",
+        "hpo_coarse_output": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo-results.csv",
         "direction": "maximize",
         "val_metric": "fscore",
         "training_args_config": {
