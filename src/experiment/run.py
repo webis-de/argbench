@@ -22,7 +22,7 @@ from transformers import set_seed
 from leaderborad import  Leaderboard
 from datetime import datetime
 
-from src.experiment.hpo_output import HPOOutput
+from hpo_output import HPOOutput
 
 logger = logging.getLogger(__name__)
 
