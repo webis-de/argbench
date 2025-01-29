@@ -284,7 +284,8 @@ class HPOConfig(CommonConfig):
     study_name: str
 
     direction: str
-
+    hpo_fine_grained_output: str
+    hpo_coarse_output: str
     val_metric: str = None
 
     model_config: dict = field(default_factory=dict)

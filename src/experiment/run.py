@@ -4,6 +4,8 @@ import logging
 import time
 
 import psutil
+import optuna
+import sys
 
 
 from argparse import ArgumentParser
@@ -19,6 +21,8 @@ from transformers import set_seed
 
 from leaderborad import  Leaderboard
 from datetime import datetime
+
+from src.experiment.hpo_output import HPOOutput
 
 logger = logging.getLogger(__name__)
 
@@ -449,14 +453,19 @@ class Runner:
         log_mem(f"doing hpo for {test_dataset}")
         self.test_dataset= test_dataset
         self.test_hf_dataset =  self.test_datasets[test_dataset]
+        optuna.logging.get_logger("optuna").addHandler(logging.StreamHandler(sys.stdout))
+
+        hpo_path = self.config.hpo_config.hpo_fine_grained_output + self.config.hpo_config.study_name + ".log"
+        storage = optuna.storages.JournalStorage(
+            optuna.storages.journal.JournalFileBackend(hpo_path),  # NFS path for distributed optimization
+        )
         study = create_study(
-            storage=self.config.hpo_config.storage,
+            storage=storage,
             study_name=self.config.hpo_config.study_name,
             direction=self.config.hpo_config.direction,
             sampler=TPESampler(),
             load_if_exists=True
         )
-
         study.optimize(self.hpo_objective, self.config.hpo_config.n_trials)
         return study.best_params, study.best_trial.value
 
@@ -466,10 +475,21 @@ class Runner:
         """
         if self.config.is_hpo:
             # this should be changed to account for multiple datasets
+            hpo_output = HPOOutput(self.config.hpo_config.hpo_coarse_output)
+            now = datetime.now()
+            starting_time = now.strftime("%m-%d-%H:%M:%S")
+
             test_dataset = next(iter(self.test_datasets))
             best_params, best_value = self.perform_hpo(test_dataset)
+
+            results = {"test_task": test_dataset, "metric" : self.config.hpo_config.val_metric, "score": best_value,\
+                       "experiment": "cross-task",  "model" : self.config.base_model , "start_time": starting_time, "best-parameters":best_params}
+            hpo_output.add_results(results)
+
             logger.log(level=logging.INFO, msg= f"best params are {best_params}")
             logger.log(level=logging.INFO, msg= f"best value is {best_value}")
+
+            hpo_output.save_file()
             return
         now = datetime.now()
         starting_time = now.strftime("%m-%d-%H:%M:%S")
