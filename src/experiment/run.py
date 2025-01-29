@@ -482,7 +482,7 @@ class Runner:
             test_dataset = next(iter(self.test_datasets))
             best_params, best_value = self.perform_hpo(test_dataset)
 
-            results = {"test_task": test_dataset, "metric" : self.config.hpo_config.val_metric, "score": best_value,\
+            results = {"test_task": test_dataset, "metric" : self.config.hpo_config.val_metric, "score": best_value,
                        "experiment": "cross-task",  "model" : self.config.base_model , "start_time": starting_time, "best-parameters":best_params}
             hpo_output.add_results(results)
 
