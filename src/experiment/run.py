@@ -6,7 +6,7 @@ import time
 import psutil
 import optuna
 import sys
-
+import gc
 
 from argparse import ArgumentParser
 from datasets import concatenate_datasets
@@ -23,18 +23,17 @@ from leaderborad import  Leaderboard
 from datetime import datetime
 
 from hpo_output import HPOOutput
+from utils import get_logger
+logger = get_logger(__name__)
 
-logger = logging.getLogger(__name__)
 
 
-import gc
+
 
 
 from filter_warnings import  *
 
 
-
-logging.basicConfig(level=logging.INFO, format='%(message)s')
 
 def log_mem(message):
     t = torch.cuda.mem_get_info()
@@ -73,8 +72,6 @@ from config import RunConfig
 import json
 import torch
 
-
-logger = logging.getLogger(__name__)
 
 
 def with_timing(fn):
@@ -643,6 +640,7 @@ class Runner:
 
 if __name__ == "__main__":
 
+
     turn_off_warnings()
     arg_parser = ArgumentParser(description="Run peft finetuning experiment")
 
@@ -655,9 +653,8 @@ if __name__ == "__main__":
 
     args = arg_parser.parse_args()
     config = RunConfig.from_file([], args)
-    print(f"logging file is {config.log_path}")
     logging.basicConfig(filename=config.log_path,level=logging.INFO)
-    logging.basicConfig(format="%(message)s")
+    print(f"logging file is {config.log_path}")
     runner = Runner(config)
     score = runner.execute()
 

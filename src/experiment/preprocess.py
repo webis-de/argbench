@@ -12,9 +12,10 @@ from IPython.core.debugger import set_trace
 from datasets import DatasetDict, Dataset
 from torch import _convert_indices_from_coo_to_csr
 from yaml import load, Loader
+from utils import get_logger
 
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 
