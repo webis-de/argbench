@@ -331,7 +331,7 @@ class RunConfig:
     # Test datasets
     test_datasets: dict
 
-
+    log_path: str
     # Data folder
     data_folder: str
     # Base model path
@@ -339,6 +339,9 @@ class RunConfig:
     # Should only evaluation be performed
     is_eval: bool
     # Should HPO be performed
+
+
+
     is_hpo: bool
     # Run config path
     run_output_path: str

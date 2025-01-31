@@ -1,5 +1,7 @@
 import warnings
-
+import transformers
+import torch
+import logging
 
 user_warnings_to_turn_off = [
     'TypedStorage is deprecated',
@@ -12,6 +14,8 @@ future_warnings_to_turn_off = [
     "`evaluation_strategy` is deprecate"
 ]
 def turn_off_warnings():
+    transformers.logging.set_verbosity(logging.CRITICAL)
+    torch._logging.set_logs(all=logging.CRITICAL)
     for warning in user_warnings_to_turn_off:
         warnings.filterwarnings('ignore', category=UserWarning, message=warning)
     for warning in future_warnings_to_turn_off:
