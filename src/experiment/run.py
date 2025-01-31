@@ -655,7 +655,7 @@ if __name__ == "__main__":
 
     args = arg_parser.parse_args()
     config = RunConfig.from_file([], args)
-
+    print(f"logging file is {config.log_path}")
     logging.basicConfig(filename=config.log_path,level=logging.DEBUG)
     logging.basicConfig(format="%(message)s")
     runner = Runner(config)
