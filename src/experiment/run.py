@@ -24,6 +24,7 @@ from datetime import datetime
 
 from hpo_output import HPOOutput
 from utils import get_logger
+
 logger = get_logger(__name__)
 
 
@@ -653,7 +654,7 @@ if __name__ == "__main__":
 
     args = arg_parser.parse_args()
     config = RunConfig.from_file([], args)
-    logging.basicConfig(filename=config.log_path,level=logging.INFO)
+
     print(f"logging file is {config.log_path}")
     runner = Runner(config)
     score = runner.execute()
