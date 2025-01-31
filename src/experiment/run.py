@@ -642,6 +642,7 @@ class Runner:
             raise RuntimeError(f"No such metric: {self.config.validation_config.eval_metric}")
 
 if __name__ == "__main__":
+
     turn_off_warnings()
     arg_parser = ArgumentParser(description="Run peft finetuning experiment")
 
@@ -654,6 +655,9 @@ if __name__ == "__main__":
 
     args = arg_parser.parse_args()
     config = RunConfig.from_file([], args)
+
+    logging.basicConfig(filename=config.log_path,level=logging.DEBUG)
+    logging.basicConfig(format="%(message)s")
     runner = Runner(config)
     score = runner.execute()
 

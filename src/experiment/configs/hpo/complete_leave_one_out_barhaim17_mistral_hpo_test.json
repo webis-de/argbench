@@ -2,6 +2,7 @@
     "is_eval": false,
     "is_hpo": true,
     "seed": 4112,
+    "log_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/stance-barhaim17-mistral-hpo-test.log",
     "base_model": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
     "cutoff_len": 2000,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
