@@ -41,11 +41,11 @@
         "device_map": "cuda:0"
     },
     "hpo_config": {
-        "n_trials": 1,
+        "n_trials": 2,
         "storage": "sqlite:///db.sqlite3",
         "hpo_fine_grained_output": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo/hpo-results/",
         "hpo_coarse_output": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo-results.csv",
-        "study_name": "stance-barhaim-17",
+        "study_name": "stance-barhaim-17-sample",
         "direction": "maximize",
         "val_metric": "fscore",
         "training_args_config": {
