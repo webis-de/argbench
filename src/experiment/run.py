@@ -637,7 +637,7 @@ class Runner:
 if __name__ == "__main__":
 
 
-    turn_off_warnings()
+    #turn_off_warnings()
     arg_parser = ArgumentParser(description="Run peft finetuning experiment")
 
     arg_parser.add_argument("-c", "--config", type=Path, action="append", help="Path to experiment config")
