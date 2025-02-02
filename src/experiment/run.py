@@ -44,7 +44,7 @@ def log_mem(message):
     free_cpu_perc = 1 - perc_memory
     total_cpu = (1/perc_memory)*used_cpu
     free_cpu = total_cpu * free_cpu_perc
-    logger.log(level=logging.INFO,msg=f"*** GPU Memory {message}: {free_gpu:2.0f} GB free from {total_gpu:2.0f} GB  |  "
+    logger.info(f"*** GPU Memory {message}: {free_gpu:2.0f} GB free from {total_gpu:2.0f} GB  |  "
                                          f" CPU Memory: {free_cpu:2.0f} GB free from {total_cpu:2.0f} GB")
 
 
@@ -82,8 +82,8 @@ def with_timing(fn):
             return fn(*args, **kwargs)
         finally:
             e= time.perf_counter()
-            print(f"$$$ Time: for {fn} is {e-t:2.2f}")
-            logger.log (level=logging.INFO, msg=f"Time: for {fn} is {e-t:2.2f}")
+            logger.debug(f"$$$ Time: for {fn} is {e-t:2.2f}")
+            logger.debug(f"Time: for {fn} is {e-t:2.2f}")
     return wrapper
 
 def eval_collate(batch):
@@ -110,12 +110,11 @@ class Runner:
         self.tokenizer = AutoTokenizer.from_pretrained(config.base_model, padding_side="left", unk_token="<unk>", truncation=True, max_length = config.data_collator_config.max_length)
         self.tokenizer.pad_token_id = config.pad_token_id
 
-        log_mem("before preparing data")
+        log_mem("preparing data")
         self.prepare_data()
-        log_mem("after preparing data")
+        log_mem("prepared data")
 
-        logger.log(level=logging.INFO, msg="Data prepared!")
-        logger.log(level=logging.INFO, msg=f"counting {len(self.train_data)}")
+        logger.debug(f"counting {len(self.train_data)}")
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
         self.task_metrics = json.load(open(config.task_metrics_path))
         self.leaderborad = Leaderboard(config.leaderboard_path)
@@ -134,7 +133,7 @@ class Runner:
         :param new_peft_hpo: New peft hyperparameters
         :returns: Model to be trained
         """
-        logger.log(level=logging.INFO,msg="Prepare model")
+        logger.info("preparing model")
 
         model = self.prepare_model_for_causal_llm(
             self.config.base_model,
@@ -146,7 +145,7 @@ class Runner:
         if not self.config.is_eval:
             model = prepare_model_for_kbit_training(model)
             model.enable_input_require_grads()
-        logger.log(level=logging.INFO,msg="Model loaded")
+        logger.info("loaded model")
         if self.config.peft_configs and self.config.peft_fresh_config:
             raise RuntimeError("Cannot instantiate both fresh and trained models")
         if self.config.peft_configs:
@@ -174,18 +173,18 @@ class Runner:
         for decoding_setup in self.config.task_generation_config:
             if decoding_setup in test_dataset:
                 task_specific_vllm_config = self.config.task_generation_config[decoding_setup]
-                logger.log(level=logging.INFO, msg=f"using generation config for {test_dataset}")
+                logger.debug(f"using generation config for {test_dataset}")
 
         if not task_specific_vllm_config  and "default" in self.config.task_generation_config:
-            logger.log(level=logging.INFO, msg=f"using default generation config")
+            logger.debug("using default generation config")
             task_specific_vllm_config = self.config.task_generation_config["default"]
 
         elif not task_specific_vllm_config :
             task_specific_vllm_config = self.config.vllm_config
-            logger.log(level=logging.INFO, msg=f"using central generation config")
+            logger.debug(f"using central generation config")
         task_specific_vllm_config = task_specific_vllm_config.to_conf(trial, hpo_config)
 
-        logger.log(level=logging.INFO, msg= f"using {task_specific_vllm_config}")
+        logger.debug(f"using {task_specific_vllm_config}")
 
         sampling_params = SamplingParams(**task_specific_vllm_config)
 
@@ -435,15 +434,16 @@ class Runner:
         log_mem(f"saved and free model")
 
 
-        log_mem(f"created vllm for generation")
+
 
         sampling_params = self.load_sampling_params(self.test_dataset, trial, self.config.hpo_config.vllm_config)
         self.trainer.evaluate()
         metrics = self.evaluate(sampling_params, self.test_dataset, self.test_hf_dataset, model=self.trainer.model)
         log_mem(f"finished evaluation")
-        logger.log(level=logging.INFO, msg=f"metrics are {metrics}")
 
-        log_mem(f"freed model")
+        logger.debug(f"metrics are {metrics}")
+
+
         return metrics[self.config.hpo_config.val_metric]
 
     def perform_hpo(self, test_dataset):
@@ -484,8 +484,8 @@ class Runner:
                        "experiment": "cross-task",  "model" : self.config.base_model , "start_time": starting_time, "best-parameters":best_params}
             hpo_output.add_results(results)
 
-            logger.log(level=logging.INFO, msg= f"best params are {best_params}")
-            logger.log(level=logging.INFO, msg= f"best value is {best_value}")
+            logger.info(f"best params are {best_params}")
+            logger.info(f"best value is {best_value}")
 
             hpo_output.save_file()
             return
@@ -495,23 +495,23 @@ class Runner:
 
 
         if not self.config.is_eval:
-            log_mem("before loading model")
+            log_mem("loading model")
             self.free_model()
             self.free_vllm_model()
             model = self.load_model()
 
-            log_mem("after loading model and before training")
+            log_mem("preparing trainer")
 
             self.trainer = self.prepare_trainer(model)
 
             self.trainer.train()
-            log_mem("after training")
+            log_mem("trained")
 
             self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
 
 
 
-        log_mem("before loading vllm model")
+
 
         self.vllm = self.prepare_model_for_generation()
 
@@ -519,12 +519,12 @@ class Runner:
         all_results = []
         for test_dataset in self.test_datasets:
             task_dataset =  self.test_datasets[test_dataset]
-            log_mem(f"before testing on {test_dataset}")
+            log_mem(f"testing on {test_dataset}")
             sampling_params= self.load_sampling_params(test_dataset )
 
             metrics = self.evaluate(sampling_params, test_dataset, task_dataset, vllm=self.vllm)
 
-            log_mem(f"after testing on {test_dataset}")
+            log_mem(f"tested on {test_dataset}")
 
             for metric in metrics:
                 results = {"test_task": test_dataset, "metric" : metric, "score": metrics[metric], "training_data": "5 tasks",  "model" : self.config.base_model , "start_time": starting_time}
@@ -593,7 +593,7 @@ class Runner:
                 predictions.append(output[0])
             if vllm:
                 if self.config.peft_configs:
-                    logger.log(level=logging.INFO, msg=f"++++ lora input ++++")
+                    logger.debug("++++ lora input ++++")
                     outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
                 else:
                     outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
@@ -602,7 +602,7 @@ class Runner:
 
                     prediction = [output.outputs[0].text]
                     predictions += prediction
-                    logger.log(level=logging.INFO, msg=f"""got the
+                    logger.debug(f"""got the
                                                        #################################
                                                         prediction:
                                                        ################################# 

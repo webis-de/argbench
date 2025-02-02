@@ -1,271 +1,101 @@
 import json
 import logging
-import datasets
 import ndjson
 import os
 import pandas as pd
 
-
-from collections import defaultdict
+from argparse import ArgumentParser
 from pathlib import Path
-from IPython.core.debugger import set_trace
-from datasets import DatasetDict, Dataset
-from torch import _convert_indices_from_coo_to_csr
-from yaml import load, Loader
-from utils import get_logger
-
+from preprocess import tasks_path
+from utils import *
 
 logger = get_logger(__name__)
 
 
-
-
-class PandasDataset:
+def process_task_file(output_path, task_file_path, filetype="ndjson"):
     """
-    Class to convert pandas DataFrame into usable Dataset
+    Read task file in .json format and process it into ndjson format
+
+    :param output_path: Path to output file
+    :param task_file_path: Original task file path
     """
+    with open(task_file_path, "r") as f:
+        task_contents = json.load(f)
 
-    def __init__(self, dataframe):
-        self.dataframe = dataframe
+    if not (
+            isinstance(task_contents, dict) and
+            task_contents.get("Definition") and
+            task_contents.get("Instances")):
+        print(f"Skipped Malformed file: {task_file_path}")
+        return
 
-    def __len__(self):
-        return len(self.dataframe)
+    definition = task_contents["Definition"][0] if isinstance(task_contents["Definition"], list) else task_contents["Definition"]
 
-    def __getitem__(self, idx):
-        return self.dataframe.iloc[idx].to_dict()
-
-def data_repo():
-    """Get path of data repository"""
-    curr_file = os.path.abspath(__file__)
-    config_file = Path(curr_file).parents[2] / "config.yaml"
-    with open(config_file, "r") as f:
-        config = load(f, Loader=Loader)
-        return Path(config["data_repo"])
-
-def tasks_path():
-    """Path to tasks folder"""
-    dataset_folder = data_repo() / "tasks"
-    return dataset_folder
-
-def get_metadata():
-    """Get metadata file"""
-    with open(tasks_path() / "metadata.json", "r") as f:
-        return json.load(f)
-
-def collect_files(
-        task_path,
-        metadata,
-        test_configs,
-        include_genre=None,
-        include_subarea=None,
-        include_task=None,
-        is_leave_one_out=False,
-        is_evaluate=False,
-        exclude_datasets=None
-):
-    """
-    Collects files for train and test sets
-
-    :param task_path: path to folder with task data
-    :param metadata: metadata dictionary
-    :param test_configs: test dataset configuration dict
-    :param include_genere: Genres to include it training set
-    :param include_subarea: Subareas to include it training set
-    :param include_task: Tasks to include it training set
-    :param is_leave_one_out: If this is set, take all datasets that are not test dataset
-    :param is_evaluate: Should only test set be retruned for evaluation
-    :param exclude_datasets: Remove datasets from train set
-    :returns: Tuple of train dataset files and test dataset files
-    """
-    #set_trace()
-    if include_genre:
-        include_genre = set(include_genre)
-    if include_subarea:
-        include_subarea = set(include_subarea)
-    if not include_task:
-        include_task = []
-    if not exclude_datasets:
-        exclude_datasets = []
-
-    test_tasks = test_configs["tasks"]
-
-    test_files = {}
-
-    for test_task in test_tasks:
-        test_files[test_task] = []
-
-        for file in metadata[test_task]["file_list"]:
-            test_files[test_task].append(
-                task_path / test_task / file)
+    if filetype == "ndjson":
+        with open(output_path, "w") as f:
+            writer = ndjson.writer(f, ensure_ascii=False)
+            for instance in task_contents["Instances"]:
+                writer.writerow({
+                    "id": instance["id"],
+                    "definition": definition,
+                    "input": instance["input"],
+                    "output": instance["output"][0] if isinstance(instance["output"], list) else instance["output"]
+                })
+    elif filetype == "parquet":
+        data = []
+        for instance in task_contents["Instances"]:
+            data.append({
+                    "id": str(instance["id"]),
+                    "definition": definition,
+                    "input": instance["input"],
+                    "output": str(instance["output"][0]) if isinstance(instance["output"], list) else str(instance["output"])
+            })
+        pd.DataFrame(data).to_parquet(output_path)
 
 
-    if is_evaluate:
-        return {}, test_files
-    logger.log(level=logging.INFO, msg=f"tasks {include_task} are specified")
-    train_files = defaultdict(list)
-    for task in os.listdir(task_path):
-        task_data_path = task_path / task
 
-        if task in exclude_datasets:
+if __name__ == "__main__":
+    arg_parse = ArgumentParser(description="Convert tasks into ndjson format")
+    arg_parse.add_argument("-o", "--output", required=True, type=Path, help="Output folder for processed tasks")
+    arg_parse.add_argument("-f", "--filetype", default="ndjson", help="Output filetype to use")
+    arg_parse.add_argument("-t", "--task",  help="specific task to prorcess")
+
+    args = arg_parse.parse_known_args()[0]
+
+    if not os.path.exists(args.output):
+        os.mkdir(args.output)
+
+
+    path = tasks_path()
+
+    for item in os.listdir(path):
+
+        if args.task and item!=args.task:
+            print(args.task)
+            print(item)
             continue
-        if not os.path.isdir(task_data_path):
+        task_path = path / item
+        print(task_path)
+        if not os.path.isdir(task_path):
             continue
 
-        if task not in metadata:
-            logger.log(level=logging.INFO, msg=f"{task} not in metadata!")
-            continue
-        genres = metadata[task].get("genre", set())
-        subareas = metadata[task].get("subareas", set())
-        logger.log(level=logging.INFO, msg=f"{task_data_path}")
-        for task_file in os.listdir(task_data_path):
-            task_file_path = task_data_path / task_file
-            if not os.path.isfile(task_file_path):
-                continue
-            if task_file_path in test_files:
-                continue
+        if not os.path.exists(args.output / item):
+            os.mkdir(args.output / item)
 
-            task_select = False
-            if include_task:
-                select_task = next((task_file for t_s in include_task if t_s in task_file), None)
-                if select_task:
-                    logger.log(level=logging.INFO, msg=f"adding {task_file_path} to training")
-                    train_files[task].append(task_file_path)
+        print("========================")
+        print(f"Processing task: {item}")
+        print("========================")
 
-            if is_leave_one_out:
-                train_files[task].append(task_file_path)
+        for task_item in os.listdir(task_path):
+            task_item_path = task_path / task_item
+            if not os.path.isfile(task_item_path) or ".json" not in task_item:
                 continue
 
-            if include_genre and include_genre.intersection(genres):
-                train_files[task].append(task_file_path)
-                continue
+            print(f"Processing file: {task_item}")
+            print("-----------------------------")
 
-            if include_subarea and include_subarea.intersection(subareas):
-                train_files[task].append(task_file_path)
-
-    return train_files, test_files
-
-
-def compile_datasets(
-        task_datasets,
-        prompt_template,
-        subsample_amount=None,
-        subsample_rate=None,
-        filetype="ndjson", training=True):
-    """
-    Read dataset file and compile all datasets into one dataframe
-
-    :param task_datasets: List of dataset file paths for each dataset
-    :param prompt_template: Template to compile dataset variables into prompt
-    :param subsample_amount: Amount of samples to take from dataset file
-    :param subsample_rate: % of instances to take from dataset
-    :returns: Full compiled DataFrame of all datasets instances
-    """
-    def template_formatter(row):
-        return prompt_template.format(
-            instance_input=row["document"],
-            definition=row["definition"],
-            example=row["example"]
-        )
-
-    test_dataset_dict = {}
-    training_datasets = []
-    for dataset in task_datasets:
-        total_datasets = []
-        for task_path in task_datasets[dataset]:
-            logger.log(level=logging.INFO, msg=task_path)
-            if filetype == "ndjson":
-                total_datasets.append(pd.read_json(task_path, lines=True))
-            elif filetype == "parquet":
-                total_datasets.append(pd.read_parquet(task_path))
-
-        task_data = pd.concat(total_datasets, axis=0).reset_index(drop=True)
-
-        if subsample_amount:
-            task_data = task_data.sample(subsample_amount, axis=0)
-        if subsample_rate:
-            task_data = task_data.sample(frac=subsample_rate, axis=0)
-
-        example_record = task_data.sample(n=1)
-
-        task_data = task_data[~task_data.index.isin(example_record.index)]
-        #set_trace()
-        example_instance = f'Input: {example_record["input"].values[0]}\nOutput: {example_record["output"].values[0]}'
-
-        task_data.rename(columns={"input": "document"}, inplace=True)
-        task_data["example"] = example_instance
-
-        task_data["input"] = task_data.apply(template_formatter, axis=1)
-        for column in task_data.columns:
-            task_data[column] = task_data[column].astype(str)
-
-        if training:
-            task_data["task"] = dataset
-            task_df = task_data[["id","document", "input", "output", "task"]]
-        else:
-            task_df = task_data[["id","document", "input", "output"]]
-
-
-        if training:
-            training_datasets.append(task_df)
-        else:
-            task_hf_dataset = Dataset.from_pandas(task_df)
-#            task_hf_dataset.info["task"] = dataset
-
-            test_dataset_dict[dataset] = task_hf_dataset
-
-    if training:
-        if len(training_datasets):
-            all_training_df = pd.concat(training_datasets, axis=0).reset_index(drop=True)
-        else:
-            all_training_df = pd.DataFrame()
-        logger.log(level=logging.INFO,msg=all_training_df.info())
-        return Dataset.from_pandas(all_training_df)
-    else:
-        return DatasetDict(test_dataset_dict)
-
-
-def collect_datasets(run_config):
-    """
-    Use RunConfig to create train and test datasets
-
-    :param run_config: RunConfig with train_datasets and test_datasets config dicts
-    :returns: Tuple of train and test datasets in pandas DataFrame
-    """
-    train_config = run_config.train_datasets
-    test_config = run_config.test_datasets
-    tasks_path = Path(run_config.data_folder)
-
-    metadata = get_metadata()
-
-    train_tasks, test_tasks = collect_files(
-        tasks_path,
-        metadata,
-        test_config,
-        train_config.get("include_genres"),
-        train_config.get("include_subarea"),
-        train_config.get("include_task"),
-        train_config.get("leave_one_out", False),
-        run_config.is_eval,
-        train_config.get("exclude_datasets")
-    )
-
-    logger.log(level=logging.INFO, msg="Train datasets collected:")
-
-    train_datasets = compile_datasets(
-        train_tasks,
-        train_config["prompt_template"],
-        train_config.get("subsample_amount", None),
-        train_config.get("subsample_rate", None),
-        run_config.data_type
-    )
-    logger.log(level=logging.INFO,msg="Test datasets collected:")
-
-    test_datasets = compile_datasets(
-        test_tasks,
-        test_config["prompt_template"],
-        test_config.get("subsample_amount", None),
-        test_config.get("subsample_rate", None),
-        run_config.data_type,training = False
-    )
-
-    return train_datasets, test_datasets
+            process_task_file(
+                args.output / item / task_item,
+                task_item_path,
+                args.filetype
+            )
