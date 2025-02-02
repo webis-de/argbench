@@ -6,7 +6,7 @@ import pandas as pd
 
 from argparse import ArgumentParser
 from pathlib import Path
-from preprocess import tasks_path
+from prepare_experiment import tasks_path
 from utils import *
 
 logger = get_logger(__name__)
