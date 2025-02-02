@@ -6,7 +6,7 @@
 #SBATCH --time=24:00:00
 #SBATCH --output /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/output/hpo-stance-barhaim.out
 #SBATCH --error /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/output/hpo-stance-barhaim.err
-#SBATCH --gpus=1
+#SBATCH --gpus=a100:1
 module load Miniconda3
 conda activate task-specific
 
