@@ -10,4 +10,4 @@
 module load Miniforge3
 conda activate task-specific
 
-python /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/run.py -c /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/hpo/complete_leave_one_out_barhaim17_mistral_hpo_test.json
+python /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/run.py -c /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/hpo/complete_leave_one_out_barhaim17_mistral_hpo.json
