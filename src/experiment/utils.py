@@ -7,6 +7,7 @@ def get_logger(name):
     fileHandler.setLevel(logging.DEBUG)
     fileHandler.setFormatter(logging.Formatter("%(asctime)s %(message)s)"))
     logging.getLogger(name).addHandler(fileHandler)
+    logging.getLogger(name).setLevel(logging.DEBUG)
     stream_handler = logging.StreamHandler()
     logging.getLogger(name).addHandler(stream_handler)
     return logging.getLogger(name)
