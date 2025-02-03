@@ -3,8 +3,8 @@ from argparse import ArgumentParser
 import uuid
 import re
 
-dataset_name = "conclusion_extraction_ibm_claim_evidence_aharoni14"
-dataset_file = "conclusion_extraction_ibm_claim_evidence_aharoni14.json"
+dataset_name = "conclusion_extraction_ibm_claim_evidence_levy14"
+dataset_file = "conclusion_extraction_ibm_claim_evidence_levy.json"
 
 space_remover = re.compile("\s+")
 
@@ -16,12 +16,12 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    data_path = datasets_path() / "ibm-claim-evidence" / "2014_7_18_ibm_CDEdata.csv"
+    data_path = datasets_path() / "ibm-claim-evidence" / "2014_7_18_ibm_CDCdata.csv"
     articles_folder = datasets_path() / "ibm-claim-evidence" / "wiki12_articles"
 
     metadata = Metadata(dataset_name)
     output = Output(dataset_name)
-    output.append_definition("Given the following Wikipedia section, extract all claims  the given context. A claim is an assertion that an argument tries to prove. ")
+    output.append_definition("Given the following Wikipedia section, extract all claims the given context. A claim is an assertion that an argument tries to prove. ")
 
     dataset = read_tabular(data_path)
 
@@ -39,17 +39,17 @@ if __name__ == "__main__":
         article_data = dataset[dataset["Article"] == article_path.name]
 
         for row_idx, article_row in article_data.iterrows():
-            evidence_match = space_remover.sub("", article_row["CDE"].lower())
+            clamin_match = space_remover.sub("", article_row["Claim"].lower())
             article_matched = []
             for i, am in enumerate(article_match):
-                if (evidence_match in am or
-                    am in evidence_match or
-                    evidence_match[:5] in am or
-                    evidence_match[-5:] in am):
+                if (clamin_match in am or
+                    am in clamin_match or
+                        clamin_match[:5] in am or
+                        clamin_match[-5:] in am):
                     article_matched.append(i)
             if len(article_matched) < 1:
                 print(article_contents)
-                print(article_row["CDE"])
+                print(article_row["Claim"])
                 print(article_matched)
                 raise Exception()
 

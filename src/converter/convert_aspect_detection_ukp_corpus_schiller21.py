@@ -1,26 +1,45 @@
 from common import Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from argparse import ArgumentParser
 import ndjson
-
+from ast import literal_eval as make_tuple
 dataset_name = "aspect_detection_ukp_corpus_schiller21"
 
 def process_split(dataset_file, output_file, metadata, dataset_split):
     output = Output(dataset_name)
-    output.append_definition("Extract a list of aspects for the given argument. An aspect is a small substring of original text that characterizes the argument.")
+    output.append_definition("""Given the following argument,
+     split the argument into spans of text that cover an aspect or not.
+     An aspect is a small substring of the argument that characterizes the argument.
+     Multiple aspects can be found in an argument.
+     Prepend the aspect span with Aspect and the not-aspect span with Not-aspect.
+     Do not rephrase the spans or modify it. Always process the whole argument.
+     Multiple aspects can be found in an argument. In case there is not aspect, simply output the argument with Not-aspect before it.""")
 
     with open(dataset_file, "r") as f:
         dataset = ndjson.load(f)
-
         for row in dataset:
             id = row["hash"]
             argument = row["sentence"]
-            aspect_pos_string = row["aspect_pos_string"]
+
 
             prompt = f"Argument: {argument}"
-            aspect_output = "\n".join([asp_text for asp_text in aspect_pos_string])
+            aspect_output = ""
+            aspect_end_index = 0
+            for aspect_index_tuple in row["aspect_pos"]:
+                if aspect_index_tuple == "no_Aspect":
+                    aspect_output += "Not-aspect:"+ argument + "\n"
+                    break
+                print(aspect_index_tuple)
+                aspect_index_tuple = make_tuple(aspect_index_tuple)
+                aspect_index = int(aspect_index_tuple[0])
+                aspect_len = int(aspect_index_tuple[1])
+                if aspect_index > aspect_end_index:
+                    aspect_output += "Not-aspect:" + argument[aspect_end_index:aspect_index] + "\n"
+                aspect_output += "Aspect:" + argument[aspect_index:aspect_index+aspect_len] + "\n"
+                aspect_end_index = aspect_index + aspect_len
+            if aspect_end_index < len(argument):
+                aspect_output += "Not-aspect:" + argument[aspect_end_index:] + "\n"
 
             output.append_instance(id, prompt, [aspect_output])
-
     output.append_genre(Genres.WIKIPEDIA)
     output.append_subarea(Subareas.GENERATION)
     output.write_output(output_file)

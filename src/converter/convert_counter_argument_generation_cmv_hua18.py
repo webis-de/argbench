@@ -29,10 +29,10 @@ def process_dataset(op_path, arg_path, keynote_path):
         keynote = ", ".join([s.text.replace(" .",".").replace(" ,", ",").strip() for s in keynote_sentences])
         contexts = " ".join([s.text.replace(" .",".").replace(" ,", ",").strip() for s in post_contextes])
         prompt = f"Statement: {statement}\nKeyphrases: {keynote}\nEvidence: {contexts}"
-
+        response= ""
         for arg in argument_sentences:
-            response = arg.text
-            output.append_instance(id, prompt, [response])
+            response += arg.text.strip()
+        output.append_instance(id, prompt, [response.strip()])
 
     return output
 
