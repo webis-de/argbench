@@ -1,5 +1,5 @@
 {
-    "is_eval": false,
+    "is_prompting": false,
     "is_hpo": true,
     "seed": 42,
     "base_model": "/bigwork/nhwpajjy/pre-trained-models/decapoda-research-llama-7B-hf",
@@ -14,11 +14,6 @@
     "train_datasets": {
         "subsample_amount": 50,
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
-        "exclude_datasets": [
-            "counter_argument_generation_candela_hua19",
-            "counter_argument_generation_cmv_hua18",
-            "argument_unit_segmentation_entity_ajjour17"
-        ],
         "include_task": [
             "argument_unit_classification_essays_stab17"
         ]
@@ -26,11 +21,7 @@
     "test_dataset": {
         "subsample_amount": 10,
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
-        "tasks": [
-            "argument_unit_segmentation_ajjour17"
-        ],
-
-        "match": "argument_unit_segmentation"
+        "name": "argument_unit_segmentation"
     },
     "quant_config": {
         "load_in_4bit": true

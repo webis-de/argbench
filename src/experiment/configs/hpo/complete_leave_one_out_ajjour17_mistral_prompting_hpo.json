@@ -1,5 +1,5 @@
 {
-    "is_eval": true,
+    "is_prompting": true,
     "is_hpo": true,
     "seed": 4112,
     "base_model": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
@@ -14,22 +14,13 @@
     "train_datasets": {
         "subsample_amount": 50,
         "prompt_template": "[INST]{definition}\n####\nExample:\n{example}\n####\n{instance_input}\n[/INST]",
-        "output_splitter": "[/INST]",
-        "exclude_datasets": [
-            "counter_argument_generation_candela_hua19",
-            "counter_argument_generation_cmv_hua18",
-            "argument_unit_segmentation_entity_ajjour17"
-        ]
+        "output_splitter": "[/INST]"
     },
-    "test_datasets": {
+    "test_dataset": {
         "subsample_amount": 10,
         "output_splitter": "[/INST]",
         "prompt_template": "[INST]{definition}\n####\nExample:\n{example}\n####\n{instance_input}\n[/INST]",
-        "tasks": [
-            "argument_unit_segmentation_ajjour17"
-        ],
-
-        "match": "argument_unit_segmentation"
+        "name": "argument_unit_segmentation"
     },
     "quant_config": {
         "load_in_4bit": true

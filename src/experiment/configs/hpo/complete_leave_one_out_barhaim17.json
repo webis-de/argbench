@@ -1,5 +1,5 @@
 {
-    "is_eval": true,
+    "is_prompting": true,
     "is_hpo": false,
     "seed": 42,
     "base_model": "/bigwork/nhwpajjy/pre-trained-models/decapoda-research-llama-7B-hf",
@@ -14,21 +14,12 @@
     "train_datasets": {
         "leave_one_out": true,
         "subsample_amount": 10,
-        "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
-        "exclude_datasets": [
-            "counter_argument_generation_candela_hua19",
-            "counter_argument_generation_cmv_hua18",
-            "argument_unit_segmentation_entity_ajjour17"
-        ]
+        "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:"
     },
-    "test_datasets": {
+    "test_dataset": {
         "subsample_amount": 2000,
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
-        "tasks": [
-            "stance_classification_ibmsc_barhaim17"
-        ],
-
-        "match": "stance_classification_ibmsc_barhaim17"
+        "name": "stance_classification_ibmsc_barhaim17"
     },
     "quant_config": {
         "load_in_4bit": true
