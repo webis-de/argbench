@@ -329,7 +329,7 @@ class RunConfig:
     # Training datasets
     train_datasets: dict
     # Test datasets
-    test_datasets: dict
+    test_dataset: dict
 
     log_path: str
     # Data folder
@@ -337,7 +337,7 @@ class RunConfig:
     # Base model path
     base_model: str
     # Should only evaluation be performed
-    is_eval: bool
+    is_prompting: bool
     # Should HPO be performed
 
 
@@ -376,8 +376,6 @@ class RunConfig:
         arg_parser.add_argument("-ie", "--is_evaluate", action="store_true", default=False, help="Should evaluation be performed")
         arg_parser.add_argument("-ih", "--is_hpo", action="store_true", default=False, help="Should HPO be performed")
         arg_parser.add_argument("-s", "--seed", type=int, help="Seed to use for running experiment")
-        arg_parser.add_argument("-is", "--include_subarea", action="append", help="Training set subareas")
-        arg_parser.add_argument("-ig", "--include_generes", action="append", help="Training set genres")
         arg_parser.add_argument("-tsr", "--train_subsample_rate", type=float, help="Fraction of instances to subsample from each dataset")
         arg_parser.add_argument("-tsa", "--train_subsample_amount", type=int, help="Amount of instances to subsamplea from each dataset")
         arg_parser.add_argument("-l", "--is_leave_one_out", action="store_true", help="Should leave one out training be performed")
@@ -522,10 +520,6 @@ class RunConfig:
         # Runner config
         if args.seed:
             conf_obj.seed = args.seed
-        if args.include_subarea:
-            conf_obj.train_datasets["include_subarea"] = args.include_subarea
-        if args.include_generes:
-            conf_obj.train_datasets["include_genres"] = args.include_generes
         if args.train_subsample_rate:
             conf_obj.train_datasets["subsample_rate"] = args.train_subsample_rate
         if args.train_subsample_amount:
@@ -533,13 +527,11 @@ class RunConfig:
         if args.is_leave_one_out:
             conf_obj.train_datasets["leave_one_out"] = args.is_leave_one_out
         if args.test_subsample_rate:
-            conf_obj.test_datasets["subsample_rate"] = args.test_subsample_rate
+            conf_obj.test_dataset["subsample_rate"] = args.test_subsample_rate
         if args.test_subsample_amount:
-            conf_obj.test_datasets["subsample_amount"] = args.test_subsample_amount
-        if args.test_dataset_match:
-            conf_obj.test_datasets["match"] = args.test_dataset_match
+            conf_obj.test_dataset["subsample_amount"] = args.test_subsample_amount
         if args.test_dataset_name:
-            conf_obj.test_datasets["tasks"] = [args.test_dataset_name]
+            conf_obj.test_dataset["name"] = [args.test_dataset_name]
         if args.load_model:
             conf_obj.base_model = args.load_model
         if args.config_output:
