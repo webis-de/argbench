@@ -1,5 +1,5 @@
 {
-    "is_eval": false,
+    "is_prompting": false,
     "is_hpo": true,
     "seed": 4112,
     "log_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/stance-barhaim17-mistral-hpo.log",
@@ -26,15 +26,11 @@
             "stance_classification_ukp_sentential"
         ]
     },
-    "test_datasets": {
+    "test_dataset": {
         "subsample_amount": 10,
         "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
         "output_splitter": "[/INST]",
-        "tasks": [
-            "stance_classification_ibmsc_barhaim17"
-        ],
-
-        "match": "stance_classification_ibmsc_barhaim17"
+        "name": "stance_classification_ibmsc_barhaim17"
     },
     "quant_config": {
         "load_in_4bit": true

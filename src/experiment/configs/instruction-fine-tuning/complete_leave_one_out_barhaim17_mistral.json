@@ -1,5 +1,5 @@
 {
-    "is_eval": false,
+    "is_prompting": false,
     "is_hpo": false,
     "seed": 4112,
     "base_model": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
@@ -14,22 +14,13 @@
     "train_datasets": {
         "subsample_amount": 1000,
         "prompt_template": "<s>[INST]{definition}\n{instance_input}\n[/INST]",
-        "exclude_datasets": [
-            "counter_argument_generation_candela_hua19",
-            "counter_argument_generation_cmv_hua18",
-            "argument_unit_segmentation_entity_ajjour17"
-        ],
         "include_task": [
             "stance_classification_ukp_sentential"
         ]
     },
-    "test_datasets": {
+    "test_dataset": {
         "prompt_template": "<s>[INST]{definition}\n{instance_input}\n[/INST]",
-        "tasks": [
-            "stance_classification_ibmsc_barhaim17"
-        ],
-
-        "match": "stance_classification_ibmsc_barhaim17"
+        "name": "stance_classification_ibmsc_barhaim17"
     },
     "quant_config": {
         "load_in_4bit": true
