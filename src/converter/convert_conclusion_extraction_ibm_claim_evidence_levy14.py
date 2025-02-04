@@ -1,10 +1,15 @@
-from common import Genres, Output, Subareas, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed
+from common import Genres, Subareas, Output, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import uuid
+from nltk.tokenize import sent_tokenize
 import re
-
+from nltk.tokenize.punkt import PunktSentenceTokenizer
 dataset_name = "conclusion_extraction_ibm_claim_evidence_levy14"
 dataset_file = "conclusion_extraction_ibm_claim_evidence_levy.json"
+from difflib import SequenceMatcher
+
+def similar(a, b):
+    return SequenceMatcher(None, a, b).ratio()
 
 space_remover = re.compile("\s+")
 
@@ -21,7 +26,10 @@ if __name__ == "__main__":
 
     metadata = Metadata(dataset_name)
     output = Output(dataset_name)
-    output.append_definition("Given the following Wikipedia section, extract all claims the given context. A claim is an assertion that an argument tries to prove. ")
+    output.append_definition("""Split the following Wikipedia section into sentences that constitute claims and those that are not.
+    A claim is an assertion that an argument tries to prove and holds a stance on the given topic.
+     Prepend each sentence that contains a claim with Claim: and a sentence that does not contain claim with Not-Claim.
+    """)
 
     dataset = read_tabular(data_path)
 
@@ -34,43 +42,44 @@ if __name__ == "__main__":
         with open(article_path, "r") as f:
             article_contents = f.readlines()
             article_contents = [c for c in article_contents if c != "\n"]
-            article_match = [space_remover.sub("", c.lower()) for c in article_contents]
+            article_text = " ".join(article_contents)
+            sentences = sent_tokenize(article_text)
+            sentence_cleaned = [space_remover.sub("", c.lower()) for c in sentences]
 
         article_data = dataset[dataset["Article"] == article_path.name]
+        iterator = article_data.iterrows()
+        _ , article_row = next(iterator)
+        topic = article_row["Topic"]
 
-        for row_idx, article_row in article_data.iterrows():
-            clamin_match = space_remover.sub("", article_row["Claim"].lower())
-            article_matched = []
-            for i, am in enumerate(article_match):
-                if (clamin_match in am or
-                    am in clamin_match or
-                        clamin_match[:5] in am or
-                        clamin_match[-5:] in am):
-                    article_matched.append(i)
-            if len(article_matched) < 1:
-                print(article_contents)
-                print(article_row["Claim"])
-                print(article_matched)
-                raise Exception()
+        iterator_exhausted = False
+        section_size = 10
+        section_indices = range(0,len(sentences), section_size)
+        sections_sentences = []
+        sections_sentence_cleaned = []
 
-            article_window_start = article_matched[0] - args.back_add
-            article_window_end = article_matched[-1] + args.front_add
-            if article_window_end > (len(article_contents) - 1):
-                article_window_end = len(article_contents) - 1
-            if article_window_start < 0:
-                article_window_start = 0
+        for section_index in section_indices:
+            if section_index + section_size < len(sentences):
+                section_index_end = len(sentences)
+            else:
+                section_index_end = section_index+section_size
 
-            collected_article = "".join(article_contents[article_window_start:article_window_end])
-            dataset.loc[row_idx, "wiki_article"] = collected_article
+            sections_sentences.append(sentences[section_index:section_index_end])
+            sections_sentence_cleaned.append(sentence_cleaned[section_index:section_index_end])
 
-    for row in dataset.iterrows():
-        idx = row[0]
-        row = row[1]
-        id = str(uuid.uuid4())
-        topic = row["Topic"]
-        prompt = f"Topic: {topic} \nArticle: {row['wiki_article']}"
-        label = row["Claim"]
-        output.append_instance(id, prompt, [label])
+        for section_idx, section_sentence_cleaned in enumerate(sections_sentence_cleaned):
+            data_points = ""
+            section_sentence = sections_sentences[section_idx]
+            section_text = " ".join(section_sentence)
+            for i, am in enumerate(section_sentence_cleaned):
+                for _, article_row in article_data.iterrows():
+                    clamin_match = space_remover.sub("", article_row["Claim"].lower())
+                    if clamin_match in am or am in clamin_match or similar(clamin_match,am)>0.9:
+                        data_points += f"Claim: {section_sentence[i]}\n"
+                    else:
+                        data_points += f"Not-claim: {section_sentence[i]}\n"
+
+            prompt = f"Topic: {topic} \nArticle: {section_text}"
+            output.append_instance(1, prompt, [data_points])
 
     output.append_genre(Genres.WIKIPEDIA)
     output.append_subarea(Subareas.MINING)

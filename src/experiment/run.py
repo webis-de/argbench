@@ -113,6 +113,7 @@ class Runner:
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
         self.task_metrics = json.load(open(config.task_metrics_path))
         self.leaderborad = Leaderboard(config.leaderboard_path)
+        self.test_dataset_name = self.config.test_dataset["name"]
 
     def prepare_model_for_training(self,
                       trial=None,
@@ -137,7 +138,7 @@ class Runner:
         )
         self.base_model = model
 
-        if not self.config.is_eval:
+        if not self.config.is_prompting:
             model = prepare_model_for_kbit_training(model)
             model.enable_input_require_grads()
         logger.info("loaded model")
@@ -232,6 +233,7 @@ class Runner:
         """
         cutoff_len = self.config.cutoff_len
         train = True
+
         def generate_and_tokenize_prompt(data_point):
             """
             Tokenizes data instance for feeding the model during training/testing
@@ -247,21 +249,15 @@ class Runner:
                 return full_prompt
             return input_prompt
 
-        self.train_datasets, self.test_datasets = collect_datasets(
+        self.train_datasets, self.test_dataset = collect_datasets(
             self.config
         )
-
 
         self.train_data = self.train_datasets.map(generate_and_tokenize_prompt, num_proc=12)#, load_from_cache_file=f"/tmp/training_dataset.arrow")
 
         train  = False
+        self.test_data = self.test_dataset.map(generate_and_tokenize_prompt, num_proc=12)#, load_from_cache_file=f"/tmp/{test_dataset}.arrow")
 
-
-
-        for test_dataset in tqdm(self.test_datasets):
-            self.test_datasets[test_dataset] = self.test_datasets[test_dataset].map(generate_and_tokenize_prompt, num_proc=12)#, load_from_cache_file=f"/tmp/{test_dataset}.arrow")
-
-        self.test_data = concatenate_datasets(self.test_datasets.values())
 
     def prepare_model_for_causal_llm(self, base_model, quant_config, model_config):
         """
@@ -433,7 +429,7 @@ class Runner:
 
         sampling_params = self.load_sampling_params(self.test_dataset, trial, self.config.hpo_config.vllm_config)
         self.trainer.evaluate()
-        metrics = self.evaluate(sampling_params, self.test_dataset, self.test_hf_dataset, model=self.trainer.model)
+        metrics = self.evaluate(sampling_params, model=self.trainer.model)
         log_mem(f"finished evaluation")
 
         logger.debug(f"metrics are {metrics}")
@@ -441,11 +437,11 @@ class Runner:
 
         return metrics[self.config.hpo_config.val_metric]
 
-    def perform_hpo(self, test_dataset):
+    def perform_hpo(self):
         """Perform HPO search"""
-        log_mem(f"doing hpo for {test_dataset}")
-        self.test_dataset= test_dataset
-        self.test_hf_dataset =  self.test_datasets[test_dataset]
+
+
+
         optuna.logging.get_logger("optuna").addHandler(logging.StreamHandler(sys.stdout))
 
         hpo_path = self.config.hpo_config.hpo_fine_grained_output + "/" + self.config.hpo_config.study_name + ".log"
@@ -472,10 +468,10 @@ class Runner:
             now = datetime.now()
             starting_time = now.strftime("%m-%d-%H:%M:%S")
 
-            test_dataset = next(iter(self.test_datasets))
-            best_params, best_value = self.perform_hpo(test_dataset)
 
-            results = {"test_task": test_dataset, "metric" : self.config.hpo_config.val_metric, "score": best_value,
+            best_params, best_value = self.perform_hpo()
+
+            results = {"test_task": self.test_dataset_name, "metric" : self.config.hpo_config.val_metric, "score": best_value,
                        "experiment": "cross-task",  "model" : self.config.base_model , "start_time": starting_time, "best-parameters":best_params}
             hpo_output.add_results(results)
 
@@ -489,7 +485,7 @@ class Runner:
         set_seed(self.config.seed)
 
 
-        if not self.config.is_eval:
+        if not self.config.is_prompting:
             log_mem("loading model")
             self.free_model()
             self.free_vllm_model()
@@ -512,20 +508,20 @@ class Runner:
 
         log_mem("after loading vllm model")
         all_results = []
-        for test_dataset in self.test_datasets:
-            task_dataset =  self.test_datasets[test_dataset]
-            log_mem(f"testing on {test_dataset}")
-            sampling_params= self.load_sampling_params(test_dataset )
 
-            metrics = self.evaluate(sampling_params, test_dataset, task_dataset, vllm=self.vllm)
 
-            log_mem(f"tested on {test_dataset}")
+        log_mem(f"testing on {self.test_dataset_name}")
+        sampling_params= self.load_sampling_params(self.test_dataset_name )
 
-            for metric in metrics:
-                results = {"test_task": test_dataset, "metric" : metric, "score": metrics[metric], "training_data": "5 tasks",  "model" : self.config.base_model , "start_time": starting_time}
-                all_results.append(results)
-                self.leaderborad.add_results(results)
-            self.leaderborad.save_file()
+        metrics = self.evaluate(sampling_params, vllm=self.vllm)
+
+        log_mem(f"tested on {self.test_dataset_name}")
+
+        for metric in metrics:
+            results = {"test_task": self.test_dataset_name, "metric" : metric, "score": metrics[metric], "training_data": "5 tasks",  "model" : self.config.base_model , "start_time": starting_time}
+            all_results.append(results)
+            self.leaderborad.add_results(results)
+        self.leaderborad.save_file()
 
         return all_results
 
@@ -539,15 +535,15 @@ class Runner:
             }
             json.dump(run_data, f)
 
-    def evaluate(self, sampling_params, test_dataset, task_data, model=None, vllm=None):
+    def evaluate(self, sampling_params, model=None, vllm=None):
         """
         Performs model evaluation using the test datasets and evaluation metric from ValidationConfig. The test
         dataset is the name of the test task and task_data is the test data points
         """
         #set_trace()
 
-        dataset = task_data
-        labels = task_data["output"]
+        dataset = self.test_data
+        labels = self.test_data["output"]
         predictions = []
 
         loader = DataLoader(
@@ -569,7 +565,7 @@ class Runner:
 
 
         #set_trace()
-        output_splitter = self.config.test_datasets["output_splitter"]
+        output_splitter = self.config.test_dataset["output_splitter"]
         for data in tqdm(loader):
             text = data["input"]
             if model:
@@ -609,7 +605,7 @@ class Runner:
                                                         #################################
                                                         """)
 
-        metric = self.task_metrics[test_dataset]
+        metric = self.task_metrics[self.test_dataset_name]
         if metric == "fscore-detailed":
             return compute_precision_recall_fscore_support(
                 predictions,
@@ -626,9 +622,9 @@ class Runner:
         elif metric == "meteor":
             return compute_meteor_score(predictions, labels)
         elif metric == "bio-fscore":
-            return compute_bio_f1_score(predictions, labels, task_data["document"])
+            return compute_bio_f1_score(predictions, labels, self.test_data["document"])
         elif metric == "sentence-fscore":
-            return compute_sentence_f1(predictions, labels, task_data["document"])
+            return compute_sentence_f1(predictions, labels, self.test_data["document"])
         elif metric == "kendalltau":
             return compute_kendall_tau(predictions, labels)
         else:
