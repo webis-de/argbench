@@ -343,8 +343,6 @@ class RunConfig:
 
 
     is_hpo: bool
-    # Run config path
-    run_output_path: str
     # Padding token id
     pad_token_id: int = 0
     # Peft combination type
@@ -536,8 +534,6 @@ class RunConfig:
             conf_obj.test_dataset["name"] = [args.test_dataset_name]
         if args.load_model:
             conf_obj.base_model = args.load_model
-        if args.config_output:
-            conf_obj.run_output_path = args.config_output
         if args.data_folder:
             conf_obj.data_folder = args.data_folder
         if args.load_adapter:
