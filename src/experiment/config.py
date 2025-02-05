@@ -331,7 +331,7 @@ class RunConfig:
     # Test datasets
     test_dataset: dict
 
-    log_path: str
+
     # Data folder
     data_folder: str
     # Base model path
@@ -351,6 +351,8 @@ class RunConfig:
     combination_type: str = None
     # Data type
     data_type: str = "ndjson"
+
+    log_path: str = None
 
     model_config: LLamaCausalConfig = None
     quant_config: QuantConfig = None

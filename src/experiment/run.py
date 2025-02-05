@@ -115,6 +115,7 @@ class Runner:
         self.leaderborad = Leaderboard(config.leaderboard_path)
         self.test_dataset_name = self.config.test_dataset["name"]
 
+        self.config.log_path = f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/{self.test_dataset_name}.log"
     def prepare_model_for_training(self,
                       trial=None,
                       quant_hpo=None,
@@ -525,15 +526,6 @@ class Runner:
 
         return all_results
 
-    def write_run(self, run_results):
-        """
-        Writes run results of training
-        """
-        with open(self.config.run_output_path, "w") as f:
-            run_data = {
-                "run_sesults": run_results
-            }
-            json.dump(run_data, f)
 
     def evaluate(self, sampling_params, model=None, vllm=None):
         """
