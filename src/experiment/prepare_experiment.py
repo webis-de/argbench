@@ -161,11 +161,9 @@ def compile_datasets(
         for column in task_data.columns:
             task_data[column] = task_data[column].astype(str)
 
-        if training:
-            task_data["task"] = dataset
-            task_df = task_data[["id","document", "input", "output", "task"]]
-        else:
-            task_df = task_data[["id","document", "input", "output", "task"]]
+
+        task_data["task"] = dataset
+        task_df = task_data[["id","document", "input", "output", "task"]]
 
 
         if training:
