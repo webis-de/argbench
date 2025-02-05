@@ -70,7 +70,7 @@ def collect_files(
     """
     #set_trace()
 
-    test_task = test_configs["tasks"]
+    test_task = test_configs["name"]
 
     test_files = {}
 
