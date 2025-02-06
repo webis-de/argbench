@@ -105,7 +105,6 @@ class Runner:
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_config.path, padding_side="left", unk_token="<unk>", truncation=True, max_length = config.data_collator_config.max_length)
         self.tokenizer.pad_token_id = config.pad_token_id
 
-        logger.debug(f"counting {len(self.train_data)}")
 
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
         self.task_metrics = json.load(open(config.task_metrics_path))
@@ -265,6 +264,7 @@ class Runner:
             hf_test_dataset = Dataset.from_pandas(test_dataset)
             self.train_data = hf_train_dataset.map(generate_and_tokenize_prompt, num_proc=12)#, load_from_cache_file=f"/tmp/training_dataset.arrow")
             self.ft_test_data = hf_test_dataset.map(generate_and_tokenize_prompt, num_proc=12)
+            logger.debug(f"counting {len(self.train_data)}")
 
 
         log_mem("prepared data")
