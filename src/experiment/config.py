@@ -343,7 +343,7 @@ class RunConfig:
 
     model_configs: List[ModelConfig]
 
-    model_config: ModelConfig
+
 
 
 
@@ -360,6 +360,7 @@ class RunConfig:
 
     is_hpo: bool
     # Padding token id
+    model_config: ModelConfig = None
     pad_token_id: int = 0
     # Peft combination type
     combination_type: str = None
