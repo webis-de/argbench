@@ -13,7 +13,7 @@
         "subsample_amount": 10
     },
     "test_dataset": {
-        "subsample_amount": 100,
+
         "name" : "stance_classification_ibmsc_barhaim17"
     },
     "model_configs":[
