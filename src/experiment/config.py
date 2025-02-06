@@ -536,10 +536,8 @@ class RunConfig:
 
         if config.get("model_configs"):
             for conf in conf_obj.model_configs:
-                model_config = ModelConfig(**conf)
-                conf_obj.model_configs.append(model_config)
-                if model_config.label == config.get("base_model"):
-                    conf_obj.model_config = model_config
+                if conf.label == config.get("base_model"):
+                    conf_obj.model_config = conf
 
 
 
