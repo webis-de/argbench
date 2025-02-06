@@ -73,7 +73,7 @@
         "top_p": 1,
         "top_k": 1,
         "max_tokens": 1
-    },
+    }
 
 
 }
