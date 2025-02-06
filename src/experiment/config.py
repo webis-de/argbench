@@ -317,6 +317,8 @@ class VLLMGenerationConfig(CommonConfig):
 class RunConfig:
     """Config for instruction finetuning run"""
 
+    test_dataset: dict
+
     # Experiment results path
     leaderboard_path: str
 
@@ -340,9 +342,10 @@ class RunConfig:
     # Test datasets
 
     model_configs: List[ModelConfig]
+
     model_config: ModelConfig
 
-    test_dataset: dict
+
 
 
     # Data folder
