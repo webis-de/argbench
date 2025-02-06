@@ -303,7 +303,7 @@ class HPOConfig(CommonConfig):
 class ModelConfig(CommonConfig):
     label: str
     path: str
-    template: str
+    prompt_template: str
     output_splitter: str
 
 @dataclass
@@ -369,7 +369,6 @@ class RunConfig:
 
     log_path: str = None
 
-    model_config: LLamaCausalConfig = None
     quant_config: QuantConfig = None
     # Peft finetuning configs
     peft_configs: List[PeftPretrainedConfig] = None
