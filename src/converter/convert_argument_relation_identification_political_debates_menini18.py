@@ -48,7 +48,7 @@ if __name__ == "__main__":
         "attack": "Attack"
     })
     topics = dataset["topic"].unique().tolist()
-    topic_size_test = len(topics) * 2 //10
+    topic_size_test = len(topics) * 3 //10
     test_topics = sample(topics, topic_size_test)
     df_test = dataset[dataset["topic"].isin(test_topics)]
     df_train = dataset[~dataset["topic"].isin(test_topics)]
