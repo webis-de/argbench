@@ -34,7 +34,8 @@ if __name__ == "__main__":
     # Dataset name specifies folder where dataset will be written
 
     metadata = Metadata(dataset_name)
-    metadata.add_dataset(dataset_file)
+    metadata.add_dataset(dataset_file.replace("{split}","train"), "train")
+    metadata.add_dataset(dataset_file.replace("{split}","test"), "test")
     metadata.add_evaluation_metric("f1_macro")
     metadata.add_genre(Genres.DEBATES)
     metadata.add_subarea(Subareas.MINING)

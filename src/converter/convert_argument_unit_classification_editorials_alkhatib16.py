@@ -3,6 +3,7 @@ import os
 import json
 from common import Metadata, Output, add_seed_arg, set_seed, Genres, Subareas, datasets_path, tasks_path
 from argparse import ArgumentParser
+from random import sample
 from collections import defaultdict
 import re
 
@@ -81,35 +82,50 @@ def main():
     set_seed(args)
 
     txt_directory_path = datasets_path() / "editorials" / "txt" / "txt" / "complete-annotated-final"
-    output_file = "argument_unit_classification_editorials_alkhatib16.json"
+    dataset_train = "argument_unit_classification_editorials_train_alkhatib16.json"
+    dataset_test = "argument_unit_classification_editorials_test_alkhatib16.json"
     dataset_name = "argument_unit_classification_editorials_alkhatib16"
 
     instances_dict = defaultdict(list)
     process_all_txt_files_in_directory(txt_directory_path, instances_dict)
-
-    output = Output(dataset_name)
+    task_definition =  "Classify sentences into different parts."
+    train_output = Output(dataset_name)
+    test_output = Output(dataset_name)
     metadata = Metadata(dataset_name)
-    output.append_definition(
-        "Classify sentences into different parts."
-    )
+
+    test_output.append_definition( task_definition)
+    train_output.append_definition(task_definition)
+
     # output.append_metadata("Title", "All Data")  # Optional: Add a general title
+    indices = len(instances_dict)
+    test_size = 2 * len(instances_dict) // 10
+
+    test_indices = sample(list(instances_dict.keys()), test_size)
+    train_indices = [index for index in instances_dict if index not in test_indices]
 
     for instance_id, outputs in instances_dict.items():
         # Join multiple outputs with \n and add to the output
         combined_output = "\n".join(outputs)
         combined_input_tmp = "\n".join(remove_labels(text) for text in outputs)
         combined_input = combined_input_tmp.replace('\n', ' ')
-        output.append_instance(instance_id, combined_input, [combined_output])
+        if instance_id in test_indices:
+            test_output.append_instance(instance_id, combined_input, [combined_output])
+        else:
+            train_output.append_instance(instance_id, combined_input, [combined_output])
 
-    output.append_genre(Genres.ESSAYS)
-    output.append_subarea(Subareas.MINING)
-    output.write_output(output_file)
+    train_output.append_genre(Genres.ESSAYS)
+    train_output.append_subarea(Subareas.MINING)
+    train_output.write_output(dataset_train)
 
-    metadata.add_dataset(output_file)
+    test_output.append_genre(Genres.ESSAYS)
+    test_output.append_subarea(Subareas.MINING)
+    test_output.write_output(dataset_test)
+    metadata.add_dataset(dataset_test, "test")
+    metadata.add_dataset(dataset_train, "train")
     metadata.add_genre(Genres.ESSAYS)
     metadata.add_subarea(Subareas.MINING)
     metadata.write_metadata()
-    print(f"All files processed and saved to {output_file}")
+
 
 if __name__ == "__main__":
     main()

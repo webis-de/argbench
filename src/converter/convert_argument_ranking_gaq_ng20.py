@@ -31,7 +31,7 @@ def convert_dataset(data_path):
     dataset["reasonableness_mean"] = dataset["reasonableness_mean"].astype("float")
     return dataset
 
-def format_dataset(dataset, dataset_name, data_name, metadata):
+def format_dataset(dataset, dataset_name, data_name, metadata, split):
 
     cogency_output = Output(dataset_name)
     effectiveness_output = Output(dataset_name)
@@ -70,9 +70,9 @@ def format_dataset(dataset, dataset_name, data_name, metadata):
     reasonableness_output.write_output(reasonableness_dataset)
     reasonableness_output.append_genre(Genres.DEBATE_PORTALS)
     reasonableness_output.append_subarea(Subareas.RANKING)
-    metadata.add_dataset(cogency_dataset)
-    metadata.add_dataset(effectiveness_dataset)
-    metadata.add_dataset(reasonableness_dataset)
+    metadata.add_dataset(cogency_dataset, split)
+    metadata.add_dataset(effectiveness_dataset, split)
+    metadata.add_dataset(reasonableness_dataset, split)
 
 
 if __name__ == "__main__":
@@ -108,5 +108,5 @@ if __name__ == "__main__":
     metadata.add_subarea(Subareas.RANKING)
     metadata.write_metadata()
 
-    format_dataset(df_training, dataset_name, "argument_ranking_{}_train_ng20.json", metadata)
-    format_dataset(df_test, dataset_name, "argument_ranking_{}_test_ng20.json", metadata)
+    format_dataset(df_training, dataset_name, "argument_ranking_{}_train_ng20.json", metadata, "train")
+    format_dataset(df_test, dataset_name, "argument_ranking_{}_test_ng20.json", metadata, "test")
