@@ -535,10 +535,13 @@ class RunConfig:
             conf_obj.vllm_config = VLLMGenerationConfig(**conf_obj.vllm_config)
 
         if config.get("model_configs"):
+            model_configs = []
             for conf in conf_obj.model_configs:
-                if conf.label == config.get("base_model"):
-                    conf_obj.model_config = conf
-
+                model_config = ModelConfig(**conf)
+                model_configs.append(model_config)
+                if model_config.label == config.get("base_model"):
+                    conf_obj.model_config = model_config
+            conf_obj.model_configs = model_configs
 
 
         if not args:
