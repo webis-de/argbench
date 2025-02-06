@@ -126,6 +126,7 @@ class LLamaCausalConfig(CommonConfig):
     device_map: str = "auto"
 
 
+
 @dataclass
 class PeftPretrainedConfig(CommonConfig):
     """PEFT configuration arguments"""
@@ -297,6 +298,14 @@ class HPOConfig(CommonConfig):
     vllm_config: dict = field(default_factory=dict)
     generation_config: dict = field(default_factory=dict)
 
+
+@dataclass
+class ModelConfig(CommonConfig):
+    label: str
+    path: str
+    template: str
+    output_splitter: str
+
 @dataclass
 class VLLMGenerationConfig(CommonConfig):
     temperature: float
@@ -329,6 +338,10 @@ class RunConfig:
     # Training datasets
     train_datasets: dict
     # Test datasets
+
+    model_configs: List[ModelConfig]
+    model_config: ModelConfig
+
     test_dataset: dict
 
 
@@ -367,6 +380,9 @@ class RunConfig:
     hpo_config: HPOConfig = None
     vllm_config: VLLMGenerationConfig = None
     task_generation_config = {}
+
+    model: str = "mistral-7b-inst-3"
+
 
     @staticmethod
     def register_cli(arg_parser):
@@ -484,8 +500,7 @@ class RunConfig:
             for task in task_specific_generation_configs:
                 conf_obj.task_generation_config[task] = VLLMGenerationConfig(**task_specific_generation_configs[task])
 
-        if config.get("model_config"):
-            conf_obj.model_config = LLamaCausalConfig(**conf_obj.model_config)
+
         if config.get("peft_configs"):
             peft_configs = []
             for conf in conf_obj.peft_configs:
@@ -515,6 +530,16 @@ class RunConfig:
             conf_obj.hpo_config = HPOConfig(**conf_obj.hpo_config)
         if config.get("vllm_config"):
             conf_obj.vllm_config = VLLMGenerationConfig(**conf_obj.vllm_config)
+
+        if config.get("model_configs"):
+            for model_config in config.get("model_configs"):
+                model_config = ModelConfig(**model_config)
+                conf_obj.model_configs.append(model_config)
+                if model_config.label == config.get("base_model"):
+                    conf_obj.model_config = model_config
+
+
+
         if not args:
             return conf_obj
         # Runner config

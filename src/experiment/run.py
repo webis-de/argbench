@@ -102,7 +102,8 @@ class Runner:
         :param config: RunConfig configuration object
         """
         self.config = config
-        self.tokenizer = AutoTokenizer.from_pretrained(config.base_model, padding_side="left", unk_token="<unk>", truncation=True, max_length = config.data_collator_config.max_length)
+        self.model_config = config.model_config
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_config.path, padding_side="left", unk_token="<unk>", truncation=True, max_length = config.data_collator_config.max_length)
         self.tokenizer.pad_token_id = config.pad_token_id
 
         log_mem("preparing data")
@@ -133,7 +134,7 @@ class Runner:
         logger.info("preparing model")
 
         model = self.prepare_model_for_causal_llm(
-            self.config.base_model,
+            self.model_config.path,
             self.config.quant_config.to_conf(trial, quant_hpo),
             self.config.model_config.to_conf(trial, llama_causal_hpo)
         )
@@ -154,12 +155,12 @@ class Runner:
         return model
 
     def prepare_model_for_generation(self):
-        base_model = self.config.base_model
+
         if self.config.peft_configs or self.config.peft_fresh_config:
-            llm = LLM(model=base_model, enable_lora=True, seed=self.config.seed)
+            llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed)
             #llm = LLM(model=base_model, enable_lora=True)
         else:
-            llm = LLM(model=base_model, seed=self.config.seed)
+            llm = LLM(model=self.model_config.path, seed=self.config.seed)
             #llm = LLM(model=base_model)
 
         return llm
@@ -473,7 +474,7 @@ class Runner:
             best_params, best_value = self.perform_hpo()
 
             results = {"test_task": self.test_dataset_name, "metric" : self.config.hpo_config.val_metric, "score": best_value,
-                       "experiment": "cross-task",  "model" : self.config.base_model , "start_time": starting_time, "best-parameters":best_params}
+                       "experiment": "cross-task",  "model" : self.model_config.label  , "start_time": starting_time, "best-parameters":best_params}
             hpo_output.add_results(results)
 
             logger.info(f"best params are {best_params}")
@@ -557,7 +558,7 @@ class Runner:
 
 
         #set_trace()
-        output_splitter = self.config.test_dataset["output_splitter"]
+        output_splitter = self.model_config.output_splitter
         for data in tqdm(loader):
             text = data["input"]
             if model:

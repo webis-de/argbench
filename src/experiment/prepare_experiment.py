@@ -194,7 +194,7 @@ def collect_datasets(run_config):
     train_config = run_config.train_datasets
     test_config = run_config.test_dataset
     tasks_path = Path(run_config.data_folder)
-
+    prompt_template = run_config.model_config.prompt_template
     metadata = get_metadata()
 
     train_tasks, test_tasks = collect_files(
@@ -208,7 +208,7 @@ def collect_datasets(run_config):
 
     train_datasets = compile_datasets(
         train_tasks,
-        train_config["prompt_template"],
+        prompt_template,
         train_config.get("subsample_amount", None),
         train_config.get("subsample_rate", None),
         run_config.data_type
@@ -217,7 +217,7 @@ def collect_datasets(run_config):
 
     test_dataset = compile_datasets(
         test_tasks,
-        test_config["prompt_template"],
+        prompt_template,
         test_config.get("subsample_amount", None),
         test_config.get("subsample_rate", None),
         run_config.data_type,training = False
