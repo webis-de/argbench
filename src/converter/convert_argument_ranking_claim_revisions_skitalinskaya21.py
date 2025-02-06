@@ -1,6 +1,6 @@
 from common import Output, read_tabular, Metadata, add_seed_arg, set_seed, datasets_path, Genres, Subareas
 from argparse import ArgumentParser
-from random import shuffle
+from random import shuffle, sample
 
 
 dataset_name = "argument_ranking_claim_revisions_skitalinskaya23"
@@ -39,9 +39,14 @@ if __name__ == "__main__":
     metadata = Metadata(dataset_name)
 
     dataset = read_tabular(data_path)
-    df_test = dataset.sample(frac=0.2)
-    df_training = dataset[~dataset.isin(df_test["claim_id"])]
+    unique_claim_ids = dataset["claim_id"].unique().tolist()
+    size_test_claim_ids = len(unique_claim_ids) * 2 //10
+    test_claim_ids = sample(unique_claim_ids, size_test_claim_ids)
 
+    df_test = dataset[dataset["claim_id"].isin(test_claim_ids)]
+    print(len(df_test))
+    df_training = dataset[~dataset["claim_id"].isin(test_claim_ids)]
+    print(len(df_training))
     process_data(df_training, metadata, "train")
     process_data(df_test, metadata, "test")
 
