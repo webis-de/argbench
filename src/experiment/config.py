@@ -535,8 +535,8 @@ class RunConfig:
             conf_obj.vllm_config = VLLMGenerationConfig(**conf_obj.vllm_config)
 
         if config.get("model_configs"):
-            for model_config in config.get("model_configs"):
-                model_config = ModelConfig(**model_config)
+            for conf in config.get("model_configs"):
+                model_config = ModelConfig(**conf)
                 conf_obj.model_configs.append(model_config)
                 if model_config.label == config.get("base_model"):
                     conf_obj.model_config = model_config
