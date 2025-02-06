@@ -4,11 +4,11 @@ from random import shuffle
 
 
 dataset_name = "argument_ranking_claim_revisions_skitalinskaya23"
-dataset_file = "argument_ranking_claim_revisions_skitalinskaya23.json"
+dataset_file = "argument_ranking_claim_revisions_{split}_skitalinskaya23.json"
 
 mapping = {0: "Worse", 1: "Better"}
 
-def process_data(dataset, metadata):
+def process_data(dataset, metadata, split):
     output = Output(dataset_name)
     output.append_definition("""Given the following argument pair, is the first argument better or worse 
     than the second argument. Only respond with better or worse, do not say any word or explain. 
@@ -23,8 +23,9 @@ def process_data(dataset, metadata):
 
     output.append_genre(Genres.DEBATES)
     output.append_subarea(Subareas.RANKING)
-    metadata.add_dataset(dataset_file)
-    output.write_output(dataset_file)
+    split_dataset_file = dataset_file.replace("{split}", split)
+    metadata.add_dataset(split_dataset_file)
+    output.write_output(split_dataset_file)
 
 
 if __name__ == "__main__":
@@ -38,8 +39,11 @@ if __name__ == "__main__":
     metadata = Metadata(dataset_name)
 
     dataset = read_tabular(data_path)
+    df_test = dataset.sample(frac=0.2)
+    df_training = dataset[~dataset.isin(df_test["claim_id"])]
 
-    process_data(dataset, metadata)
+    process_data(df_training, metadata, "train")
+    process_data(df_test, metadata, "test")
 
     metadata.add_evaluation_metric("f1_macro")
     metadata.add_genre(Genres.DEBATES)

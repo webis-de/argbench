@@ -3,7 +3,7 @@ from common import Output, datasets_path, Metadata, add_seed_arg, set_seed, Genr
 from argparse import ArgumentParser
 import uuid
 
-DATASET_NAME = "argument_fallacy_detection_elecdeb60t020_goffredo23"
+DATASET_NAME = "fallacy_detection_elecdeb60t020_goffredo23"
 
 @dataclass
 class FallacySnippet:
@@ -93,21 +93,21 @@ if __name__ == "__main__":
 
     process_dataset(
         data_path / "train.conll",
-        "argument_fallacy_detection_elecdeb60t020_train_goffredo23.json",
+        "fallacy_detection_elecdeb60t020_train_goffredo23.json",
         metadata,
         "train"
     )
 
     process_dataset(
         data_path / "test.conll",
-        "argument_fallacy_detection_elecdeb60t020_test_goffredo23.json",
+        "fallacy_detection_elecdeb60t020_test_goffredo23.json",
         metadata,
         "test"
     )
 
     process_dataset(
         data_path / "dev.conll",
-        "argument_fallacy_detection_elecdeb60t020_dev_goffredo23.json",
+        "fallacy_detection_elecdeb60t020_dev_goffredo23.json",
         metadata,
         "dev"
     )

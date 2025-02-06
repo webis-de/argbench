@@ -2,7 +2,7 @@
     "is_prompting": false,
     "is_hpo": true,
     "seed": 42,
-    "base_model": "/bigwork/nhwpajjy/pre-trained-models/decapoda-research-llama-7B-hf",
+    "base_model": "mistral-7b-inst-3",
     "cutoff_len": 2000,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "data_type": "ndjson",
@@ -11,16 +11,20 @@
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/config_alpaca_vllm_generation.json",
 
     "train_datasets": {
-        "subsample_amount": 50,
-        "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
-        "include_task": [
-            "argument_unit_classification_essays_stab17"
-        ]
+        "subsample_amount": 50
     },
+    "model_configs":[
+        {
+            "label": "mistral-7b-inst-3",
+            "path" : "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
+            "prompt_template": "<s>[INST]{definition}\n{instance_input}\n[/INST]",
+            "output_splitter": "[/INST]"
+        }
+    ],
     "test_dataset": {
         "subsample_amount": 10,
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
-        "name": "argument_unit_segmentation"
+        "name": "argument_unit_segmentation_ajjour17"
     },
     "quant_config": {
         "load_in_4bit": true
