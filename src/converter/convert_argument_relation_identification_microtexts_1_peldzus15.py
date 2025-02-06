@@ -1,4 +1,6 @@
 import os
+from random import sample
+
 from common import Output, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from argparse import ArgumentParser
 from lxml import etree
@@ -98,7 +100,34 @@ def format_argument_relations(sentences, argument_relations):
     return text
 
 DATASET_NAME = "argument_relation_identification_microtexts_1_peldzus15"
-DATASET_FILE = "argument_relation_identification_microtexts_1_peldzus15.json"
+DATASET_FILE = "argument_relation_identification_microtexts_1_{split}_peldzus15.json"
+
+def write_split(files, split):
+    output = Output(DATASET_NAME)
+
+    output.append_definition("""Given the following essay list of pairs of sentences 
+    where the second sentence supports or attacks the first.
+    Output first Support or Attack and then output the sentence pair separated by a new line.""")
+
+    for file_name in files:
+        print(file_name)
+        if file_name.endswith(".txt"):
+            file_path = os.path.join(root,file_name)
+
+            xml_path = os.path.join(root,file_name.replace("txt","xml"))
+            print(xml_path)
+            tree=etree.parse(xml_path).getroot()
+            argument_units = extract_sentences(tree)
+            argument_relations = extract_argument_relations(tree)
+            print(f"{argument_relations}")
+
+            argument_relations_formatted = format_argument_relations(argument_units, argument_relations)
+            document = read_file(file_path)
+            id = str(uuid.uuid4())
+            output.append_instance(id, document , [argument_relations_formatted])
+    output.append_genre(Genres.ESSAYS)
+    output.append_subarea(Subareas.MINING)
+    output.write_output(DATASET_FILE.replace("{split}", split))
 
 if __name__ == "__main__":
     argument_parser = ArgumentParser(description="Convert argument mining dataset")
@@ -108,38 +137,25 @@ if __name__ == "__main__":
 
     dataset_path = datasets_path() / "microtexts-1/original/original/corpus/en"
 
-    output = Output(DATASET_NAME)
     metadata = Metadata(DATASET_NAME)
-    output.append_definition("""Given the following essay list of pairs of sentences 
-    where the second sentence supports or attacks the first.
-    Output first Support or Attack and then output the sentence pair separated by a new line.""")
-
+    metadata.add_dataset(DATASET_FILE)
+    metadata.add_genre(Genres.ESSAYS)
+    metadata.add_subarea(Subareas.MINING)
+    metadata.add_evaluation_metric("f1_macro")
+    metadata.write_metadata()
 
     print(dataset_path)
     for root,dirs,files in os.walk(dataset_path):
-        for file_name in files:
-            print(file_name)
-            if file_name.endswith(".txt"):
-                file_path = os.path.join(root,file_name)
+        size = len(files)
+        test_size = size * 2 // 10
+        training_size = size - test_size
+        indices = range(size)
+        test_indices = sample(indices, test_size)
+        train_indices = [index for index in indices if index not in test_indices]
 
-                xml_path = os.path.join(root,file_name.replace("txt","xml"))
-                print(xml_path)
-                tree=etree.parse(xml_path).getroot()
-                argument_units = extract_sentences(tree)
-                argument_relations = extract_argument_relations(tree)
-                print(f"{argument_relations}")
-
-                argument_relations_formatted = format_argument_relations(argument_units, argument_relations)
-                document = read_file(file_path)
-                id = str(uuid.uuid4())
-                output.append_instance(file_name, document , [argument_relations_formatted])
+        test_set = [files[index] for index in test_indices]
+        train_set = [files[index] for index in train_indices]
+        write_split(test_set, "test")
+        write_split(train_set, "train")
 
 
-    output.append_genre(Genres.ESSAYS)
-    output.append_subarea(Subareas.REASONING)
-    output.write_output(DATASET_FILE)
-    metadata.add_dataset(DATASET_FILE)
-    metadata.add_genre(Genres.ESSAYS)
-    metadata.add_subarea(Subareas.REASONING)
-    metadata.add_evaluation_metric("f1_macro")
-    metadata.write_metadata()
