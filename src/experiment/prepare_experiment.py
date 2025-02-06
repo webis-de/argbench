@@ -9,7 +9,7 @@ import pandas as pd
 from collections import defaultdict
 from pathlib import Path
 from IPython.core.debugger import set_trace
-from datasets import DatasetDict, Dataset
+
 
 from yaml import load, Loader
 from utils import get_logger
@@ -17,7 +17,9 @@ from utils import get_logger
 
 logger = get_logger(__name__)
 
-
+class dataset:
+    train_path: str
+    test_path: str
 
 
 class PandasDataset:
@@ -80,8 +82,6 @@ def collect_files(
             task_path / test_task / file)
 
 
-    if is_prompting:
-        return {}, test_files
 
     train_files = defaultdict(list)
     for task in os.listdir(task_path):
@@ -109,11 +109,14 @@ def collect_files(
 
 
 def compile_datasets(
-        task_datasets,
+        train_files,
+        test_files,
         prompt_template,
-        subsample_amount=None,
-        subsample_rate=None,
-        filetype="ndjson", training=True):
+        test_subsample_amount=None,
+        test_subsample_rate=None,
+        train_subsample_amount=None,
+        train_subsample_rate=None,
+        is_prompt=False, test_dataset=None):
     """
     Read dataset file and compile all datasets into one dataframe
 
@@ -130,58 +133,54 @@ def compile_datasets(
             example=row["example"]
         )
 
-    test_datasets = []
-    training_datasets = []
-    for dataset in task_datasets:
-        total_datasets = []
-        for task_path in task_datasets[dataset]:
-            logger.info(f"reading {task_path}")
-            if filetype == "ndjson":
-                total_datasets.append(pd.read_json(task_path, lines=True))
-            elif filetype == "parquet":
-                total_datasets.append(pd.read_parquet(task_path))
+    test_datasets = {}
+    training_datasets = {}
+    for dataset in train_files:
+        if not is_prompt or train_subsample_amount:
+            train_path = train_files[dataset]
+            df_training = pd.read_json(train_path, lines=True)
+            if train_subsample_amount :
+                df_training= df_training.sample(train_subsample_amount)
+            elif train_subsample_rate:
+                df_training= df_training.sample(frac=train_subsample_rate)
+            for column in df_training.columns:
+                df_training[column] = df_training[column].astype(str)
 
-        task_data = pd.concat(total_datasets, axis=0).reset_index(drop=True)
+            df_training = df_training[["id","document", "input", "output", "task"]]
+            df_training["task"] = dataset
+            if not is_prompt:
+                training_datasets[dataset]=df_training
 
-        if subsample_amount:
-            task_data = task_data.sample(subsample_amount, axis=0)
-        if subsample_rate:
-            task_data = task_data.sample(frac=subsample_rate, axis=0)
+        test_path = test_files[dataset]
+        if test_dataset and dataset !=test_dataset:
+            continue
+        df_test = pd.read_json(test_path, lines=True)
+        if test_subsample_rate:
+            df_test = df_test.sample(frac=test_subsample_rate)
+        elif test_subsample_amount:
+            df_test = df_test.sample(test_subsample_amount)
+        if is_prompt and train_subsample_amount:
+            example_str = ""
+            for _, example in df_training.iterrows():
+                example_instance = f'Input: {example["input"].values[0]}\nOutput: {example["output"].values[0]}'
+                example_str += example_instance
 
-        example_record = task_data.sample(n=1)
+            df_test.rename(columns={"input": "document"}, inplace=True)
+            df_test["example"] = example_str
+            df_test["input"] = df_test.apply(template_formatter, axis=1)
 
-        task_data = task_data[~task_data.index.isin(example_record.index)]
-        #set_trace()
-        example_instance = f'Input: {example_record["input"].values[0]}\nOutput: {example_record["output"].values[0]}'
-
-        task_data.rename(columns={"input": "document"}, inplace=True)
-        task_data["example"] = example_instance
-
-        task_data["input"] = task_data.apply(template_formatter, axis=1)
-        for column in task_data.columns:
-            task_data[column] = task_data[column].astype(str)
+        for column in df_test.columns:
+            df_test[column] = df_test[column].astype(str)
+        df_test["task"] = dataset
+        df_test = df_test[["id","document", "input", "output", "task"]]
+        test_datasets[dataset]= df_test
 
 
-        task_data["task"] = dataset
-        task_df = task_data[["id","document", "input", "output", "task"]]
-
-
-        if training:
-            training_datasets.append(task_df)
-        else:
-            test_datasets.append(task_df)
 #
 
-    if training:
-        if len(training_datasets):
-            all_training_df = pd.concat(training_datasets, axis=0).reset_index(drop=True)
-        else:
-            all_training_df = pd.DataFrame()
-        logger.info(all_training_df.info())
-        return Dataset.from_pandas(all_training_df)
-    else:
-        all_test_df = pd.concat(test_datasets)
-        return Dataset.from_pandas(all_test_df)
+
+
+    return training_datasets, test_datasets
 
 
 def collect_datasets(run_config):
@@ -197,7 +196,7 @@ def collect_datasets(run_config):
     prompt_template = run_config.model_config.prompt_template
     metadata = get_metadata()
 
-    train_tasks, test_tasks = collect_files(
+    train_files, test_files = collect_files(
         tasks_path,
         metadata,
         test_config,
@@ -206,21 +205,19 @@ def collect_datasets(run_config):
 
     logger.info("Train datasets collected:")
 
-    train_datasets = compile_datasets(
-        train_tasks,
-        prompt_template,
-        train_config.get("subsample_amount", None),
-        train_config.get("subsample_rate", None),
-        run_config.data_type
-    )
-    logger.info("Test datasets collected:")
 
-    test_dataset = compile_datasets(
-        test_tasks,
+
+    train_datasets, test_datasets  = compile_datasets(
+        train_files,
+        test_files,
         prompt_template,
         test_config.get("subsample_amount", None),
         test_config.get("subsample_rate", None),
-        run_config.data_type,training = False
+        train_config.get("subsample_amount", None),
+        train_config.get("subsample_rate", None)
+        ,run_config.is_prompting
     )
-
-    return train_datasets, test_dataset
+    if run_config.is_prompting:
+        return train_datasets, test_datasets
+    else:
+        return train_datasets, test_datasets[run_config.test_dataset.name]

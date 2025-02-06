@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 import os.path
-import logging
 import time
 
+import pandas as pd
 import psutil
 import optuna
 import sys
 import gc
 
 from argparse import ArgumentParser
-from datasets import concatenate_datasets
 from optuna import Trial, create_study
 from torch.utils.data import DataLoader
 from pathlib import Path
@@ -21,7 +20,7 @@ from transformers import set_seed
 
 from leaderborad import  Leaderboard
 from datetime import datetime
-
+from datasets import DatasetDict, Dataset
 from hpo_output import HPOOutput
 from utils import get_logger
 from prepare_experiment import collect_datasets
@@ -106,17 +105,16 @@ class Runner:
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_config.path, padding_side="left", unk_token="<unk>", truncation=True, max_length = config.data_collator_config.max_length)
         self.tokenizer.pad_token_id = config.pad_token_id
 
-        log_mem("preparing data")
-        self.prepare_data()
-        log_mem("prepared data")
-
         logger.debug(f"counting {len(self.train_data)}")
+
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
         self.task_metrics = json.load(open(config.task_metrics_path))
-        self.leaderborad = Leaderboard(config.leaderboard_path)
+        self.leaderboard = Leaderboard(config.leaderboard_path)
         self.test_dataset_name = self.config.test_dataset["name"]
-
-        self.config.log_path = f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/{self.test_dataset_name}.log"
+        if config.is_prompting:
+            self.config.log_path = f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/prompting-{self.config.base_model}.log"
+        else:
+            self.config.log_path = f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/fine-tuning-{self.test_dataset_name}-{self.config.base_model}.log"
     def prepare_model_for_training(self,
                       trial=None,
                       quant_hpo=None,
@@ -152,6 +150,7 @@ class Runner:
             model = self.prepare_new_peft_model(model)
 
         self.peft_model = model
+        log_mem(f"created model for training")
         return model
 
     def prepare_model_for_generation(self):
@@ -162,7 +161,7 @@ class Runner:
         else:
             llm = LLM(model=self.model_config.path, seed=self.config.seed)
             #llm = LLM(model=base_model)
-
+        log_mem("after loading vllm model")
         return llm
 
     def load_sampling_params(self, test_dataset, trial=None, hpo_config=None):
@@ -214,12 +213,12 @@ class Runner:
             callbacks = [
                 EarlyStoppingCallback(**self.config.early_stopping_config.to_conf(trial, early_stopping_hpo))
             ]
-
+        log_mem("preparing trainer")
         trainer = Trainer(
             model=model,
             callbacks=callbacks,
             train_dataset=self.train_data,
-            eval_dataset=self.test_data,
+            eval_dataset=self.ft_test_data,
             args=train_args,
             data_collator=data_collator,
         )
@@ -233,6 +232,7 @@ class Runner:
         """
         Using configuration object collects train and test datasets
         """
+        log_mem("preparing data")
         cutoff_len = self.config.cutoff_len
         train = True
 
@@ -251,15 +251,23 @@ class Runner:
                 return full_prompt
             return input_prompt
 
-        self.train_datasets, self.test_dataset = collect_datasets(
-            self.config
-        )
+        self.prmt_test_data = {}
 
-        self.train_data = self.train_datasets.map(generate_and_tokenize_prompt, num_proc=12)#, load_from_cache_file=f"/tmp/training_dataset.arrow")
+        if self.config.is_prompting:
+            _, test_datasets = collect_datasets(self.config)
+            for test_dataset in test_datasets:
+                hf_test_dataset = Dataset.from_pandas(test_datasets[test_dataset])
+                self.prmt_test_data[test_dataset] = hf_test_dataset.map(generate_and_tokenize_prompt, num_proc=12)
+        else:
+            train_datasets, test_dataset = collect_datasets(self.config)
+            train_datasets = pd.concat(train_datasets.values(), axis=0).reset_index(drop=True)
+            hf_train_dataset = Dataset.from_pandas(train_datasets)
+            hf_test_dataset = Dataset.from_pandas(test_dataset)
+            self.train_data = hf_train_dataset.map(generate_and_tokenize_prompt, num_proc=12)#, load_from_cache_file=f"/tmp/training_dataset.arrow")
+            self.ft_test_data = hf_test_dataset.map(generate_and_tokenize_prompt, num_proc=12)
 
-        train  = False
-        self.test_data = self.test_dataset.map(generate_and_tokenize_prompt, num_proc=12)#, load_from_cache_file=f"/tmp/{test_dataset}.arrow")
 
+        log_mem("prepared data")
 
     def prepare_model_for_causal_llm(self, base_model, quant_config, model_config):
         """
@@ -377,8 +385,9 @@ class Runner:
 
     def load_model(self):
         """Loads model checkpoint"""
-
+        log_mem("loading model")
         model = self.prepare_model_for_training()
+
         return model
 
 
@@ -389,7 +398,7 @@ class Runner:
             del self.peft_model
         torch.cuda.empty_cache()
         gc.collect()
-
+        log_mem(f"saved and free model")
     def free_vllm_model(self):
         if self.vllm:
             destroy_model_parallel()
@@ -410,7 +419,7 @@ class Runner:
             self.config.hpo_config.quant_config,
             self.config.hpo_config.model_config
         )
-        log_mem(f"created model for training")
+
         self.trainer = self.prepare_trainer(
             self.model,
             trial,
@@ -424,14 +433,11 @@ class Runner:
 
 #        self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
         self.free_model()
-        log_mem(f"saved and free model")
 
 
-
-
-        sampling_params = self.load_sampling_params(self.test_dataset, trial, self.config.hpo_config.vllm_config)
+        sampling_params = self.load_sampling_params(self.test_dataset_name, trial, self.config.hpo_config.vllm_config)
         self.trainer.evaluate()
-        metrics = self.evaluate(sampling_params, model=self.trainer.model)
+        metrics = self.evaluate(self.ft_test_data, sampling_params, model=self.trainer.model)
         log_mem(f"finished evaluation")
 
         logger.debug(f"metrics are {metrics}")
@@ -464,13 +470,13 @@ class Runner:
         """
         Execute training, hpo or evaluation
         """
+
+        self.prepare_data()
         if self.config.is_hpo:
             # this should be changed to account for multiple datasets
             hpo_output = HPOOutput(self.config.hpo_config.hpo_coarse_output)
             now = datetime.now()
             starting_time = now.strftime("%m-%d-%H:%M:%S")
-
-
             best_params, best_value = self.perform_hpo()
 
             results = {"test_task": self.test_dataset_name, "metric" : self.config.hpo_config.val_metric, "score": best_value,
@@ -482,61 +488,55 @@ class Runner:
 
             hpo_output.save_file()
             return
-        now = datetime.now()
-        starting_time = now.strftime("%m-%d-%H:%M:%S")
+
+        starting_time =datetime.now().strftime("%m-%d-%H:%M:%S")
         set_seed(self.config.seed)
-
-
         if not self.config.is_prompting:
-            log_mem("loading model")
             self.free_model()
             self.free_vllm_model()
             model = self.load_model()
-
-            log_mem("preparing trainer")
-
             self.trainer = self.prepare_trainer(model)
-
             self.trainer.train()
-            log_mem("trained")
-
             self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
-
-
-
-
+            log_mem("trained")
 
         self.vllm = self.prepare_model_for_generation()
 
-        log_mem("after loading vllm model")
+
         all_results = []
+        if config.is_prompting:
+            for task in self.prmt_test_data:
+                sampling_params= self.load_sampling_params(task)
+                test_data =  self.prmt_test_data[task]
+                metrics = self.evaluate(test_data, sampling_params, vllm=self.vllm)
+                log_mem(f"tested on {task}")
+                for metric in metrics:
+                    results = {"test_task": task, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model , "start_time": starting_time}
+                    all_results.append(results)
+                    self.leaderboard.add_results(results)
+        else:
+            sampling_params= self.load_sampling_params(self.test_dataset_name)
+            metrics = self.evaluate(self.ft_test_data, sampling_params, vllm=self.vllm)
+            for metric in metrics:
+                results = {"test_task": self.test_dataset_name, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model , "start_time": starting_time}
+                all_results.append(results)
+                log_mem(f"tested on {self.test_dataset_name}")
+                self.leaderboard.add_results(results)
 
-
-        log_mem(f"testing on {self.test_dataset_name}")
-        sampling_params= self.load_sampling_params(self.test_dataset_name )
-
-        metrics = self.evaluate(sampling_params, vllm=self.vllm)
-
-        log_mem(f"tested on {self.test_dataset_name}")
-
-        for metric in metrics:
-            results = {"test_task": self.test_dataset_name, "metric" : metric, "score": metrics[metric], "training_data": "5 tasks",  "model" : self.config.base_model , "start_time": starting_time}
-            all_results.append(results)
-            self.leaderborad.add_results(results)
-        self.leaderborad.save_file()
+        self.leaderboard.save_file()
 
         return all_results
 
 
-    def evaluate(self, sampling_params, model=None, vllm=None):
+    def evaluate(self, test_data, sampling_params, model=None, vllm=None):
         """
         Performs model evaluation using the test datasets and evaluation metric from ValidationConfig. The test
         dataset is the name of the test task and task_data is the test data points
         """
         #set_trace()
-
-        dataset = self.test_data
-        labels = self.test_data["output"]
+        log_mem(f"testing on {self.test_dataset_name}")
+        dataset = test_data
+        labels = test_data["output"]
         predictions = []
 
         loader = DataLoader(
@@ -615,9 +615,9 @@ class Runner:
         elif metric == "meteor":
             return compute_meteor_score(predictions, labels)
         elif metric == "bio-fscore":
-            return compute_bio_f1_score(predictions, labels, self.test_data["document"])
+            return compute_bio_f1_score(predictions, labels, test_data["document"])
         elif metric == "sentence-fscore":
-            return compute_sentence_f1(predictions, labels, self.test_data["document"])
+            return compute_sentence_f1(predictions, labels, test_data["document"])
         elif metric == "kendalltau":
             return compute_kendall_tau(predictions, labels)
         else:
