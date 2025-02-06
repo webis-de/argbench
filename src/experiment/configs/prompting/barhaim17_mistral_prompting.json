@@ -13,14 +13,14 @@
         "subsample_amount": 10
     },
     "test_dataset": {
-        "subsample_amount": 10,
+        "subsample_amount": 100,
         "name" : "stance_classification_ibmsc_barhaim17"
     },
     "model_configs":[
             {
                 "label": "mistral-7b-inst-3",
                 "path" : "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
-                "prompt_template": "<s>[INST]{definition}\n{instance_input}\n[/INST]",
+                "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
                 "output_splitter": "[/INST]"
             }
     ],
