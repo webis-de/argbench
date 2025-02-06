@@ -1,6 +1,22 @@
 from common import Genres, Output, Subareas, datasets_path, Metadata, add_seed_arg, set_seed, read_tabular
 from argparse import ArgumentParser
+from random import sample
 
+
+def process_split(dataset, path):
+    output = Output(dataset_name)
+    output.append_definition(
+    """Given the following two arguments on the given topic:\n 
+    "Detect whether the first argument supports, attacks, or is unrelated to the second argument.
+    Only output support, attack, or unrelated.
+    """)
+    for row in dataset.iterrows():
+        instance = row[1]
+        id = instance["pair_id"]
+        output.append_instance(id, instance["input"], [instance["output"]])
+    output.append_genre(Genres.DEBATES)
+    output.append_subarea(Subareas.MINING)
+    output.write_output(path)
 
 if __name__ == "__main__":
     arg_parser = ArgumentParser(description="What dataset will be processed?")
@@ -8,22 +24,21 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    data_path = datasets_path() / "political-debates" / "full_dataset.tsv"
+    data_path = datasets_path() / "political-debates" / "balanced_dataset.tsv"
 
     # Set name of the dataset to identify it and files of that dataset
     dataset_name = "argument_relation_identification_political_debates_menini18"
-    dataset_file = "argument_relation_identification_political_debates_menini18.json"
+    dataset_file = "argument_relation_identification_political_debates_{split}_menini18.json"
 
     # Class for collecting dataset file data
     # Dataset name specifies folder where dataset will be written
-    output = Output(dataset_name)
-    output.append_definition(
-        """Given the following two arguments on the given topic:\n 
-        "Detect whether the first argument supports, attacks, or is unrelated to the second argument.
-        Only output support, attack, or unrelated.
-        """)
 
     metadata = Metadata(dataset_name)
+    metadata.add_dataset(dataset_file)
+    metadata.add_evaluation_metric("f1_macro")
+    metadata.add_genre(Genres.DEBATES)
+    metadata.add_subarea(Subareas.MINING)
+    metadata.write_metadata()
 
     dataset = read_tabular(data_path, "\t")
     dataset["input"] = "Topic: " + dataset["topic"] + "\nArgument 1:" + dataset["argument1"] + "\nArgument 2:" + dataset["argument2"]
@@ -32,18 +47,15 @@ if __name__ == "__main__":
         "support": "Support",
         "attack": "Attack"
     })
+    topics = dataset["topic"].unique().tolist()
+    topic_size_test = len(topics) * 2 //10
+    test_topics = sample(topics, topic_size_test)
+    df_test = dataset[dataset["topic"].isin(test_topics)]
+    df_train = dataset[~dataset["topic"].isin(test_topics)]
+    print(len(df_train))
+    print(len(df_test))
+    print(len(dataset))
+    process_split(df_train, dataset_file.replace("{split}","train"))
+    process_split(df_train, dataset_file.replace("{split}","test"))
 
-    for row in dataset.iterrows():
-        instance = row[1]
-        id = instance["pair_id"]
-        output.append_instance(id, instance["input"], [instance["output"]])
 
-    metadata.add_dataset(dataset_file)
-    metadata.add_evaluation_metric("f1_macro")
-    metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.MINING)
-    metadata.write_metadata()
-
-    output.append_genre(Genres.DEBATES)
-    output.append_subarea(Subareas.MINING)
-    output.write_output(dataset_file)
