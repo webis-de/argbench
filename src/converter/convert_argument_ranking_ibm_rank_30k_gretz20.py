@@ -5,12 +5,11 @@ import uuid
 
 DATASET_NAME = "argument_ranking_ibm_rank_30k_gretz20"
 
-TOLERANCE = 0.05
+
 
 RANK_MAPPING = [
     "Better",
-    "Worse",
-    "Same"
+    "Worse"
 ]
 
 def make_output(dataset, dataset_name):
@@ -28,9 +27,7 @@ def make_output(dataset, dataset_name):
 
         id = str(uuid.uuid4())
 
-        if abs(row["WA"] - compare_arg["WA"]) <= TOLERANCE:
-            positive_response = RANK_MAPPING[2]
-        elif row["WA"] > compare_arg["WA"]:
+        if row["WA"] > compare_arg["WA"]:
             positive_response = RANK_MAPPING[0]
         else:
             positive_response = RANK_MAPPING[1]
@@ -55,15 +52,17 @@ if __name__ == "__main__":
 
     dataset = read_tabular(dataset_path)
     print("Train")
-    make_output(dataset[dataset["set"] == "train"], "argument_ranking_ibm_rank_30k_train_gretz20.json")
+
+    dataset["set"] = dataset["set"].map(lambda x: "train" if x =="train" or x =="dev" else "test")
+    make_output(dataset[dataset["set"] == "train" ], "argument_ranking_ibm_rank_30k_train_gretz20.json")
+
     print("Test")
     make_output(dataset[dataset["set"] == "test"], "argument_ranking_ibm_rank_30k_test_gretz20.json")
-    print("Dev")
-    make_output(dataset[dataset["set"] == "dev"], "argument_ranking_ibm_rank_30k_dev_gretz20.json")
+
 
     metadata.add_dataset("argument_ranking_ibm_rank_30k_train_gretz20.json", "train")
     metadata.add_dataset("argument_ranking_ibm_rank_30k_test_gretz20.json", "test")
-    metadata.add_dataset("argument_ranking_ibm_rank_30k_dev_gretz20.json", "dev")
+
 
     metadata.add_evaluation_metric("f1_macro")
     metadata.add_genre(Genres.DEBATES)

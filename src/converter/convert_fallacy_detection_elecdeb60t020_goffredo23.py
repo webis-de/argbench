@@ -12,7 +12,7 @@ class FallacySnippet:
     label_spans: list = field(default_factory=list)
 
 
-def process_dataset(data_file, output_file, metadata, split_name):
+def process_dataset(data_files, output_file, metadata, split_name):
     """
     Process elecdeb60t020 datafile
     """
@@ -25,54 +25,55 @@ def process_dataset(data_file, output_file, metadata, split_name):
                              "FalseCause: The misinterpretation of the correlation of two events for causation.\n" +
                              "Slogans: It is a brief and striking phrase used to provoke excitement of the audience, and is often accompanied by another type of fallacy called argument by repetition.")
 
-    token_file = open(data_file, "r")
+    for data_file in data_files:
+        token_file = open(data_file, "r")
 
-    snippets = []
+        snippets = []
 
-    temp_snippet = FallacySnippet()
-    temp_label_span = []
+        temp_snippet = FallacySnippet()
+        temp_label_span = []
 
-    for line in token_file:
-        if line == "\n":
-            if temp_label_span:
-                temp_label_span.append(snippet_idx + 1)
+        for line in token_file:
+            if line == "\n":
+                if temp_label_span:
+                    temp_label_span.append(snippet_idx + 1)
+                    temp_snippet.label_spans.append(temp_label_span)
+                    temp_label_span = []
+                snippets.append(temp_snippet)
+                temp_snippet = FallacySnippet()
+                continue
+
+            fields = line.split("\t")
+
+            snippet_idx = int(fields[0])
+            token = fields[1]
+            label = fields[4].strip()
+
+            if label[0] == "B":
+                temp_label_span.append(snippet_idx)
+            elif label == "O" and temp_label_span:
+                temp_label_span.append(snippet_idx)
                 temp_snippet.label_spans.append(temp_label_span)
                 temp_label_span = []
-            snippets.append(temp_snippet)
-            temp_snippet = FallacySnippet()
-            continue
 
-        fields = line.split("\t")
-
-        snippet_idx = int(fields[0])
-        token = fields[1]
-        label = fields[4].strip()
-
-        if label[0] == "B":
-            temp_label_span.append(snippet_idx)
-        elif label == "O" and temp_label_span:
-            temp_label_span.append(snippet_idx)
-            temp_snippet.label_spans.append(temp_label_span)
-            temp_label_span = []
-
-        temp_snippet.tokens.append(token)
-        temp_snippet.labels.append(label)
+            temp_snippet.tokens.append(token)
+            temp_snippet.labels.append(label)
 
 
-    for snippet in snippets:
-        id = str(uuid.uuid4())
-        prompt = " ".join(snippet.tokens)
+        for snippet in snippets:
+            id = str(uuid.uuid4())
+            prompt = " ".join(snippet.tokens)
 
-        model_out = []
-        # print(snippet)
-        for label_span in snippet.label_spans:
-            span_class = snippet.labels[label_span[0]][2:]
-            span_tokens = " ".join(snippet.tokens[label_span[0]:label_span[1]])
-            model_out.append(f"{span_class}: {span_tokens}")
+            model_out = []
+            # print(snippet)
+            for label_span in snippet.label_spans:
+                span_class = snippet.labels[label_span[0]][2:]
+                span_tokens = " ".join(snippet.tokens[label_span[0]:label_span[1]])
+                model_out.append(f"{span_class}: {span_tokens}")
 
-        model_out = "\n".join(model_out)
+            model_out = "\n".join(model_out)
 
-        output.append_instance(id, prompt, [model_out])
+            output.append_instance(id, prompt, [model_out])
 
     output.append_genre(Genres.DEBATE_PORTALS)
     output.append_subarea(Subareas.MINING)
@@ -92,24 +93,17 @@ if __name__ == "__main__":
     metadata = Metadata(DATASET_NAME)
 
     process_dataset(
-        data_path / "train.conll",
+        [data_path / "train.conll", data_path / "dev.conll"],
         "fallacy_detection_elecdeb60t020_train_goffredo23.json",
         metadata,
         "train"
     )
 
     process_dataset(
-        data_path / "test.conll",
+        [data_path / "test.conll"],
         "fallacy_detection_elecdeb60t020_test_goffredo23.json",
         metadata,
         "test"
-    )
-
-    process_dataset(
-        data_path / "dev.conll",
-        "fallacy_detection_elecdeb60t020_dev_goffredo23.json",
-        metadata,
-        "dev"
     )
 
     metadata.add_genre(Genres.DEBATE_PORTALS)

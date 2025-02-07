@@ -3,37 +3,40 @@ from argparse import ArgumentParser
 import ast
 import uuid
 
-def process_dataset(bows_dataset, metadata, dataset_name, dataset_file, dataset_path):
-    dataset = read_tabular(dataset_path)
-    dataset = dataset.dropna(axis=0)
-    dataset["parsed_issues"] = dataset["big_issues"].str.findall("\d")
+def process_dataset(bows_dataset, metadata, dataset_name, dataset_file, dataset_pathes, split):
     output = Output(dataset_name)
     output.append_definition("Given discussion topic and a collection of topic staces that describe users stance on various issues, generate a claim that is based user stance.")
 
-    for row in dataset.iterrows():
-        row = row[1]
-        total_topic_rel = []
-        for i, issue_label in enumerate(row["parsed_issues"]):
-            if issue_label == "1":
-                topic_str = f"{bows_dataset['topic'][i]}: Con"
-                total_topic_rel.append(topic_str)
-            if issue_label == "3":
-                topic_str = f"{bows_dataset['topic'][i]}: Pro"
-                total_topic_rel.append(topic_str)
-#            else:
-#                topic_str = f"{bows_dataset['topic'][i]}: N/A"
-#                total_topic_rel.append(topic_str)
+    for dataset_path in dataset_pathes:
+        dataset = read_tabular(dataset_path)
+        dataset = dataset.dropna(axis=0)
+        dataset["parsed_issues"] = dataset["big_issues"].str.findall("\d")
 
-        total_topic_rel = "; ".join(total_topic_rel)
-        prompt = f"Topic: {row['topic']}\nTopic Stances: {total_topic_rel}"
-        label = row["top_claim"]
-        id = str(uuid.uuid4())
-        output.append_instance(id, prompt, [label])
+        for row in dataset.iterrows():
+            row = row[1]
+            total_topic_rel = []
+            for i, issue_label in enumerate(row["parsed_issues"]):
+                if issue_label == "1":
+                    topic_str = f"{bows_dataset['topic'][i]}: Con"
+                    total_topic_rel.append(topic_str)
+                if issue_label == "3":
+                    topic_str = f"{bows_dataset['topic'][i]}: Pro"
+                    total_topic_rel.append(topic_str)
+    #            else:
+    #                topic_str = f"{bows_dataset['topic'][i]}: N/A"
+    #                total_topic_rel.append(topic_str)
 
+            total_topic_rel = "; ".join(total_topic_rel)
+            prompt = f"Topic: {row['topic']}\nTopic Stances: {total_topic_rel}"
+            label = row["top_claim"]
+            id = str(uuid.uuid4())
+            output.append_instance(id, prompt, [label])
+        print(dataset_path)
+        print(len(output.instances))
     output.append_genre(Genres.DEBATE_PORTALS)
     output.append_subarea(Subareas.GENERATION)
     output.write_output(dataset_file)
-    metadata.add_dataset(dataset_file)
+    metadata.add_dataset(dataset_file, split)
 
 
 if __name__ == "__main__":
@@ -57,7 +60,8 @@ if __name__ == "__main__":
         metadata,
         dataset_name,
         "conclusion_generation_belief_generation_train_alshomary21.json",
-        data_path / "preprocessed_data" / "train_with_claim_df.csv"
+        [data_path / "preprocessed_data" / "train_with_claim_df.csv", data_path / "preprocessed_data" / "valid_with_claim_df.csv"],
+        "train"
     )
 
     process_dataset(
@@ -65,15 +69,8 @@ if __name__ == "__main__":
         metadata,
         dataset_name,
         "conclusion_generation_belief_generation_test_alshomary21.json",
-        data_path / "preprocessed_data" / "test_with_claim_df.csv"
-    )
-
-    process_dataset(
-        bows_dataset,
-        metadata,
-        dataset_name,
-        "conclusion_generation_belief_generation_valid_alshomary21.json",
-        data_path / "preprocessed_data" / "valid_with_claim_df.csv"
+        [data_path / "preprocessed_data" / "test_with_claim_df.csv"],
+        "test"
     )
 
     metadata.add_genre(Genres.DEBATE_PORTALS)

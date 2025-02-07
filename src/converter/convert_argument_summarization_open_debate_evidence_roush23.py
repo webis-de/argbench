@@ -1,13 +1,13 @@
 import os
 import pandas as pd
-from common import Output, Metadata, add_seed_arg, set_seed, datasets_path
+from common import Output, Metadata, add_seed_arg, set_seed, datasets_path, find_topic_size_to_split
 from argparse import ArgumentParser
 from datasets import load_dataset
 from tqdm import tqdm
 DATASET_NAME = "argument_summarization_open_debate_evidence_roush23"
-
-
-def make_output(dataset, metadata, dataset_name, output_file):
+DATASET_FILE_TEST = "argument_summarization_open_debate_evidence_test_roush23"
+DATASET_FILE_TRAIN = "argument_summarization_open_debate_evidence_train_roush23"
+def make_output(dataset, metadata, output_file, split):
     output = Output(DATASET_NAME)
 
     output.append_definition("Given the following argument, generate a short summary.")
@@ -19,20 +19,28 @@ def make_output(dataset, metadata, dataset_name, output_file):
         if not input_text or not output_text:
             continue
         output.append_instance(id, input_text, output_text)
-    metadata.add_dataset(dataset_name)
+    metadata.add_dataset(output_file, split)
     output.write_output(output_file)
 
 
 def process_dataset(cache_directory):
+    all_data_frames = []
     for i,file in tqdm(enumerate(os.listdir(cache_directory))):
         if file.endswith("csv"):
             df = pd.read_csv(os.path.join(cache_directory,file))
-            df = df.sample(100000)
-            output_file = f"{DATASET_NAME}_with_tag_cleaned_{i}.json"
-            metadata = Metadata(output_file)
-            metadata.add_evaluation_metric("f1_macro")
-            metadata.write_metadata()
-            make_output(df, metadata, DATASET_NAME, output_file)
+            df = df.sample(5000)
+            all_data_frames.append(df)
+
+    df_all = pd.concat(all_data_frames)
+    df_test, df_train = find_topic_size_to_split(df_all, "block")
+
+
+    metadata = Metadata(DATASET_NAME)
+
+
+    make_output(df_test, metadata, DATASET_FILE_TEST, "test")
+    make_output(df_train, metadata, DATASET_FILE_TRAIN, "train")
+    metadata.write_metadata()
 
 if __name__ == "__main__":
     # Argument parser setup

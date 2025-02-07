@@ -45,17 +45,20 @@ if __name__ == "__main__":
 
     datasets = pd.concat(datasets)
 
+    datasets["set"] = datasets["set"].map(lambda x: "train" if x == "val" or x == "train" else "test" )
+
     dataset_train = datasets[datasets["set"]=="train"]
     dataset_test = datasets[datasets["set"]=="test"]
-    dataset_val = datasets[datasets["set"]=="val"]
+
+
 
     make_output(dataset_train, "stance_classification_ukp_sentential_train_stab18.json")
     make_output(dataset_test, "stance_classification_ukp_sentential_test_stab18.json")
-    make_output(dataset_val, "stance_classification_ukp_sentential_val_stab18.json")
+
 
     metadata.add_dataset("stance_classification_ukp_sentential_train_stab18.json", "train")
     metadata.add_dataset("stance_classification_ukp_sentential_test_stab18.json", "test")
-    metadata.add_dataset("stance_classification_ukp_sentential_val_stab18.json", "dev")
+
 
     metadata.add_genre(Genres.ESSAYS)
     metadata.add_subarea(Subareas.MINING)

@@ -1,4 +1,5 @@
-from common import Genres, Output, Subareas, datasets_path, Metadata, add_seed_arg, set_seed, read_tabular
+from common import Genres, Output, Subareas, datasets_path, Metadata, add_seed_arg, set_seed, read_tabular, \
+    find_topic_size_to_split
 from argparse import ArgumentParser
 from random import sample
 
@@ -48,11 +49,8 @@ if __name__ == "__main__":
         "support": "Support",
         "attack": "Attack"
     })
-    topics = dataset["topic"].unique().tolist()
-    topic_size_test = len(topics) * 3 //10
-    test_topics = sample(topics, topic_size_test)
-    df_test = dataset[dataset["topic"].isin(test_topics)]
-    df_train = dataset[~dataset["topic"].isin(test_topics)]
+
+    df_test, df_train = find_topic_size_to_split(dataset, "topic")
     print(len(df_train))
     print(len(df_test))
     print(len(dataset))

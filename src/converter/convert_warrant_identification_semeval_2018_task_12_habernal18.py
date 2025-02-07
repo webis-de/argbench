@@ -1,3 +1,5 @@
+import pandas as pd
+
 from common import Genres, Output, Subareas, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 
@@ -45,12 +47,15 @@ if __name__ == "__main__":
     test_dataset = read_tabular(data_folder / "preprocessed_tst.txt", separator="\t")
     dev_dataset = read_tabular(data_folder / "preprocessed_dev.txt", separator="\t")
 
+    print(f"{len(train_dataset)}")
+    print(f"{len(dev_dataset)}")
+
+    train_dataset = pd.concat([train_dataset, dev_dataset])
+    print(f"{len(train_dataset)}")
     print("Train")
     process_split(train_dataset, metadata, "train")
     print("Test")
     process_split(test_dataset, metadata, "test")
-    print("Dev")
-    process_split(dev_dataset, metadata, "dev")
 
     metadata.add_genre(Genres.DEBATES)
     metadata.add_subarea(Subareas.MINING)

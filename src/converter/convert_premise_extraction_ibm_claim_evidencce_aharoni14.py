@@ -1,26 +1,21 @@
-from common import Genres, Output, Subareas, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed
+import random
+
+from common import Genres, Output, Subareas, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed, \
+    find_topic_size_to_split
 from argparse import ArgumentParser
 import uuid
 import re
-
+import math
 dataset_name = "premise_extraction_ibm_claim_evidence_aharoni14"
-dataset_file_study = "premise_extraction_study_ibm_claim_evidence_aharoni14.json"
-dataset_file_anecdote = "premise_extraction_anecdote_ibm_claim_evidence_aharoni14.json"
-dataset_file_expert = "premise_extraction_expert_ibm_claim_evidence_aharoni14.json"
+
+template_file_study = "premise_extraction_study_ibm_claim_evidence_{split}_aharoni14.json"
+template_file_anecdote = "premise_extraction_anecdote_ibm_claim_evidence_{split}_aharoni14.json"
+template_file_expert = "premise_extraction_expert_ibm_claim_evidence_{split}_aharoni14.json"
 space_remover = re.compile("\s+")
 
-if __name__ == "__main__":
-    arg_parser = ArgumentParser(description="What dataset will be processed?")
-    add_seed_arg(arg_parser)
-    arg_parser.add_argument("-f", "--front_add", default=1, type=int, help="Add # of articles in front of found evidence paragraph")
-    arg_parser.add_argument("-b", "--back_add", default=1, type=int, help="Add # of articles in back of found evidence paragraph")
-    args = arg_parser.parse_known_args()[0]
-    set_seed(args)
 
-    data_path = datasets_path() / "ibm-claim-evidence" / "2014_7_18_ibm_CDEdata.csv"
-    articles_folder = datasets_path() / "ibm-claim-evidence" / "wiki12_articles"
 
-    metadata = Metadata(dataset_name)
+def preprocess_dataset(dataset, metadata, split):
     output_study = Output(dataset_name)
     output_study.append_definition("""Given the following Wikipedia section context, claim, detect study evidence on the given context that supports the claim
                               A claim is an assertion that an argument tries to prove. Study evidence is the results of a quantitative analysis of data, 
@@ -33,7 +28,7 @@ if __name__ == "__main__":
     output_anecdotal.append_definition("""Given the following Wikipedia section context, claim, detect expert evidence on the given context that supports the claim
                               A claim is an assertion that an argument tries to prove. Anecotal evidence is a description of an episode(s), centered on individual(s) or clearly located in place and/or in time.""")
 
-    dataset = read_tabular(data_path)
+
 
     dataset["Article"] = dataset["Article"].str.replace(" ", "_")
     dataset["wiki_article"] = ""
@@ -53,9 +48,9 @@ if __name__ == "__main__":
             article_matched = []
             for i, am in enumerate(article_match):
                 if (evidence_match in am or
-                    am in evidence_match or
-                    evidence_match[:5] in am or
-                    evidence_match[-5:] in am):
+                        am in evidence_match or
+                        evidence_match[:5] in am or
+                        evidence_match[-5:] in am):
                     article_matched.append(i)
             if len(article_matched) < 1:
                 print(article_contents)
@@ -97,12 +92,9 @@ if __name__ == "__main__":
         output_study.append_instance(id, prompt, [evidence_strings_study])
         output_anecdotal.append_instance(id, prompt, [evidence_string_anecdotes])
 
-    metadata.add_dataset(dataset_file_study)
-    metadata.add_dataset(dataset_file_anecdote)
-    metadata.add_dataset(dataset_file_expert)
-
-    metadata.add_genre(Genres.WIKIPEDIA)
-    metadata.add_subarea(Subareas.MINING)
+    dataset_file_study = template_file_study.replace("{split}",split)
+    dataset_file_expert = template_file_expert.replace("{split}", split)
+    dataset_file_anecdote = template_file_anecdote.replace("{split}", split)
 
     output_study.append_genre(Genres.WIKIPEDIA)
     output_study.append_subarea(Subareas.MINING)
@@ -113,6 +105,32 @@ if __name__ == "__main__":
     output_anecdotal.append_genre(Genres.WIKIPEDIA)
     output_anecdotal.append_subarea(Subareas.MINING)
     output_anecdotal.write_output(dataset_file_anecdote)
+    metadata.add_dataset(dataset_file_study, split)
+    metadata.add_dataset(dataset_file_anecdote, split)
+    metadata.add_dataset(dataset_file_expert, split)
+
+if __name__ == "__main__":
+    arg_parser = ArgumentParser(description="What dataset will be processed?")
+    add_seed_arg(arg_parser)
+    arg_parser.add_argument("-f", "--front_add", default=1, type=int, help="Add # of articles in front of found evidence paragraph")
+    arg_parser.add_argument("-b", "--back_add", default=1, type=int, help="Add # of articles in back of found evidence paragraph")
+    args = arg_parser.parse_known_args()[0]
+    set_seed(args)
+
+    data_path = datasets_path() / "ibm-claim-evidence" / "2014_7_18_ibm_CDEdata.csv"
+    articles_folder = datasets_path() / "ibm-claim-evidence" / "wiki12_articles"
+
+    metadata = Metadata(dataset_name)
+    dataset = read_tabular(data_path)
+    df_test, df_train = find_topic_size_to_split(dataset, "Topic")
+
+    print(len(df_train))
+    print(len(df_test))
+
+    metadata.add_genre(Genres.WIKIPEDIA)
+    metadata.add_subarea(Subareas.MINING)
+    preprocess_dataset(df_train, metadata, "train")
+    preprocess_dataset(df_test, metadata, "test")
 
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()

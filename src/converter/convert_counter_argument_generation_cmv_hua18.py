@@ -6,10 +6,10 @@ from lxml import etree
 DATASET_NAME = "counter_argument_generation_cmv_hua18"
 
 
-def process_dataset(op_path, arg_path, keynote_path):
-    output = Output(DATASET_NAME)
-
-    output.append_definition("Given a statement and relevant evidence, generate a counterargument that attacks to the original argument and highlights the given keyphrases.")
+def process_dataset(op_path, arg_path, keynote_path, output=None):
+    if not output:
+        output = Output(DATASET_NAME)
+        output.append_definition("Given a statement and relevant evidence, generate a counterargument that attacks to the original argument and highlights the given keyphrases.")
 
     op_file = open(op_path, "r")
     arg_file = open(arg_path, "r")
@@ -64,14 +64,17 @@ if __name__ == "__main__":
 
     print("Train")
     train = process_dataset(train_op_path, train_arg_path, train_kw_path)
+    print(f"train {len(train.instances)}")
 
     print("Valid")
-    valid = process_dataset(valid_op_path, valid_arg_path, valid_kw_path)
+    process_dataset(valid_op_path, valid_arg_path, valid_kw_path, train)
+    print(f"train + valid {len(train.instances)}")
+
     print("Test")
     test = process_dataset(test_op_path, test_arg_path, test_kw_path)
-    print(f"train {len(train.instances)}")
-    print(f"valid {len(valid.instances)}")
-    print(f"test {len(test.instances)}")
+
+
+
     train.append_genre(Genres.DEBATE_PORTALS)
     train.append_genre(Genres.WIKIPEDIA)
     train.append_subarea(Subareas.GENERATION)
@@ -80,17 +83,12 @@ if __name__ == "__main__":
     test.append_genre(Genres.WIKIPEDIA)
     test.append_subarea(Subareas.GENERATION)
 
-    valid.append_genre(Genres.DEBATE_PORTALS)
-    valid.append_genre(Genres.WIKIPEDIA)
-    valid.append_subarea(Subareas.GENERATION)
 
     train.write_output("counter_argument_generation_cmv_train_hua18.json")
-    valid.write_output("counter_argument_generation_cmv_valid_hua18.json")
     test.write_output("counter_argument_generation_cmv_test_hua18.json")
 
     metadata.add_dataset("counter_argument_generation_cmv_train_hua18.json", "train")
     metadata.add_dataset("counter_argument_generation_cmv_test_hua18.json", "test")
-    metadata.add_dataset("counter_argument_generation_cmv_valid_hua18.json", "valid")
 
     metadata.add_genre(Genres.DEBATE_PORTALS)
     metadata.add_genre(Genres.WIKIPEDIA)
