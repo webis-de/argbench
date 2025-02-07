@@ -56,8 +56,8 @@ def main():
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
     dataset_name = "argument_relation_identification_erulemaking_park18"
-    dataset_file = "argument_relation_identification_erulemaking_{split}_park18.json"
-
+    dataset_file_test = "argument_relation_identification_erulemaking_test_park18.json"
+    dataset_file_train = "argument_relation_identification_erulemaking_train_park18.json"
     output = create_output(dataset_name)
     metadata = Metadata(dataset_name)
     metadata.add_evaluation_metric("rouge")
@@ -74,18 +74,18 @@ def main():
         test_docs = [docs[i] for i in test_indices]
         train_docs = [docs[i] for i in train_indices]
         process_json_file(train_docs, output, )
-        output.write_output(dataset_file.replace("{split}", "train"))
+        output.write_output(dataset_file_train)
         output = create_output(dataset_name)
         process_json_file(test_docs, output )
-        output.write_output(dataset_file.replace("{split}", "test"))
+        output.write_output(dataset_file_test)
 
-    metadata.add_dataset(dataset_file)
-
+    metadata.add_dataset(dataset_file_test, "test")
+    metadata.add_dataset(dataset_file_train, "train")
     metadata.add_genre(Genres.DEBATE_PORTALS)
     metadata.add_subarea(Subareas.REASONING)
     metadata.write_metadata()
 
-    print(f"All files processed and saved to {dataset_file}")
+
 
 
 if __name__ == "__main__":

@@ -1,10 +1,13 @@
-from common import Output, tasks_path, Metadata, add_seed_arg, set_seed, datasets_path, Genres, Subareas
+import pandas as pd
+
+from common import Output, tasks_path, Metadata, add_seed_arg, set_seed, datasets_path, Genres, Subareas, find_topic_size_to_split
 from argparse import ArgumentParser
 import pickle
 from dataclasses import dataclass
 
 DATASET_NAME = "argument_generation_argu_saha23"
-DATASET_FILE = "argument_generation_argu_saha23.json"
+DATASET_FILE_TRAIN = "argument_generation_argu_train_saha23.json"
+DATASET_FILE_TEST = "argument_generation_argu_test_saha23.json"
 
 @dataclass
 class Prompt:
@@ -12,6 +15,30 @@ class Prompt:
     prompt: str
     output: str
 
+def process_split(data, data_path):
+    output = Output(DATASET_NAME)
+    for _, arg_data in data.iterrows():
+        id = arg_data["id"]
+        argument_label = arg_data["basn_lbl"]
+        argument_stance = arg_data["stance"]
+        argument_topic = arg_data["topic"]
+
+        arg_facts = []
+        for var in arg_data["var_map"]:
+            arg_facts.append(arg_data["var_map"][var])
+
+        arg_facts = "; ".join(arg_facts)
+
+        prompt = f"Argument Type: {argument_label}\nTopic: {argument_topic}\nStance: {argument_stance}\nFacts: {arg_facts}"
+        completion = arg_data["clean_sent"]
+        id = str(id)
+        arguments.append(Prompt(id, prompt, completion))
+    output.append_definition("Given argument type, topic and stance generate an argument from listed facts.")
+    for arg in arguments:
+        output.append_instance(arg.id, arg.prompt, [arg.output])
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_subarea(Subareas.GENERATION)
+    output.write_output(data_path)
 
 if __name__ == "__main__":
     arg_parser = ArgumentParser(description="Program to convert gretz20 ibm quality dataset into appropriate form")
@@ -27,35 +54,20 @@ if __name__ == "__main__":
     data_path = datasets_path() / "argu" / "argu_generator_data.pkl"
 
     arguments = []
+    records = pd.read_pickle(data_path)
+    ids, records = list(records.keys()), list(records.values())
 
-    with open(data_path, "rb") as f:
-        data = pickle.load(f)
-        for id in data:
-            arg_data = data[id]
-            argument_label = arg_data["basn_lbl"]
-            argument_stance = arg_data["stance"]
-            argument_topic = arg_data["topic"]
-
-            arg_facts = []
-            for var in arg_data["var_map"]:
-                arg_facts.append(arg_data["var_map"][var])
-
-            arg_facts = "; ".join(arg_facts)
-
-            prompt = f"Argument Type: {argument_label}\nTopic: {argument_topic}\nStance: {argument_stance}\nFacts: {arg_facts}"
-            output = arg_data["clean_sent"]
-            id = str(id)
-            arguments.append(Prompt(id, prompt, output))
-
-    output = Output(DATASET_NAME)
-    output.append_genre(Genres.DEBATE_PORTALS)
-    output.append_subarea(Subareas.GENERATION)
-    output.append_definition("Given argument type, topic and stance generate an argument from listed facts.")
-    for arg in arguments:
-        output.append_instance(arg.id, arg.prompt, [arg.output])
-
-    metadata.add_dataset(DATASET_FILE)
+    df_data = pd.DataFrame.from_records(records)
+    df_data["id"] = ids
+    print(df_data.info())
+    df_test, df_train = find_topic_size_to_split(df_data, "topic")
+    process_split(df_test, DATASET_FILE_TEST)
+    process_split(df_train, DATASET_FILE_TRAIN)
+    print(len(df_test))
+    print(len(df_train))
+    metadata.add_dataset(DATASET_FILE_TEST, "test")
+    metadata.add_dataset(DATASET_FILE_TRAIN, "train")
     metadata.add_genre(Genres.DEBATE_PORTALS)
     metadata.add_subarea(Subareas.GENERATION)
-    output.write_output(DATASET_FILE)
+
     metadata.write_metadata()

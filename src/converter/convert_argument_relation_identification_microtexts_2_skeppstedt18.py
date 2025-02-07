@@ -136,7 +136,8 @@ if __name__ == "__main__":
 
 
     metadata = Metadata(DATASET_NAME)
-    metadata.add_dataset(DATASET_FILE)
+    metadata.add_dataset(DATASET_FILE.replace("{split}", "train"), "train")
+    metadata.add_dataset(DATASET_FILE.replace("{split}", "test"), "test")
     metadata.add_genre(Genres.ESSAYS)
     metadata.add_subarea(Subareas.REASONING)
     metadata.add_evaluation_metric("f1_macro")

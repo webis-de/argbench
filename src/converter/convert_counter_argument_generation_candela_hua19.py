@@ -6,43 +6,45 @@ import pprint
 
 DATASET_NAME = "counter_argument_generation_candela_hua19"
 
-def process_dataset(data_file, output_file, split_name, metadata):
+def process_dataset(data_files, output_file, split_name, metadata):
     output = Output(DATASET_NAME)
     output.append_definition("Write a counterargument to original post and take into account retrieved passages related to the post.")
-    dataset = open(data_file, "r")
-    file_instances = ndjson.load(dataset)
+    for data_file in data_files:
+        dataset = open(data_file, "r")
+        file_instances = ndjson.load(dataset)
 
-    tokenizer = TreebankWordDetokenizer()
+        tokenizer = TreebankWordDetokenizer()
 
-    for instance in file_instances:
-        op = tokenizer.detokenize(instance["op"])
+        for instance in file_instances:
+            op = tokenizer.detokenize(instance["op"])
 
-        counter_phrase = []
-        for counter_sentence in instance["target_counterarg"]:
-            try:
-                sentence = tokenizer.detokenize(counter_sentence["tokens"])
-                counter_phrase.append(sentence)
-            except Exception:
-                print(counter_sentence)
-                raise Exception()
-        counter_phrase = " ".join(counter_phrase)
+            counter_phrase = []
+            for counter_sentence in instance["target_counterarg"]:
+                try:
+                    sentence = tokenizer.detokenize(counter_sentence["tokens"])
+                    counter_phrase.append(sentence)
+                except Exception:
+                    print(counter_sentence)
+                    raise Exception()
+            counter_phrase = " ".join(counter_phrase)
 
-        retrieved_phrase = []
-        for retrieved_sentence in instance["target_retrieved_passages"][:1]:
-            try:
-                sentence = tokenizer.detokenize(t for s in retrieved_sentence["sentences"][:14] for t in s)
-                retrieved_phrase.append(sentence)
-            except Exception:
-                pprint.pprint(instance)
-                raise Exception()
+            retrieved_phrase = []
+            for retrieved_sentence in instance["target_retrieved_passages"][:1]:
+                try:
+                    sentence = tokenizer.detokenize(t for s in retrieved_sentence["sentences"][:14] for t in s)
+                    retrieved_phrase.append(sentence)
+                except Exception:
+                    pprint.pprint(instance)
+                    raise Exception()
 
-        retrieved_phrase = "\n".join(retrieved_phrase)
+            retrieved_phrase = "\n".join(retrieved_phrase)
 
-        prompt = f"Original Post: {op}\nRetrieved Passages: {retrieved_phrase}"
+            prompt = f"Original Post: {op}\nRetrieved Passages: {retrieved_phrase}"
 
-        output.append_instance(instance["url"], prompt, [counter_phrase])
-
-    dataset.close()
+            output.append_instance(instance["url"], prompt, [counter_phrase])
+        print(data_file)
+        print(len(output.instances))
+        dataset.close()
     output.append_genre(Genres.ESSAYS)
     output.append_subarea(Subareas.GENERATION)
     output.write_output(output_file)
@@ -61,8 +63,9 @@ if __name__ == "__main__":
 
     metadata = Metadata(DATASET_NAME)
 
+    train_datafiles = [data_path / "train.jsonl", data_path / "dev.jsonl"]
     process_dataset(
-        data_path / "train.jsonl",
+        train_datafiles,
         "counter_argument_generation_candela_train_hua19.json",
         "train",
         metadata
@@ -70,20 +73,13 @@ if __name__ == "__main__":
     print("Train processed")
 
     process_dataset(
-        data_path / "oracle_test.jsonl",
+        [data_path / "oracle_test.jsonl"],
         "counter_argument_generation_candela_test_hua19.json",
         "test",
         metadata
     )
     print("Test processed")
 
-    process_dataset(
-        data_path / "dev.jsonl",
-        "counter_argument_generation_candela_dev_hua19.json",
-        "dev",
-        metadata
-    )
-    print("Dev processed")
 
     metadata.add_genre(Genres.ESSAYS)
     metadata.add_subarea(Subareas.GENERATION)

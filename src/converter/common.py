@@ -1,13 +1,15 @@
 import random
-from enum import Enum
-from typing import List
 import pandas as pd
 import json
-from pathlib import Path
 import os
 import numpy as np
+from random import sample
+from typing import List
+from enum import Enum
 from yaml import load, Loader
-
+from pathlib import Path
+import sys
+import math
 def read_tabular(path, separator=",", **kwargs):
     """Reads tabular csv file"""
     dataset = pd.read_csv(path, sep=separator, **kwargs)
@@ -39,6 +41,27 @@ def set_seed(parsed_args):
     random.seed(parsed_args.seed)
     np.random.seed(parsed_args.seed)
 
+def find_topic_size_to_split(df, topic_label):
+
+    topics = df[topic_label].unique().tolist()
+
+    df_test_ideal = df.sample(frac=0.2)
+    test_topic_size = math.ceil(len(topics) * 0.2)
+
+    min_dist = sys.maxsize
+    best_test_topic = random.sample(topics, test_topic_size)
+    for i in range(10):
+
+        test_topics = random.sample(topics, test_topic_size)
+        df_test = df[df[topic_label].isin(test_topics)]
+        dist = abs(len(df_test) - len(df_test_ideal))
+        if dist < min_dist:
+            min_dist = dist
+            best_test_topic = test_topics
+    train_topics = [topic for topic in topics if topic not in best_test_topic]
+    df_test = df[df[topic_label].isin(best_test_topic)]
+    df_train = df[df[topic_label].isin(train_topics)]
+    return df_test, df_train
 
 class Genres(Enum):
     """Valid genres"""
@@ -220,3 +243,4 @@ class Metadata:
         """Write metadata file to disk"""
         with open(self.metadata_path, "w") as f:
             json.dump(self.dataset_data, f, indent=2)
+
