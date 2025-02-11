@@ -124,7 +124,7 @@ def write_split(files, split):
             output.append_instance(id, document , [argument_relations_formatted])
     output.append_genre(Genres.ESSAYS)
     output.append_subarea(Subareas.REASONING)
-    output.write_output(DATASET_FILE.replace("{split}", split))
+    output.write_output(DATASET_FILE.format(split=split))
 
 if __name__ == "__main__":
     argument_parser = ArgumentParser(description="Convert argument mining dataset")
@@ -136,7 +136,7 @@ if __name__ == "__main__":
 
 
     metadata = Metadata(DATASET_NAME)
-    metadata.add_dataset(DATASET_FILE.replace("{split}", "train"), "train")
+    metadata.add_dataset(DATASET_FILE.format(split="train"), "train")
     metadata.add_dataset(DATASET_FILE.replace("{split}", "test"), "test")
     metadata.add_genre(Genres.ESSAYS)
     metadata.add_subarea(Subareas.REASONING)

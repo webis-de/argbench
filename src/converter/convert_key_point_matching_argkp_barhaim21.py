@@ -9,7 +9,7 @@ dataset_file_template = "key_point_matching_argkp_{split}_barhaim21.json"
 def preprocess_data(dataset, split, metadata):
     output = Output(dataset_name)
 
-    dataset_file = dataset_file_template.replace("{split}", split)
+    dataset_file = dataset_file_template.format(split=split)
 
     output.append_definition("Judge if keypoint summarizes the argument. Possible responses: Match if argument is summarized by key point and No Match if argument is not summarized by key point.")
     for row in dataset.iterrows():

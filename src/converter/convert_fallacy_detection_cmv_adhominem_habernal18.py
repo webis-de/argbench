@@ -11,7 +11,7 @@ dataset_file_format = "fallacy_detection_cmv_adhominem_{split}_habernal18.json"
 
 def process_data(data, split):
 
-    dataset_file_name = dataset_file_format.replace("{split}", split)
+    dataset_file_name = dataset_file_format.format(split=split)
     output = Output(dataset_name)
     output.append_definition("Classify if the following argument is an ad-hominem (personal attack) or not. Answer with ad-hominem or not-ad-hominem")
 

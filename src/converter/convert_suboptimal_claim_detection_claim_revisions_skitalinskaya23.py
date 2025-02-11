@@ -32,7 +32,7 @@ dataset_template = "suboptimal_claim_detection_claim_revisions_{split}_skitalins
 #     output.write_output(dataset_file)
 
 def process_data(dataset, metadata, split):
-    dataset_file = dataset_template.replace("{split}", split)
+    dataset_file = dataset_template.format(split=split)
     output = Output(dataset_name)
     output.append_definition("Judge if claim can be improved by revising it. Possible outputs: Improvable if revision should be made, Non-Improvable if no revision is necessary.")
     for row in dataset.iterrows():

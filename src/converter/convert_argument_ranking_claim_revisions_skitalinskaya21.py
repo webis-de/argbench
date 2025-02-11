@@ -23,7 +23,7 @@ def process_data(dataset, metadata, split):
 
     output.append_genre(Genres.DEBATES)
     output.append_subarea(Subareas.RANKING)
-    split_dataset_file = dataset_file.replace("{split}", split)
+    split_dataset_file = dataset_file.format(split=split)
     metadata.add_dataset(split_dataset_file)
     output.write_output(split_dataset_file)
 

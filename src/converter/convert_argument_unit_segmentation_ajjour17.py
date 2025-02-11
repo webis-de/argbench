@@ -161,7 +161,7 @@ if __name__ == "__main__":
         dataset_path = (datasets_path() / "unit-segmentation" / "simple" / dataset)
 
         dataset_name = DATASET_NAME_TEMPLATE.replace("{dataset}", dataset)
-        dataset_file_train = DATASET_FILE_TEMPLATE.replace("{dataset}", dataset).replace("{split}", "train")
+        dataset_file_train = DATASET_FILE_TEMPLATE.replace("{dataset}", dataset).format(split="train")
         dataset_file_test = DATASET_FILE_TEMPLATE.replace("{dataset}", dataset).replace("{split}", "test")
         train_data, test_data = process_folder(dataset_path)
         train_data, test_data = convert_arguments(dataset_name, test_data, train_data)

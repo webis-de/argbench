@@ -31,8 +31,8 @@ controversy_task_definition = "Classify the following post according to its cont
 reasonableness_task_definition = "Classify the following post according to its reasonableness into : Quite Stupid, Neutral, Quite Reasonable. "
 
 def process_dataset(data, split):
-    controversy_data_file = controversy_dataset_template.replace("{split}", split)
-    reasonableness_data_file = reaonsableness_dataset_template.replace("{split}", split)
+    controversy_data_file = controversy_dataset_template.format(split=split)
+    reasonableness_data_file = reaonsableness_dataset_template.format(split=split)
 
     controversy_output = Output(controversy_dataset)
     controversy_output.append_definition(controversy_task_definition)

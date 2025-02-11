@@ -36,7 +36,7 @@ if __name__ == "__main__":
 
     metadata = Metadata(dataset_name)
     metadata.add_dataset(dataset_file.replace("{split}","train"), "train")
-    metadata.add_dataset(dataset_file.replace("{split}","test"), "test")
+    metadata.add_dataset(dataset_file.format(split="test"), "test")
     metadata.add_evaluation_metric("f1_macro")
     metadata.add_genre(Genres.DEBATES)
     metadata.add_subarea(Subareas.MINING)
@@ -55,6 +55,6 @@ if __name__ == "__main__":
     print(len(df_test))
     print(len(dataset))
     process_split(df_train, dataset_file.replace("{split}","train"))
-    process_split(df_train, dataset_file.replace("{split}","test"))
+    process_split(df_train, dataset_file.format(split="test"))
 
 

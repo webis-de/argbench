@@ -75,7 +75,7 @@ def main():
     for split in ["test", "train"]:
         output = Output(dataset_name)
         output.append_definition(task_definition)
-        dataset_file = dataset_file_template.replace("{split}", split)
+        dataset_file = dataset_file_template.format(split=split)
         # Process XMI files
         process_xmi_files(xmi_directory, output, split_map, split)
 

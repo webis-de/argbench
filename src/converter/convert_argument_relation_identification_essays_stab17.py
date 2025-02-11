@@ -105,7 +105,7 @@ def main():
         # Write the dataset to a JSON file
         output.append_genre(Genres.ESSAYS)
         output.append_subarea(Subareas.REASONING)
-        dataset_path = template_path.replace("{split}", split)
+        dataset_path = template_path.format(split=split)
         output.write_output(dataset_path)
 
         # Create and save metadata

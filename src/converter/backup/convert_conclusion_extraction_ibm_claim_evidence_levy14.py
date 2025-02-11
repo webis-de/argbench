@@ -23,7 +23,7 @@ def process_dataset(dataset, split):
      Prepend each sentence that contains a claim with Claim: and a sentence that does not contain claim with Not-Claim.
     """)
 
-    dataset_file = dataset_template.replace("{split}", split)
+    dataset_file = dataset_template.format(split=split)
 
     dataset["Article"] = dataset["Article"].str.replace(" ", "_")
     dataset["wiki_article"] = ""
