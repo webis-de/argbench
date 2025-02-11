@@ -4,9 +4,10 @@ from common import Genres, Output, Subareas, datasets_path, tasks_path, Metadata
 from dataclasses import dataclass
 from argparse import ArgumentParser
 from typing import List
+from tqdm import tqdm
 import random
 
-DATASET_NAME = "argument_unit_segmentation_ajjour17"
+
 
 @dataclass
 class Unit:
@@ -29,7 +30,7 @@ def extract_file(path: Path):
     last_token_label = None
     non_arg_start = 0
     is_inside_non_arg = False
-    for i, line in enumerate(datafile):
+    for i, line in tqdm(enumerate(datafile)):
 
         token_row = line.split("\t\t")
 
@@ -80,45 +81,46 @@ def extract_file(path: Path):
     datafile.close()
     return units
 
+DATASET_NAME_TEMPLATE = "argument_unit_segmentation_{dataset}_ajjour17"
+DATASET_FILE_TEMPLATE = "argument_unit_segmentation_{dataset}_{split}_ajjour17"
 
 def process_folder(path: Path):
-    train_datasets = []
-    test_datasets = []
-    for split in path.iterdir():
-        train_path = split / "trainingSet"
-        test_path = split / "testingSet"
+    train_dataset = []
+    test_dataset = []
+    train_path = path / "trainingSet"
+    test_path = path / "testingSet"
 
-        for f in train_path.iterdir():
-            text = extract_file(f)
-            train_datasets.append(text)
+    for f in train_path.iterdir():
+        text = extract_file(f)
+        train_dataset.append(text)
 
-        for f in test_path.iterdir():
-            text = extract_file(f)
-            test_datasets.append(text)
+    for f in test_path.iterdir():
+        text = extract_file(f)
+        test_dataset.append(text)
 
-    return train_datasets, test_datasets
+    return train_dataset, test_dataset
 
 
-def convert_arguments(train_datasets, test_datasets):
+def convert_arguments(dataset_name, test_dataset, train_dataset):
     prompt = """Given the following document, split all of the document into argumentative units and non-argumentative units.
 An argumentative unit is a statement that has an argumentative function for example a claim or anecdote.
 Prepend each argumentative unit with argumentative: and spans that are not Argumentative with Non-argumentative:.
 Output the extracted spans as they are orderded in the given document and separate them by a new line.
 Do not add a new formating or enumeration also do not rephrase the argument units. Order the output spans as they appear in the document."""
 
-    train_output = Output(DATASET_NAME)
-    test_output = Output(DATASET_NAME)
+    train_output = Output(dataset_name)
+    test_output = Output(dataset_name)
 
     train_output.append_definition(prompt)
     test_output.append_definition(prompt)
 
-    for dataset in train_datasets:
-        extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in dataset.units])
-        train_output.append_instance(dataset.fragment_id, dataset.text, [extracted_units])
+    for file in tqdm(train_dataset):
+        extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in file.units])
+        train_output.append_instance(file.fragment_id, file.text, [extracted_units])
 
-    for dataset in test_datasets:
-        extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in dataset.units])
-        test_output.append_instance(dataset.fragment_id, dataset.text, [extracted_units])
+    for file in tqdm(test_dataset):
+        extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in file.units])
+        test_output.append_instance(file.fragment_id, file.text, [extracted_units])
 
     return train_output, test_output
 
@@ -153,33 +155,26 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    dataset_path = (datasets_path()
-                    / "web-discourse"
-                    / "segmentation-splits"
-                    / "simple")
 
     output_path = tasks_path()
+    for dataset in ["editorials", "essays", "webDiscourse"]:
+        dataset_path = (datasets_path() / "unit-segmentation" / "simple" / dataset)
 
-    metadata = Metadata(DATASET_NAME)
+        dataset_name = DATASET_NAME_TEMPLATE.replace("{dataset}", dataset)
+        dataset_file_train = DATASET_FILE_TEMPLATE.replace("{dataset}", dataset).replace("{split}", "train")
+        dataset_file_test = DATASET_FILE_TEMPLATE.replace("{dataset}", dataset).replace("{split}", "test")
+        train_data, test_data = process_folder(dataset_path)
+        train_data, test_data = convert_arguments(dataset_name, test_data, train_data)
 
-    train_editorials, test_editorials = process_folder(dataset_path)
-    train_editorials, test_editorials = convert_arguments(train_editorials, test_editorials)
+        train_data.append_genre(Genres.ESSAYS)
+        train_data.append_genre(Genres.SOCIAL_MEDIA)
+        train_data.append_subarea(Subareas.MINING)
+        test_data.append_genre(Genres.ESSAYS)
+        test_data.append_subarea(Subareas.MINING)
 
-    train_editorials.append_genre(Genres.ESSAYS)
-    train_editorials.append_genre(Genres.SOCIAL_MEDIA)
-    train_editorials.append_subarea(Subareas.MINING)
-    test_editorials.append_genre(Genres.ESSAYS)
-    test_editorials.append_subarea(Subareas.MINING)
-
-    train_editorials.write_output("argument_unit_segmentation_train_ajjour17.json")
-    test_editorials.write_output("argument_unit_segmentation_test_ajjour17.json")
-
-    metadata.add_dataset("argument_unit_segmentation_train_ajjour17.json", "train")
-    metadata.add_dataset("argument_unit_segmentation_test_ajjour17.json", "test")
-
-    metadata.add_genre(Genres.SOCIAL_MEDIA)
-    metadata.add_genre(Genres.ESSAYS)
-    metadata.add_subarea(Subareas.MINING)
-    metadata.add_evaluation_metric("rouge")
-
-    metadata.write_metadata()
+        train_data.write_output(dataset_file_train)
+        test_data.write_output(dataset_file_test)
+        metadata = Metadata(dataset_name)
+        metadata.add_dataset(dataset_file_train, "train")
+        metadata.add_dataset(dataset_file_test, "test")
+        metadata.write_metadata()

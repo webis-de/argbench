@@ -45,7 +45,8 @@ def collect_generated(output, generated, negatives):
         output.append_positive_example(prompt, arg["sent"], "")
 
     for arg in negatives:
-        prompt = f"Generate an argument on topic: {arg['topic']}.\nStance of the argument should be: {arg['stance']}.\nArgument should be related to topic via following aspect: {arg['aspect']}."
+        prompt = f"""Generate an argument on topic: {arg['topic']}.\nStance of the argument should be: {arg['stance']}.
+        \nArgument should be related to topic via following aspect: {arg['aspect']}."""
         output.append_negative_example(prompt, arg["sent"], "")
 
 
@@ -57,7 +58,7 @@ if __name__ == "__main__":
 
     metadata = Metadata(DATASET_NAME)
 
-    dataset_path = datasets_path() / "ukp-corpus-argument-generation" / "generated_arguments"
+    dataset_path = datasets_path() / "ukp-corpus-argument-generation" / "generated_a    rguments"
     output = Output(DATASET_NAME)
     output.append_definition("Given topic, generate an argument that has appropriate stance. Argument should be related to the topic in a given aspect.")
 

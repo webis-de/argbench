@@ -9,4 +9,4 @@
 #SBATCH --gpus=1
 module load Miniforge3
 conda activate task-specific
-python /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/converter/convert_argument_generation_open_debate_evidence_roush23.py
+python /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/converter/convert_argument_summarization_open_debate_evidence_roush23.py

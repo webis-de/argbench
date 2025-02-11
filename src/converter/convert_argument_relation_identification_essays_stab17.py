@@ -1,4 +1,6 @@
 import os
+
+import pandas as pd
 from lxml import etree
 from common import Output, Metadata, add_seed_arg, datasets_path, set_seed, Genres, Subareas
 from argparse import ArgumentParser
@@ -51,22 +53,24 @@ def parse_xmi_file(xmi_path):
 
     return filename, sofa_string, combined_output
 
-def process_xmi_files(xmi_directory, output):
+def process_xmi_files(xmi_directory, output, split_map, split):
     """Process all XMI files in the directory."""
     for xmi_file in os.listdir(xmi_directory):
         if xmi_file.endswith('.xmi'):
-            xmi_path = os.path.join(xmi_directory, xmi_file)
-            filename, sofa_string, combined_output = parse_xmi_file(xmi_path)
+            file_name = xmi_file.replace(".xmi","")
+            if split_map[file_name].lower() == split:
+                xmi_path = os.path.join(xmi_directory, xmi_file)
+                filename, sofa_string, combined_output = parse_xmi_file(xmi_path)
 
-            output.append_instance(filename, sofa_string, [combined_output])
-            print(f"Processed: {filename}")
+                output.append_instance(filename, sofa_string, [combined_output])
+                print(f"Processed: {filename}")
 
 
-def create_metadata(dataset_name, dataset_file):
+def create_metadata(dataset_name, dataset_file, split):
     """Create and save metadata."""
     metadata = Metadata(dataset_name)
     metadata.add_evaluation_metric("f1_macro")  # Choose appropriate evaluation metric
-    metadata.add_dataset(dataset_file)
+    metadata.add_dataset(dataset_file, split)
     metadata.add_genre(Genres.ESSAYS)
     metadata.add_subarea(Subareas.REASONING)
     metadata.write_metadata()
@@ -79,28 +83,35 @@ def main():
     arg_parser.add_argument("-a", "--custom_argument", help="Your custom argument")
     args = arg_parser.parse_known_args()[0]
     set_seed(args)  # Seed random number generation
-
+    split_path = datasets_path() / "essays-argument-mining" / "train-test-split.csv"
     xmi_directory = datasets_path() / "essays-argument-mining"
     dataset_name = "argument_relation_identification_essays_stab17"
-    dataset_file = "argument_relation_identification_essays_stab17.json"
+    template_path = "argument_relation_identification_essays_{split}_stab17.json"
 
-    output = Output(dataset_name)
-    output.append_definition(
-        """Given the following essay list of pairs of sentences where the second sentence supports or attacks the first.
-         Output first Support or Attack and then output the sentence pair separated by a new line.""")
+    df_split = pd.read_csv(split_path, sep=";")
+    print(df_split.info())
+    ids = df_split["ID"].values
+    splits = df_split["SET"].values
+    split_map = {ids[i]:splits[i] for i in range(len(ids))}
+    task_definition = """Given the following essay list of pairs of sentences where the second sentence supports or attacks the first.
+         Output first Support or Attack and then output the sentence pair separated by a new line."""
+    for split in ["train", "test"]:
+        output = Output(dataset_name)
+        output.append_definition(task_definition)
 
-    # Process XMI files
-    process_xmi_files(xmi_directory, output)
+        # Process XMI files
+        process_xmi_files(xmi_directory, output, split_map, split)
 
-    # Write the dataset to a JSON file
-    output.append_genre(Genres.ESSAYS)
-    output.append_subarea(Subareas.REASONING)
-    output.write_output(dataset_file)
+        # Write the dataset to a JSON file
+        output.append_genre(Genres.ESSAYS)
+        output.append_subarea(Subareas.REASONING)
+        dataset_path = template_path.replace("{split}", split)
+        output.write_output(dataset_path)
 
-    # Create and save metadata
-    create_metadata(dataset_name, dataset_file)
+        # Create and save metadata
+        create_metadata(dataset_name, dataset_path, split)
 
-    print(f"All files processed and saved to {dataset_file}")
+    print(f"All files processed and saved to {dataset_path}")
 
 
 if __name__ == "__main__":

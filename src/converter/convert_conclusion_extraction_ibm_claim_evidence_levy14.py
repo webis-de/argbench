@@ -1,29 +1,21 @@
-from common import Genres, Subareas, Output, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed
+from common import Genres, Subareas, Output, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed, find_topic_size_to_split
 from argparse import ArgumentParser
 import uuid
 from nltk.tokenize import sent_tokenize
 import re
 from nltk.tokenize.punkt import PunktSentenceTokenizer
 dataset_name = "conclusion_extraction_ibm_claim_evidence_levy14"
-dataset_file = "conclusion_extraction_ibm_claim_evidence_levy.json"
+dataset_template = "conclusion_extraction_ibm_claim_evidence_{split}_levy.json"
 from difflib import SequenceMatcher
 
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
 space_remover = re.compile("\s+")
+INDEX = 0
 
-if __name__ == "__main__":
-    arg_parser = ArgumentParser(description="What dataset will be processed?")
-    add_seed_arg(arg_parser)
-    arg_parser.add_argument("-f", "--front_add", default=1, type=int, help="Add # of articles in front of found evidence paragraph")
-    arg_parser.add_argument("-b", "--back_add", default=1, type=int, help="Add # of articles in back of found evidence paragraph")
-    args = arg_parser.parse_known_args()[0]
-    set_seed(args)
-
-    data_path = datasets_path() / "ibm-claim-evidence" / "2014_7_18_ibm_CDCdata.csv"
-    articles_folder = datasets_path() / "ibm-claim-evidence" / "wiki12_articles"
-
+def process_dataset(dataset, split):
+    global INDEX
     metadata = Metadata(dataset_name)
     output = Output(dataset_name)
     output.append_definition("""Split the following Wikipedia section into sentences that constitute claims and those that are not.
@@ -31,7 +23,7 @@ if __name__ == "__main__":
      Prepend each sentence that contains a claim with Claim: and a sentence that does not contain claim with Not-Claim.
     """)
 
-    dataset = read_tabular(data_path)
+    dataset_file = dataset_template.replace("{split}", split)
 
     dataset["Article"] = dataset["Article"].str.replace(" ", "_")
     dataset["wiki_article"] = ""
@@ -79,15 +71,31 @@ if __name__ == "__main__":
                         data_points += f"Not-claim: {section_sentence[i]}\n"
 
             prompt = f"Topic: {topic} \nArticle: {section_text}"
-            output.append_instance(1, prompt, [data_points])
-
+            output.append_instance(INDEX, prompt, [data_points])
+            INDEX = INDEX + 1
     output.append_genre(Genres.WIKIPEDIA)
     output.append_subarea(Subareas.MINING)
 
     metadata.add_genre(Genres.WIKIPEDIA)
     metadata.add_subarea(Subareas.MINING)
-    metadata.add_dataset(dataset_file)
+    metadata.add_dataset(dataset_file, split)
     output.write_output(dataset_file)
 
-    metadata.add_evaluation_metric("f1_macro")
+
     metadata.write_metadata()
+
+if __name__ == "__main__":
+    arg_parser = ArgumentParser(description="What dataset will be processed?")
+    add_seed_arg(arg_parser)
+    arg_parser.add_argument("-f", "--front_add", default=1, type=int, help="Add # of articles in front of found evidence paragraph")
+    arg_parser.add_argument("-b", "--back_add", default=1, type=int, help="Add # of articles in back of found evidence paragraph")
+    args = arg_parser.parse_known_args()[0]
+    set_seed(args)
+
+    data_path = datasets_path() / "ibm-claim-evidence" / "2014_7_18_ibm_CDCdata.csv"
+    articles_folder = datasets_path() / "ibm-claim-evidence" / "wiki12_articles"
+    dataset = read_tabular(data_path)
+    test_dataset, train_dataset = find_topic_size_to_split(dataset, "Topic")
+    process_dataset(test_dataset, "test")
+    process_dataset(test_dataset, "train")
+

@@ -1,9 +1,32 @@
-from common import Output, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
+from common import Output, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas, find_topic_size_to_split
 from argparse import ArgumentParser
 import uuid
 
 dataset_name = "key_point_matching_argkp_barhaim21"
-dataset_file = "key_point_matching_argkp_barhaim21.json"
+dataset_file_template = "key_point_matching_argkp_{split}_barhaim21.json"
+
+
+def preprocess_data(dataset, split, metadata):
+    output = Output(dataset_name)
+
+    dataset_file = dataset_file_template.replace("{split}", split)
+
+    output.append_definition("Judge if keypoint summarizes the argument. Possible responses: Match if argument is summarized by key point and No Match if argument is not summarized by key point.")
+    for row in dataset.iterrows():
+        row = row[1]
+        prompt = f"Argument: {row['argument']}\nKey Point: {row['key_point']}"
+        response = "Match" if row["label"] == 1 else "No Match"
+        wrong_response = "No Match" if row["label"] == 1 else "Match"
+        id = str(uuid.uuid4())
+        output.append_positive_example(prompt, response, "")
+        output.append_negative_example(prompt, wrong_response, "")
+
+        output.append_instance(id, prompt, [response])
+
+    metadata.add_dataset(dataset_file)
+    output.append_subarea(Subareas.CONTEXTUALIZATION)
+    output.write_output(dataset_file)
+
 
 if __name__ == "__main__":
     arg_parser = ArgumentParser(description="Program to convert ajjour unit segmentation dataset into appropriate form")
@@ -16,34 +39,11 @@ if __name__ == "__main__":
                     / "ArgKP-2021_dataset.csv")
 
     dataset = read_tabular(dataset_path)
-
-    output = Output(dataset_name)
-
-    output.append_definition("Judge if keypoint summarizes the argument. Possible responses: Match if argument is summarized by key point and No Match if argument is not summarized by key point.")
+    df_test, df_train = find_topic_size_to_split(dataset, "topic")
 
     metadata = Metadata(dataset_name)
+    preprocess_data(df_test, "test", metadata)
+    preprocess_data(df_train, "train", metadata)
 
-    for row in dataset.iterrows():
-        row = row[1]
-        prompt = f"Argument: {row['argument']}\nKey Point: {row['key_point']}"
-        response = "Match" if row["label"] == 1 else "No Match"
-        wrong_response = "No Match" if row["label"] == 1 else "Match"
-        id = str(uuid.uuid4())
-        output.append_positive_example(prompt, response, "")
-        output.append_negative_example(prompt, wrong_response, "")
-
-        output.append_instance(id, prompt, [response])
-
-    metadata.add_evaluation_metric("f1_macro")
-    metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.REASONING)
-
-    metadata.add_dataset(dataset_file)
-
-    output.append_genre(Genres.DEBATE_PORTALS)
-    output.append_genre(Genres.DEBATES)
-    output.append_subarea(Subareas.REASONING)
-    output.write_output(dataset_file)
 
     metadata.write_metadata()
