@@ -11,7 +11,7 @@ def process_split(dataset, metadata, split):
     dataset_file = f"warrant_identification_semeval_2018_task_12_{split}_habernal18.json"
     output.append_definition("""Given the following reason and claim along with the debate title and a short description of the debate they occur in, 
                              identify the correct warrant from two candidates\n
-                             Warrant 1 and Warrant 2. The warrant explains why the claim follows from the reason. """)
+                             Warrant 1 and Warrant 2. The warrant explains why the claim follows from the reason. Do not explain.\n""")
 
     for row in dataset.iterrows():
         row = row[1]
@@ -28,13 +28,13 @@ def process_split(dataset, metadata, split):
         output.append_instance(id, prompt, [label])
 
     metadata.add_dataset(dataset_file, split)
-    output.append_genre(Genres.DEBATES)
-    output.append_subarea(Subareas.MINING)
+    output.append_genre(Genres.NEWS)
+    output.append_subarea(Subareas.REASONING)
     output.write_output(dataset_file)
 
 
 if __name__ == "__main__":
-    arg_parser = ArgumentParser(description="What dataset will be processed?")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     print("Test")
     process_split(test_dataset, metadata, "test")
 
-    metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.MINING)
+    metadata.add_genre(Genres.NEWS)
+    metadata.add_subarea(Subareas.REASONING)
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()

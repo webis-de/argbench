@@ -46,12 +46,12 @@ def collect_generated(output, generated, negatives):
 
     for arg in negatives:
         prompt = f"""Generate an argument on topic: {arg['topic']}.\nStance of the argument should be: {arg['stance']}.
-        \nArgument should be related to topic via following aspect: {arg['aspect']}."""
+        \nArgument should be related to topic via following aspect: {arg['aspect']}. Do not explain."""
         output.append_negative_example(prompt, arg["sent"], "")
 
 
 if __name__ == "__main__":
-    arg_parser = ArgumentParser(description="Program to convert gretz20 ibm quality dataset into appropriate form")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
@@ -114,11 +114,11 @@ if __name__ == "__main__":
     generated, negatives = read_generated(redditcomments_school_uniforms_path)
     collect_generated(output, generated, negatives)
 
-    output.append_genre(Genres.SOCIAL_MEDIA)
+    output.append_genre(Genres.WEB)
     output.append_subarea(Subareas.GENERATION)
     output.write_output(DATASET_FILE)
 
-    metadata.add_genre(Genres.SOCIAL_MEDIA)
+    metadata.add_genre(Genres.WEB)
     metadata.add_subarea(Subareas.GENERATION)
     metadata.add_dataset(DATASET_FILE)
     metadata.add_evaluation_metric("rouge")

@@ -5,7 +5,7 @@ import uuid
 
 def process_dataset(bows_dataset, metadata, dataset_name, dataset_file, dataset_pathes, split):
     output = Output(dataset_name)
-    output.append_definition("Given discussion topic and a collection of topic staces that describe users stance on various issues, generate a claim that is based user stance.")
+    output.append_definition("Given discussion topic and a collection of topic staces that describe users stance on various issues, generate a claim that is based user stance. Do not explain.")
 
     for dataset_path in dataset_pathes:
         dataset = read_tabular(dataset_path)

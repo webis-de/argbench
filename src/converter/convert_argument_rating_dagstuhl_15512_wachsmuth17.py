@@ -6,7 +6,7 @@ import uuid
 
 p = re.compile(r"\(([a-zA-Z]+)\)")
 QUALITY_SCORES = ["Low", "Average", "High"]
-DATASET_NAME = "argument_ranking_dagstuhl_15512_wachsmuth17"
+DATASET_NAME = "argument_rating_dagstuhl_15512_{dimension}_wachsmuth17"
 
 def aggregate_labels_and_split(dataset, column):
     arguments = dataset.groupby(["argument", "issue"])[["argument", "issue", column]].apply(lambda row: row[column].value_counts().index[0]).reset_index()
@@ -14,10 +14,14 @@ def aggregate_labels_and_split(dataset, column):
     df_test, df_train = find_topic_size_to_split(arguments, "issue")
     return df_test, df_train
 
-def make_output(dataset, metadata, column, aspect_description, dataset_name, split):
-
-    output = Output(DATASET_NAME)
-    output.append_definition(f"Judge the quality of argument according to quality aspect: {column}. Quality aspect description: {aspect_description} Possible outputs: Low if arguments aspect quality is low, Average if arguments aspect quality is average, High if arguments aspect quality is high.")
+def make_output(dataset, metadata, column, aspect_description, dataset_file, split):
+    dimension = column.replace(' ', '_')
+    dataset_name = DATASET_NAME.replace('{dimension}', dimension)
+    output = Output(dataset_name)
+    output.append_definition(f"""Judge the quality of argument according to quality aspect: {column}. 
+                            Quality aspect description: {aspect_description} Possible outputs:
+                            Low if arguments aspect quality is low, Average if argument's aspect quality is average,
+                            High if arguments aspect quality is high. Do not explain.""")
 
     for row in dataset.iterrows():
         row = row[1]
@@ -27,13 +31,13 @@ def make_output(dataset, metadata, column, aspect_description, dataset_name, spl
 
         output.append_instance(id, prompt, [response])
 
-    metadata.add_dataset(dataset_name, split)
-    output.append_genre(Genres.DEBATES)
-    output.append_subarea(Subareas.RANKING)
-    output.write_output(dataset_name)
+    metadata.add_dataset(dataset_file, split)
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_subarea(Subareas.QUALITY_ASSESSMENT)
+    output.write_output(dataset_file)
 
 if __name__ == "__main__":
-    arg_parser = ArgumentParser(description="Program to convert gretz20 ibm quality dataset into appropriate form")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
@@ -83,12 +87,12 @@ if __name__ == "__main__":
     for task_name, description in tasks:
 
         df_test, df_train = aggregate_labels_and_split(dataset, task_name)
-        test_filename = f"argument_ranking_dagstuhl_15512{task_name.replace(' ', '_')}_test_wachsmuth17.json"
-        train_filename = f"argument_ranking_dagstuhl_15512{task_name.replace(' ', '_')}_train_wachsmuth17.json"
+        test_filename = f"argument_rating_dagstuhl_15512_{task_name.replace(' ', '_')}_test_wachsmuth17.json"
+        train_filename = f"argument_rating_dagstuhl_15512_{task_name.replace(' ', '_')}_train_wachsmuth17.json"
         make_output(df_test, metadata, task_name, description, test_filename, "test")
         make_output(df_train, metadata, task_name, description, train_filename, "train")
 
     metadata.add_evaluation_metric("f1_macro")
-    metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.RANKING)
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
     metadata.write_metadata()

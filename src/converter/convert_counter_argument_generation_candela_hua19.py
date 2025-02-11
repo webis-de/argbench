@@ -8,7 +8,7 @@ DATASET_NAME = "counter_argument_generation_candela_hua19"
 
 def process_dataset(data_files, output_file, split_name, metadata):
     output = Output(DATASET_NAME)
-    output.append_definition("Write a counterargument to original post and take into account retrieved passages related to the post.")
+    output.append_definition("Write a counterargument to the following original post and take into account retrieved passages related to the post. Do not explain.")
     for data_file in data_files:
         dataset = open(data_file, "r")
         file_instances = ndjson.load(dataset)
@@ -45,7 +45,7 @@ def process_dataset(data_files, output_file, split_name, metadata):
         print(data_file)
         print(len(output.instances))
         dataset.close()
-    output.append_genre(Genres.ESSAYS)
+    output.append_genre(Genres.WEB_FORUMS)
     output.append_subarea(Subareas.GENERATION)
     output.write_output(output_file)
     metadata.add_evaluation_metric("rouge")
@@ -54,7 +54,7 @@ def process_dataset(data_files, output_file, split_name, metadata):
 
 if __name__ == "__main__":
     # Input arguments for dataset generation
-    arg_parser = ArgumentParser(description="What dataset will be processed?")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
@@ -81,6 +81,6 @@ if __name__ == "__main__":
     print("Test processed")
 
 
-    metadata.add_genre(Genres.ESSAYS)
+    metadata.add_genre(Genres.WEB_FORUMS)
     metadata.add_subarea(Subareas.GENERATION)
     metadata.write_metadata()

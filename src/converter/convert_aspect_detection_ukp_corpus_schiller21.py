@@ -12,7 +12,7 @@ def process_split(dataset_files, output_file, metadata, dataset_split):
      Multiple aspects can be found in an argument.
      Prepend the aspect span with Aspect and the not-aspect span with Not-aspect.
      Do not rephrase the spans or modify it. Always process the whole argument.
-     Multiple aspects can be found in an argument. In case there is not aspect, simply output the argument with Not-aspect before it.""")
+     Multiple aspects can be found in an argument. In case there is not aspect, simply output the argument with Not-aspect before it. Do not explain.""")
     for dataset_file in dataset_files:
         with open(dataset_file, "r") as f:
             dataset = ndjson.load(f)
@@ -38,7 +38,7 @@ def process_split(dataset_files, output_file, metadata, dataset_split):
                     aspect_output += "Not-aspect:" + argument[aspect_end_index:] + "\n"
 
                 output.append_instance(id, prompt, [aspect_output])
-    output.append_genre(Genres.WIKIPEDIA)
+    output.append_genre(Genres.WEB)
     output.append_subarea(Subareas.GENERATION)
     output.write_output(output_file)
     metadata.add_dataset(output_file, dataset_split=dataset_split)
@@ -68,7 +68,7 @@ if __name__ == "__main__":
         "test"
     )
 
-    metadata.add_genre(Genres.WIKIPEDIA)
+    metadata.add_genre(Genres.WEB)
     metadata.add_subarea(Subareas.GENERATION)
     metadata.add_evaluation_metric("rouge")
     metadata.write_metadata()

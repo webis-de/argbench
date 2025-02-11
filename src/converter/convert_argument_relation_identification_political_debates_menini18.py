@@ -10,6 +10,7 @@ def process_split(dataset, path):
     """Given the following two arguments on the given topic:\n 
     "Detect whether the first argument supports, attacks, or is unrelated to the second argument.
     Only output support, attack, or unrelated.
+    Do not Explain.
     """)
     for row in dataset.iterrows():
         instance = row[1]
@@ -20,7 +21,7 @@ def process_split(dataset, path):
     output.write_output(path)
 
 if __name__ == "__main__":
-    arg_parser = ArgumentParser(description="What dataset will be processed?")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
@@ -36,7 +37,7 @@ if __name__ == "__main__":
 
     metadata = Metadata(dataset_name)
     metadata.add_dataset(dataset_file.replace("{split}","train"), "train")
-    metadata.add_dataset(dataset_file.replace("{split}","test"), "test")
+    metadata.add_dataset(dataset_file.format(split="test"), "test")
     metadata.add_evaluation_metric("f1_macro")
     metadata.add_genre(Genres.DEBATES)
     metadata.add_subarea(Subareas.MINING)
@@ -55,6 +56,6 @@ if __name__ == "__main__":
     print(len(df_test))
     print(len(dataset))
     process_split(df_train, dataset_file.replace("{split}","train"))
-    process_split(df_train, dataset_file.replace("{split}","test"))
+    process_split(df_train, dataset_file.format(split="test"))
 
 

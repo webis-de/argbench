@@ -11,9 +11,9 @@ dataset_file_format = "fallacy_detection_cmv_adhominem_{split}_habernal18.json"
 
 def process_data(data, split):
 
-    dataset_file_name = dataset_file_format.replace("{split}", split)
+    dataset_file_name = dataset_file_format.format(split=split)
     output = Output(dataset_name)
-    output.append_definition("Classify if the following argument is an ad-hominem (personal attack) or not. Answer with ad-hominem or not-ad-hominem")
+    output.append_definition("Classify if the following argument is an ad-hominem (personal attack) or not. Answer with ad-hominem or not-ad-hominem. Do not explain.")
 
     for post in data:
 
@@ -24,15 +24,18 @@ def process_data(data, split):
         argument = post["body"]
         output.append_instance(id=post["id"],input=f"Argument: {argument}", output=[ad_hominem])
 
-    output.append_genre(Genres.SOCIAL_MEDIA)
+    output.append_genre(Genres.WEB_FORUMS)
     output.append_subarea(Subareas.REASONING)
     output.write_output(dataset_file_name)
     metadata.add_dataset(dataset_file_name, split)
+    metadata.add_genre(Genres.WEB_FORUMS)
+    metadata.add_subarea(Subareas.REASONING)
     metadata.write_metadata()
+
 
 if __name__ == "__main__":
     # Input arguments for dataset generation
-    arg_parser = ArgumentParser(description="What dataset will be processed?")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation

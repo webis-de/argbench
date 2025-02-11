@@ -7,7 +7,7 @@ def convert_dataset(data_path, data_file, metadata):
     dataset = read_tabular(data_path)
     output = Output(dataset_name)
     output.append_definition("Given the topic and the two evidences, is the first evidence more convincing than" +
-                             "the second evidence. Only respond with better or worse, do not say any word or explain.")
+                             "the second evidence. Only respond with better or worse, do not explain.")
 
     dataset["label"] = dataset["label"].map({1: "Better", 2: "Worse"})
 
@@ -22,14 +22,14 @@ def convert_dataset(data_path, data_file, metadata):
         output.append_instance(id, prompt, [label])
 
     output.write_output(data_file)
-    output.append_genre(Genres.DEBATES)
-    output.append_subarea(Subareas.RANKING)
+    output.append_genre(Genres.WIKIPEDIA)
+    output.append_subarea(Subareas.QUALITY_ASSESSMENT)
     metadata.add_dataset(data_file)
 
 
 if __name__ == "__main__":
     # Input arguments for dataset generation
-    arg_parser = ArgumentParser(description="What dataset will be processed?")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
@@ -47,6 +47,6 @@ if __name__ == "__main__":
     convert_dataset(data_path / "test.csv", dataset_file_test, metadata)
 
     metadata.add_evaluation_metric("f1_macro")
-    metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.RANKING)
+    metadata.add_genre(Genres.WIKIPEDIA)
+    metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
     metadata.write_metadata()

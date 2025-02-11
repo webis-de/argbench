@@ -21,13 +21,13 @@ def process_dataset(dataset, path):
         output.append_negative_example(prompt, wrong_output, "")
         output.append_instance(id, prompt, [model_output])
 
-    output.append_genre(Genres.DEBATES)
-    output.append_subarea(Subareas.MINING)
+    output.append_genre(Genres.WIKIPEDIA)
+    output.append_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
     output.write_output(path)
 
 
 if __name__ == "__main__":
-    arg_parser = ArgumentParser(description="Program to convert gretz20 ibm quality dataset into appropriate form")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
@@ -45,8 +45,8 @@ if __name__ == "__main__":
     metadata.add_dataset("stance_classification_ibmsc_train_barhaim17.json", "train")
     metadata.add_dataset("stance_classification_ibmsc_test_barhaim17.json", "test")
 
-    metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.MINING)
+    metadata.add_genre(Genres.WIKIPEDIA)
+    metadata.add_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
     metadata.add_evaluation_metric("f1_macro")
 
     metadata.write_metadata()

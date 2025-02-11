@@ -23,7 +23,7 @@ def process_dataset_stance(dataset, path):
             output.append_negative_example(prompt, model_output, "")
         output.append_instance(id, prompt, [model_output])
 
-    output.append_genre(Genres.DEBATES)
+    output.append_genre(Genres.WIKIPEDIA)
     output.append_subarea(Subareas.GENERATION)
     output.write_output(path)
 

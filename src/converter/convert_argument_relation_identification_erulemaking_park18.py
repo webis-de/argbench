@@ -45,10 +45,10 @@ def create_output(dataset_name):
     output = Output(dataset_name)
     output.append_definition(
         """Detect which sentences provide a reason (support) or evidence for another sentence within the comment.
-        Output first Reason or Evidence and then output the sentence pair separated by a new line."""
+        Output first Reason or Evidence and then output the sentence pair separated by a new line. Do not Explain."""
     )
-    output.append_genre(Genres.DEBATE_PORTALS)
-    output.append_subarea(Subareas.REASONING)
+    output.append_genre(Genres.WEB_FORUMS)
+    output.append_subarea(Subareas.MINING)
     return output
 def main():
     arg_parser = ArgumentParser(description="What dataset will be processed?")
@@ -81,8 +81,8 @@ def main():
 
     metadata.add_dataset(dataset_file_test, "test")
     metadata.add_dataset(dataset_file_train, "train")
-    metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_subarea(Subareas.REASONING)
+    metadata.add_genre(Genres.WEB_FORUMS)
+    metadata.add_subarea(Subareas.MINING)
     metadata.write_metadata()
 
 

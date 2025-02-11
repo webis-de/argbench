@@ -11,7 +11,14 @@ class FallacySnippet:
     labels: list = field(default_factory=list)
     label_spans: list = field(default_factory=list)
 
-
+map ={
+    "AdHominem" : "Ad Hominem",
+    "AppealtoEmotion": "Appeal to Emotion",
+    "AppealtoAuthority": "Appeal to Authority",
+    "Slipperyslope": "Slippery Slope",
+    "FalseCause": "False Cause",
+    "Slogans": "Slogans"
+}
 def process_dataset(data_files, output_file, metadata, split_name):
     """
     Process elecdeb60t020 datafile
@@ -19,11 +26,12 @@ def process_dataset(data_files, output_file, metadata, split_name):
     output = Output(DATASET_NAME)
     output.append_definition("Given an argument snippet, extract substring that contains fallacy. Extracted fallacies should be separated by newlines and follow following format: [Fallacy Name]: [Extracted Substring].\n" +
                              "Available Fallacy names: AdHominem: When the argument becomes an excessive attack on an arguer’s position\n" +
-                             "AppealtoEmotion: The unessential loading of the argument with emotional language to exploit the audience emotional instinct.\n" +
-                             "AppealtoAuthority: It occurs when the arguer relies on the endorsement of an authority figure or a group consensus without providing sufficient evidence. It may also involve the citation of non-experts or the majority to support their claim.\n" +
-                             "Slipperyslope: This fallacy implies that an improbable or exaggerated consequence could result from a particular action.\n" +
-                             "FalseCause: The misinterpretation of the correlation of two events for causation.\n" +
-                             "Slogans: It is a brief and striking phrase used to provoke excitement of the audience, and is often accompanied by another type of fallacy called argument by repetition.")
+                             "Appeal to Emotion: The unessential loading of the argument with emotional language to exploit the audience emotional instinct.\n" +
+                             "Appeal to Authority: It occurs when the arguer relies on the endorsement of an authority figure or a group consensus without providing sufficient evidence. It may also involve the citation of non-experts or the majority to support their claim.\n" +
+                             "Slippery Slope: This fallacy implies that an improbable or exaggerated consequence could result from a particular action.\n" +
+                             "False Cause: The misinterpretation of the correlation of two events for causation.\n" +
+                             "Slogans: It is a brief and striking phrase used to provoke excitement of the audience, and is often accompanied by another type of fallacy called argument by repetition.\n"+
+                             "Do not explain.")
 
     for data_file in data_files:
         token_file = open(data_file, "r")
@@ -67,7 +75,7 @@ def process_dataset(data_files, output_file, metadata, split_name):
             model_out = []
             # print(snippet)
             for label_span in snippet.label_spans:
-                span_class = snippet.labels[label_span[0]][2:]
+                span_class = map[snippet.labels[label_span[0]][2:]]
                 span_tokens = " ".join(snippet.tokens[label_span[0]:label_span[1]])
                 model_out.append(f"{span_class}: {span_tokens}")
 
@@ -75,8 +83,8 @@ def process_dataset(data_files, output_file, metadata, split_name):
 
             output.append_instance(id, prompt, [model_out])
 
-    output.append_genre(Genres.DEBATE_PORTALS)
-    output.append_subarea(Subareas.MINING)
+    output.append_genre(Genres.DEBATES)
+    output.append_subarea(Subareas.REASONING)
     output.write_output(output_file)
     metadata.add_evaluation_metric("f1_macro")
     metadata.add_dataset(output_file, split_name)
@@ -106,6 +114,6 @@ if __name__ == "__main__":
         "test"
     )
 
-    metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_subarea(Subareas.MINING)
+    metadata.add_genre(Genres.DEBATES)
+    metadata.add_subarea(Subareas.REASONING)
     metadata.write_metadata()

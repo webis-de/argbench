@@ -9,9 +9,10 @@ dataset_file_template = "key_point_matching_argkp_{split}_barhaim21.json"
 def preprocess_data(dataset, split, metadata):
     output = Output(dataset_name)
 
-    dataset_file = dataset_file_template.replace("{split}", split)
+    dataset_file = dataset_file_template.format(split=split)
 
-    output.append_definition("Judge if keypoint summarizes the argument. Possible responses: Match if argument is summarized by key point and No Match if argument is not summarized by key point.")
+    output.append_definition("""Judge if the following keypoint summarizes the given argument.
+     Possible responses: Match if argument is summarized by key point and No Match if argument is not summarized by key point. Do not explain""")
     for row in dataset.iterrows():
         row = row[1]
         prompt = f"Argument: {row['argument']}\nKey Point: {row['key_point']}"
@@ -24,7 +25,10 @@ def preprocess_data(dataset, split, metadata):
         output.append_instance(id, prompt, [response])
 
     metadata.add_dataset(dataset_file)
-    output.append_subarea(Subareas.CONTEXTUALIZATION)
+    metadata.add_genre(Genres.WIKIPEDIA)
+    metadata.add_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
+    output.append_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
+    output.append_genre(Genres.WIKIPEDIA)
     output.write_output(dataset_file)
 
 

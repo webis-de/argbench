@@ -32,9 +32,9 @@ dataset_template = "suboptimal_claim_detection_claim_revisions_{split}_skitalins
 #     output.write_output(dataset_file)
 
 def process_data(dataset, metadata, split):
-    dataset_file = dataset_template.replace("{split}", split)
+    dataset_file = dataset_template.format(split=split)
     output = Output(dataset_name)
-    output.append_definition("Judge if claim can be improved by revising it. Possible outputs: Improvable if revision should be made, Non-Improvable if no revision is necessary.")
+    output.append_definition("Judge if claim can be improved by revising it. Possible outputs: Improvable if revision should be made, Non-Improvable if no revision is necessary. Do not explain.")
     for row in dataset.iterrows():
         row = row[1]
         prompt = f"Claim: {row['claim_text']}"
@@ -44,8 +44,8 @@ def process_data(dataset, metadata, split):
         else:
             output.append_instance(id, prompt, ["Improvable"])
     metadata.add_dataset(dataset_file, split)
-    output.append_genre(Genres.DEBATES)
-    output.append_subarea(Subareas.MINING)
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_subarea(Subareas.QUALITY_ASSESSMENT)
     output.write_output(dataset_file)
 
 if __name__ == "__main__":
@@ -65,7 +65,7 @@ if __name__ == "__main__":
     process_data(train_dataset, metadata, "train")
     process_data(test_dataset, metadata, "test")
 
-    metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.MINING)
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()

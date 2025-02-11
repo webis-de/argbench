@@ -93,8 +93,8 @@ def preprocess_dataset(dataset, metadata, split):
         output_anecdotal.append_instance(id, prompt, [evidence_string_anecdotes])
 
     dataset_file_study = template_file_study.replace("{split}",split)
-    dataset_file_expert = template_file_expert.replace("{split}", split)
-    dataset_file_anecdote = template_file_anecdote.replace("{split}", split)
+    dataset_file_expert = template_file_expert.format(split=split)
+    dataset_file_anecdote = template_file_anecdote.format(split=split)
 
     output_study.append_genre(Genres.WIKIPEDIA)
     output_study.append_subarea(Subareas.MINING)

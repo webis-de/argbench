@@ -15,8 +15,8 @@ RANK_MAPPING = [
 def make_output(dataset, dataset_name):
     output = Output(DATASET_NAME)
 
-    output.append_definition("""Given the following argument pairs, is the first argument better, same, or worse than 
-    the second argument in terms of quality. Only respond with better or worse, do not say any word or explain.""")
+    output.append_definition("""Given the following argument pairs, is the first argument better or worse than 
+    the second argument in terms of quality. Only respond with better or worse, do not explain.""")
 
     for idx, row in dataset.iterrows():
         compare_arg = (dataset[dataset["topic"] == row["topic"]]
@@ -34,12 +34,12 @@ def make_output(dataset, dataset_name):
 
         output.append_instance(id, prompt, [positive_response])
 
-    output.append_genre(Genres.DEBATES)
-    output.append_subarea(Subareas.RANKING)
+    output.append_genre(Genres.WIKIPEDIA)
+    output.append_subarea(Subareas.QUALITY_ASSESSMENT)
     output.write_output(dataset_name)
 
 if __name__ == "__main__":
-    arg_parser = ArgumentParser(description="Program to convert gretz20 ibm quality dataset into appropriate form")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
@@ -65,6 +65,6 @@ if __name__ == "__main__":
 
 
     metadata.add_evaluation_metric("f1_macro")
-    metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.RANKING)
+    metadata.add_genre(Genres.WIKIPEDIA)
+    metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
     metadata.write_metadata()

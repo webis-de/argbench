@@ -70,12 +70,17 @@ def main():
     xmi_directory = (datasets_path() / "essays-argument-mining")
     dataset_name = "argument_unit_classification_essays_stab17"
     dataset_file_template = "argument_unit_classification_essays_{split}_stab17.json"
-    task_definition = "Given the following essays extract the main claim, claims, and premises. A claim is a controversial statement and the central component of an argument. Premises are reasons for justifying or refuting the claim. A major claim is the central thesis of the essay."
+    task_definition = """Given the following essays extract the main claim, claims, and premises.
+     A claim is a controversial statement and the central component of an argument.
+     Premises are reasons for justifying or refuting the claim. 
+     A major claim is the central thesis of the essay.
+     Only output with one of these classes. Do not explain.
+     """
 
     for split in ["test", "train"]:
         output = Output(dataset_name)
         output.append_definition(task_definition)
-        dataset_file = dataset_file_template.replace("{split}", split)
+        dataset_file = dataset_file_template.format(split=split)
         # Process XMI files
         process_xmi_files(xmi_directory, output, split_map, split)
 
