@@ -36,7 +36,7 @@ def make_output(dataset, metadata, column, aspect_description, dataset_name):
 
     metadata.add_dataset(dataset_name)
     output.append_genre(Genres.DEBATES)
-    output.append_subarea(Subareas.RANKING)
+    output.append_subarea(Subareas.QUALITY_ASSESSMENT)
     output.write_output(dataset_name)
 
 if __name__ == "__main__":
@@ -102,5 +102,5 @@ if __name__ == "__main__":
 
     metadata.add_evaluation_metric("f1_macro")
     metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.RANKING)
+    metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
     metadata.write_metadata()

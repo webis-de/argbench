@@ -11,8 +11,8 @@ mapping = {0: "Worse", 1: "Better"}
 def process_data(dataset, metadata, split):
     output = Output(dataset_name)
     output.append_definition("""Given the following argument pair, is the first argument better or worse 
-    than the second argument. Only respond with better or worse, do not say any word or explain. 
-    Only respond with better or worse, do not say any word or explain.""")
+    than the second argument. Only respond with better or worse, do not explain. 
+    Only respond with better or worse, do not explain.""")
 
 
     for i, record in dataset.iterrows():
@@ -21,15 +21,15 @@ def process_data(dataset, metadata, split):
 
         output.append_instance(record['v1_id'] + record['v2_id'], prompt, [mapping[record["label"]]])
 
-    output.append_genre(Genres.DEBATES)
-    output.append_subarea(Subareas.RANKING)
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_subarea(Subareas.QUALITY_ASSESSMENT)
     split_dataset_file = dataset_file.format(split=split)
     metadata.add_dataset(split_dataset_file)
     output.write_output(split_dataset_file)
 
 
 if __name__ == "__main__":
-    arg_parser = ArgumentParser(description="What dataset will be processed?")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
@@ -51,6 +51,6 @@ if __name__ == "__main__":
     process_data(df_test, metadata, "test")
 
     metadata.add_evaluation_metric("f1_macro")
-    metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.RANKING)
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
     metadata.write_metadata()

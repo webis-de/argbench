@@ -26,19 +26,19 @@ def process_data(dataset, data_name, data_split, metadata):
     output = Output(dataset_name)
     output.append_definition("Classify the following sentence into one of the following fallacies:" +
 
-                             "Intentional: some intentional (sometimes subconscious) action/choice to incorrectly support an argument. " +
-                             "Faulty Generalization: an informal fallacy wherein a conclusion is drawn about all or many instances of a phenomenon on the basis of one or a few instances of that phenomenon. is an example of jumping to conclusions. " +
-                             "Ad Hominem: instead of addressing someone's argument or position, you irrelevantly attack the person or some aspect of the person who is making the argument. " +
-                             "Fallacy of Relevance: introducing premises or conclusions that have nothing to do with the subject matter. " +
-                             "False Causality: statement that jumps to a conclusion implying a causal relationship without supporting evidence. " +
-                             "Appeal to Emotion: manipulation of the recipient's emotions in order to win an argument. " +
-                             "Fallacy of Extension: attacking an exaggerated or caricatured version of your opponent's position. " +
-                             "Fallacy of Logic: an error in the logical structure of an argument. " +
-                             "Fallacy of Credibility: attempts to disprove an argument by attacking the character of the speaker. " +
-                             "Ad Populum: a fallacious argument which is based on affirming that something is real or better because the majority thinks so" +
-                             "Equivocation: when a key term or phrase in an argument is used in an ambiguous way, with one meaning in one portion of the argument and then another meaning in another portion of the argument. " +
-                             "Circular Reasoning: when the end of an argument comes back to the beginning without having proven itself. " +
-                             "False Dilemma: presenting only two options or sides when there are many options or sides.")
+                             "Intentional: some intentional (sometimes subconscious) action/choice to incorrectly support an argument.\n" +
+                             "Faulty Generalization: an informal fallacy wherein a conclusion is drawn about all or many instances of a phenomenon on the basis of one or a few instances of that phenomenon. is an example of jumping to conclusions.\n" +
+                             "Ad Hominem: instead of addressing someone's argument or position, you irrelevantly attack the person or some aspect of the person who is making the argument.\n" +
+                             "Fallacy of Relevance: introducing premises or conclusions that have nothing to do with the subject matter.\n" +
+                             "False Causality: statement that jumps to a conclusion implying a causal relationship without supporting evidence.\n" +
+                             "Appeal to Emotion: manipulation of the recipient's emotions in order to win an argument.\n" +
+                             "Fallacy of Extension: attacking an exaggerated or caricatured version of your opponent's position.\n" +
+                             "Fallacy of Logic: an error in the logical structure of an argument.\n" +
+                             "Fallacy of Credibility: attempts to disprove an argument by attacking the character of the speaker.\n" +
+                             "Ad Populum: a fallacious argument which is based on affirming that something is real or better because the majority thinks so\n" +
+                             "Equivocation: when a key term or phrase in an argument is used in an ambiguous way, with one meaning in one portion of the argument and then another meaning in another portion of the argument.\n" +
+                             "Circular Reasoning: when the end of an argument comes back to the beginning without having proven itself.\n" +
+                             "False Dilemma: presenting only two options or sides when there are many options or sides.\n" + "Do not explain.")
 
     for row in dataset.iterrows():
         row = row[1]
@@ -54,12 +54,13 @@ def process_data(dataset, data_name, data_split, metadata):
 
         output.append_instance(id, prompt, [map[fallacies] ])
 
-    output.append_genre(Genres.DEBATE_PORTALS)
-    output.append_genre(Genres.DEBATES)
-    output.append_subarea(Subareas.MINING)
+
+    output.append_genre(Genres.WEB)
+    output.append_subarea(Subareas.REASONING)
     output.write_output(data_name)
     metadata.add_dataset(data_name, data_split)
-
+    metadata.add_subarea(Subareas.REASONING)
+    metadata.add_genre(Genres.WEB)
     return len(output.instances)
 
 if __name__ == "__main__":
@@ -98,6 +99,6 @@ if __name__ == "__main__":
 
     print(f"Found {count_test + count_train} sentences")
     metadata.add_evaluation_metric("f1_macro")
-    metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_subarea(Subareas.MINING)
+    metadata.add_genre(Genres.WEB)
+    metadata.add_subarea(Subareas.REASONING)
     metadata.write_metadata()

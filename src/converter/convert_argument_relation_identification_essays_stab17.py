@@ -72,13 +72,13 @@ def create_metadata(dataset_name, dataset_file, split):
     metadata.add_evaluation_metric("f1_macro")  # Choose appropriate evaluation metric
     metadata.add_dataset(dataset_file, split)
     metadata.add_genre(Genres.ESSAYS)
-    metadata.add_subarea(Subareas.REASONING)
+    metadata.add_subarea(Subareas.MINING)
     metadata.write_metadata()
 
 
 def main():
     # Input arguments for dataset generation
-    arg_parser = ArgumentParser(description="What dataset will be processed?")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     arg_parser.add_argument("-a", "--custom_argument", help="Your custom argument")
     args = arg_parser.parse_known_args()[0]
@@ -93,8 +93,8 @@ def main():
     ids = df_split["ID"].values
     splits = df_split["SET"].values
     split_map = {ids[i]:splits[i] for i in range(len(ids))}
-    task_definition = """Given the following essay list of pairs of sentences where the second sentence supports or attacks the first.
-         Output first Support or Attack and then output the sentence pair separated by a new line."""
+    task_definition = """Given the following essay, list of pairs of sentences where the second sentence supports or attacks the first.
+         Output first Support or Attack and then output the sentence pair separated by a new line. Do not Explain."""
     for split in ["train", "test"]:
         output = Output(dataset_name)
         output.append_definition(task_definition)
@@ -104,7 +104,7 @@ def main():
 
         # Write the dataset to a JSON file
         output.append_genre(Genres.ESSAYS)
-        output.append_subarea(Subareas.REASONING)
+        output.append_subarea(Subareas.MINING)
         dataset_path = template_path.format(split=split)
         output.write_output(dataset_path)
 

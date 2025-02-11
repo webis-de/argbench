@@ -74,7 +74,7 @@ def process_all_txt_files_in_directory(directory_path, instances_dict):
 
 def main():
     arg_parser = ArgumentParser(description=
-    """Classify each sentence in the given document into the following classes:
+    """Classify each sentence in the given document into the following argument unit tpyes:
     Common Ground, Assumption, Testimony, Statistics, Anecdote, or Other.,  
      """)
     add_seed_arg(arg_parser)
@@ -88,7 +88,22 @@ def main():
 
     instances_dict = defaultdict(list)
     process_all_txt_files_in_directory(txt_directory_path, instances_dict)
-    task_definition =  "Classify sentences into different parts."
+    task_definition ="""Classify each sentence in the given document into the following argument unit types:
+    Common Ground, Assumption, Testimony, Statistics, Anecdote, or Other.
+    Common Ground: is common knowledge, a self-evident fact, an accepted truth, or
+similar. 
+    Assumption: the unit states an assumption, conclusion, judgment, or opinion of the author, a
+general observation, possibly false fact, or similar.
+    Testimony: The unit gives evidence by stating or quoting that a proposition was made by some
+expert, authority, witness, group, organization, or similar.
+    Statistics:  The unit gives evidence by stating or quoting the results or conclusions of quantitative re-
+search, studies, empirical data analyses, or similar.
+    Anecdote: The unit gives evidence by stating personal experience of the author, an anecdote, a
+concrete example, an instance, a specific event, or similar.
+    Other: The unit does not or hardly adds to the argumentative discourse or it does not match any of
+the above classes.
+      Only output with one of these classes. Do not explain.
+     """
     train_output = Output(dataset_name)
     test_output = Output(dataset_name)
     metadata = Metadata(dataset_name)
@@ -113,16 +128,16 @@ def main():
         else:
             train_output.append_instance(instance_id, combined_input, [combined_output])
 
-    train_output.append_genre(Genres.ESSAYS)
+    train_output.append_genre(Genres.NEWS)
     train_output.append_subarea(Subareas.MINING)
     train_output.write_output(dataset_train)
 
-    test_output.append_genre(Genres.ESSAYS)
+    test_output.append_genre(Genres.NEWS)
     test_output.append_subarea(Subareas.MINING)
     test_output.write_output(dataset_test)
     metadata.add_dataset(dataset_test, "test")
     metadata.add_dataset(dataset_train, "train")
-    metadata.add_genre(Genres.ESSAYS)
+    metadata.add_genre(Genres.NEWS)
     metadata.add_subarea(Subareas.MINING)
     metadata.write_metadata()
 

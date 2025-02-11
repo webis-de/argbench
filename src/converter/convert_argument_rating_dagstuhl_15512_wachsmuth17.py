@@ -18,7 +18,10 @@ def make_output(dataset, metadata, column, aspect_description, dataset_file, spl
     dimension = column.replace(' ', '_')
     dataset_name = DATASET_NAME.replace('{dimension}', dimension)
     output = Output(dataset_name)
-    output.append_definition(f"Judge the quality of argument according to quality aspect: {column}. Quality aspect description: {aspect_description} Possible outputs: Low if arguments aspect quality is low, Average if arguments aspect quality is average, High if arguments aspect quality is high.")
+    output.append_definition(f"""Judge the quality of argument according to quality aspect: {column}. 
+                            Quality aspect description: {aspect_description} Possible outputs:
+                            Low if arguments aspect quality is low, Average if argument's aspect quality is average,
+                            High if arguments aspect quality is high. Do not explain.""")
 
     for row in dataset.iterrows():
         row = row[1]
@@ -29,12 +32,12 @@ def make_output(dataset, metadata, column, aspect_description, dataset_file, spl
         output.append_instance(id, prompt, [response])
 
     metadata.add_dataset(dataset_file, split)
-    output.append_genre(Genres.DEBATES)
-    output.append_subarea(Subareas.RANKING)
+    output.append_genre(Genres.DEBATE_PORTALS)
+    output.append_subarea(Subareas.QUALITY_ASSESSMENT)
     output.write_output(dataset_file)
 
 if __name__ == "__main__":
-    arg_parser = ArgumentParser(description="Program to convert gretz20 ibm quality dataset into appropriate form")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
@@ -90,6 +93,6 @@ if __name__ == "__main__":
         make_output(df_train, metadata, task_name, description, train_filename, "train")
 
     metadata.add_evaluation_metric("f1_macro")
-    metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.RANKING)
+    metadata.add_genre(Genres.DEBATE_PORTALS)
+    metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
     metadata.write_metadata()

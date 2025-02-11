@@ -10,7 +10,7 @@ DATASET_NAME = "frame_identification_webis_argument_framing_19_ajjour19"
 
 def process_split(df, data_file):
     output = Output(DATASET_NAME)
-    output.append_definition("Identify the frame of the following argument on the given topic form the following candidate frames. The frame is main highlighted the aspect of the topic which resonate with as specific audience.")
+    output.append_definition("Identify the frame of the following argument on the given topic form the following candidate frames. The frame is main highlighted the aspect of the topic which resonate with as specific audience. Do not explain.")
 
     for row in df.iterrows():
         row = row[1]
@@ -34,7 +34,7 @@ def process_split(df, data_file):
         output.append_instance(id, prompt, [response])
 
     output.append_genre(Genres.DEBATE_PORTALS)
-    output.append_subarea(Subareas.REASONING)
+    output.append_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
     print(data_file)
     output.write_output(data_file)
 
@@ -67,6 +67,6 @@ if __name__ == "__main__":
     metadata.add_dataset(test_data_file, "test")
     metadata.add_evaluation_metric("f1_macro")
     metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_subarea(Subareas.REASONING)
+    metadata.add_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
     metadata.write_metadata()
 

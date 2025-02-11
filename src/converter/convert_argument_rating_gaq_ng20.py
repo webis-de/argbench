@@ -49,14 +49,14 @@ def format_dataset(dataset, dimension_definition, dimension,  metadata, split):
         task_output.append_instance(id, prompt, [score])
 
     task_output.write_output(dataset_file_name)
-    task_output.append_genre(Genres.DEBATE_PORTALS)
-    task_output.append_subarea(Subareas.RANKING)
+    task_output.append_genre(Genres.WEB)
+    task_output.append_subarea(Subareas.QUALITY_ASSESSMENT)
     metadata.add_dataset(dataset_file_name, split)
 
 
 if __name__ == "__main__":
     # Input arguments for dataset generation
-    arg_parser = ArgumentParser(description="What dataset will be processed?")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
@@ -71,15 +71,15 @@ if __name__ == "__main__":
     task_defnitions = {
         "cogency": f"""Judge the quality of the following argument according to quality aspect: cogency.  
                                      "Quality aspect description: {cogency_description} Possible outputs: 
-                                     "Very Low, Low, Medium, High, Very High, Cannot Judge."""
+                                     "Very Low, Low, Medium, High, Very High, Cannot Judge. Do not Explain"""
                    ,
         "effectiveness": f"""Judge the quality the following argument according to quality aspect: effectiveness. 
                                            Quality aspect description: {effectiveness_description} Possible outputs: 
-                                           Very Low, Low, Medium, High, Very High, Cannot Judge.""",
+                                           Very Low, Low, Medium, High, Very High, Cannot Judge. Do not Explain""",
 
         "reasonableness" : f"""Judge the quality of the following argument according to quality aspect: reasonableness. 
                                             Quality aspect description: {reasonableness_description} Possible outputs: 
-                                            Very Low, Low, Medium, High, Very High, Cannot Judge."""
+                                            Very Low, Low, Medium, High, Very High, Cannot Judge. Do not Explain"""
     }
     df_debate_crowd = convert_dataset(data_path / "debate_forums_crowd.csv")
     df_debate_experts = convert_dataset(data_path / "debate_forums_experts.csv")
@@ -94,8 +94,8 @@ if __name__ == "__main__":
     for dimension in task_defnitions:
         dataset_name = dataset_name_template.format(dimension=dimension)
         metadata = Metadata(dataset_name)
-        metadata.add_genre(Genres.DEBATE_PORTALS)
-        metadata.add_subarea(Subareas.RANKING)
+        metadata.add_genre(Genres.WEB)
+        metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
         metadata.write_metadata()
         task_definition = task_defnitions[dimension]
         format_dataset(df_training, task_definition, dimension, metadata, "train")

@@ -78,6 +78,10 @@ class Genres(Enum):
     WIKIPEDIA = "wikipedia"
     DEBATE_PORTALS = "debate_portals"
     DEBATES = "debates"
+    NEWS = "news"
+    WEB_FORUMS = "web-forums"
+    WEB = "web"
+    STORIES = "stories"
 
 
 class Subareas(Enum):
@@ -85,8 +89,8 @@ class Subareas(Enum):
     MINING = "mining" # *classification, segmentation, detection, extraction
     GENERATION = "generation" # *generation
     REASONING = "reasoning" # relation identification, similarity, key point matching
-    RANKING = "ranking" # *ranking
-    CONTEXTUALIZATION = "contextualization" # frame identification, controversy detection, warrant identification
+    QUALITY_ASSESSMENT = "quality-assessment" # *ranking
+    PERSPECTIVE_ASSESSMENT = "perspective-assessment" # frame identification, controversy detection, warrant identification
 
 class Tasks(Enum):
     """Valid tasks"""

@@ -10,7 +10,7 @@ DATASET_NAME = "stance_classification_ukp_sentential_stab18"
 def make_output(dataset, dataset_name):
     output = Output(DATASET_NAME)
 
-    output.append_definition("Classify the following claim to Pro if the claim supports the topic, Con if the claim attacks the topic, or Neutral if neither.")
+    output.append_definition("Classify the following claim to Pro if the claim supports the topic, Con if the claim attacks the topic, or Neutral if neither. Only answer with Con, Por, or Neutral, Do not explain.")
 
     label_mappings = {"NoArgument": "Neutral", "Argument_for": "Pro", "Argument_against": "Con"}
 
@@ -23,8 +23,8 @@ def make_output(dataset, dataset_name):
         id = str(uuid.uuid4())
         output.append_instance(id, prompt, [response])
 
-    output.append_genre(Genres.ESSAYS)
-    output.append_subarea(Subareas.MINING)
+    output.append_genre(Genres.WEB)
+    output.append_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
     output.write_output(dataset_name)
 
 
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     metadata.add_dataset("stance_classification_ukp_sentential_test_stab18.json", "test")
 
 
-    metadata.add_genre(Genres.ESSAYS)
-    metadata.add_subarea(Subareas.MINING)
+    metadata.add_genre(Genres.WEB)
+    metadata.add_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()

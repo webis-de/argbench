@@ -91,7 +91,8 @@ if __name__ == "__main__":
 
     output = Output(DATASET_NAME)
     metadata = Metadata(DATASET_NAME)
-    output.append_definition("""Given the following document and the given argument units with the given ids mark an argument unit referenced with [0] that supports another argument unit that referenced with [1] with the following [0] --> [1] and an argument unit [0] that attacks another argument [1] with [0] /-> [1] """)
+    output.append_definition("""Given the following document and the given argument units with the given ids mark an 
+    argument unit referenced with [0] that supports another argument unit that referenced with [1] with the following [0] --> [1] and an argument unit [0] that attacks another argument [1] with [0] /-> [1] """)
 
 
     print(dataset_path)

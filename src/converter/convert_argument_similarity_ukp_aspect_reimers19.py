@@ -13,7 +13,7 @@ SIMILARITY_MAPPING = {
 }
 
 if __name__ == "__main__":
-    arg_parser = ArgumentParser(description="Program to convert gretz20 ibm quality dataset into appropriate form")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
@@ -39,11 +39,11 @@ if __name__ == "__main__":
 
         output.append_instance(id, prompt, [response])
 
-    output.append_genre(Genres.ESSAYS)
-    output.append_subarea(Subareas.REASONING)
+    output.append_genre(Genres.WEB)
+    output.append_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
     output.write_output("argument_similarity_ukp_aspect_reimers19.json")
     metadata.add_dataset("argument_similarity_ukp_aspect_reimers19.json")
-    metadata.add_genre(Genres.ESSAYS)
-    metadata.add_subarea(Subareas.REASONING)
+    metadata.add_genre(Genres.WEB)
+    metadata.add_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
     metadata.add_evaluation_metric("f1_macro")
     metadata.write_metadata()

@@ -11,7 +11,7 @@ def process_split(dataset, metadata, split):
     dataset_file = f"claim_optimization_claim_revisions_{split}_skitalinskaya23.json"
     output.append_definition("Given the following input argumentative claim with context information on the " +
                              "debate, rewrite the claim such that the output claim improves upon input claim in terms of text quality " +
-                             "and argument quality, and preserves the meaning of the claim as far as possible.")
+                             "and argument quality, and preserves the meaning of the claim as far as possible.  Do not explain.")
 
     unrevised_docs = dataset[dataset["revision_id"] == 1][["claim_id", "revision_id", "claim_text", "thesis"]]
     last_revision_docs = dataset[dataset["revision_id"] == dataset["max_revision_id"]][["claim_id", "revision_id", "claim_text"]]
@@ -28,14 +28,14 @@ def process_split(dataset, metadata, split):
         output.append_instance(claim_id, instance_input, [revised_text])
 
     metadata.add_dataset(dataset_file, split)
-    output.append_genre(Genres.DEBATES)
+
     output.append_genre(Genres.DEBATE_PORTALS)
-    output.append_subarea(Subareas.REASONING)
+    output.append_subarea(Subareas.QUALITY_ASSESSMENT)
     output.write_output(dataset_file)
 
 
 if __name__ == "__main__":
-    arg_parser = ArgumentParser(description="What dataset will be processed?")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
@@ -54,7 +54,6 @@ if __name__ == "__main__":
 
 
     metadata.add_evaluation_metric("f1_macro")
-    metadata.add_genre(Genres.DEBATES)
     metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_subarea(Subareas.REASONING)
+    metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
     metadata.write_metadata()

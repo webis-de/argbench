@@ -51,7 +51,8 @@ if __name__ == "__main__":
 
     for split_model in model_split_idx:
         output = Output(DATASET_NAME)
-        output.append_definition("Classify argument according to Walton's argumnt schemes. Possible responses: means for goal, goal from means, from consequence, source knowledge, source authority, rule or principle.")
+        output.append_definition("Classify argument according to Walton's argument schemes. "
+                                 "Possible argument schemes: means for goal, goal from means, from consequence, source knowledge, source authority, rule or principle, and other. \n Do not explain.")
         for id in model_split_idx[split_model]:
             for arg in arguments:
                 if arg.id == id:
@@ -59,6 +60,10 @@ if __name__ == "__main__":
                     break
         dataset_file = f"scheme_classification_argu_{split_model}_saha23.json"
         metadata.add_dataset(dataset_file, split_model)
+        output.append_genre(Genres.DEBATE_PORTALS)
+        output.append_subarea(Subareas.REASONING)
+        metadata.add_genre(Genres.DEBATE_PORTALS)
+        metadata.add_subarea(Subareas.REASONING)
         output.write_output(dataset_file)
 
 

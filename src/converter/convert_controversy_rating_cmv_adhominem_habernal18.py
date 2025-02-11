@@ -27,8 +27,8 @@ controversy_dataset = "controversy_scoring_cmv_habernal18"
 controversy_dataset_template = "controversy_scoring_cmv_{split}_habernal18.json"
 reaonsableness_dataset_template = "reasonableness_scoring_{split}_habernal18.json"
 
-controversy_task_definition = "Classify the following post according to its controversy into either Not Really Controversial, Somehow Controversial, or Very Controversial."
-reasonableness_task_definition = "Classify the following post according to its reasonableness into : Quite Stupid, Neutral, Quite Reasonable. "
+controversy_task_definition = "Classify the following post according to its controversy into either Not Really Controversial, Somehow Controversial, or Very Controversial. Do not explain."
+reasonableness_task_definition = "Classify the following post according to its reasonableness into : Quite Stupid, Neutral, Quite Reasonable. Do not explain."
 
 def process_dataset(data, split):
     controversy_data_file = controversy_dataset_template.format(split=split)
@@ -63,13 +63,13 @@ def process_dataset(data, split):
         reasonableness_output.append_instance(id, prompt, [reasonableness_label])
 
 
-    controversy_output.append_genre(Genres.SOCIAL_MEDIA)
-    controversy_output.append_subarea(Subareas.MINING)
+    controversy_output.append_genre(Genres.WEB_FORUMS)
+    controversy_output.append_subarea(Subareas.QUALITY_ASSESSMENT)
     controversy_output.write_output(controversy_data_file)
 
 
-    reasonableness_output.append_genre(Genres.SOCIAL_MEDIA)
-    reasonableness_output.append_subarea(Subareas.RANKING)
+    reasonableness_output.append_genre(Genres.WEB_FORUMS)
+    reasonableness_output.append_subarea(Subareas.QUALITY_ASSESSMENT)
     reasonableness_output.write_output(reasonableness_data_file)
 
     metadata = Metadata(controversy_dataset)
@@ -78,11 +78,13 @@ def process_dataset(data, split):
 
     metadata = Metadata(reasonableness_dataset)
     metadata.add_dataset(reasonableness_data_file, split)
+    metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
+    metadata.add_genre(Genres.WEB_FORUMS)
     metadata.write_metadata()
 
 if __name__ == "__main__":
     # Input arguments for dataset generation
-    arg_parser = ArgumentParser(description="What dataset will be processed?")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation

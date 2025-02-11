@@ -105,7 +105,7 @@ def convert_arguments(dataset_name, test_dataset, train_dataset):
     prompt = """Given the following document, split all of the document into argumentative units and non-argumentative units.
 An argumentative unit is a statement that has an argumentative function for example a claim or anecdote.
 Prepend each argumentative unit with argumentative: and spans that are not Argumentative with Non-argumentative:.
-Output the extracted spans as they are orderded in the given document and separate them by a new line.
+Output the extracted spans as they are ordered in the given document and separate them by a new line.
 Do not add a new formating or enumeration also do not rephrase the argument units. Order the output spans as they appear in the document."""
 
     train_output = Output(dataset_name)
@@ -165,16 +165,22 @@ if __name__ == "__main__":
         dataset_file_test = DATASET_FILE_TEMPLATE.replace("{dataset}", dataset).replace("{split}", "test")
         train_data, test_data = process_folder(dataset_path)
         train_data, test_data = convert_arguments(dataset_name, test_data, train_data)
+        if dataset == "essays":
+            genre = Genres.ESSAYS
+        elif dataset == "editorials":
+            genre = Genres.NEWS
+        else:
+            genre = Genres.WEB_FORUMS
+        train_data.append_genre(genre)
+        test_data.append_genre(genre)
 
-        train_data.append_genre(Genres.ESSAYS)
-        train_data.append_genre(Genres.SOCIAL_MEDIA)
         train_data.append_subarea(Subareas.MINING)
-        test_data.append_genre(Genres.ESSAYS)
-        test_data.append_subarea(Subareas.MINING)
 
         train_data.write_output(dataset_file_train)
         test_data.write_output(dataset_file_test)
         metadata = Metadata(dataset_name)
         metadata.add_dataset(dataset_file_train, "train")
         metadata.add_dataset(dataset_file_test, "test")
+        metadata.add_genre(genre)
+        metadata.add_subarea(Subareas.MINING)
         metadata.write_metadata()

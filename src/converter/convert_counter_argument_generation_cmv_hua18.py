@@ -9,7 +9,7 @@ DATASET_NAME = "counter_argument_generation_cmv_hua18"
 def process_dataset(op_path, arg_path, keynote_path, output=None):
     if not output:
         output = Output(DATASET_NAME)
-        output.append_definition("Given a statement and relevant evidence, generate a counterargument that attacks to the original argument and highlights the given keyphrases.")
+        output.append_definition("""Given a statement and relevant evidence, generate a counterargument that attacks to the original argument and highlights the given key phrases. Do not explain.""")
 
     op_file = open(op_path, "r")
     arg_file = open(arg_path, "r")
@@ -38,7 +38,7 @@ def process_dataset(op_path, arg_path, keynote_path, output=None):
 
 
 if __name__ == "__main__":
-    arg_parser = ArgumentParser(description="Program to convert gretz20 ibm quality dataset into appropriate form")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
@@ -75,12 +75,10 @@ if __name__ == "__main__":
 
 
 
-    train.append_genre(Genres.DEBATE_PORTALS)
-    train.append_genre(Genres.WIKIPEDIA)
+    train.append_genre(Genres.WEB_FORUMS)
     train.append_subarea(Subareas.GENERATION)
 
-    test.append_genre(Genres.DEBATE_PORTALS)
-    test.append_genre(Genres.WIKIPEDIA)
+    test.append_genre(Genres.WEB_FORUMS)
     test.append_subarea(Subareas.GENERATION)
 
 
@@ -90,8 +88,8 @@ if __name__ == "__main__":
     metadata.add_dataset("counter_argument_generation_cmv_train_hua18.json", "train")
     metadata.add_dataset("counter_argument_generation_cmv_test_hua18.json", "test")
 
-    metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_genre(Genres.WIKIPEDIA)
+
+    metadata.add_genre(Genres.WEB_FORUMS)
     metadata.add_subarea(Subareas.GENERATION)
 
     metadata.add_evaluation_metric("rouge")

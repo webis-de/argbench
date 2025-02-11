@@ -56,8 +56,8 @@ def make_outputs(target_data, para_comet_data, dataset_name, para_comet_name, me
     target_output = Output(dataset_name)
     output_para_comet = Output(para_comet_name)
 
-    target_output.append_definition("Given a premise and a claim, generate an enthymem. An enthymem is a reason with which the claim follows logically form the premise.")
-    output_para_comet.append_definition("Given a premise and a claim, generate an enthymem using provided context.  An enthymem is a reason with which the claim follows logically form the premise.")
+    target_output.append_definition("Given a premise and a claim, generate an enthymem. An enthymem is a reason with which the claim follows logically form the premise.  Do not explain.")
+    output_para_comet.append_definition("Given a premise and a claim, generate an enthymem using provided context.  An enthymem is a reason with which the claim follows logically form the premise. Do not explain.")
 
     for i in range(len(target_data)):
         prompt = f"Premise: {target_data[i].reason}\nClaim: {target_data[i].claim}"
@@ -81,7 +81,7 @@ def make_outputs(target_data, para_comet_data, dataset_name, para_comet_name, me
 
 
 if __name__ == "__main__":
-    arg_parser = ArgumentParser(description="Program to convert ajjour unit segmentation dataset into appropriate form")
+    arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
@@ -110,6 +110,14 @@ if __name__ == "__main__":
     for dataset in ["arc", "ideological_debate", "microtext_1", "art"]:
         dataset_name = f"warrant_generation_{dataset}_chakarbarty21"
         dataset_para_name = f"warrant_generation_{dataset}_para_comet_chakarbarty21"
+        if dataset == "arc":
+            genre = Genres.NEWS
+        elif dataset == "arg":
+            genre = Genres.STORIES
+        elif dataset == "ideological_debate":
+            genre = Genres.DEBATE_PORTALS
+        else:
+            genre = Genres.ESSAYS
 
         if dataset == "art":
             train_data_path = root_data_path /datsaet_target["art_train"]
@@ -139,8 +147,8 @@ if __name__ == "__main__":
                 dataset_name,
                 dataset_para_name,
                 metadata,
-                [Genres.DEBATES],
-                [Subareas.MINING]
+                [genre],
+                [Subareas.GENERATION]
             )
             metadata.write_metadata()
 

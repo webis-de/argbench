@@ -107,7 +107,8 @@ def write_split(files, split):
 
     output.append_definition("""Given the following essay list of pairs of sentences 
     where the second sentence supports or attacks the first.
-    Output first Support or Attack and then output the sentence pair separated by a new line.""")
+    Output first Support or Attack and then output the sentence pair separated by a new line.
+    Do not Explain.""")
 
     for file_name in files:
         print(file_name)
@@ -130,7 +131,7 @@ def write_split(files, split):
     output.write_output(DATASET_FILE.format(split=split))
 
 if __name__ == "__main__":
-    argument_parser = ArgumentParser(description="Convert argument mining dataset")
+    argument_parser = ArgumentParser()
     add_seed_arg(argument_parser)
     args = argument_parser.parse_known_args()[0]
     set_seed(args)
