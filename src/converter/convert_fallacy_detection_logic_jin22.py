@@ -1,4 +1,7 @@
 from uuid import uuid4
+
+import pandas as pd
+
 from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
 from argparse import ArgumentParser
 
@@ -18,8 +21,8 @@ map = {
     "circular reasoning": "Circular Reasoning",
     "false dilemma" : "False Dilemma"
 }
-def process_data(data_path, data_name, data_split, metadata):
-    dataset = read_tabular(data_path)
+def process_data(dataset, data_name, data_split, metadata):
+
     output = Output(dataset_name)
     output.append_definition("Classify the following sentence into one of the following fallacies:" +
 
@@ -65,27 +68,36 @@ if __name__ == "__main__":
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
-
     data_path = datasets_path() / "logic" # path to data
+    all_training_datasets = ["climate_train.csv", "climate_dev.csv", "edu_train.csv", "edu_dev.csv"]
+    all_test_datasets = ["climate_test.csv", "edu_test.csv"]
+    all_training_df = []
+    for training_dataset in all_training_datasets:
 
+        dataset = read_tabular(data_path / training_dataset)
+        if "updated_label" in dataset.columns:
+            dataset.rename(columns={"updated_label":"logical_fallacies"}, inplace=True)
+
+        all_training_df.append(dataset[["source_article", "logical_fallacies"]])
+
+    df_train = pd.concat(all_training_df)
+    all_test_dfs = []
+
+    for test_dataset in all_test_datasets:
+        dataset = read_tabular(data_path / test_dataset)
+        if "updated_label" in dataset.columns:
+            dataset.rename(columns={"updated_label":"logical_fallacies"}, inplace=True)
+
+        all_test_dfs.append(dataset[["source_article", "logical_fallacies"]])
+
+    df_test = pd.concat(all_test_dfs)
     metadata = Metadata(dataset_name)
 
-    count_climate_train = process_data(data_path / "climate_train.csv", "fallacy_detection_logic_climate_train_goffredo23.json", "train", metadata)
-    count_climate_test = process_data(data_path / "climate_test.csv", "fallacy_detection_logic_climate_test_goffredo23.json", "test", metadata)
-    count_climate_dev = process_data(data_path / "climate_dev.csv", "fallacy_detection_logic_climate_dev_goffredo23.json", "dev", metadata)
-    count_edu_train= process_data(data_path / "edu_train.csv", "fallacy_detection_logic_edu_train_goffredo23.json", "train", metadata)
-    count_edu_test = process_data(data_path / "edu_test.csv", "fallacy_detection_logic_edu_test_goffredo23.json", "test", metadata)
-    count_edu_dev = process_data(data_path / "edu_dev.csv", "fallacy_detection_logic_edu_dev_goffredo23.json", "dev", metadata)
+    count_train = process_data(df_train, "fallacy_detection_logic_train_goffredo23.json", "train", metadata)
+    count_test = process_data(df_test, "fallacy_detection_logic_test_goffredo23.json", "test", metadata)
 
-    print(f"Found {count_edu_dev + count_edu_test + count_edu_train + count_climate_train + count_climate_test + count_climate_dev} sentences")
-    print(f"""Found {count_edu_dev=} 
-                    {count_edu_test=} 
-                    {count_edu_train=} 
-                    {count_climate_train=} 
-                    {count_climate_test=} 
-                    {count_climate_dev=}""")
+    print(f"Found {count_test + count_train} sentences")
     metadata.add_evaluation_metric("f1_macro")
     metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_genre(Genres.DEBATES)
     metadata.add_subarea(Subareas.MINING)
     metadata.write_metadata()

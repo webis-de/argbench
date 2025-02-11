@@ -61,21 +61,10 @@ if __name__ == "__main__":
         metadata.add_dataset(dataset_file, split_model)
         output.write_output(dataset_file)
 
-    output = Output(DATASET_NAME)
-    output.append_definition("Classify argument according to Walton's argumnt schemes. Possible responses: means for goal, goal from means, from consequence, source knowledge, source authority, rule or principle.")
-    for arg in arguments:
-        output.append_instance(arg.id, arg.prompt, [arg.output])
-    dataset_file = f"scheme_classification_argu_full_saha23.json"
-    metadata.add_dataset(dataset_file)
 
-    output.append_genre(Genres.DEBATE_PORTALS)
-    output.append_subarea(Subareas.MINING)
-    output.write_output(dataset_file)
+
 
     splits_data.close()
 
-    metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_subarea(Subareas.MINING)
-    metadata.add_evaluation_metric("f1_macro")
 
     metadata.write_metadata()

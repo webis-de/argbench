@@ -63,6 +63,14 @@ def find_topic_size_to_split(df, topic_label):
     df_train = df[df[topic_label].isin(train_topics)]
     return df_test, df_train
 
+def split_test_train(iteratable):
+    size = len(list(iteratable))
+    test_size = math.ceil(size * 0.2)
+    test_indices = sample(list(range(size)), test_size)
+    train_indices = [i for i in range(size) if i not in test_indices]
+    test = [iteratable[i] for i in test_indices]
+    train = [iteratable[i] for i in train_indices]
+    return test, train
 class Genres(Enum):
     """Valid genres"""
     ESSAYS = "essays"
