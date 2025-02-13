@@ -1,9 +1,9 @@
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
+from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Skills
 from argparse import ArgumentParser
 import uuid
 
 
-def convert_dataset(data_path, data_file, metadata):
+def convert_dataset(data_path, data_file, metadata, split):
     dataset = read_tabular(data_path)
     output = Output(dataset_name)
     output.append_definition("Given the topic and the two evidences, is the first evidence more convincing than" +
@@ -23,8 +23,8 @@ def convert_dataset(data_path, data_file, metadata):
 
     output.write_output(data_file)
     output.append_genre(Genres.WIKIPEDIA)
-    output.append_subarea(Subareas.QUALITY_ASSESSMENT)
-    metadata.add_dataset(data_file)
+    output.append_subarea(Skills.QUALITY_ASSESSMENT)
+    metadata.add_dataset(data_file, split)
 
 
 if __name__ == "__main__":
@@ -43,10 +43,9 @@ if __name__ == "__main__":
 
     metadata = Metadata(dataset_name)
 
-    convert_dataset(data_path / "train.csv", dataset_file_train, metadata)
-    convert_dataset(data_path / "test.csv", dataset_file_test, metadata)
+    convert_dataset(data_path / "train.csv", dataset_file_train, metadata, "train")
+    convert_dataset(data_path / "test.csv", dataset_file_test, metadata, "test")
 
-    metadata.add_evaluation_metric("f1_macro")
     metadata.add_genre(Genres.WIKIPEDIA)
-    metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
+    metadata.add_skill(Skills.QUALITY_ASSESSMENT)
     metadata.write_metadata()

@@ -1,4 +1,4 @@
-from common import Genres, Output, Subareas, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Skills, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import uuid
 
@@ -22,7 +22,7 @@ def process_dataset(dataset, path):
         output.append_instance(id, prompt, [model_output])
 
     output.append_genre(Genres.WIKIPEDIA)
-    output.append_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
+    output.append_subarea(Skills.PERSPECTIVE_ASSESSMENT)
     output.write_output(path)
 
 
@@ -46,7 +46,7 @@ if __name__ == "__main__":
     metadata.add_dataset("stance_classification_ibmsc_test_barhaim17.json", "test")
 
     metadata.add_genre(Genres.WIKIPEDIA)
-    metadata.add_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
-    metadata.add_evaluation_metric("f1_macro")
+    metadata.add_skill(Skills.PERSPECTIVE_ASSESSMENT)
+    
 
     metadata.write_metadata()

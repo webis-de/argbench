@@ -128,9 +128,9 @@ if __name__ == "__main__":
     print(len(df_test))
 
     metadata.add_genre(Genres.WIKIPEDIA)
-    metadata.add_subarea(Subareas.MINING)
+    metadata.add_skill(Subareas.MINING)
     preprocess_dataset(df_train, metadata, "train")
     preprocess_dataset(df_test, metadata, "test")
 
-    metadata.add_evaluation_metric("f1_macro")
+    
     metadata.write_metadata()

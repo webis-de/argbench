@@ -100,7 +100,7 @@ if __name__ == "__main__":
 
     make_output(dataset, metadata, "sufficiency", local_sufficiency_description, "argument_ranking_dagstuhl_15512_full_rank_sufficiency_wachsmuth17.json")
 
-    metadata.add_evaluation_metric("f1_macro")
+    
     metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
+    metadata.add_skill(Subareas.QUALITY_ASSESSMENT)
     metadata.write_metadata()

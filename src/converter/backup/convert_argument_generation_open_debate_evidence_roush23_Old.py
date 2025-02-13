@@ -28,7 +28,7 @@ def download_and_process_datasets(cache_directory):
         output_file = f"{DATASET_NAME}_with_tag_cleaned_{number}.json"
         metadata = Metadata(output_file)
         make_output(dataset, metadata, DATASET_NAME, output_file)
-        metadata.add_evaluation_metric("f1_macro")
+        
         metadata.write_metadata()
         print(f"Finished processing {parquet_file}")
 

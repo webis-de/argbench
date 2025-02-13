@@ -49,6 +49,6 @@ if __name__ == "__main__":
     process_data(dataset, metadata)
 
     metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.MINING)
-    metadata.add_evaluation_metric("f1_macro")
+    metadata.add_skill(Subareas.MINING)
+    
     metadata.write_metadata()

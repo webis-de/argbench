@@ -1,4 +1,4 @@
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
+from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Skills
 from argparse import ArgumentParser
 import uuid
 import ndjson
@@ -115,11 +115,11 @@ if __name__ == "__main__":
     collect_generated(output, generated, negatives)
 
     output.append_genre(Genres.WEB)
-    output.append_subarea(Subareas.GENERATION)
+    output.append_subarea(Skills.GENERATION)
     output.write_output(DATASET_FILE)
 
     metadata.add_genre(Genres.WEB)
-    metadata.add_subarea(Subareas.GENERATION)
+    metadata.add_skill(Skills.GENERATION)
     metadata.add_dataset(DATASET_FILE)
-    metadata.add_evaluation_metric("rouge")
+    
     metadata.write_metadata()

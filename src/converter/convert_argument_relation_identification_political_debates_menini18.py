@@ -1,4 +1,4 @@
-from common import Genres, Output, Subareas, datasets_path, Metadata, add_seed_arg, set_seed, read_tabular, \
+from common import Genres, Output, Skills, datasets_path, Metadata, add_seed_arg, set_seed, read_tabular, \
     find_topic_size_to_split
 from argparse import ArgumentParser
 from random import sample
@@ -17,7 +17,7 @@ def process_split(dataset, path):
         id = instance["pair_id"]
         output.append_instance(id, instance["input"], [instance["output"]])
     output.append_genre(Genres.DEBATES)
-    output.append_subarea(Subareas.MINING)
+    output.append_subarea(Skills.MINING)
     output.write_output(path)
 
 if __name__ == "__main__":
@@ -38,9 +38,9 @@ if __name__ == "__main__":
     metadata = Metadata(dataset_name)
     metadata.add_dataset(dataset_file.replace("{split}","train"), "train")
     metadata.add_dataset(dataset_file.format(split="test"), "test")
-    metadata.add_evaluation_metric("f1_macro")
+    
     metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.MINING)
+    metadata.add_skill(Skills.MINING)
     metadata.write_metadata()
 
     dataset = read_tabular(data_path, "\t")

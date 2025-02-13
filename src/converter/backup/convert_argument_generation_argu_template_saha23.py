@@ -61,6 +61,6 @@ if __name__ == "__main__":
 
     metadata.add_dataset(DATASET_FILE)
     metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_subarea(Subareas.GENERATION)
+    metadata.add_skill(Subareas.GENERATION)
     output.write_output(DATASET_FILE)
     metadata.write_metadata()

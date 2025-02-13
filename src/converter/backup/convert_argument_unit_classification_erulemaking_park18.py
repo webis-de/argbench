@@ -85,11 +85,11 @@ if __name__ == "__main__":
                 output.append_instance(id, prop_text, [prop_label])
 
     metadata.add_dataset(dataset_file)
-    metadata.add_evaluation_metric("f1_macro")
+    
     output.append_genre(Genres.WIKIPEDIA)
     output.append_subarea(Subareas.MINING)
     output.write_output(dataset_file)
 
     metadata.add_genre(Genres.WIKIPEDIA)
-    metadata.add_subarea(Subareas.MINING)
+    metadata.add_skill(Subareas.MINING)
     metadata.write_metadata()

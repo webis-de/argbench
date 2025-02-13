@@ -1,4 +1,4 @@
-from common import Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
+from common import Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Skills
 from argparse import ArgumentParser
 import ndjson
 from ast import literal_eval as make_tuple
@@ -39,7 +39,7 @@ def process_split(dataset_files, output_file, metadata, dataset_split):
 
                 output.append_instance(id, prompt, [aspect_output])
     output.append_genre(Genres.WEB)
-    output.append_subarea(Subareas.GENERATION)
+    output.append_subarea(Skills.GENERATION)
     output.write_output(output_file)
     metadata.add_dataset(output_file, dataset_split=dataset_split)
 
@@ -69,6 +69,6 @@ if __name__ == "__main__":
     )
 
     metadata.add_genre(Genres.WEB)
-    metadata.add_subarea(Subareas.GENERATION)
-    metadata.add_evaluation_metric("rouge")
+    metadata.add_skill(Skills.GENERATION)
+    
     metadata.write_metadata()

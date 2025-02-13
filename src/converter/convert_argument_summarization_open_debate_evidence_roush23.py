@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 from datasets import load_dataset
 from tqdm import tqdm
 
-from src.converter.common import Subareas
+from src.converter.common import Skills
 
 DATASET_NAME = "argument_summarization_open_debate_evidence_roush23"
 DATASET_FILE_TEST = "argument_summarization_open_debate_evidence_test_roush23"
@@ -24,7 +24,7 @@ def make_output(dataset, metadata, output_file, split):
         output.append_instance(id, input_text, output_text)
     metadata.add_dataset(output_file, split)
     output.append_genre(Genres.DEBATES)
-    output.append_subarea(Subareas.GENERATION)
+    output.append_subarea(Skills.GENERATION)
     output.write_output(output_file)
 
 
@@ -42,7 +42,7 @@ def process_dataset(cache_directory):
 
     metadata = Metadata(DATASET_NAME)
     metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.GENERATION)
+    metadata.add_skill(Skills.GENERATION)
     make_output(df_test, metadata, DATASET_FILE_TEST, "test")
     make_output(df_train, metadata, DATASET_FILE_TRAIN, "train")
     metadata.write_metadata()

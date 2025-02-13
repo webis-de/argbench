@@ -51,9 +51,9 @@ if __name__ == "__main__":
     output.append_subarea(Subareas.REASONING)
     output.write_output(dataset_file)
 
-    metadata.add_evaluation_metric("rouge")
+    
 
     metadata.add_dataset(dataset_file)
     metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_subarea(Subareas.REASONING)
+    metadata.add_skill(Subareas.REASONING)
     metadata.write_metadata()

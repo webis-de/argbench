@@ -1,6 +1,6 @@
 import pandas as pd
 
-from common import Genres, Output, Subareas, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Skills, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 
 dataset_name = "warrant_identification_semeval_2018_task_12_habernal18"
@@ -29,7 +29,7 @@ def process_split(dataset, metadata, split):
 
     metadata.add_dataset(dataset_file, split)
     output.append_genre(Genres.NEWS)
-    output.append_subarea(Subareas.REASONING)
+    output.append_subarea(Skills.REASONING)
     output.write_output(dataset_file)
 
 
@@ -58,6 +58,6 @@ if __name__ == "__main__":
     process_split(test_dataset, metadata, "test")
 
     metadata.add_genre(Genres.NEWS)
-    metadata.add_subarea(Subareas.REASONING)
-    metadata.add_evaluation_metric("f1_macro")
+    metadata.add_skill(Skills.REASONING)
+    
     metadata.write_metadata()

@@ -74,8 +74,8 @@ if __name__ == "__main__":
     metadata.add_dataset("conclusion_generation_ibm_claim_generation_test_gretz20.json", "test")
 
 
-    metadata.add_evaluation_metric("f1_macro")
+    
     metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.GENERATION)
+    metadata.add_skill(Subareas.GENERATION)
 
     metadata.write_metadata()

@@ -1,5 +1,5 @@
 import json
-from common import Output, add_seed_arg, set_seed, datasets_path, Metadata, Genres, Subareas
+from common import Output, add_seed_arg, set_seed, datasets_path, Metadata, Genres, Skills
 from argparse import ArgumentParser
 from random import sample
 
@@ -48,7 +48,7 @@ def create_output(dataset_name):
         Output first Reason or Evidence and then output the sentence pair separated by a new line. Do not Explain."""
     )
     output.append_genre(Genres.WEB_FORUMS)
-    output.append_subarea(Subareas.MINING)
+    output.append_subarea(Skills.MINING)
     return output
 def main():
     arg_parser = ArgumentParser(description="What dataset will be processed?")
@@ -60,7 +60,7 @@ def main():
     dataset_file_train = "argument_relation_identification_erulemaking_train_park18.json"
     output = create_output(dataset_name)
     metadata = Metadata(dataset_name)
-    metadata.add_evaluation_metric("rouge")
+    
 
     data_path = (datasets_path() /
                  "erulemaking" /
@@ -82,7 +82,7 @@ def main():
     metadata.add_dataset(dataset_file_test, "test")
     metadata.add_dataset(dataset_file_train, "train")
     metadata.add_genre(Genres.WEB_FORUMS)
-    metadata.add_subarea(Subareas.MINING)
+    metadata.add_skill(Skills.MINING)
     metadata.write_metadata()
 
 

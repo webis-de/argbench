@@ -84,7 +84,7 @@ class Genres(Enum):
     STORIES = "stories"
 
 
-class Subareas(Enum):
+class Skills(Enum):
     """Valid subareas"""
     MINING = "mining" # *classification, segmentation, detection, extraction
     GENERATION = "generation" # *generation
@@ -158,8 +158,8 @@ class Output:
         self.definition.append(definition)
 
 
-    def append_subarea(self, subarea: Subareas):
-        assert subarea in Subareas, f"Subarea {subarea} is not valid"
+    def append_subarea(self, subarea: Skills):
+        assert subarea in Skills, f"Subarea {subarea} is not valid"
         self.categories.append(subarea.value)
 
 
@@ -219,20 +219,20 @@ class Metadata:
             "file_list": [],
             "split_mapping": {},
             "evaluation_metrics": [],
-            "subarea": [],
-            "genre": [],
-            "task": []
+            "skill": "",
+            "genre": "",
+
         }
 
 
-    def add_subarea(self, subarea: Subareas):
-        assert subarea in Subareas, f"Subarea {subarea} is not valid"
-        self.dataset_data[self.dataset_name]["subarea"].append(subarea.value)
+    def add_skill(self, skill: Skills):
+        assert skill in Skills, f"Subarea {skill} is not valid"
+        self.dataset_data[self.dataset_name]["subarea"]= skill.value
 
 
     def add_genre(self, genre: Genres):
         assert genre in Genres, f"Genre {genre} is not valid"
-        self.dataset_data[self.dataset_name]["genre"].append(genre.value)
+        self.dataset_data[self.dataset_name]["genre"] = genre.value
 
     def append_task(self, task: Tasks):
         assert task in Tasks, f"Task {task} is not valid"

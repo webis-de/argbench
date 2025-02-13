@@ -2,7 +2,7 @@ from uuid import uuid4
 
 import pandas as pd
 
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
+from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Skills
 from argparse import ArgumentParser
 
 dataset_name = "fallacy_detection_logic_jin22"
@@ -56,10 +56,10 @@ def process_data(dataset, data_name, data_split, metadata):
 
 
     output.append_genre(Genres.WEB)
-    output.append_subarea(Subareas.REASONING)
+    output.append_subarea(Skills.REASONING)
     output.write_output(data_name)
     metadata.add_dataset(data_name, data_split)
-    metadata.add_subarea(Subareas.REASONING)
+    metadata.add_skill(Skills.REASONING)
     metadata.add_genre(Genres.WEB)
     return len(output.instances)
 
@@ -98,7 +98,7 @@ if __name__ == "__main__":
     count_test = process_data(df_test, "fallacy_detection_logic_test_goffredo23.json", "test", metadata)
 
     print(f"Found {count_test + count_train} sentences")
-    metadata.add_evaluation_metric("f1_macro")
+    
     metadata.add_genre(Genres.WEB)
-    metadata.add_subarea(Subareas.REASONING)
+    metadata.add_skill(Skills.REASONING)
     metadata.write_metadata()

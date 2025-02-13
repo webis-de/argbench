@@ -1,6 +1,6 @@
 import math
 
-from common import Genres, Output, Subareas, datasets_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Skills, datasets_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import ndjson
 from random import sample
@@ -25,11 +25,11 @@ def process_data(data, split):
         output.append_instance(id=post["id"],input=f"Argument: {argument}", output=[ad_hominem])
 
     output.append_genre(Genres.WEB_FORUMS)
-    output.append_subarea(Subareas.REASONING)
+    output.append_subarea(Skills.REASONING)
     output.write_output(dataset_file_name)
     metadata.add_dataset(dataset_file_name, split)
     metadata.add_genre(Genres.WEB_FORUMS)
-    metadata.add_subarea(Subareas.REASONING)
+    metadata.add_skill(Skills.REASONING)
     metadata.write_metadata()
 
 

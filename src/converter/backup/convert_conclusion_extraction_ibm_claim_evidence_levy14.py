@@ -77,7 +77,7 @@ def process_dataset(dataset, split):
     output.append_subarea(Subareas.MINING)
 
     metadata.add_genre(Genres.WIKIPEDIA)
-    metadata.add_subarea(Subareas.MINING)
+    metadata.add_skill(Subareas.MINING)
     metadata.add_dataset(dataset_file, split)
     output.write_output(dataset_file)
 

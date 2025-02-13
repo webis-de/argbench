@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import random
 import math
-from common import Genres, Output, Subareas, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, \
+from common import Genres, Output, Skills, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, \
     find_topic_size_to_split
 from argparse import ArgumentParser
 import uuid
@@ -39,7 +39,7 @@ def process_split(dataset, dataset_file):
 
         output.append_instance(id, prompt, [response_prompt])
     output.append_genre(Genres.WIKIPEDIA)
-    output.append_subarea(Subareas.MINING)
+    output.append_subarea(Skills.MINING)
     output.write_output(dataset_file)
 
 
@@ -66,5 +66,5 @@ if __name__ == "__main__":
     metadata.add_dataset(DATASET_FILE_TEST, "test")
     metadata.add_dataset(DATASET_FILE_TRAIN, "train")
     metadata.add_genre(Genres.WIKIPEDIA)
-    metadata.add_subarea(Subareas.MINING)
+    metadata.add_skill(Skills.MINING)
     metadata.write_metadata()

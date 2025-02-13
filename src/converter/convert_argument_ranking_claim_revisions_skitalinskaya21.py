@@ -1,4 +1,4 @@
-from common import Output, read_tabular, Metadata, add_seed_arg, set_seed, datasets_path, Genres, Subareas
+from common import Output, read_tabular, Metadata, add_seed_arg, set_seed, datasets_path, Genres, Skills
 from argparse import ArgumentParser
 from random import shuffle, sample
 
@@ -22,9 +22,9 @@ def process_data(dataset, metadata, split):
         output.append_instance(record['v1_id'] + record['v2_id'], prompt, [mapping[record["label"]]])
 
     output.append_genre(Genres.DEBATE_PORTALS)
-    output.append_subarea(Subareas.QUALITY_ASSESSMENT)
+    output.append_subarea(Skills.QUALITY_ASSESSMENT)
     split_dataset_file = dataset_file.format(split=split)
-    metadata.add_dataset(split_dataset_file)
+    metadata.add_dataset(split_dataset_file,split=split)
     output.write_output(split_dataset_file)
 
 
@@ -50,7 +50,6 @@ if __name__ == "__main__":
     process_data(df_training, metadata, "train")
     process_data(df_test, metadata, "test")
 
-    metadata.add_evaluation_metric("f1_macro")
     metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
+    metadata.add_skill(Skills.QUALITY_ASSESSMENT)
     metadata.write_metadata()

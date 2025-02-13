@@ -1,4 +1,4 @@
-from common import Genres, Output, Subareas, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Skills, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import uuid
 from lxml import etree
@@ -76,10 +76,10 @@ if __name__ == "__main__":
 
 
     train.append_genre(Genres.WEB_FORUMS)
-    train.append_subarea(Subareas.GENERATION)
+    train.append_subarea(Skills.GENERATION)
 
     test.append_genre(Genres.WEB_FORUMS)
-    test.append_subarea(Subareas.GENERATION)
+    test.append_subarea(Skills.GENERATION)
 
 
     train.write_output("counter_argument_generation_cmv_train_hua18.json")
@@ -90,8 +90,8 @@ if __name__ == "__main__":
 
 
     metadata.add_genre(Genres.WEB_FORUMS)
-    metadata.add_subarea(Subareas.GENERATION)
+    metadata.add_skill(Skills.GENERATION)
 
-    metadata.add_evaluation_metric("rouge")
+    
 
     metadata.write_metadata()

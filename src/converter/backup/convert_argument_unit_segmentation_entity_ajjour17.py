@@ -125,7 +125,7 @@ if __name__ == "__main__":
 
     metadata.add_genre(Genres.SOCIAL_MEDIA)
     metadata.add_genre(Genres.ESSAYS)
-    metadata.add_subarea(Subareas.MINING)
-    metadata.add_evaluation_metric("rouge")
+    metadata.add_skill(Subareas.MINING)
+    
 
     metadata.write_metadata()

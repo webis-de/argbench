@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
+from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Skills
 from argparse import ArgumentParser
 import uuid
 import csv
@@ -24,7 +24,7 @@ def make_output(dataset, dataset_name):
         output.append_instance(id, prompt, [response])
 
     output.append_genre(Genres.WEB)
-    output.append_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
+    output.append_subarea(Skills.PERSPECTIVE_ASSESSMENT)
     output.write_output(dataset_name)
 
 
@@ -61,6 +61,6 @@ if __name__ == "__main__":
 
 
     metadata.add_genre(Genres.WEB)
-    metadata.add_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
-    metadata.add_evaluation_metric("f1_macro")
+    metadata.add_skill(Skills.PERSPECTIVE_ASSESSMENT)
+    
     metadata.write_metadata()

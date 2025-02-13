@@ -119,6 +119,6 @@ if __name__ == "__main__":
 
     metadata.add_dataset(DATASET_FILE)
     metadata.add_genre(Genres.ESSAYS)
-    metadata.add_subarea(Subareas.GENERATION)
-    metadata.add_evaluation_metric("f1_macro")
+    metadata.add_skill(Subareas.GENERATION)
+    
     metadata.write_metadata()

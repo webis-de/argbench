@@ -1,4 +1,4 @@
-from common import Output, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas, find_topic_size_to_split
+from common import Output, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Skills, find_topic_size_to_split
 from argparse import ArgumentParser
 import uuid
 
@@ -26,8 +26,8 @@ def preprocess_data(dataset, split, metadata):
 
     metadata.add_dataset(dataset_file)
     metadata.add_genre(Genres.WIKIPEDIA)
-    metadata.add_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
-    output.append_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
+    metadata.add_skill(Skills.PERSPECTIVE_ASSESSMENT)
+    output.append_subarea(Skills.PERSPECTIVE_ASSESSMENT)
     output.append_genre(Genres.WIKIPEDIA)
     output.write_output(dataset_file)
 

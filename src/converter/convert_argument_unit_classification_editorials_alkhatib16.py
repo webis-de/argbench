@@ -1,7 +1,7 @@
 
 import os
 import json
-from common import Metadata, Output, add_seed_arg, set_seed, Genres, Subareas, datasets_path, tasks_path
+from common import Metadata, Output, add_seed_arg, set_seed, Genres, Skills, datasets_path, tasks_path
 from argparse import ArgumentParser
 from random import sample
 from collections import defaultdict
@@ -129,16 +129,16 @@ the above classes.
             train_output.append_instance(instance_id, combined_input, [combined_output])
 
     train_output.append_genre(Genres.NEWS)
-    train_output.append_subarea(Subareas.MINING)
+    train_output.append_subarea(Skills.MINING)
     train_output.write_output(dataset_train)
 
     test_output.append_genre(Genres.NEWS)
-    test_output.append_subarea(Subareas.MINING)
+    test_output.append_subarea(Skills.MINING)
     test_output.write_output(dataset_test)
     metadata.add_dataset(dataset_test, "test")
     metadata.add_dataset(dataset_train, "train")
     metadata.add_genre(Genres.NEWS)
-    metadata.add_subarea(Subareas.MINING)
+    metadata.add_skill(Skills.MINING)
     metadata.write_metadata()
 
 
