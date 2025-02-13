@@ -9,7 +9,7 @@
 
 module load Miniforge3
 conda activate task-specific
-for f in bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/converter/convert*.py;  do
+for f in /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/converter/convert*.py;  do
 python $f ;
 echo $f
 done
