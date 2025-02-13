@@ -1,3 +1,7 @@
+python "../converter/convert_$1.py"
+python "../experiment/preprocess.py" -t "$1" -o /bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks
+
+
 #!/bin/bash -l
 #SBATCH --job-name=preprocessing-datasets
 #SBATCH --nodes=1
