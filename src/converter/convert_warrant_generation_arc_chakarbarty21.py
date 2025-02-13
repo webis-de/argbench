@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from common import Genres, Output, Subareas, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, split_test_train
+from common import Genres, Output, Skills, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, split_test_train
 from argparse import ArgumentParser
 from dataclasses import dataclass
 from pathlib import Path
@@ -75,7 +75,7 @@ def make_outputs(target_data, para_comet_data, dataset_name, para_comet_name, me
     for subarea in subareas:
         target_output.append_subarea(subarea)
         output_para_comet.append_subarea(subarea)
-        metadata.add_subarea(subarea)
+        metadata.add_skill(subarea)
 
     return target_output, output_para_comet
 
@@ -118,7 +118,7 @@ if __name__ == "__main__":
             genre = Genres.DEBATE_PORTALS
         else:
             genre = Genres.ESSAYS
-
+        metadata = Metadata(dataset_name)
         if dataset == "art":
             train_data_path = root_data_path /datsaet_target["art_train"]
             test_data_path =  root_data_path /datsaet_target["art_test"]
@@ -139,7 +139,7 @@ if __name__ == "__main__":
         for split in ["test", "train"]:
             dataset_file_name = f"warrant_generation_{dataset}_{split}_chakarbarty21.json"
             dataset_para_file_name = f"warrant_generation_{dataset}_para_comet_{split}_chakarbarty21.json"
-            metadata = Metadata(dataset_name)
+
             metadata.add_dataset(dataset_file_name, split)
             data, para_comet_data = make_outputs(
                 data_set[split],
@@ -148,13 +148,11 @@ if __name__ == "__main__":
                 dataset_para_name,
                 metadata,
                 [genre],
-                [Subareas.GENERATION]
+                [Skills.GENERATION]
             )
-            metadata.write_metadata()
 
             data.write_output(dataset_file_name)
             para_comet_data.write_output(dataset_para_file_name)
-
-
+        metadata.write_metadata()
 
 

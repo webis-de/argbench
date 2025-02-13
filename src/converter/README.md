@@ -2,7 +2,7 @@
 
 This folder contains a scirpt to process each dataset.
 
-Each dataset has to conform to a common naming convention: `convert_[task]_[dataset]_[modifier]_[paper_author][year].py`. Also preprocessing scripts should use common API from [common.py](./common.py) file. Example usage of how to structure a dataset preprocessing file can be found [in a template file](./convert_template.py).
+Each dataset has to conform to a common naming convention: `convert_[task]_[dataset]_[modifier]_[paper_author][year].py`. Also preprocessing scripts should use common API from [common.py](./common.py) file. Example usage of how to structure a dataset preprocessing file can be found [in a template file](backup/convert_template.py).
 
 In order to make changing of output datat folder easier, it is recommended to use `Output` class API to write output data and files onto disk. Output repository path can be set using [config.yaml](../../config.yaml) `data_repo` parameter.
 

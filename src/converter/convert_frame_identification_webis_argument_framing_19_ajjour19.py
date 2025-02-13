@@ -1,4 +1,4 @@
-from common import Genres, Output, Subareas, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, \
+from common import Genres, Output, Skills, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, \
     find_topic_size_to_split
 from argparse import ArgumentParser
 import random
@@ -34,7 +34,7 @@ def process_split(df, data_file):
         output.append_instance(id, prompt, [response])
 
     output.append_genre(Genres.DEBATE_PORTALS)
-    output.append_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
+    output.append_subarea(Skills.PERSPECTIVE_ASSESSMENT)
     print(data_file)
     output.write_output(data_file)
 
@@ -65,8 +65,8 @@ if __name__ == "__main__":
     metadata = Metadata(DATASET_NAME)
     metadata.add_dataset(train_data_file, "train")
     metadata.add_dataset(test_data_file, "test")
-    metadata.add_evaluation_metric("f1_macro")
+    
     metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
+    metadata.add_skill(Skills.PERSPECTIVE_ASSESSMENT)
     metadata.write_metadata()
 

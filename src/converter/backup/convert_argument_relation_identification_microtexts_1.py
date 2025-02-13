@@ -118,5 +118,5 @@ if __name__ == "__main__":
 
     output.write_output(DATASET_FILE)
     metadata.add_dataset(DATASET_FILE)
-    metadata.add_evaluation_metric("f1_macro")
+    
     metadata.write_metadata()

@@ -1,4 +1,4 @@
-from common import Output, read_tabular, Metadata, add_seed_arg, set_seed, datasets_path, Genres, Subareas
+from common import Output, read_tabular, Metadata, add_seed_arg, set_seed, datasets_path, Genres, Skills
 from argparse import ArgumentParser
 import uuid
 
@@ -45,7 +45,7 @@ def process_data(dataset, metadata, split):
             output.append_instance(id, prompt, ["Improvable"])
     metadata.add_dataset(dataset_file, split)
     output.append_genre(Genres.DEBATE_PORTALS)
-    output.append_subarea(Subareas.QUALITY_ASSESSMENT)
+    output.append_subarea(Skills.QUALITY_ASSESSMENT)
     output.write_output(dataset_file)
 
 if __name__ == "__main__":
@@ -66,6 +66,6 @@ if __name__ == "__main__":
     process_data(test_dataset, metadata, "test")
 
     metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
-    metadata.add_evaluation_metric("f1_macro")
+    metadata.add_skill(Skills.QUALITY_ASSESSMENT)
+    
     metadata.write_metadata()

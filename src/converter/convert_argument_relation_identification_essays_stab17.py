@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 from lxml import etree
-from common import Output, Metadata, add_seed_arg, datasets_path, set_seed, Genres, Subareas
+from common import Output, Metadata, add_seed_arg, datasets_path, set_seed, Genres, Skills
 from argparse import ArgumentParser
 
 
@@ -66,14 +66,13 @@ def process_xmi_files(xmi_directory, output, split_map, split):
                 print(f"Processed: {filename}")
 
 
-def create_metadata(dataset_name, dataset_file, split):
+def edit_metadata(metadata, dataset_file, split):
     """Create and save metadata."""
-    metadata = Metadata(dataset_name)
-    metadata.add_evaluation_metric("f1_macro")  # Choose appropriate evaluation metric
+
     metadata.add_dataset(dataset_file, split)
     metadata.add_genre(Genres.ESSAYS)
-    metadata.add_subarea(Subareas.MINING)
-    metadata.write_metadata()
+    metadata.add_skill(Skills.MINING)
+
 
 
 def main():
@@ -95,6 +94,7 @@ def main():
     split_map = {ids[i]:splits[i] for i in range(len(ids))}
     task_definition = """Given the following essay, list of pairs of sentences where the second sentence supports or attacks the first.
          Output first Support or Attack and then output the sentence pair separated by a new line. Do not Explain."""
+    metadata = Metadata(dataset_name)
     for split in ["train", "test"]:
         output = Output(dataset_name)
         output.append_definition(task_definition)
@@ -104,13 +104,14 @@ def main():
 
         # Write the dataset to a JSON file
         output.append_genre(Genres.ESSAYS)
-        output.append_subarea(Subareas.MINING)
+        output.append_subarea(Skills.MINING)
         dataset_path = template_path.format(split=split)
         output.write_output(dataset_path)
 
         # Create and save metadata
-        create_metadata(dataset_name, dataset_path, split)
 
+        edit_metadata(metadata, dataset_path, split)
+    metadata.write_metadata()
     print(f"All files processed and saved to {dataset_path}")
 
 

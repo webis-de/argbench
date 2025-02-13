@@ -1,4 +1,4 @@
-from common import Output, add_seed_arg, set_seed, Genres, Subareas, Metadata, datasets_path, split_test_train
+from common import Output, add_seed_arg, set_seed, Genres, Skills, Metadata, datasets_path, split_test_train
 from argparse import ArgumentParser
 import json
 
@@ -53,7 +53,7 @@ personal feelings, prejudices, or interpretations.'
         output.write_output(dataset_file_name)
         metadata.add_dataset(dataset_file_name, split)
     output.append_genre(Genres.WEB_FORUMS)
-    output.append_subarea(Subareas.MINING)
+    output.append_subarea(Skills.MINING)
 
     print(f"Processed commentID: {comment_id}")
 
@@ -85,7 +85,7 @@ def main():
         process_data(test, dataset_name, data_file_test, metadata, "test")
 
         metadata.add_genre(Genres.WEB_FORUMS)
-        metadata.add_subarea(Subareas.MINING)
+        metadata.add_skill(Skills.MINING)
 
 
 

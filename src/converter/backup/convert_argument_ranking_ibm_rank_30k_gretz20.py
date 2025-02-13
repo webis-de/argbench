@@ -59,7 +59,7 @@ if __name__ == "__main__":
     metadata.add_dataset("argument_ranking_ibm_rank_30k_full_test_gretz20.json", "test")
     metadata.add_dataset("argument_ranking_ibm_rank_30k_full_dev_train_gretz20.json", "dev")
 
-    metadata.add_evaluation_metric("f1_macro")
+    
     metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
+    metadata.add_skill(Subareas.QUALITY_ASSESSMENT)
     metadata.write_metadata()

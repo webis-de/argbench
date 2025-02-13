@@ -1,4 +1,4 @@
-from common import Genres, Output, Subareas, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, find_topic_size_to_split
+from common import Genres, Output, Skills, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, find_topic_size_to_split
 from argparse import ArgumentParser
 import random
 import re
@@ -16,7 +16,7 @@ def aggregate_labels_and_split(dataset, column):
 
 def make_output(dataset, metadata, column, aspect_description, dataset_file, split):
     dimension = column.replace(' ', '_')
-    dataset_name = DATASET_NAME.replace('{dimension}', dimension)
+    dataset_name = DATASET_NAME.format(dimension= dimension)
     output = Output(dataset_name)
     output.append_definition(f"""Judge the quality of argument according to quality aspect: {column}. 
                             Quality aspect description: {aspect_description} Possible outputs:
@@ -33,7 +33,7 @@ def make_output(dataset, metadata, column, aspect_description, dataset_file, spl
 
     metadata.add_dataset(dataset_file, split)
     output.append_genre(Genres.DEBATE_PORTALS)
-    output.append_subarea(Subareas.QUALITY_ASSESSMENT)
+    output.append_subarea(Skills.QUALITY_ASSESSMENT)
     output.write_output(dataset_file)
 
 if __name__ == "__main__":
@@ -42,7 +42,6 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    metadata = Metadata(DATASET_NAME)
 
     dataset_path = str(datasets_path()
                        / "dagstuhl-15512-argquality-corpus-v2"
@@ -85,14 +84,14 @@ if __name__ == "__main__":
         ("sufficiency", local_sufficiency_description)
     ]
     for task_name, description in tasks:
-
+        metadata = Metadata(DATASET_NAME)
         df_test, df_train = aggregate_labels_and_split(dataset, task_name)
         test_filename = f"argument_rating_dagstuhl_15512_{task_name.replace(' ', '_')}_test_wachsmuth17.json"
         train_filename = f"argument_rating_dagstuhl_15512_{task_name.replace(' ', '_')}_train_wachsmuth17.json"
         make_output(df_test, metadata, task_name, description, test_filename, "test")
         make_output(df_train, metadata, task_name, description, train_filename, "train")
 
-    metadata.add_evaluation_metric("f1_macro")
-    metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
-    metadata.write_metadata()
+        
+        metadata.add_genre(Genres.DEBATE_PORTALS)
+        metadata.add_skill(Skills.QUALITY_ASSESSMENT)
+        metadata.write_metadata()

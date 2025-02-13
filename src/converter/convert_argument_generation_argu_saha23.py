@@ -1,6 +1,6 @@
 import pandas as pd
 
-from common import Output, tasks_path, Metadata, add_seed_arg, set_seed, datasets_path, Genres, Subareas, find_topic_size_to_split
+from common import Output, tasks_path, Metadata, add_seed_arg, set_seed, datasets_path, Genres, Skills, find_topic_size_to_split
 from argparse import ArgumentParser
 import pickle
 from dataclasses import dataclass
@@ -37,7 +37,7 @@ def process_split(data, data_path):
     for arg in arguments:
         output.append_instance(arg.id, arg.prompt, [arg.output])
     output.append_genre(Genres.DEBATE_PORTALS)
-    output.append_subarea(Subareas.GENERATION)
+    output.append_subarea(Skills.GENERATION)
     output.write_output(data_path)
 
 if __name__ == "__main__":
@@ -68,6 +68,6 @@ if __name__ == "__main__":
     metadata.add_dataset(DATASET_FILE_TEST, "test")
     metadata.add_dataset(DATASET_FILE_TRAIN, "train")
     metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_subarea(Subareas.GENERATION)
+    metadata.add_skill(Skills.GENERATION)
 
     metadata.write_metadata()

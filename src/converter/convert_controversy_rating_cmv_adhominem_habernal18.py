@@ -1,6 +1,6 @@
 import math
 
-from common import Genres, Output, datasets_path, Metadata, add_seed_arg, set_seed, Subareas
+from common import Genres, Output, datasets_path, Metadata, add_seed_arg, set_seed, Skills
 from argparse import ArgumentParser
 import ndjson
 import json
@@ -30,7 +30,7 @@ reaonsableness_dataset_template = "reasonableness_scoring_{split}_habernal18.jso
 controversy_task_definition = "Classify the following post according to its controversy into either Not Really Controversial, Somehow Controversial, or Very Controversial. Do not explain."
 reasonableness_task_definition = "Classify the following post according to its reasonableness into : Quite Stupid, Neutral, Quite Reasonable. Do not explain."
 
-def process_dataset(data, split):
+def process_dataset(data, split, controversy_metadata, reasonableness_metadata):
     controversy_data_file = controversy_dataset_template.format(split=split)
     reasonableness_data_file = reaonsableness_dataset_template.format(split=split)
 
@@ -64,23 +64,23 @@ def process_dataset(data, split):
 
 
     controversy_output.append_genre(Genres.WEB_FORUMS)
-    controversy_output.append_subarea(Subareas.QUALITY_ASSESSMENT)
+    controversy_output.append_subarea(Skills.QUALITY_ASSESSMENT)
     controversy_output.write_output(controversy_data_file)
 
 
     reasonableness_output.append_genre(Genres.WEB_FORUMS)
-    reasonableness_output.append_subarea(Subareas.QUALITY_ASSESSMENT)
+    reasonableness_output.append_subarea(Skills.QUALITY_ASSESSMENT)
     reasonableness_output.write_output(reasonableness_data_file)
 
-    metadata = Metadata(controversy_dataset)
-    metadata.add_dataset(controversy_data_file, split)
-    metadata.write_metadata()
 
-    metadata = Metadata(reasonableness_dataset)
-    metadata.add_dataset(reasonableness_data_file, split)
-    metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
-    metadata.add_genre(Genres.WEB_FORUMS)
-    metadata.write_metadata()
+    controversy_metadata.add_dataset(controversy_data_file, split)
+    controversy_metadata.add_skill(Skills.QUALITY_ASSESSMENT)
+    controversy_metadata.add_genre(Genres.WEB_FORUMS)
+
+    reasonableness_metadata.add_dataset(reasonableness_data_file, split)
+    reasonableness_metadata.add_skill(Skills.QUALITY_ASSESSMENT)
+    reasonableness_metadata.add_genre(Genres.WEB_FORUMS)
+
 
 if __name__ == "__main__":
     # Input arguments for dataset generation
@@ -102,6 +102,9 @@ if __name__ == "__main__":
     train_indices = [i for i in range(len(post_data)) if i not in test_indices]
     test_data = [post_data[i] for i in test_indices]
     train_data = [post_data[i] for i in train_indices]
-
-    process_dataset(test_data, "test")
-    process_dataset(train_data, "train")
+    controversy_metadata = Metadata(controversy_dataset)
+    reasonableness_metadata = Metadata(reasonableness_dataset)
+    process_dataset(test_data, "test", controversy_metadata, reasonableness_metadata)
+    process_dataset(train_data, "train", controversy_metadata, reasonableness_metadata)
+    controversy_metadata.write_metadata()
+    reasonableness_metadata.write_metadata()

@@ -1,6 +1,6 @@
 import os
 from lxml import etree
-from common import Output, Metadata, add_seed_arg, set_seed, Genres, Subareas, datasets_path
+from common import Output, Metadata, add_seed_arg, set_seed, Genres, Skills, datasets_path
 from argparse import ArgumentParser
 import pandas as pd
 def parse_xmi_file(xmi_path):
@@ -44,14 +44,14 @@ def process_xmi_files(xmi_directory, output, split_map, split):
                 print(f"Processed: {filename}")
 
 
-def create_metadata(dataset_name, dataset_file, split):
+def edit_metadata(metadata, dataset_file, split):
     """Create and save metadata."""
-    metadata = Metadata(dataset_name)
-    metadata.add_evaluation_metric("f1_macro")  # Choose appropriate evaluation metric
-    metadata.add_dataset(dataset_file)
+
+      # Choose appropriate evaluation metric
+    metadata.add_dataset(dataset_file, split)
     metadata.add_genre(Genres.ESSAYS)
-    metadata.add_subarea(Subareas.MINING)
-    metadata.write_metadata()
+    metadata.add_skill(Skills.MINING)
+
 
 
 def main():
@@ -76,7 +76,7 @@ def main():
      A major claim is the central thesis of the essay.
      Only output with one of these classes. Do not explain.
      """
-
+    metadata = Metadata(dataset_name)
     for split in ["test", "train"]:
         output = Output(dataset_name)
         output.append_definition(task_definition)
@@ -87,11 +87,11 @@ def main():
         # Write the dataset to a JSON file
         output.write_output(dataset_file)
         output.append_genre(Genres.ESSAYS)
-        output.append_subarea(Subareas.MINING)
+        output.append_subarea(Skills.MINING)
 
         # Create and save metadata
-        create_metadata(dataset_name, dataset_file, split)
-
+        edit_metadata(metadata, dataset_file, split)
+    metadata.write_metadata()
     print(f"All files processed and saved to {dataset_file}")
 
 

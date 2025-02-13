@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
-from common import Genres, Output, Subareas, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Skills, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
 from dataclasses import dataclass
 from argparse import ArgumentParser
 from typing import List
@@ -174,7 +174,7 @@ if __name__ == "__main__":
         train_data.append_genre(genre)
         test_data.append_genre(genre)
 
-        train_data.append_subarea(Subareas.MINING)
+        train_data.append_subarea(Skills.MINING)
 
         train_data.write_output(dataset_file_train)
         test_data.write_output(dataset_file_test)
@@ -182,5 +182,5 @@ if __name__ == "__main__":
         metadata.add_dataset(dataset_file_train, "train")
         metadata.add_dataset(dataset_file_test, "test")
         metadata.add_genre(genre)
-        metadata.add_subarea(Subareas.MINING)
+        metadata.add_skill(Skills.MINING)
         metadata.write_metadata()

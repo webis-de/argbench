@@ -1,4 +1,4 @@
-from common import Genres, Output, Subareas, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Skills, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import ast
 import uuid
@@ -34,7 +34,7 @@ def process_dataset(bows_dataset, metadata, dataset_name, dataset_file, dataset_
         print(dataset_path)
         print(len(output.instances))
     output.append_genre(Genres.DEBATE_PORTALS)
-    output.append_subarea(Subareas.GENERATION)
+    output.append_subarea(Skills.GENERATION)
     output.write_output(dataset_file)
     metadata.add_dataset(dataset_file, split)
 
@@ -74,6 +74,6 @@ if __name__ == "__main__":
     )
 
     metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_subarea(Subareas.GENERATION)
-    metadata.add_evaluation_metric("f1_macro")
+    metadata.add_skill(Skills.GENERATION)
+    
     metadata.write_metadata()

@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from common import Output, datasets_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
+from common import Output, datasets_path, Metadata, add_seed_arg, set_seed, Genres, Skills
 from argparse import ArgumentParser
 import uuid
 
@@ -84,9 +84,9 @@ def process_dataset(data_files, output_file, metadata, split_name):
             output.append_instance(id, prompt, [model_out])
 
     output.append_genre(Genres.DEBATES)
-    output.append_subarea(Subareas.REASONING)
+    output.append_subarea(Skills.REASONING)
     output.write_output(output_file)
-    metadata.add_evaluation_metric("f1_macro")
+    
     metadata.add_dataset(output_file, split_name)
 
 if __name__ == "__main__":
@@ -115,5 +115,5 @@ if __name__ == "__main__":
     )
 
     metadata.add_genre(Genres.DEBATES)
-    metadata.add_subarea(Subareas.REASONING)
+    metadata.add_skill(Skills.REASONING)
     metadata.write_metadata()

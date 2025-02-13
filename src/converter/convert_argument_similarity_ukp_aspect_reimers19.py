@@ -1,8 +1,9 @@
-from common import Genres, Output, Subareas, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Skills, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, find_topic_size_to_split
 from argparse import ArgumentParser
 import random
 import uuid
 
+dataset_file_template = "argument_similarity_ukp_aspect_{split}_reimers19.json"
 DATASET_NAME = "argument_similarity_ukp_aspect_reimers19"
 
 SIMILARITY_MAPPING = {
@@ -11,6 +12,26 @@ SIMILARITY_MAPPING = {
     "NS": "No Similarity",
     "DTORCD": "Different Topics"
 }
+
+def process_split(dataset, split, metadata):
+    dataset_file = dataset_file_template.format(split=split)
+    output = Output(DATASET_NAME)
+    output.append_definition("Judge if the argument pairs are similar (on the same topic and cover similar aspects) or dissimilar (e.g., cover different topics or different aspects). Possible outputs: High similarity if two arguments are very similar, Some Similarity if two arguments are somewhat similar, No Similarity if two arguments are not similar, Different Topics if two arguments belong to different topics.")
+
+    for row in dataset.iterrows():
+        row = row[1]
+        prompt = f"Argument 1: {row['sentence_1']}\nArgument 2: {row['sentence_2']}"
+        response = SIMILARITY_MAPPING[row["label"]]
+        id = str(uuid.uuid4())
+
+        output.append_instance(id, prompt, [response])
+
+    output.append_genre(Genres.WEB)
+    output.append_subarea(Skills.PERSPECTIVE_ASSESSMENT)
+    metadata.add_genre(Genres.WEB)
+    metadata.add_skill(Skills.PERSPECTIVE_ASSESSMENT)
+    output.write_output(dataset_file)
+
 
 if __name__ == "__main__":
     arg_parser = ArgumentParser()
@@ -26,24 +47,7 @@ if __name__ == "__main__":
 
     dataset = read_tabular(dataset_path, separator="\t")
     dataset = dataset.dropna()
-
-    output = Output(DATASET_NAME)
-
-    output.append_definition("Judge if the argument pairs are similar (on the same topic and cover similar aspects) or dissimilar (e.g., cover different topics or different aspects). Possible outputs: High similarity if two arguments are very similar, Some Similarity if two arguments are somewhat similar, No Similarity if two arguments are not similar, Different Topics if two arguments belong to different topics.")
-
-    for row in dataset.iterrows():
-        row = row[1]
-        prompt = f"Argument 1: {row['sentence_1']}\nArgument 2: {row['sentence_2']}"
-        response = SIMILARITY_MAPPING[row["label"]]
-        id = str(uuid.uuid4())
-
-        output.append_instance(id, prompt, [response])
-
-    output.append_genre(Genres.WEB)
-    output.append_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
-    output.write_output("argument_similarity_ukp_aspect_reimers19.json")
-    metadata.add_dataset("argument_similarity_ukp_aspect_reimers19.json")
-    metadata.add_genre(Genres.WEB)
-    metadata.add_subarea(Subareas.PERSPECTIVE_ASSESSMENT)
-    metadata.add_evaluation_metric("f1_macro")
+    df_test, df_train = find_topic_size_to_split(dataset, "topic")
+    process_split(df_test, "test", metadata)
+    process_split(df_train, "train", metadata)
     metadata.write_metadata()

@@ -1,7 +1,7 @@
 import os
 from random import sample
 
-from common import Output, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
+from common import Output, read_tabular, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Skills
 from argparse import ArgumentParser
 from lxml import etree
 from collections import Counter
@@ -127,7 +127,7 @@ def write_split(files, split):
             id = str(uuid.uuid4())
             output.append_instance(id, document , [argument_relations_formatted])
     output.append_genre(Genres.ESSAYS)
-    output.append_subarea(Subareas.MINING)
+    output.append_subarea(Skills.MINING)
     output.write_output(DATASET_FILE.format(split=split))
 
 if __name__ == "__main__":
@@ -142,8 +142,7 @@ if __name__ == "__main__":
     metadata.add_dataset(DATASET_FILE.format(split="train"), "train")
     metadata.add_dataset(DATASET_FILE.replace("{split}", "test"), "test")
     metadata.add_genre(Genres.ESSAYS)
-    metadata.add_subarea(Subareas.MINING)
-    metadata.add_evaluation_metric("f1_macro")
+    metadata.add_skill(Skills.MINING)
     metadata.write_metadata()
 
     print(dataset_path)

@@ -1,4 +1,4 @@
-from common import Genres, Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Subareas
+from common import Genres, Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Skills
 from argparse import ArgumentParser
 from pathlib import Path
 import pickle
@@ -61,9 +61,9 @@ if __name__ == "__main__":
         dataset_file = f"scheme_classification_argu_{split_model}_saha23.json"
         metadata.add_dataset(dataset_file, split_model)
         output.append_genre(Genres.DEBATE_PORTALS)
-        output.append_subarea(Subareas.REASONING)
+        output.append_subarea(Skills.REASONING)
         metadata.add_genre(Genres.DEBATE_PORTALS)
-        metadata.add_subarea(Subareas.REASONING)
+        metadata.add_skill(Skills.REASONING)
         output.write_output(dataset_file)
 
 

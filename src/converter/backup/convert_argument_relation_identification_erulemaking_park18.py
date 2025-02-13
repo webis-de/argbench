@@ -85,10 +85,10 @@ if __name__ == "__main__":
                 output.append_instance(id, prop_text, [prop_label])
 
     metadata.add_dataset(dataset_file)
-    metadata.add_evaluation_metric("f1_macro")
+    
     output.append_genre(Genres.DEBATE_PORTALS)
     output.append_subarea(Subareas.REASONING)
     metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_subarea(Subareas.REASONING)
+    metadata.add_skill(Subareas.REASONING)
     output.write_output(dataset_file)
     metadata.write_metadata()

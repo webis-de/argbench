@@ -77,7 +77,7 @@ if __name__ == "__main__":
     splits_data.close()
 
     metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_subarea(Subareas.MINING)
-    metadata.add_evaluation_metric("f1_macro")
+    metadata.add_skill(Subareas.MINING)
+    
 
     metadata.write_metadata()

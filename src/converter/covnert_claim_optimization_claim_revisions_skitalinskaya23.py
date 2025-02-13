@@ -1,4 +1,4 @@
-from common import Genres, Output, Subareas, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Skills, datasets_path, read_tabular, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import pandas as pd
 
@@ -30,7 +30,7 @@ def process_split(dataset, metadata, split):
     metadata.add_dataset(dataset_file, split)
 
     output.append_genre(Genres.DEBATE_PORTALS)
-    output.append_subarea(Subareas.QUALITY_ASSESSMENT)
+    output.append_subarea(Skills.QUALITY_ASSESSMENT)
     output.write_output(dataset_file)
 
 
@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
 
 
-    metadata.add_evaluation_metric("f1_macro")
+    
     metadata.add_genre(Genres.DEBATE_PORTALS)
-    metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
+    metadata.add_skill(Skills.QUALITY_ASSESSMENT)
     metadata.write_metadata()

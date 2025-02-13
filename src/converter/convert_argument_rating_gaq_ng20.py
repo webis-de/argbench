@@ -1,12 +1,12 @@
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
+from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Skills
 from argparse import ArgumentParser
 import pandas as pd
 cogency_description = "An argument is cogent if it has acceptable premises that are relevant to its conclusion and that are sufficient to draw the conclusion."
 effectiveness_description = "An argument is effective if it persuades the target audience of (or corroborates agreement with) the author’s stance on the issue."
 reasonableness_description = "An argument is reasonable if it contributes to the issue’s resolution in a sufficient way that is acceptable to the target audience."
 
-dataset_name_template = "argument_rating_{dimension}_ng20"
-dataset_file_name_template =  "argument_rating_{dimension}_{split}_ng20.json"
+dataset_name_template = "argument_rating_{dimension}_gaq_ng20"
+dataset_file_name_template =  "argument_rating_{dimension}_gaq_{split}_ng20.json"
 
 def number_to_label(number):
     if number < 2:
@@ -50,7 +50,7 @@ def format_dataset(dataset, dimension_definition, dimension,  metadata, split):
 
     task_output.write_output(dataset_file_name)
     task_output.append_genre(Genres.WEB)
-    task_output.append_subarea(Subareas.QUALITY_ASSESSMENT)
+    task_output.append_subarea(Skills.QUALITY_ASSESSMENT)
     metadata.add_dataset(dataset_file_name, split)
 
 
@@ -95,8 +95,8 @@ if __name__ == "__main__":
         dataset_name = dataset_name_template.format(dimension=dimension)
         metadata = Metadata(dataset_name)
         metadata.add_genre(Genres.WEB)
-        metadata.add_subarea(Subareas.QUALITY_ASSESSMENT)
-        metadata.write_metadata()
+        metadata.add_skill(Skills.QUALITY_ASSESSMENT)
         task_definition = task_defnitions[dimension]
         format_dataset(df_training, task_definition, dimension, metadata, "train")
         format_dataset(df_test, task_definition, dimension, metadata, "test")
+        metadata.write_metadata()
