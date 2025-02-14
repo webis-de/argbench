@@ -227,7 +227,7 @@ class Metadata:
 
     def add_skill(self, skill: Skills):
         assert skill in Skills, f"Subarea {skill} is not valid"
-        self.dataset_data[self.dataset_name]["subarea"]= skill.value
+        self.dataset_data[self.dataset_name]["skill"]= skill.value
 
 
     def add_genre(self, genre: Genres):
