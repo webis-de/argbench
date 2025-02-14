@@ -507,7 +507,7 @@ class Runner:
 
 
         all_results = []
-        if config.is_prompting:
+        if self.config.is_prompting:
             for task in self.prmt_test_data:
                 sampling_params= self.load_sampling_params(task)
                 if "train_subsample_amount" in self.config.train_datasets:
