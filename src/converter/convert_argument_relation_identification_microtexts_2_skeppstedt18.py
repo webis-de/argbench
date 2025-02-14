@@ -142,6 +142,7 @@ if __name__ == "__main__":
     metadata.add_dataset(DATASET_FILE.replace("{split}", "test"), "test")
     metadata.add_genre(Genres.ESSAYS)
     metadata.add_skill(Skills.MINING)
+    metadata.add_evaluation_metric("fscore")
     metadata.write_metadata()
 
 

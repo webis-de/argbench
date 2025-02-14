@@ -61,6 +61,7 @@ def process_data(dataset, data_name, data_split, metadata):
     metadata.add_dataset(data_name, data_split)
     metadata.add_skill(Skills.REASONING)
     metadata.add_genre(Genres.WEB)
+    metadata.add_evaluation_metric("fscore")
     return len(output.instances)
 
 if __name__ == "__main__":

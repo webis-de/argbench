@@ -64,6 +64,7 @@ if __name__ == "__main__":
         output.append_subarea(Skills.REASONING)
         metadata.add_genre(Genres.DEBATE_PORTALS)
         metadata.add_skill(Skills.REASONING)
+        metadata.add_evaluation_metric("fscore")
         output.write_output(dataset_file)
 
 

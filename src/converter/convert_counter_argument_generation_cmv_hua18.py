@@ -91,7 +91,7 @@ if __name__ == "__main__":
 
     metadata.add_genre(Genres.WEB_FORUMS)
     metadata.add_skill(Skills.GENERATION)
-
+    metadata.add_evaluation_metric("bleu")
     
 
     metadata.write_metadata()

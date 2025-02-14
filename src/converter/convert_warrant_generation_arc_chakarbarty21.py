@@ -76,6 +76,7 @@ def make_outputs(target_data, para_comet_data, dataset_name, para_comet_name, me
         target_output.append_subarea(subarea)
         output_para_comet.append_subarea(subarea)
         metadata.add_skill(subarea)
+    metadata.add_evaluation_metric("bleu")
 
     return target_output, output_para_comet
 

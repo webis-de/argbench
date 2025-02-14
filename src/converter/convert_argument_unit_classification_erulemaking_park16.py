@@ -83,7 +83,7 @@ def main():
         data_file_test = dataset_file_template.format(split="test")
         process_data(train, dataset_name, data_file_train, metadata, "train")
         process_data(test, dataset_name, data_file_test, metadata, "test")
-
+        metadata.add_evaluation_metric("sentence-fscore")
         metadata.add_genre(Genres.WEB_FORUMS)
         metadata.add_skill(Skills.MINING)
 

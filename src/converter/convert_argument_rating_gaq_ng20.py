@@ -99,4 +99,5 @@ if __name__ == "__main__":
         task_definition = task_defnitions[dimension]
         format_dataset(df_training, task_definition, dimension, metadata, "train")
         format_dataset(df_test, task_definition, dimension, metadata, "test")
+        metadata.add_evaluation_metric("fscore")
         metadata.write_metadata()

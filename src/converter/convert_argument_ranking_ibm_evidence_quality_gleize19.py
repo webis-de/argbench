@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
     convert_dataset(data_path / "train.csv", dataset_file_train, metadata, "train")
     convert_dataset(data_path / "test.csv", dataset_file_test, metadata, "test")
-
+    metadata.add_evaluation_metric("fscore")
     metadata.add_genre(Genres.WIKIPEDIA)
     metadata.add_skill(Skills.QUALITY_ASSESSMENT)
     metadata.write_metadata()

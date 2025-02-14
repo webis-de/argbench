@@ -64,7 +64,7 @@ if __name__ == "__main__":
     metadata.add_dataset("argument_ranking_ibm_rank_30k_test_gretz20.json", "test")
 
 
-    
+    metadata.add_evaluation_metric("fscore")
     metadata.add_genre(Genres.WIKIPEDIA)
     metadata.add_skill(Skills.QUALITY_ASSESSMENT)
     metadata.write_metadata()

@@ -137,6 +137,7 @@ the above classes.
     test_output.write_output(dataset_test)
     metadata.add_dataset(dataset_test, "test")
     metadata.add_dataset(dataset_train, "train")
+    metadata.add_evaluation_metric("sentence-fscore")
     metadata.add_genre(Genres.NEWS)
     metadata.add_skill(Skills.MINING)
     metadata.write_metadata()

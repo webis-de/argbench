@@ -51,7 +51,7 @@ def edit_metadata(metadata, dataset_file, split):
     metadata.add_dataset(dataset_file, split)
     metadata.add_genre(Genres.ESSAYS)
     metadata.add_skill(Skills.MINING)
-
+    metadata.add_evaluation_metric("sentence-fscore")
 
 
 def main():
