@@ -549,6 +549,8 @@ class RunConfig:
         # Runner config
         if args.seed:
             conf_obj.seed = args.seed
+        if args.is_prompting:
+            conf_obj.is_prompting = True
         if args.train_subsample_rate:
             conf_obj.train_datasets["subsample_rate"] = args.train_subsample_rate
         if args.train_subsample_amount:
