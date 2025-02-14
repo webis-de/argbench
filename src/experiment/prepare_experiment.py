@@ -70,7 +70,12 @@ def collect_files(
 
     :returns: Tuple of train dataset files and test dataset files
     """
-    #set_trace()
+
+    ### Iterate over metadata task and save test and train files
+    ### There are meant to be two settings
+    ### 1) 1 Test dataset (fine-tuning)
+    ### 2) prompting on all datasets
+
     test_files = {}
     if "name" in test_configs["name"]:
         test_task = test_configs["name"]
@@ -78,23 +83,22 @@ def collect_files(
         for file in metadata[test_task]["file_list"]:
             if metadata[test_task]["split_mapping"][file] == "test":
                 test_files[test_task].append(task_path / test_task / file)
+                logger.info(f"adding {task_path / test_task/ file} to test")
     elif is_prompting:
         for task in metadata:
             for file in metadata[task]["file_list"]:
                 if metadata[task]["split_mapping"][file] == "test":
+                    logger.info(f"adding {task_path / task/ file} to test")
                     test_files[task].append(task_path / task/ file)
 
     train_files = defaultdict(list)
-    for task in os.listdir(task_path):
+    for task in metadata:
         task_data_path = task_path / task
 
         if not os.path.isdir(task_data_path):
             logger.warning(f"{task} not found!")
             continue
 
-        if task not in metadata:
-            logger.warning(f"{task} not in metadata!")
-            continue
 
         logger.debug(f"reading {task_data_path}")
 
