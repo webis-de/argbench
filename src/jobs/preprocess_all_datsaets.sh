@@ -14,4 +14,4 @@ for f in /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/conv
 python $f ;
 echo $f
 done
-python /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/preprocess.py -o /bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/
+python /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/preprocess.py -o /bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks
