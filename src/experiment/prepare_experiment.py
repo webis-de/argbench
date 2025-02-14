@@ -79,17 +79,18 @@ def collect_files(
     test_files = {}
     if "name" in test_configs["name"]:
         test_task = test_configs["name"]
-        test_files[test_task] = []
+
         for file in metadata[test_task]["file_list"]:
             if metadata[test_task]["split_mapping"][file] == "test":
-                test_files[test_task].append(task_path / test_task / file)
+                test_files[test_task] = task_path / test_task / file
                 logger.info(f"adding {task_path / test_task/ file} to test")
     elif is_prompting:
         for task in metadata:
+
             for file in metadata[task]["file_list"]:
                 if metadata[task]["split_mapping"][file] == "test":
                     logger.info(f"adding {task_path / task/ file} to test")
-                    test_files[task].append(task_path / task/ file)
+                    test_files[task] = task_path / task/ file
 
     train_files = defaultdict(list)
     for task in metadata:
@@ -109,7 +110,7 @@ def collect_files(
             if not os.path.isfile(task_file_path) or task_file_path in test_files:
                 continue
             if metadata[task]["split_mapping"][task_file] == "train":
-                train_files[task].append(task_file_path)
+                train_files[task] = task_file_path
     return train_files, test_files
 
 
@@ -151,7 +152,7 @@ def compile_datasets(
             for column in df_training.columns:
                 df_training[column] = df_training[column].astype(str)
 
-            df_training = df_training[["id","document", "input", "output", "task"]]
+            df_training = df_training[["id", "input", "output"]]
             df_training["task"] = dataset
             if not is_prompt:
                 training_datasets[dataset]=df_training
@@ -167,7 +168,7 @@ def compile_datasets(
         if is_prompt and train_subsample_amount:
             example_str = ""
             for _, example in df_training.iterrows():
-                example_instance = f'Input: {example["input"].values[0]}\nOutput: {example["output"].values[0]}'
+                example_instance = f'Input: {example["input"]}\nOutput: {example["output"]}'
                 example_str += example_instance
 
             df_test.rename(columns={"input": "document"}, inplace=True)
