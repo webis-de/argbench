@@ -114,6 +114,9 @@ class Runner:
             self.config.log_path = f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/prompting-{self.config.base_model}.log"
         else:
             self.config.log_path = f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/fine-tuning-{self.test_dataset_name}-{self.config.base_model}.log"
+
+        self.prepare_data()
+
     def prepare_model_for_training(self,
                       trial=None,
                       quant_hpo=None,
@@ -471,7 +474,6 @@ class Runner:
         Execute training, hpo or evaluation
         """
 
-        self.prepare_data()
         if self.config.is_hpo:
             # this should be changed to account for multiple datasets
             hpo_output = HPOOutput(self.config.hpo_config.hpo_coarse_output)
@@ -481,6 +483,7 @@ class Runner:
 
             results = {"test_task": self.test_dataset_name, "metric" : self.config.hpo_config.val_metric, "score": best_value,
                        "experiment": "cross-task",  "model" : self.model_config.label  , "start_time": starting_time, "best-parameters":best_params}
+
             hpo_output.add_results(results)
 
             logger.info(f"best params are {best_params}")
@@ -507,18 +510,27 @@ class Runner:
         if config.is_prompting:
             for task in self.prmt_test_data:
                 sampling_params= self.load_sampling_params(task)
+                if "train_subsample_amount" in self.config.train_datasets:
+                    train_subsample_amount = self.config.train_datasets["train_subsample_amount"]
+                else:
+                    train_subsample_amount = None
                 test_data =  self.prmt_test_data[task]
                 metrics = self.evaluate(test_data, sampling_params, vllm=self.vllm)
                 log_mem(f"tested on {task}")
                 for metric in metrics:
-                    results = {"test_task": task, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model , "start_time": starting_time}
+                    results = {"test_task": task, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model , "start_time": starting_time, "k": train_subsample_amount}
                     all_results.append(results)
                     self.leaderboard.add_results(results)
         else:
             sampling_params= self.load_sampling_params(self.test_dataset_name)
+            if "train_subsample_amount" in self.config.train_datasets:
+                train_subsample_amount = self.config.train_datasets["train_subsample_amount"]
+            else:
+                train_subsample_amount = None
+
             metrics = self.evaluate(self.ft_test_data, sampling_params, vllm=self.vllm)
             for metric in metrics:
-                results = {"test_task": self.test_dataset_name, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model , "start_time": starting_time}
+                results = {"test_task": self.test_dataset_name, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model , "start_time": starting_time, "k": train_subsample_amount}
                 all_results.append(results)
                 log_mem(f"tested on {self.test_dataset_name}")
                 self.leaderboard.add_results(results)
