@@ -50,7 +50,7 @@ if __name__ == "__main__":
     process_split(dataset[dataset["data_split"] == "train"], metadata, "train")
     print("Test")
     process_split(dataset[dataset["data_split"] == "test"], metadata, "test")
-
+    metadata.add_evaluation_metric("fscore")
 
 
     

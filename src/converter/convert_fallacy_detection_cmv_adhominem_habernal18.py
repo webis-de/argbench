@@ -30,6 +30,7 @@ def process_data(data, split):
     metadata.add_dataset(dataset_file_name, split)
     metadata.add_genre(Genres.WEB_FORUMS)
     metadata.add_skill(Skills.REASONING)
+    metadata.add_evaluation_metric("fscore")
     metadata.write_metadata()
 
 

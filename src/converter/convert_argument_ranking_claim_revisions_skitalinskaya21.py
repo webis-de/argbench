@@ -49,7 +49,7 @@ if __name__ == "__main__":
     print(len(df_training))
     process_data(df_training, metadata, "train")
     process_data(df_test, metadata, "test")
-
+    metadata.add_evaluation_metric("fscore")
     metadata.add_genre(Genres.DEBATE_PORTALS)
     metadata.add_skill(Skills.QUALITY_ASSESSMENT)
     metadata.write_metadata()

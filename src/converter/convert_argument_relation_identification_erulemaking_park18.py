@@ -83,6 +83,7 @@ def main():
     metadata.add_dataset(dataset_file_train, "train")
     metadata.add_genre(Genres.WEB_FORUMS)
     metadata.add_skill(Skills.MINING)
+    metadata.add_evaluation_metric("fscore")
     metadata.write_metadata()
 
 

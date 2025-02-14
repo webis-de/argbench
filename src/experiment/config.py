@@ -392,6 +392,7 @@ class RunConfig:
         """
         Registers all cli parameters for RunConfig
         """
+        arg_parser.add_argument("-lbp", "--leaderboard-path", type=str, default=False)
         arg_parser.add_argument("-ie", "--is_evaluate", action="store_true", default=False, help="Should evaluation be performed")
         arg_parser.add_argument("-ih", "--is_hpo", action="store_true", default=False, help="Should HPO be performed")
         arg_parser.add_argument("-s", "--seed", type=int, help="Seed to use for running experiment")
@@ -704,5 +705,6 @@ class RunConfig:
             conf_obj.quant_config.bnb_4bit_quant_type = args.bnb_4bit_quant_type
         if args.double_quant:
             conf_obj.quant_config.double_quant = args.double_quant
-
+        if args.leaderboard_path:
+            conf_obj.leaderboard_path = args.leaderboard_path
         return conf_obj

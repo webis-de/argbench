@@ -38,10 +38,11 @@ if __name__ == "__main__":
     metadata = Metadata(dataset_name)
     metadata.add_dataset(dataset_file.replace("{split}","train"), "train")
     metadata.add_dataset(dataset_file.format(split="test"), "test")
-    
+    metadata.add_evaluation_metric("fscore")
     metadata.add_genre(Genres.DEBATES)
     metadata.add_skill(Skills.MINING)
     metadata.write_metadata()
+
 
     dataset = read_tabular(data_path, "\t")
     dataset["input"] = "Topic: " + dataset["topic"] + "\nArgument 1:" + dataset["argument1"] + "\nArgument 2:" + dataset["argument2"]

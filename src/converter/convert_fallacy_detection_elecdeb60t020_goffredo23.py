@@ -88,6 +88,7 @@ def process_dataset(data_files, output_file, metadata, split_name):
     output.write_output(output_file)
     
     metadata.add_dataset(output_file, split_name)
+    metadata.add_evaluation_metric("bio-fscore")
 
 if __name__ == "__main__":
     arg_parser = ArgumentParser(description="What dataset will be processed?")

@@ -14,5 +14,5 @@ do
   k = $((i ** 2))
   python /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/run.py
   -c /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/src/experiment/configs/prompting/barhaim17_mistral_prompting.json
-  --train_subsample_amount "$k"
+  --train_subsample_amount "$k" --leaderboard-path
 done

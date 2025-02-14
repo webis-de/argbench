@@ -67,4 +67,5 @@ if __name__ == "__main__":
     metadata.add_dataset(DATASET_FILE_TRAIN, "train")
     metadata.add_genre(Genres.WIKIPEDIA)
     metadata.add_skill(Skills.MINING)
+    metadata.add_evaluation_metric("fscore")
     metadata.write_metadata()

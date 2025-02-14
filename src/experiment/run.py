@@ -22,7 +22,7 @@ from leaderborad import  Leaderboard
 from datetime import datetime
 from datasets import DatasetDict, Dataset
 from hpo_output import HPOOutput
-from utils import get_logger
+from utils import get_logger, get_evaluation_metrics_map
 from prepare_experiment import collect_datasets
 from testing import *
 from tqdm import tqdm
@@ -107,7 +107,7 @@ class Runner:
 
 
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
-        self.task_metrics = json.load(open(config.task_metrics_path))
+        self.task_metrics = get_evaluation_metrics_map()
         self.leaderboard = Leaderboard(config.leaderboard_path)
         self.test_dataset_name = self.config.test_dataset["name"]
         if config.is_prompting:

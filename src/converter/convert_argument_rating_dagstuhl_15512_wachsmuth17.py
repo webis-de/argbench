@@ -91,7 +91,7 @@ if __name__ == "__main__":
         make_output(df_test, metadata, task_name, description, test_filename, "test")
         make_output(df_train, metadata, task_name, description, train_filename, "train")
 
-        
+        metadata.add_evaluation_metric("fscore")
         metadata.add_genre(Genres.DEBATE_PORTALS)
         metadata.add_skill(Skills.QUALITY_ASSESSMENT)
         metadata.write_metadata()

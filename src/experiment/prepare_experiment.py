@@ -9,10 +9,10 @@ import pandas as pd
 from collections import defaultdict
 from pathlib import Path
 from IPython.core.debugger import set_trace
-
+from utils import *
 
 from yaml import load, Loader
-from utils import get_logger
+from utils import get_logger,  get_metadata
 
 
 logger = get_logger(__name__)
@@ -35,23 +35,7 @@ class PandasDataset:
     def __getitem__(self, idx):
         return self.dataframe.iloc[idx].to_dict()
 
-def data_repo():
-    """Get path of data repository"""
-    curr_file = os.path.abspath(__file__)
-    config_file = Path(curr_file).parents[2] / "config.yaml"
-    with open(config_file, "r") as f:
-        config = load(f, Loader=Loader)
-        return Path(config["data_repo"])
 
-def tasks_path():
-    """Path to tasks folder"""
-    dataset_folder = data_repo() / "tasks"
-    return dataset_folder
-
-def get_metadata():
-    """Get metadata file"""
-    with open(tasks_path() / "metadata.json", "r") as f:
-        return json.load(f)
 
 def collect_files(
         task_path,

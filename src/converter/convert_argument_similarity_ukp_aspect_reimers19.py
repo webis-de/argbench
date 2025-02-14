@@ -30,6 +30,7 @@ def process_split(dataset, split, metadata):
     output.append_subarea(Skills.PERSPECTIVE_ASSESSMENT)
     metadata.add_genre(Genres.WEB)
     metadata.add_skill(Skills.PERSPECTIVE_ASSESSMENT)
+    metadata.add_evaluation_metric("fscore")
     metadata.add_dataset(dataset_file, split)
     output.write_output(dataset_file)
 

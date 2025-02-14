@@ -62,5 +62,5 @@ if __name__ == "__main__":
 
     metadata.add_genre(Genres.WEB)
     metadata.add_skill(Skills.PERSPECTIVE_ASSESSMENT)
-    
+    metadata.add_evaluation_metric("fscore")
     metadata.write_metadata()
