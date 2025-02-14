@@ -71,17 +71,18 @@ def collect_files(
     :returns: Tuple of train dataset files and test dataset files
     """
     #set_trace()
-
-    test_task = test_configs["name"]
-
     test_files = {}
-
-    test_files[test_task] = []
-    for file in metadata[test_task]["file_list"]:
-        test_files[test_task].append(
-            task_path / test_task / file)
-
-
+    if "name" in test_configs["name"]:
+        test_task = test_configs["name"]
+        test_files[test_task] = []
+        for file in metadata[test_task]["file_list"]:
+            if metadata[test_task]["split_mapping"][file] == "test":
+                test_files[test_task].append(task_path / test_task / file)
+    elif is_prompting:
+        for task in metadata:
+            for file in metadata[task]["file_list"]:
+                if metadata[task]["split_mapping"][file] == "test":
+                    test_files[task].append(task_path / task/ file)
 
     train_files = defaultdict(list)
     for task in os.listdir(task_path):
@@ -103,8 +104,8 @@ def collect_files(
 
             if not os.path.isfile(task_file_path) or task_file_path in test_files:
                 continue
-
-            train_files[task].append(task_file_path)
+            if metadata[task]["split_mapping"][task_file] == "train":
+                train_files[task].append(task_file_path)
     return train_files, test_files
 
 
