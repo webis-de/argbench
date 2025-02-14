@@ -1,11 +1,10 @@
 import os
 import pandas as pd
-from common import Output, Metadata, add_seed_arg, set_seed, datasets_path, find_topic_size_to_split, Genres
+from common import Output, Metadata, add_seed_arg, set_seed, datasets_path, find_topic_size_to_split, Genres, Skills
 from argparse import ArgumentParser
 from datasets import load_dataset
 from tqdm import tqdm
 
-from src.converter.common import Skills
 
 DATASET_NAME = "argument_summarization_open_debate_evidence_roush23"
 DATASET_FILE_TEST = "argument_summarization_open_debate_evidence_test_roush23"
