@@ -24,7 +24,7 @@ def process_data(dataset, metadata, split):
     output.append_genre(Genres.DEBATE_PORTALS)
     output.append_subarea(Skills.QUALITY_ASSESSMENT)
     split_dataset_file = dataset_file.format(split=split)
-    metadata.add_dataset(split_dataset_file,split=split)
+    metadata.add_dataset(split_dataset_file,split)
     output.write_output(split_dataset_file)
 
 
