@@ -143,7 +143,7 @@ def compute_meteor_score(predictions, references):
     return {"meteor" : meteor_score}
 
 
-def convert_to_bio(input, output):
+def convert_to_bio(input, output, label_mappings):
     output_label = []
     for unit_idx, unit in enumerate(output.split("\n")):
         if unit.strip():
@@ -152,29 +152,36 @@ def convert_to_bio(input, output):
                 logger.log(level=logging.INFO, msg=f"argument unit segmentation eval error {text} does not contain a colon")
                 output_label.extend([("Arg-O", token) for token in word_tokenize(text)])
                 continue
-            label = text.split(":")[0]
+            sentence_label = text.split(":")[0]
             unit  = text.split(":")[1]
             unit_tokens = word_tokenize(unit)
-            if label == "Argumentative" :
-                output_label.append(("Arg-B", unit_tokens[0]))
-                output_label.extend([("Arg-I", token) for token in unit_tokens[1:]])
-            else:
-                output_label.extend([("Arg-O", token) for token in unit_tokens])
+
+            for label in label_mappings:
+                if sentence_label == label :
+                    if sentence_label.startsWith("No"):
+                        token_label = label_mappings[sentence_label]
+                        output_label.extend([(token_label, token) for token in unit_tokens])
+                    else:
+                        token_label = label_mappings[sentence_label]
+                        output_label.append((f"{token_label}-B", unit_tokens[0]))
+                        output_label.extend([(f"{token_label}-I", token) for token in unit_tokens[1:]])
+
+
     return output_label
 
 
-def compute_bio_f1_score(predictions, references, inputs):
+def compute_bio_f1_score(predictions, references, inputs, label_mappings):
     all_labels = [ ]
     all_predictions = []
     #set_trace()
-    labels = ["Arg-B", "Arg-I", "Arg-O"]
+    labels = label_mappings.keys()
     for i, document in enumerate(inputs):
         prediction = predictions[i]
         reference = references[i]
         input = inputs[i]
 
-        ground_truth_labels = convert_to_bio(input, reference)
-        predictions_labels = convert_to_bio(input, prediction)
+        ground_truth_labels = convert_to_bio(input, reference, label_mappings)
+        predictions_labels = convert_to_bio(input, prediction, label_mappings)
         if len(predictions_labels) < len(ground_truth_labels):
             for i in range(len(ground_truth_labels) - len(predictions_labels)):
                 ground_truth_remaining = ground_truth_labels[len(predictions_labels):]
@@ -191,14 +198,23 @@ def compute_bio_f1_score(predictions, references, inputs):
     #print(f" Arg-I f1 {f1_score(all_labels, all_predictions, average=None, labels=['Arg-I'])}")
     #print(f" Arg-O f1 {f1_score(all_labels, all_predictions, average=None, labels=['Arg-O'])}")
     macro_f1 = f1_score(all_labels, all_predictions, average='macro')
-    argb_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-B'])
-    argi_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-I'])
-    argo_f1 = f1_score(all_labels, all_predictions, average=None, labels=['Arg-O'])
+    token_labels = label_mappings.values()
+    metrics = {"fscore": macro_f1}
+    for token_label in token_labels:
+        metrics[f"{token_label}_fscore"] = f1_score(all_labels, all_predictions, average=None, labels=[token_label])
+    return metrics
 
+def compute_seg_bio_f1_score (predictions, references, inputs):
+    label_mappings = {"Argumentative": "Arg", "Non-argumentative":"Arg-O"}
+    return compute_bio_f1_score(predictions, references, inputs, label_mappings)
 
+def compute_aspect_bio_f1_score(predictions, references, inputs):
+    label_mappings = {"Aspect": "Asp", "Not-aspect": "Asp-O"}
+    return compute_bio_f1_score(predictions, references, inputs, label_mappings)
 
-    return {"fscore": macro_f1, "argb_fscore": argb_f1, "argi_fscore": argi_f1, "argo_fscore": argo_f1}
-
+def compute_fallacy_bio_f1_score(predictions, references, inputs):
+    label_mappings = {}
+    return compute_bio_f1_score(predictions, references, inputs, label_mappings)
 
 def extract_sentence_labels(text):
     sentences = text.split("\n")

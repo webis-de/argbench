@@ -182,6 +182,6 @@ if __name__ == "__main__":
         metadata.add_dataset(dataset_file_train, "train")
         metadata.add_dataset(dataset_file_test, "test")
         metadata.add_genre(genre)
-        metadata.add_evaluation_metric("bio-fscore")
+        metadata.add_evaluation_metric("bio-fscore")°
         metadata.add_skill(Skills.MINING)
         metadata.write_metadata()
