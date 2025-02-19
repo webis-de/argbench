@@ -201,10 +201,12 @@ class Metadata:
 
     metadata_path = tasks_path() / "metadata.json"
     evaluation_metrics = [
-        "f1_macro",
-        "f1_micro",
-        "rouge",
-        "kendalltau"
+        "fscore",
+        "arg-bio-fscore",
+        "fallacy-bio-fscore",
+        "aspect-bio-fscore"
+        "sentence-fscore",
+        "blue"
     ]
 
     def __init__(self, dataset_name: str) -> None:

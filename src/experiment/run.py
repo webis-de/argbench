@@ -626,8 +626,12 @@ class Runner:
             return compute_bleu_score(predictions, labels)
         elif metric == "meteor":
             return compute_meteor_score(predictions, labels)
-        elif metric == "bio-fscore":
-            return compute_bio_f1_score(predictions, labels, test_data["document"])
+        elif metric == "argument-bio-fscore":
+            return compute_seg_bio_f1_score(predictions, labels, test_data["document"])
+        elif metric == "aspect-bio-fscore":
+            return compute_aspect_bio_f1_score(predictions, labels, test_data["document"])
+        elif metric == "fallacy-bio-fscore":
+            return compute_fallacy_bio_f1_score(predictions, labels, test_data["document"])
         elif metric == "sentence-fscore":
             return compute_sentence_f1(predictions, labels, test_data["document"])
         elif metric == "kendalltau":

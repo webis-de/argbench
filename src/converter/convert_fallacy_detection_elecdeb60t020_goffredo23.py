@@ -7,9 +7,8 @@ DATASET_NAME = "fallacy_detection_elecdeb60t020_goffredo23"
 
 @dataclass
 class FallacySnippet:
-    tokens: list = field(default_factory=list)
-    labels: list = field(default_factory=list)
-    label_spans: list = field(default_factory=list)
+    document: str = None
+    spans: list = None
 
 map ={
     "AdHominem" : "Ad Hominem",
@@ -24,8 +23,9 @@ def process_dataset(data_files, output_file, metadata, split_name):
     Process elecdeb60t020 datafile
     """
     output = Output(DATASET_NAME)
-    output.append_definition("Given an argument snippet, extract substring that contains fallacy. Extracted fallacies should be separated by newlines and follow following format: [Fallacy Name]: [Extracted Substring].\n" +
-                             "Available Fallacy names: AdHominem: When the argument becomes an excessive attack on an arguer’s position\n" +
+    output.append_definition("Given an argument snippet, split the argument into spans that contains one of the following fallacy. In case a span does not contain a fallacy, simply prepend it with no-fallacy"+
+                             "Extracted spans should be separated by newlines and follow following format: Fallacy Name: span.\n" +
+                             "Here are the candidate fallacies: Ad Hominem: When the argument becomes an excessive attack on an arguer’s position\n" +
                              "Appeal to Emotion: The unessential loading of the argument with emotional language to exploit the audience emotional instinct.\n" +
                              "Appeal to Authority: It occurs when the arguer relies on the endorsement of an authority figure or a group consensus without providing sufficient evidence. It may also involve the citation of non-experts or the majority to support their claim.\n" +
                              "Slippery Slope: This fallacy implies that an improbable or exaggerated consequence could result from a particular action.\n" +
@@ -39,16 +39,26 @@ def process_dataset(data_files, output_file, metadata, split_name):
         snippets = []
 
         temp_snippet = FallacySnippet()
-        temp_label_span = []
-
+        doc = ""
+        temp_snippet.document = doc
+        temp_snippet.spans = []
+        fallacy_span = False
+        current_span = ""
+        current_label = ""
         for line in token_file:
             if line == "\n":
-                if temp_label_span:
-                    temp_label_span.append(snippet_idx + 1)
-                    temp_snippet.label_spans.append(temp_label_span)
-                    temp_label_span = []
+                if current_span:
+                    temp_snippet.spans.append((current_span, current_label))
+
                 snippets.append(temp_snippet)
                 temp_snippet = FallacySnippet()
+                doc = ""
+                fallacy_span = False
+                temp_snippet.document = doc
+                temp_snippet.spans = []
+                current_span = ""
+                current_label = ""
+
                 continue
 
             fields = line.split("\t")
@@ -56,28 +66,48 @@ def process_dataset(data_files, output_file, metadata, split_name):
             snippet_idx = int(fields[0])
             token = fields[1]
             label = fields[4].strip()
-
+            if not temp_snippet.document:
+                temp_snippet.document = token
+            else:
+                temp_snippet.document = temp_snippet.document + " " + token
             if label[0] == "B":
-                temp_label_span.append(snippet_idx)
-            elif label == "O" and temp_label_span:
-                temp_label_span.append(snippet_idx)
-                temp_snippet.label_spans.append(temp_label_span)
-                temp_label_span = []
-
-            temp_snippet.tokens.append(token)
-            temp_snippet.labels.append(label)
-
+                if current_span and fallacy_span:
+                    temp_snippet.spans.append((current_span, current_label))
+                    current_span = token
+                    current_label = map[label[2:]]
+                    fallacy_span = True
+                elif current_span and not fallacy_span:
+                    temp_snippet.spans.append((current_span, current_label))
+                    current_span = token
+                    current_label = map[label[2:]]
+                    fallacy_span = True
+                elif not current_span and not fallacy_span:
+                    current_span = token
+                    current_label = map[label[2:]]
+                    fallacy_span = True
+            elif label == "O":
+                if fallacy_span:
+                    temp_snippet.spans.append((current_span, current_label))
+                    current_span = token
+                    current_label = "no-fallacy"
+                    fallacy_span = False
+                else:
+                    if current_span:
+                        current_span = current_span + " " + token
+                    else:
+                        current_span = token
+                        current_label = "no-fallacy"
+            elif label[0] == "I":
+                current_span = current_span + " " + token
 
         for snippet in snippets:
             id = str(uuid.uuid4())
-            prompt = " ".join(snippet.tokens)
-
+            prompt = snippet.document
             model_out = []
+
             # print(snippet)
-            for label_span in snippet.label_spans:
-                span_class = map[snippet.labels[label_span[0]][2:]]
-                span_tokens = " ".join(snippet.tokens[label_span[0]:label_span[1]])
-                model_out.append(f"{span_class}: {span_tokens}")
+            for label_span in snippet.spans:
+                model_out.append(f"{label_span[1]}: {label_span[0]}")
 
             model_out = "\n".join(model_out)
 
@@ -88,7 +118,7 @@ def process_dataset(data_files, output_file, metadata, split_name):
     output.write_output(output_file)
     
     metadata.add_dataset(output_file, split_name)
-    metadata.add_evaluation_metric("bio-fscore")
+    metadata.add_evaluation_metric("fallacy-bio-fscore")
 
 if __name__ == "__main__":
     arg_parser = ArgumentParser(description="What dataset will be processed?")
