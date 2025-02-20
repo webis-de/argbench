@@ -402,6 +402,8 @@ class Runner:
         torch.cuda.empty_cache()
         gc.collect()
         log_mem(f"saved and free model")
+
+
     def free_vllm_model(self):
         if self.vllm:
             destroy_model_parallel()
@@ -409,8 +411,6 @@ class Runner:
             gc.collect()
             torch.cuda.empty_cache()
             torch.distributed.destroy_process_group()
-
-
 
 
 ### This function is deprecated since it does not use VLLMs and is still dependent on one test dataset
