@@ -204,7 +204,7 @@ class Metadata:
         "fscore",
         "argument-bio-fscore",
         "fallacy-bio-fscore",
-        "aspect-bio-fscore"
+        "aspect-bio-fscore",
         "sentence-fscore",
         "bleu"
     ]
