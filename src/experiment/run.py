@@ -589,6 +589,7 @@ class Runner:
                 #set_trace()
                 predictions.append(output[0])
             if vllm:
+                set_trace()
                 if self.config.peft_configs:
                     logger.debug("++++ lora input ++++")
                     outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
