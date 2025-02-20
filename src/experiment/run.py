@@ -109,7 +109,8 @@ class Runner:
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
         self.task_metrics = get_evaluation_metrics_map()
         self.leaderboard = Leaderboard(config.leaderboard_path)
-        self.test_dataset_name = self.config.test_dataset["name"]
+        if self.config.test_dataset["name"]:
+            self.test_dataset_name = self.config.test_dataset["name"]
         if config.is_prompting:
             self.config.log_path = f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/prompting-{self.config.base_model}.log"
         else:
@@ -440,7 +441,7 @@ class Runner:
 
         sampling_params = self.load_sampling_params(self.test_dataset_name, trial, self.config.hpo_config.vllm_config)
         self.trainer.evaluate()
-        metrics = self.evaluate(self.ft_test_data, sampling_params, model=self.trainer.model)
+        metrics = self.evaluate(self.test_dataset_name, self.ft_test_data, sampling_params, model=self.trainer.model)
         log_mem(f"finished evaluation")
 
         logger.debug(f"metrics are {metrics}")
@@ -515,7 +516,7 @@ class Runner:
                 else:
                     train_subsample_amount = None
                 test_data =  self.prmt_test_data[task]
-                metrics = self.evaluate(test_data, sampling_params, vllm=self.vllm)
+                metrics = self.evaluate(task, test_data, sampling_params, vllm=self.vllm)
                 log_mem(f"tested on {task}")
                 for metric in metrics:
                     results = {"test_task": task, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model , "start_time": starting_time, "k": train_subsample_amount}
@@ -528,7 +529,7 @@ class Runner:
             else:
                 train_subsample_amount = None
 
-            metrics = self.evaluate(self.ft_test_data, sampling_params, vllm=self.vllm)
+            metrics = self.evaluate(self.test_dataset_name, self.ft_test_data, sampling_params, vllm=self.vllm)
             for metric in metrics:
                 results = {"test_task": self.test_dataset_name, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model , "start_time": starting_time, "k": train_subsample_amount}
                 all_results.append(results)
@@ -540,13 +541,13 @@ class Runner:
         return all_results
 
 
-    def evaluate(self, test_data, sampling_params, model=None, vllm=None):
+    def evaluate(self, test_task_name, test_data, sampling_params, model=None, vllm=None):
         """
         Performs model evaluation using the test datasets and evaluation metric from ValidationConfig. The test
         dataset is the name of the test task and task_data is the test data points
         """
         #set_trace()
-        log_mem(f"testing on {self.test_dataset_name}")
+        log_mem(f"testing {test_task_name}")
         dataset = test_data
         labels = test_data["output"]
         predictions = []
@@ -610,7 +611,7 @@ class Runner:
                                                         #################################
                                                         """)
 
-        metric = self.task_metrics[self.test_dataset_name]
+        metric = self.task_metrics[test_task_name]
         if metric == "fscore-detailed":
             return compute_precision_recall_fscore_support(
                 predictions,
