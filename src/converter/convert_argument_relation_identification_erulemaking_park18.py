@@ -12,8 +12,8 @@ def process_json_file(docs, output):
 
         proposition_texts = {prop.get("id"): prop.get("text") for prop in propositions}
 
-        relations = []
-
+        instances = []
+        doc = ' '.join([prop.get("text") for prop in propositions])
         for proposition in propositions:
             current_text = proposition.get("text")
 
@@ -23,7 +23,7 @@ def process_json_file(docs, output):
                     support_id = int(support_id)
                     supporting_text = proposition_texts.get(support_id)
                     if supporting_text:
-                        relations.append(f"Reason:\n{current_text}\n{supporting_text}\n")
+                        instances.append((f"Document: {doc}\nSource: {supporting_text}\nTarget: {current_text}\n", "Reason"))
 
             evidence_sentences = proposition.get("evidence")
             if evidence_sentences:
@@ -31,21 +31,20 @@ def process_json_file(docs, output):
                     evidence_id = int(evidence_id)
                     evidence_text = proposition_texts.get(evidence_id)
                     if evidence_text:
-                        relations.append(f"Evidence:\n{current_text}\n{evidence_text}\n")
-        if relations:
-            output.append_instance(
-                comment_id,
-                ' '.join([prop.get("text") for prop in propositions]),  # 拼接所有的句子作为input
-                ["\n".join(relations)]
-            )
+                        instances.append((f"Document: {doc}\nSource: {evidence_text}\nTarget: {current_text}\n", "Evidence"))
+
+        if instances:
+            for i, instance in enumerate(instances):
+                output.append_instance(f"{comment_id}-{i}", instance[0], [instance[1]] )
 
         print(f"Processed commentID: {comment_id}")
 
 def create_output(dataset_name):
     output = Output(dataset_name)
     output.append_definition(
-        """Detect which sentences provide a reason (support) or evidence for another sentence within the comment.
-        Output first Reason or Evidence and then output the sentence pair separated by a new line. Do not Explain."""
+        """Given the following document and the appended two argument units that appear in the essay.\n
+        Output Reason if the source argument unit is a reason for the target argument unit\n
+        or output Evidence if the source argument unit is an evidence for the target argument unit. Do not Explain."""
     )
     output.append_genre(Genres.WEB_FORUMS)
     output.append_subarea(Skills.MINING)
