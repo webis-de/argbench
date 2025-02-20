@@ -34,8 +34,8 @@ def parse_xmi_file(xmi_path):
 
     # Extracting Arguments (Supports/Attacks)
     arguments = root.xpath("//argumentation:Argument", namespaces=root.nsmap)
-
-    instance_output = []
+    instance_inputs = []
+    instance_outputs = []
     for argument in arguments:
         premise_id = argument.get("premises")
         conclusion_id = argument.get("conclusion")
@@ -43,15 +43,15 @@ def parse_xmi_file(xmi_path):
 
         premise_text = unit_dict.get(premise_id, f"Unknown premise (ID: {premise_id})")
         conclusion_text = unit_dict.get(conclusion_id, f"Unknown conclusion (ID: {conclusion_id})")
-
+        instance_inputs.append(f"Document:{sofa_string}\nPremise:{premise_text}\nConclusion:{conclusion_text}\n")
         if argument_type == "supports":
-            instance_output.append(f"Support:\n{premise_text}\n{conclusion_text}\n")
+            instance_outputs.append(f"Support")
         elif argument_type == "attacks":
-            instance_output.append(f"Attack:\n{premise_text}\n{conclusion_text}\n")
+            instance_outputs.append(f"Attack")
 
-    combined_output = "\n".join(instance_output)
 
-    return filename, sofa_string, combined_output
+
+    return filename, sofa_string, instance_inputs, instance_outputs
 
 def process_xmi_files(xmi_directory, output, split_map, split):
     """Process all XMI files in the directory."""
@@ -60,15 +60,14 @@ def process_xmi_files(xmi_directory, output, split_map, split):
             file_name = xmi_file.replace(".xmi","")
             if split_map[file_name].lower() == split:
                 xmi_path = os.path.join(xmi_directory, xmi_file)
-                filename, sofa_string, combined_output = parse_xmi_file(xmi_path)
-
-                output.append_instance(filename, sofa_string, [combined_output])
+                filename, sofa_string, instance_inputs, instance_outputs = parse_xmi_file(xmi_path)
+                for i, instance_input in enumerate(instance_inputs):
+                    output.append_instance(f"{filename}-{i}", instance_input, [instance_outputs[i]])
                 print(f"Processed: {filename}")
 
 
 def edit_metadata(metadata, dataset_file, split):
     """Create and save metadata."""
-
     metadata.add_dataset(dataset_file, split)
     metadata.add_genre(Genres.ESSAYS)
     metadata.add_skill(Skills.MINING)
@@ -92,8 +91,9 @@ def main():
     ids = df_split["ID"].values
     splits = df_split["SET"].values
     split_map = {ids[i]:splits[i] for i in range(len(ids))}
-    task_definition = """Given the following essay, list of pairs of sentences where the second sentence supports or attacks the first.
-         Output first Support or Attack and then output the sentence pair separated by a new line. Do not Explain."""
+    task_definition = """Given the following essay in which the given premise and conclusion appear.\n
+     Classify whether the premise supports or attacks the conclusion.
+         Only output Support or Attack. Do not Explain."""
     metadata = Metadata(dataset_name)
     for split in ["train", "test"]:
         output = Output(dataset_name)
