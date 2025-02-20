@@ -81,7 +81,7 @@ def process_dataset(data, split, controversy_metadata, reasonableness_metadata):
     reasonableness_metadata.add_dataset(reasonableness_data_file, split)
     reasonableness_metadata.add_skill(Skills.QUALITY_ASSESSMENT)
     reasonableness_metadata.add_genre(Genres.WEB_FORUMS)
-    controversy_metadata.add_evaluation_metric("fscore")
+    reasonableness_metadata.add_evaluation_metric("fscore")
 
 if __name__ == "__main__":
     # Input arguments for dataset generation
