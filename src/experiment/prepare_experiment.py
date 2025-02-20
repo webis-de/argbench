@@ -61,7 +61,7 @@ def collect_files(
     ### 2) prompting on all datasets
 
     test_files = {}
-    if "name" in test_configs["name"]:
+    if "name" in test_configs:
         test_task = test_configs["name"]
 
         for file in metadata[test_task]["file_list"]:
