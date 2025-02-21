@@ -171,7 +171,6 @@ def convert_to_bio(input, output, label_mappings):
 
 
 def compute_bio_f1_score(predictions, references, inputs, label_mappings):
-    set_trace()
     all_labels = [ ]
     all_predictions = []
     #set_trace()
