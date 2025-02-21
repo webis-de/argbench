@@ -21,7 +21,14 @@
                 "path" : "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
                 "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
                 "output_splitter": "[/INST]"
+            },
+            {
+                "label": "gemma-2-9b-it",
+                "path" : "/bigwork/nhwpajjy/pre-trained-models/gemma-2-9b-it",
+                "prompt_template": "{definition}\n{instance_input}",
+                "output_splitter": "[/INST]"
             }
+
     ],
 
     "quant_config": {

@@ -214,6 +214,7 @@ def compute_aspect_bio_f1_score(predictions, references, inputs):
 
 def compute_fallacy_bio_f1_score(predictions, references, inputs):
     label_mappings = {}
+    set_trace()
     return compute_bio_f1_score(predictions, references, inputs, label_mappings)
 
 def extract_sentence_labels(text):
