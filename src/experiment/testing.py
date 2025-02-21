@@ -213,9 +213,17 @@ def compute_aspect_bio_f1_score(predictions, references, inputs):
     return compute_bio_f1_score(predictions, references, inputs, label_mappings)
 
 def compute_fallacy_bio_f1_score(predictions, references, inputs):
-    label_mappings = {}
+    map ={
+         "Ad Hominem" : "Fal-ad-hom",
+         "Appeal to Emotion": "Fal-appeal-emotio",
+         "Appeal to Authority": "Fal-app-author",
+         "Slippery Slope": "Fal-slipper-slope",
+         "False Cause": "Fal-false-cause",
+         "Slogans": "Fal-slogans",
+         "No-fallacy": "Fal-O"
+    }
     set_trace()
-    return compute_bio_f1_score(predictions, references, inputs, label_mappings)
+    return compute_bio_f1_score(predictions, references, inputs, map)
 
 def extract_sentence_labels(text):
     sentences = text.split("\n")
