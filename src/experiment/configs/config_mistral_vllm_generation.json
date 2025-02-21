@@ -1,17 +1,10 @@
 {
-  "argument_unit_classification": {
-    "temperature": 0,
-    "top_p": 1,
-    "top_k": 1,
-    "max_tokens": 3048
-  },
-
-  "stance_classification": {
-    "temperature": 0,
-    "top_p": 1,
-    "top_k": -1,
-    "max_tokens": 1
-  },
+"aspect_detection_ukp_corpus_schiller21":{
+  "temperature": 0,
+  "top_p": 1,
+  "top_k": -1,
+  "max_tokens": 3000
+},
 
   "argument_unit_segmentation": {
     "temperature": 0,
@@ -20,18 +13,18 @@
     "max_tokens": 3000
   },
 
-  "warrant_identification": {
-    "temperature": 0,
-    "top_p": 1,
-    "top_k": 1,
-    "max_tokens": 2
-  },
+"fallacy_detection_elecdeb60t020_goffredo23": {
+  "temperature": 0,
+  "top_p": 1,
+  "top_k": -1,
+  "max_tokens": 3000
 
-  "conclusion_generation":
+},
+  "generation":
   {
-    "temperature": 0.2,
+    "temperature": 0.5,
     "top_p": 1,
-    "top_k": 1,
+    "top_k": -1,
     "max_tokens": 2000
   },
 
@@ -40,6 +33,6 @@
     "temperature": 0,
     "top_p": 1,
     "top_k": 1,
-    "max_tokens": 2000
+    "max_tokens": 8
   }
 }
