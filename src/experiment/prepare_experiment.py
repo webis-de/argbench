@@ -154,7 +154,6 @@ def compile_datasets(
             for _, example in df_training.iterrows():
                 example_instance = f'Input: {example["input"]}\nOutput: {example["output"]}'
                 example_str += example_instance
-                set_trace()
             df_test.rename(columns={"input": "document"}, inplace=True)
             df_test["example"] = example_str
             df_test["input"] = df_test.apply(template_formatter, axis=1)
