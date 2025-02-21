@@ -174,7 +174,7 @@ def compute_bio_f1_score(predictions, references, inputs, label_mappings):
     all_labels = [ ]
     all_predictions = []
     #set_trace()
-    labels = label_mappings.keys()
+    labels = list(label_mappings.keys())
     for i, document in enumerate(inputs):
         prediction = predictions[i]
         reference = references[i]
