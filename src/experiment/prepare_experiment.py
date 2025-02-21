@@ -125,6 +125,7 @@ def compile_datasets(
 
     test_datasets = {}
     training_datasets = {}
+    set_trace()
     for dataset in train_files:
         if not is_prompt or train_subsample_amount:
             train_path = train_files[dataset]
