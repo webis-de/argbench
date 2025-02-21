@@ -158,7 +158,7 @@ def convert_to_bio(input, output, label_mappings):
 
             for label in label_mappings:
                 if sentence_label == label :
-                    if sentence_label.startsWith("No"):
+                    if sentence_label.startswith("No"):
                         token_label = label_mappings[sentence_label]
                         output_label.extend([(token_label, token) for token in unit_tokens])
                     else:
