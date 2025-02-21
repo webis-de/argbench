@@ -392,6 +392,7 @@ class RunConfig:
         """
         Registers all cli parameters for RunConfig
         """
+        arg_parser.add_argument("-iprpt", "--is_prompting", action="store_true", default=False, help="Should prompting be performed")
         arg_parser.add_argument("-lbp", "--leaderboard-path", type=str, default=False)
         arg_parser.add_argument("-ie", "--is_evaluate", action="store_true", default=False, help="Should evaluation be performed")
         arg_parser.add_argument("-ih", "--is_hpo", action="store_true", default=False, help="Should HPO be performed")
