@@ -222,7 +222,7 @@ def compute_fallacy_bio_f1_score(predictions, references, inputs):
          "Slogans": "Fal-slogans",
          "No-fallacy": "Fal-O"
     }
-    set_trace()
+
     return compute_bio_f1_score(predictions, references, inputs, map)
 
 def extract_sentence_labels(text):
