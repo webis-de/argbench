@@ -21,7 +21,7 @@ from transformers import set_seed
 
 from datetime import datetime
 from datasets import DatasetDict, Dataset
-from hpo_output import HPOOutput
+
 from testing import *
 from tqdm import tqdm
 
@@ -29,7 +29,7 @@ from argbench.experiment.config import RunConfig
 from argbench.experiment.leaderborad import  Leaderboard
 from argbench.experiment.utils import get_logger, get_evaluation_metrics_map
 from argbench.experiment.prepare_experiment import collect_datasets
-
+from argbench.experiment.hpo_output import HPOOutput
 import json
 
 
