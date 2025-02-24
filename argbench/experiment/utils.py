@@ -1,7 +1,7 @@
 import logging
 import os
 
-from config import *
+from argbench.experiment.config import *
 from yaml import load, Loader
 
 def get_logger(name):
