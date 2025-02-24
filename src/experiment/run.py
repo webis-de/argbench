@@ -624,8 +624,11 @@ class Runner:
             return compute_f1_score(predictions, labels)
         elif metric == "rouge":
             return compute_rouge_score(predictions, labels)
-        elif metric == "bleu":
-            return compute_bleu_score(predictions, labels)
+        elif metric == "generation-score":
+            bleu = compute_bleu_score(predictions, labels)
+            bert= compute_bert_score(predictions, labels)
+            bleu.update(bert)
+            return bleu
         elif metric == "meteor":
             return compute_meteor_score(predictions, labels)
         elif metric == "argument-bio-fscore":

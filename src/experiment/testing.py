@@ -10,6 +10,8 @@ from sklearn.feature_selection import r_regression
 from sklearn.metrics import f1_score
 from scipy.stats import kendalltau
 from nltk import word_tokenize
+from evaluate import load
+from bert_score import score
 
 logger = logging.getLogger(__name__)
 
@@ -109,6 +111,12 @@ def compute_bleu_score(predictions, references):
     bleu = evaluate.load("bleu")
     bleu_score = bleu.compute(predictions=predictions, references=references)
     return {"bleu": bleu_score["bleu"]}
+
+def compute_bert_score(predictions, references):
+
+    P, R, F1 = score(predictions, references, lang='en')
+    return {"bertscore": F1.item()}
+
 
 def rank_string_to_matrix(rank_strings):
     """

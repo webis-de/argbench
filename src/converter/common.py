@@ -206,7 +206,7 @@ class Metadata:
         "fallacy-bio-fscore",
         "aspect-bio-fscore",
         "sentence-fscore",
-        "bleu"
+        "generation-score"
     ]
 
     def __init__(self, dataset_name: str) -> None:

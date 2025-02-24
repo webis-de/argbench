@@ -42,7 +42,7 @@ def process_dataset(cache_directory):
     metadata = Metadata(DATASET_NAME)
     metadata.add_genre(Genres.DEBATES)
     metadata.add_skill(Skills.GENERATION)
-    metadata.add_evaluation_metric("bleu")
+    metadata.add_evaluation_metric("generation-score")
     make_output(df_test, metadata, DATASET_FILE_TEST, "test")
     make_output(df_train, metadata, DATASET_FILE_TRAIN, "train")
     metadata.write_metadata()

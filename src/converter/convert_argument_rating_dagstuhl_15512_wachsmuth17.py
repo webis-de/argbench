@@ -85,8 +85,9 @@ if __name__ == "__main__":
     ]
     for task_name, description in tasks:
 
-        metadata = Metadata(DATASET_NAME)
+
         dataset_name = DATASET_NAME.format(dimension= task_name.replace(' ', '_'))
+        metadata = Metadata(dataset_name)
         df_test, df_train = aggregate_labels_and_split(dataset, task_name)
         test_filename = f"argument_rating_dagstuhl_15512_{task_name.replace(' ', '_')}_test_wachsmuth17.json"
         train_filename = f"argument_rating_dagstuhl_15512_{task_name.replace(' ', '_')}_train_wachsmuth17.json"

@@ -82,7 +82,7 @@ def extract_file(path: Path):
     return units
 
 DATASET_NAME_TEMPLATE = "argument_unit_segmentation_{dataset}_ajjour17"
-DATASET_FILE_TEMPLATE = "argument_unit_segmentation_{dataset}_{split}_ajjour17"
+DATASET_FILE_TEMPLATE = "argument_unit_segmentation_{dataset}_{split}_ajjour17.json"
 
 def process_folder(path: Path):
     train_dataset = []
