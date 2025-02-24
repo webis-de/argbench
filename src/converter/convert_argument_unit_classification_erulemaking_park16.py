@@ -50,8 +50,8 @@ personal feelings, prejudices, or interpretations.'
 
         # 将input和output写入到实例中
         output.append_instance(comment_id, combined_input, [combined_output])
-        output.write_output(dataset_file_name)
-        metadata.add_dataset(dataset_file_name, split)
+    output.write_output(dataset_file_name)
+    metadata.add_dataset(dataset_file_name, split)
     output.append_genre(Genres.WEB_FORUMS)
     output.append_subarea(Skills.MINING)
 
