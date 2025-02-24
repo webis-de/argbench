@@ -9,4 +9,5 @@
 #SBATCH --gpus=a100:1
 module load Miniforge3
 conda activate task-specific
-python /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/run.py -c /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/prompting/mistral_prompting.json
+cd /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/
+python -m  argbench.experiment.run -c /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/prompting/mistral_prompting.json
