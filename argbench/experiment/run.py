@@ -18,15 +18,17 @@ from vllm.lora.request import LoRARequest
 from vllm.distributed import destroy_model_parallel
 from transformers import set_seed
 
-from leaderborad import  Leaderboard
+
 from datetime import datetime
 from datasets import DatasetDict, Dataset
 from hpo_output import HPOOutput
-from utils import get_logger, get_evaluation_metrics_map
-from prepare_experiment import collect_datasets
 from testing import *
 from tqdm import tqdm
-from config import RunConfig
+
+from argbench.experiment.config import RunConfig
+from argbench.experiment.leaderborad import  Leaderboard
+from argbench.experiment.utils import get_logger, get_evaluation_metrics_map
+from argbench.experiment.prepare_experiment import collect_datasets
 
 import json
 
@@ -626,8 +628,8 @@ class Runner:
             return compute_rouge_score(predictions, labels)
         elif metric == "generation-score":
             bleu = compute_bleu_score(predictions, labels)
-            bert= compute_bert_score(predictions, labels)
-            bleu.update(bert)
+            #bert= compute_bert_score(predictions, labels)
+            #bleu.update(bert)
             return bleu
         elif metric == "meteor":
             return compute_meteor_score(predictions, labels)

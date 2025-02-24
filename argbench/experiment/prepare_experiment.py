@@ -9,10 +9,8 @@ import pandas as pd
 from collections import defaultdict
 from pathlib import Path
 from IPython.core.debugger import set_trace
-from utils import *
-
 from yaml import load, Loader
-from utils import get_logger,  get_metadata
+from argbench.experiment.utils import *
 
 
 logger = get_logger(__name__)
