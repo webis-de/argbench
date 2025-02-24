@@ -13,6 +13,13 @@
     "max_tokens": 3000
   },
 
+  "argument_unit_classification": {
+    "temperature": 0,
+    "top_p": 1,
+    "top_k": -1,
+    "max_tokens": 3000
+  },
+  ,
 "fallacy_detection_elecdeb60t020_goffredo23": {
   "temperature": 0,
   "top_p": 1,

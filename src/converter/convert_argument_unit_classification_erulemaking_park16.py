@@ -88,7 +88,7 @@ def main():
         metadata.add_skill(Skills.MINING)
 
 
-
+        metadata.write_metadata()
         # Write processed dataset to disk
 
 
