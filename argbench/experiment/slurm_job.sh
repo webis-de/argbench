@@ -17,7 +17,7 @@ nvidia-smi
 
 pwd
 
-cd /bigwork/nhwpbozd/task-specific-argument-mining-and-generation/src/experiment
+cd /bigwork/nhwpbozd/task-specific-argument-mining-and-generation/argbench/experiment
 
 module laod Miniconda3
 
