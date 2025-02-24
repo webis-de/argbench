@@ -69,6 +69,8 @@ def compute_f1_score(predictions, references):
     predictions_int = []
     for i, prediction in enumerate(predictions):
         found = False
+        if prediction.startswith("Output:"):
+            prediction = prediction.replace("Output:", "")
         for label in labels_lowered:
             if prediction.strip().lower().startswith(label):
                 predictions_int.append(mappings[label])

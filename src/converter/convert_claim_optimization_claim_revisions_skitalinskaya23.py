@@ -24,7 +24,7 @@ def process_split(dataset, metadata, split):
         revised_text = claim["claim_text_rev"]
         claim_id = claim["claim_id"]
         thesis = claim["thesis"]
-        instance_input = f"Thesis: {thesis}\nArgument: {unrevised_text}"
+        instance_input = f"Thesis: {thesis}\nClaim: {unrevised_text}"
         output.append_instance(claim_id, instance_input, [revised_text])
 
     metadata.add_dataset(dataset_file, split)
