@@ -52,8 +52,8 @@ if __name__ == "__main__":
     dataset = read_tabular(dataset_path)
 
 
-    train_data_file = "frame_identification_webis_argument_framing_19_train_ajjour19"
-    test_data_file = "frame_identification_webis_argument_framing_19_test_ajjour19"
+    train_data_file = "frame_identification_webis_argument_framing_19_train_ajjour19.json"
+    test_data_file = "frame_identification_webis_argument_framing_19_test_ajjour19.json"
     df_test, df_training = find_topic_size_to_split(dataset, "topic_id")
 
 

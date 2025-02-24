@@ -24,7 +24,7 @@ def preprocess_data(dataset, split, metadata):
 
         output.append_instance(id, prompt, [response])
     metadata.add_evaluation_metric("fscore")
-    metadata.add_dataset(dataset_file)
+    metadata.add_dataset(dataset_file, split)
     metadata.add_genre(Genres.WIKIPEDIA)
     metadata.add_skill(Skills.PERSPECTIVE_ASSESSMENT)
     output.append_subarea(Skills.PERSPECTIVE_ASSESSMENT)

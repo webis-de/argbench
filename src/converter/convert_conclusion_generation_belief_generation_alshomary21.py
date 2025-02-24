@@ -75,5 +75,5 @@ if __name__ == "__main__":
 
     metadata.add_genre(Genres.DEBATE_PORTALS)
     metadata.add_skill(Skills.GENERATION)
-    metadata.add_evaluation_metric("bleu")
+    metadata.add_evaluation_metric("generation-score")
     metadata.write_metadata()
