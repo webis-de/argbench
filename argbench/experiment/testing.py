@@ -115,7 +115,7 @@ def compute_bleu_score(predictions, references):
 def compute_bert_score(predictions, references):
 
     P, R, F1 = score(predictions, references, lang='en')
-    return {"bertscore": F1.item()}
+    return {"bertscore": F1.mean().item()}
 
 
 def rank_string_to_matrix(rank_strings):
