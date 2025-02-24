@@ -628,8 +628,8 @@ class Runner:
             return compute_rouge_score(predictions, labels)
         elif metric == "generation-score":
             bleu = compute_bleu_score(predictions, labels)
-            #bert= compute_bert_score(predictions, labels)
-            #bleu.update(bert)
+            bert= compute_bert_score(predictions, labels)
+            bleu.update(bert)
             return bleu
         elif metric == "meteor":
             return compute_meteor_score(predictions, labels)

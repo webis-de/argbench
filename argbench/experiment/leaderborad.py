@@ -48,7 +48,7 @@ class Leaderboard:
         for skill in skill_records:
             score = skill_results[skill] / skill_counts[skill]
             if skill == "generation":
-                metric = "bleu"
+                metric = "bertscore"
             else:
                 metric =  "fscore"
             skill_records[skill] = {"model": model, "start_time": start_time, "k": k, "score": score, "metric": metric, "test_task": skill}
