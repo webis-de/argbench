@@ -2,7 +2,7 @@
     "is_prompting": true,
     "is_hpo": false,
     "seed": 4112,
-    "base_model": "mistral-7b-inst-3",
+    "base_model": "gemma-2-9b-it",
     "cutoff_len": 2000,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "data_type": "ndjson",
@@ -25,8 +25,8 @@
             {
                 "label": "gemma-2-9b-it",
                 "path" : "/bigwork/nhwpajjy/pre-trained-models/gemma-2-9b-it",
-                "prompt_template": "{definition}\n{instance_input}",
-                "output_splitter": "[/INST]"
+                "prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
+                "output_splitter": "<start_of_turn>model"
             }
 
     ],
