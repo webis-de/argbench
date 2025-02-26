@@ -2,7 +2,7 @@
     "is_prompting": true,
     "is_hpo": false,
     "seed": 4112,
-    "base_model": "gemma-2-9b-it",
+    "base_model": "mistral-7b-inst-3",
     "cutoff_len": 2000,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "data_type": "ndjson",
