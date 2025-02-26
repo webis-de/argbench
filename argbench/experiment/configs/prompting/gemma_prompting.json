@@ -2,11 +2,11 @@
     "is_prompting": true,
     "is_hpo": false,
     "seed": 4112,
-    "base_model": "mistral-7b-inst-3",
+    "base_model": "gemma-2-9b-it",
     "cutoff_len": 2000,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "data_type": "ndjson",
-    "leaderboard_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/prompting-mistral-results.csv",
+    "leaderboard_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/prompting-gemma-results.csv",
     "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
     "train_datasets": {
