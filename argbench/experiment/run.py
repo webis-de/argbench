@@ -587,9 +587,9 @@ class Runner:
 
                 if self.config.peft_configs:
                     logger.debug("++++ lora input ++++")
-                    outputs = vllm.chat(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
+                    outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
                 else:
-                    outputs = vllm.chat(text, sampling_params=sampling_params, use_tqdm=False)
+                    outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
 
                 for output in outputs:
 
