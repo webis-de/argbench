@@ -14,4 +14,5 @@ for f in /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench
 python $f ;
 echo $f
 done
+cd /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/
 python -m argbench.experiment.preprocess -o /bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks
