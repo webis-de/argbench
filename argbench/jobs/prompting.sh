@@ -10,4 +10,4 @@
 module load Miniforge3
 conda activate task-specific
 cd /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/
-python -m  argbench.experiment.run -c /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/prompting/lamma3_instruct_prompting.json
+python -m  argbench.experiment.run -c /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/prompting/gemma_prompting.json
