@@ -1,5 +1,5 @@
 #!/bin/bash -l
-#SBATCH --job-name=prompting-mistral
+#SBATCH --job-name=prompting-gemma
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=15G
