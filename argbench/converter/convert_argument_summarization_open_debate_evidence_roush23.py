@@ -7,8 +7,8 @@ from tqdm import tqdm
 
 
 DATASET_NAME = "argument_summarization_open_debate_evidence_roush23"
-DATASET_FILE_TEST = "argument_summarization_open_debate_evidence_test_roush23"
-DATASET_FILE_TRAIN = "argument_summarization_open_debate_evidence_train_roush23"
+DATASET_FILE_TEST = "argument_summarization_open_debate_evidence_test_roush23.json"
+DATASET_FILE_TRAIN = "argument_summarization_open_debate_evidence_train_roush23.json"
 def make_output(dataset, metadata, output_file, split):
     output = Output(DATASET_NAME)
 

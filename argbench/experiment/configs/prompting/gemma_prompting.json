@@ -25,7 +25,7 @@
             {
                 "label": "gemma-2-9b-it",
                 "path" : "/bigwork/nhwpajjy/pre-trained-models/gemma-2-9b-it",
-                "prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
+                "prompt_template": "<start_of_turn>user{definition}\nExample:\n{example}\n{instance_input}<end_of_turn><start_of_turn>model",
                 "output_splitter": "<start_of_turn>model"
             }
 
