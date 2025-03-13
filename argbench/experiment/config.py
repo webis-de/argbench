@@ -405,7 +405,6 @@ class RunConfig:
         arg_parser.add_argument("-tdm", "--test_dataset_match", type=str, help="Matching pattern for test dataset files to include")
         arg_parser.add_argument("-tdn", "--test_dataset_name", type=str, help="Name of the test dataset to use")
         arg_parser.add_argument("-rc", "--resume_checkpoint", help="Resume training from checkpoint")
-        arg_parser.add_argument("-lm", "--load_model", type=str, help="Model to load")
         arg_parser.add_argument("-la", "--load_adapter", action="append", help="Adapter to load")
         arg_parser.add_argument("-an", "--adapter_name", action="append", help="Adapter name that is being loaded")
         arg_parser.add_argument("-co", "--config_output", type=Path, help="File to write config to")
@@ -474,7 +473,7 @@ class RunConfig:
         arg_parser.add_argument("-f16w", "--has_fp16_weight", action="store_true", help="Set if the model has FP16 weights for LLM Int8")
         arg_parser.add_argument("-4qt", "--bnb_4bit_quant_type", choices=["fp4", "nf4"], help="BitsAndBytes 4-bit quantization type")
         arg_parser.add_argument("-dq", "--double_quant", action="store_true", help="Enable double quantization for BitsAndBytes 4-bit")
-
+        arg_parser.add_argument("-bm", "--base_model", type=str, help="base model")
 
 
     @classmethod
@@ -536,14 +535,6 @@ class RunConfig:
         if config.get("vllm_config"):
             conf_obj.vllm_config = VLLMGenerationConfig(**conf_obj.vllm_config)
 
-        if config.get("model_configs"):
-            model_configs = []
-            for conf in conf_obj.model_configs:
-                model_config = ModelConfig(**conf)
-                model_configs.append(model_config)
-                if model_config.label == config.get("base_model"):
-                    conf_obj.model_config = model_config
-            conf_obj.model_configs = model_configs
 
 
         if not args:
@@ -565,8 +556,9 @@ class RunConfig:
             conf_obj.test_dataset["subsample_amount"] = args.test_subsample_amount
         if args.test_dataset_name:
             conf_obj.test_dataset["name"] = [args.test_dataset_name]
-        if args.load_model:
-            conf_obj.base_model = args.load_model
+        if args.base_model:
+            conf_obj.base_model = args.base_model
+
         if args.data_folder:
             conf_obj.data_folder = args.data_folder
         if args.load_adapter:
@@ -708,4 +700,14 @@ class RunConfig:
             conf_obj.quant_config.double_quant = args.double_quant
         if args.leaderboard_path:
             conf_obj.leaderboard_path = args.leaderboard_path
+
+        if config.get("model_configs"):
+            model_configs = []
+            for conf in conf_obj.model_configs:
+                model_config = ModelConfig(**conf)
+                model_configs.append(model_config)
+                if model_config.label == conf_obj.base_model:
+                    conf_obj.model_config = model_config
+            conf_obj.model_configs = model_configs
+
         return conf_obj

@@ -1,13 +1,15 @@
 import logging
 import os
-
+import datetime
 from argbench.experiment.config import *
 from yaml import load, Loader
 
 def get_logger(name):
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
-    file_handler = logging.FileHandler(f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/{name}-log.log")
+    now = datetime.now()
+    starting_time = now.strftime("%m-%d-%H:%M:%S")
+    file_handler = logging.FileHandler(f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/{name}-{starting_time}log.log")
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(logging.Formatter("%(asctime)s %(message)s)"))
     logger.addHandler(file_handler)
