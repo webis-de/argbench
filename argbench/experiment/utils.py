@@ -1,6 +1,6 @@
 import logging
 import os
-import datetime
+from datetime import datetime
 from argbench.experiment.config import *
 from yaml import load, Loader
 
