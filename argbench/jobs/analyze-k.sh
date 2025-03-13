@@ -13,6 +13,7 @@ cd /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/
 for i in {1..5}
 do
   k = $((i ** 2))
+  cd /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/
 
   python -m argbench.experiment.run -c /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/prompting/lamma3_instruct_prompting.json
   --train_subsample_amount "$k" --leaderboard-path /bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/prompting-llama3-instruct-results-k.csv
