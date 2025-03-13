@@ -12,7 +12,7 @@ conda activate task-specific
 cd /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/
 for i in {1..5}
 do
-  k = $((i ** 2))
+  k=$((i ** 2))
   cd /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/
 
   python -m argbench.experiment.run -c /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/prompting/lamma3_instruct_prompting.json \
