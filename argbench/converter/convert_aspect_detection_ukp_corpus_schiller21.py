@@ -10,9 +10,11 @@ def process_split(dataset_files, output_file, metadata, dataset_split):
      split the argument into spans of text that cover an aspect or not.
      An aspect is a small substring of the argument that characterizes the argument.
      Multiple aspects can be found in an argument.
-     Prepend an aspect span with Aspect: and a not-aspect span with Not-aspect:.
-     Do not rephrase the spans or modify it. Always process the whole argument.
-     Multiple aspects can be found in an argument. In case there is not aspect, simply output the argument with Not-aspect before it. Do not explain.""")
+     Generate a dictionary for each span with the span as key and Aspect or Not-aspect as a value.
+     Do not rephrase the spans or modify it. Always process the whole argument. 
+     In case there is no aspect, simply output the argument as key and Not-aspect as a value. 
+     Output the dictionaries as a list with the order the spans appear in the text. The list should be the value of a dictionary with the key output. 
+     Do not explain.""")
     for dataset_file in dataset_files:
         with open(dataset_file, "r") as f:
             dataset = ndjson.load(f)
@@ -20,23 +22,23 @@ def process_split(dataset_files, output_file, metadata, dataset_split):
                 id = row["hash"]
                 argument = row["sentence"]
                 prompt = f"Argument: {argument}"
-                aspect_output = ""
+                spans = []
+                aspect_output = {"output": spans}
                 aspect_end_index = 0
                 for aspect_index_tuple in row["aspect_pos"]:
                     if aspect_index_tuple == "no_Aspect":
-                        aspect_output += "Not-aspect:"+ argument + "\n"
+                        spans += [{argument:"Not-aspect"}]
                         break
                     print(aspect_index_tuple)
                     aspect_index_tuple = make_tuple(aspect_index_tuple)
                     aspect_index = int(aspect_index_tuple[0])
                     aspect_len = int(aspect_index_tuple[1])
                     if aspect_index > aspect_end_index:
-                        aspect_output += "Not-aspect:" + argument[aspect_end_index:aspect_index] + "\n"
-                    aspect_output += "Aspect:" + argument[aspect_index:aspect_index+aspect_len] + "\n"
+                        spans += [{argument[aspect_end_index:aspect_index]:"Not-aspect"}]
+                    spans += [{argument[aspect_index:aspect_index+aspect_len]:"Aspect:"}]
                     aspect_end_index = aspect_index + aspect_len
                 if aspect_end_index < len(argument):
-                    aspect_output += "Not-aspect:" + argument[aspect_end_index:] + "\n"
-
+                    spans += [{argument[aspect_end_index:]:"Not-aspect"}]
                 output.append_instance(id, prompt, [aspect_output])
     output.append_genre(Genres.WEB)
     output.append_subarea(Skills.GENERATION)
