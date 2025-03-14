@@ -581,11 +581,11 @@ class Runner:
                 #set_trace()
                 predictions.append(output[0])
             if vllm:
-                model = models.VLLM(vllm)
+                outlines_model = models.VLLM(vllm)
                 generator = outlines.generate.json(model, Output)
                 if self.config.peft_configs:
                     logger.debug("++++ lora input ++++")
-                    model.load_lora(adapter_path)
+                    outlines_model.load_lora(adapter_path)
                 output = generator(text)
                 predictions += [output.output]
 
