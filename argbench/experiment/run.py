@@ -1,33 +1,34 @@
 #!/usr/bin/env python3
-import os.path
-import time
-
-import pandas as pd
-import psutil
-import optuna
-import sys
 import gc
-import json
+import os.path
+import sys
+import time
 from argparse import ArgumentParser
-from optuna import Trial, create_study
-from torch.utils.data import DataLoader
+from datetime import datetime
 from pathlib import Path
 
-from transformers import set_seed
-from datetime import datetime
-from datasets import DatasetDict, Dataset
+import optuna
+import outlines
+import pandas as pd
+import psutil
+from datasets import Dataset
+from optuna import Trial, create_study
+from outlines import models
+from pydantic import BaseModel
+from torch.utils.data import DataLoader
 from tqdm import tqdm
+from transformers import set_seed
 from vllm import LLM, SamplingParams
-from vllm.lora.request import LoRARequest
 from vllm.distributed import destroy_model_parallel
+from vllm.lora.request import LoRARequest
 
 from argbench.experiment.config import RunConfig
-from argbench.experiment.leaderborad import  Leaderboard
-from argbench.experiment.utils import get_logger, get_evaluation_metrics_map, extract_prediction
-from argbench.experiment.prepare_experiment import collect_datasets
+from argbench.experiment.filter_warnings import *
 from argbench.experiment.hpo_output import HPOOutput
+from argbench.experiment.leaderborad import Leaderboard
+from argbench.experiment.prepare_experiment import collect_datasets
 from argbench.experiment.testing import *
-from argbench.experiment.filter_warnings import  *
+from argbench.experiment.utils import get_logger, get_evaluation_metrics_map, extract_prediction
 
 logger = get_logger(__name__)
 
@@ -42,6 +43,9 @@ def log_mem(message):
     free_cpu = total_cpu * free_cpu_perc
     logger.info(f"*** GPU Memory {message}: {free_gpu:2.0f} GB free from {total_gpu:2.0f} GB  |  "
                                          f" CPU Memory: {free_cpu:2.0f} GB free from {total_cpu:2.0f} GB")
+
+class Output(BaseModel):
+    output: str
 
 
 from transformers import (
@@ -577,27 +581,32 @@ class Runner:
                 #set_trace()
                 predictions.append(output[0])
             if vllm:
-
+                model = models.VLLM(self.vllm)
+                generator = outlines.generate.json(model, Output)
                 if self.config.peft_configs:
                     logger.debug("++++ lora input ++++")
-                    outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
-                else:
-                    outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
+                    model.load_lora(adapter_path)
+                output = generator(text)
+                predictions += [output.output]
 
-                for output in outputs:
-                    prediction = extract_prediction(output.outputs[0].text)
-                    predictions += prediction
-                    logger.debug(f"""got the
-                                                       #################################
-                                                        prediction:
-                                                       ################################# 
-                                                       f"{prediction[0]}
-                                                       ##################################
-                                                       input
-                                                       ##################################
-                                                        {text}
-                                                        #################################
-                                                        """)
+                    #outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
+                #else:
+                    #outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
+
+                # for output in outputs:
+                #     prediction = extract_prediction(output.outputs[0].text)
+                #     predictions += prediction
+                #     logger.debug(f"""got the
+                #                                        #################################
+                #                                         prediction:
+                #                                        #################################
+                #                                        f"{prediction[0]}
+                #                                        ##################################
+                #                                        input
+                #                                        ##################################
+                #                                         {text}
+                #                                         #################################
+                #                                         """)
 
         metric = self.task_metrics[test_task_name]
         if metric == "fscore-detailed":
