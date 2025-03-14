@@ -560,6 +560,11 @@ class Runner:
                 adapter_path = self.config.training_args_config.output_dir + "/best-model"
                 if os.path.exists(adapter_path):
                     lora_request = LoRARequest("adapter", 1, adapter_path+"/adapter")
+            outlines_model = models.VLLM(vllm)
+            generator = outlines.generate.json(model, Output)
+            if self.config.peft_configs:
+                logger.debug("++++ lora input ++++")
+                outlines_model.load_lora(adapter_path)
 
 
         #set_trace()
@@ -581,11 +586,6 @@ class Runner:
                 #set_trace()
                 predictions.append(output[0])
             if vllm:
-                outlines_model = models.VLLM(vllm)
-                generator = outlines.generate.json(model, Output)
-                if self.config.peft_configs:
-                    logger.debug("++++ lora input ++++")
-                    outlines_model.load_lora(adapter_path)
                 output = generator(text)
                 predictions += [output.output]
 
