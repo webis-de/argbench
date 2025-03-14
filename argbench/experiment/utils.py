@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 from datetime import datetime
@@ -41,3 +42,14 @@ def get_evaluation_metrics_map():
     for task in metadata:
         evaluation_metrics[task] = metadata[task]["evaluation_metrics"][0]
     return evaluation_metrics
+
+def extract_prediction(output):
+    left_index = output.find("{")
+    right_index = output.rindex("}")
+    output_str = output[left_index:right_index+1]
+    output = json.loads(output_str)
+    extracted_output = output["output"]
+    if type(extracted_output) == list:
+        return extracted_output
+    else:
+        return [extracted_output]

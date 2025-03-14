@@ -150,7 +150,7 @@ class Output:
         self.negative_examples.append({"input": input, "output": output, "explanation": explanation})
 
 
-    def append_instance(self, id: str, input: str, output: List[str]):
+    def append_instance(self, id: str, input: str, output: List[dict]):
         self.instances.append({"id": id, "input": input, "output": output})
 
 

@@ -23,7 +23,7 @@ from vllm.distributed import destroy_model_parallel
 
 from argbench.experiment.config import RunConfig
 from argbench.experiment.leaderborad import  Leaderboard
-from argbench.experiment.utils import get_logger, get_evaluation_metrics_map
+from argbench.experiment.utils import get_logger, get_evaluation_metrics_map, extract_prediction
 from argbench.experiment.prepare_experiment import collect_datasets
 from argbench.experiment.hpo_output import HPOOutput
 from argbench.experiment.testing import *
@@ -506,10 +506,7 @@ class Runner:
         if self.config.is_prompting:
             for task in self.prmt_test_data:
                 sampling_params= self.load_sampling_params(task)
-                if "train_subsample_amount" in self.config.train_datasets:
-                    train_subsample_amount = self.config.train_datasets["train_subsample_amount"]
-                else:
-                    train_subsample_amount = None
+                train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
                 test_data =  self.prmt_test_data[task]
                 metrics = self.evaluate(task, test_data, sampling_params, vllm=self.vllm)
                 log_mem(f"tested on {task}")
@@ -519,11 +516,7 @@ class Runner:
                     self.leaderboard.add_results(results)
         else:
             sampling_params= self.load_sampling_params(self.test_dataset_name)
-            if "train_subsample_amount" in self.config.train_datasets:
-                train_subsample_amount = self.config.train_datasets["train_subsample_amount"]
-            else:
-                train_subsample_amount = None
-
+            train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
             metrics = self.evaluate(self.test_dataset_name, self.ft_test_data, sampling_params, vllm=self.vllm)
             for metric in metrics:
                 results = {"test_task": self.test_dataset_name, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model , "start_time": starting_time, "k": train_subsample_amount}
@@ -592,8 +585,7 @@ class Runner:
                     outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
 
                 for output in outputs:
-
-                    prediction = [output.outputs[0].text]
+                    prediction = extract_prediction(output.outputs[0].text)
                     predictions += prediction
                     logger.debug(f"""got the
                                                        #################################
