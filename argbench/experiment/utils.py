@@ -47,6 +47,7 @@ def extract_prediction(output):
     left_index = output.find("{")
     right_index = output.rindex("}")
     output_str = output[left_index:right_index+1]
+    print(output_str)
     output = json.loads(output_str)
     extracted_output = output["output"]
     if type(extracted_output) == list:
