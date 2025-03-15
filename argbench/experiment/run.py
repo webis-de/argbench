@@ -586,6 +586,8 @@ class Runner:
                 #set_trace()
                 predictions.append(output[0])
             if vllm:
+
+                print(text)
                 output = generator(text)
                 predictions += [output.output]
 
