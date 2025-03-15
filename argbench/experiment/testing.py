@@ -153,6 +153,32 @@ def compute_meteor_score(predictions, references):
     return {"meteor" : meteor_score}
 
 
+def convert_to_bio_text(input, output, label_mappings):
+    output_label = []
+    for unit_idx, unit in enumerate(output.split("\n")):
+        if unit.strip():
+            text = unit.strip()
+            if ":" not in text:
+                logger.log(level=logging.INFO, msg=f"argument unit segmentation eval error {text} does not contain a colon")
+                output_label.extend([("Arg-O", token) for token in word_tokenize(text)])
+                continue
+            sentence_label = text.split(":")[0]
+            unit  = text.split(":")[1]
+            unit_tokens = word_tokenize(unit)
+
+            for label in label_mappings:
+                if sentence_label == label :
+                    if sentence_label.startswith("No"):
+                        token_label = label_mappings[sentence_label]
+                        output_label.extend([(token_label, token) for token in unit_tokens])
+                    else:
+                        token_label = label_mappings[sentence_label]
+                        output_label.append((f"{token_label}-B", unit_tokens[0]))
+                        output_label.extend([(f"{token_label}-I", token) for token in unit_tokens[1:]])
+
+
+    return output_label
+
 def convert_to_bio(input, output, label_mappings):
     output_label = []
 
@@ -185,7 +211,7 @@ def compute_bio_f1_score(predictions, references, inputs, label_mappings):
         reference = references[i]
         input = inputs[i]
 
-        ground_truth_labels = convert_to_bio(input, reference, label_mappings)
+        ground_truth_labels = convert_to_bio_text(input, reference, label_mappings)
         predictions_labels = convert_to_bio(input, prediction, label_mappings)
         if len(predictions_labels) < len(ground_truth_labels):
             for i in range(len(ground_truth_labels) - len(predictions_labels)):
