@@ -184,8 +184,8 @@ def convert_to_bio(input, output, label_mappings):
 
     for unit_idx, output_unit in enumerate(output):
 
-        sentence_label = list(output_unit.keys())[1]
-        unit  = list(output_unit.keys())[0]
+        sentence_label = list(output_unit.keys())[0]
+        unit  = list(output_unit.values())[0]
         unit_tokens = word_tokenize(unit)
 
         for label in label_mappings:
