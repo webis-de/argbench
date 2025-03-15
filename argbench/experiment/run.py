@@ -45,7 +45,7 @@ def log_mem(message):
                                          f" CPU Memory: {free_cpu:2.0f} GB free from {total_cpu:2.0f} GB")
 
 class Output(BaseModel):
-    output: str
+    output: list[dict]
 
 
 from transformers import (
@@ -588,7 +588,7 @@ class Runner:
             if vllm:
 
                 print(text)
-                output = generator(text)
+                output = generator(text,  sampling_params= sampling_params)
                 predictions += [output.output]
 
                     #outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
