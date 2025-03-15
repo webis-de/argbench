@@ -184,8 +184,8 @@ def convert_to_bio(input, output, label_mappings):
 
     for unit_idx, output_unit in enumerate(output):
 
-        sentence_label = list(output_unit.keys())[0]
-        unit  = list(output_unit.values())[0]
+        unit = list(output_unit.keys())[0]
+        sentence_label = list(output_unit.values())[0]
         unit_tokens = word_tokenize(unit)
 
         for label in label_mappings:
@@ -204,7 +204,7 @@ def convert_to_bio(input, output, label_mappings):
 def compute_bio_f1_score(predictions, references, inputs, label_mappings):
     all_labels = [ ]
     all_predictions = []
-    set_trace()
+    #set_trace()
     labels = list(label_mappings.keys())
     for i, document in enumerate(inputs):
         prediction = predictions[i]
