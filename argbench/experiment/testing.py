@@ -214,7 +214,7 @@ def compute_bio_f1_score(predictions, references, inputs, label_mappings):
         input = inputs[i]
         output_dict = json.loads(reference)
         ground_truth_dict = output_dict["output"]
-        prediction = prediction["output"]
+
         ground_truth_labels = convert_to_bio(input, ground_truth_dict, label_mappings)
         predictions_labels = convert_to_bio(input, prediction, label_mappings)
         #set_trace()
