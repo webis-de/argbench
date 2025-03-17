@@ -4,8 +4,8 @@ from ..testing import *
 class TestF1Segment(TestCase):
     def test_f1_score(self):
         document = "If you come to think about it, emails can be count as one of the most benefical results of modern technology"
-        Document = """Non-argumentative: If you come to think about it,\nArgumentative: emails can be count as one of the most benefical results of modern technology"""
-        prediction =  [{"If you come to":"Non-argumentative"},{"think about it, emails can be count as one of the most benefical results of modern technology": "Argumentative"}]
+        Document = """{"output": [{"If you come to think about it,": "Non-argumentative"}, {"emails can be count as one of the most benefical results of modern technology": "Argumentative"}]}"""
+        prediction =  {"output":[{"If you come to":"Non-argumentative"},{"think about it, emails can be count as one of the most benefical results of modern technology": "Argumentative"}]}
         metrics = compute_seg_bio_f1_score([prediction], [Document], [document])
         o_recall =  0.5
         o_precision = 1
