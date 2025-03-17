@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import json
+
 import evaluate
 import re
 import numpy as np
@@ -210,10 +212,12 @@ def compute_bio_f1_score(predictions, references, inputs, label_mappings):
         prediction = predictions[i]
         reference = references[i]
         input = inputs[i]
-
-        ground_truth_labels = convert_to_bio_text(input, reference, label_mappings)
+        output_dict = json.loads(reference)
+        ground_truth_dict = output_dict["output"]
+        prediction = prediction["output"]
+        ground_truth_labels = convert_to_bio(input, ground_truth_dict, label_mappings)
         predictions_labels = convert_to_bio(input, prediction, label_mappings)
-        set_trace()
+        #set_trace()
         if len(predictions_labels) < len(ground_truth_labels):
             for i in range(len(ground_truth_labels) - len(predictions_labels)):
                 ground_truth_remaining = ground_truth_labels[len(predictions_labels):]
