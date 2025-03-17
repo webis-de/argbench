@@ -2,7 +2,7 @@
     "is_prompting": true,
     "is_hpo": false,
     "seed": 4112,
-    "base_model": "mistral-7b-inst-3",
+    "base_model": "mistral-small",
     "cutoff_len": 2000,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "data_type": "ndjson",
@@ -27,6 +27,13 @@
                 "path" : "/bigwork/nhwpajjy/pre-trained-models/gemma-2-9b-it",
                 "prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
                 "output_splitter": "<start_of_turn>model"
+            },
+            {
+                "label": "mistral-small",
+                "path" : "bigwork/nhwpajjy/pre-trained-models/Mistral-Small-Instruct-2409",
+                "prompt_template": "[INST]{definition}\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
+                "output_splitter": "[/INST]"
+
             }
 
     ],
