@@ -1,9 +1,10 @@
 {
 "aspect_detection_ukp_corpus_schiller21":{
-  "temperature": 0.2,
+  "temperature": 9,
   "top_p": 1,
   "top_k": -1,
-  "max_tokens": 3000
+  "max_tokens": 3000,
+  "min_tokens": 500
 },
 
   "argument_unit_segmentation": {

@@ -19,7 +19,7 @@ def process_dataset(dataset, path):
         id = str(uuid.uuid4())
         output.append_positive_example(prompt, model_output, "")
         output.append_negative_example(prompt, wrong_output, "")
-        output.append_instance(id, prompt, [model_output])
+        output.append_instance(id, prompt, [ [{"label": model_output}]])
 
     output.append_genre(Genres.WIKIPEDIA)
     output.append_subarea(Skills.PERSPECTIVE_ASSESSMENT)
