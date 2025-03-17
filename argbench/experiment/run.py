@@ -44,7 +44,8 @@ def log_mem(message):
     logger.info(f"*** GPU Memory {message}: {free_gpu:2.0f} GB free from {total_gpu:2.0f} GB  |  "
                                          f" CPU Memory: {free_cpu:2.0f} GB free from {total_cpu:2.0f} GB")
 
-
+class Output(BaseModel):
+    output: list[dict]
 
 
 from transformers import (
