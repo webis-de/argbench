@@ -561,7 +561,7 @@ class Runner:
                 if os.path.exists(adapter_path):
                     lora_request = LoRARequest("adapter", 1, adapter_path+"/adapter")
             outlines_model = models.VLLM(vllm)
-            generator = outlines.generate.json(outlines_model, Output)
+            generator = outlines.generate.json(outlines_model, Output, whitespace_pattern="")
             if self.config.peft_configs:
                 logger.debug("++++ lora input ++++")
                 outlines_model.load_lora(adapter_path)
