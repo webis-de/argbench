@@ -39,7 +39,7 @@
   {
     "temperature": 0.2,
     "top_p": 1,
-    "top_k": 1,
+    "top_k": -1,
     "max_tokens": 2000
   }
 }
