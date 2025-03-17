@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import gc
 import os.path
-import sys
 import time
 from argparse import ArgumentParser
 from datetime import datetime
@@ -10,14 +9,15 @@ from pathlib import Path
 import optuna
 import outlines
 import pandas as pd
-import psutil
 from datasets import Dataset
 from optuna import Trial, create_study
+from optuna.samplers import TPESampler
 from outlines import models
-from pydantic import BaseModel
+from peft import (PeftModel, prepare_model_for_kbit_training, LoraConfig, get_peft_model, )
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from transformers import set_seed
+from transformers import *
+from utils import *
 from vllm import LLM, SamplingParams
 from vllm.distributed import destroy_model_parallel
 from vllm.lora.request import LoRARequest
@@ -28,45 +28,9 @@ from argbench.experiment.hpo_output import HPOOutput
 from argbench.experiment.leaderborad import Leaderboard
 from argbench.experiment.prepare_experiment import collect_datasets
 from argbench.experiment.testing import *
-from argbench.experiment.utils import get_logger, get_evaluation_metrics_map, extract_prediction
+from argbench.experiment.utils import get_logger, get_evaluation_metrics_map
 
 logger = get_logger(__name__)
-
-
-def log_mem(message):
-    t = torch.cuda.mem_get_info()
-    free_gpu, total_gpu = (t[0]/(1024**3),t[1]/(1024**3))
-    used_cpu = (psutil.virtual_memory()[3]/1024**3)
-    perc_memory = psutil.virtual_memory()[2]/100
-    free_cpu_perc = 1 - perc_memory
-    total_cpu = (1/perc_memory)*used_cpu
-    free_cpu = total_cpu * free_cpu_perc
-    logger.info(f"*** GPU Memory {message}: {free_gpu:2.0f} GB free from {total_gpu:2.0f} GB  |  "
-                                         f" CPU Memory: {free_cpu:2.0f} GB free from {total_cpu:2.0f} GB")
-
-class Output(BaseModel):
-    output: list[dict]
-
-
-from transformers import (
-    AutoModelForCausalLM,
-    AutoTokenizer,
-    TrainingArguments,
-    Trainer,
-    DataCollatorForSeq2Seq,
-    GenerationConfig,
-    EarlyStoppingCallback,
-    BitsAndBytesConfig
-)
-from optuna.samplers import TPESampler
-from peft import (
-    PeftModel,
-    prepare_model_for_kbit_training,
-    LoraConfig,
-    get_peft_model,
-)
-
-
 
 def with_timing(fn):
     def wrapper(*args, **kwargs):
@@ -79,14 +43,16 @@ def with_timing(fn):
             logger.debug(f"Time: for {fn} is {e-t:2.2f}")
     return wrapper
 
-def eval_collate(batch):
-    out_batch = {k: [] for k in batch[0]}
-
-    for b in batch:
-        for k in b:
-            out_batch[k].append(b[k])
-
-    return out_batch
+def log_mem(message):
+    t = torch.cuda.mem_get_info()
+    free_gpu, total_gpu = (t[0]/(1024**3),t[1]/(1024**3))
+    used_cpu = (psutil.virtual_memory()[3]/1024**3)
+    perc_memory = psutil.virtual_memory()[2]/100
+    free_cpu_perc = 1 - perc_memory
+    total_cpu = (1/perc_memory)*used_cpu
+    free_cpu = total_cpu * free_cpu_perc
+    logger.info(f"*** GPU Memory {message}: {free_gpu:2.0f} GB free from {total_gpu:2.0f} GB  |  "
+                f" CPU Memory: {free_cpu:2.0f} GB free from {total_cpu:2.0f} GB")
 
 class Runner:
     """Model runner class"""
@@ -442,16 +408,11 @@ class Runner:
         self.trainer.evaluate()
         metrics = self.evaluate(self.test_dataset_name, self.ft_test_data, sampling_params, model=self.trainer.model)
         log_mem(f"finished evaluation")
-
         logger.debug(f"metrics are {metrics}")
-
-
         return metrics[self.config.hpo_config.val_metric]
 
     def perform_hpo(self):
         """Perform HPO search"""
-
-
 
         optuna.logging.get_logger("optuna").addHandler(logging.StreamHandler(sys.stdout))
 
@@ -509,15 +470,16 @@ class Runner:
         all_results = []
         if self.config.is_prompting:
             for task in self.prmt_test_data:
-                sampling_params= self.load_sampling_params(task)
-                train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
-                test_data =  self.prmt_test_data[task]
-                metrics = self.evaluate(task, test_data, sampling_params, vllm=self.vllm)
-                log_mem(f"tested on {task}")
-                for metric in metrics:
-                    results = {"test_task": task, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model , "start_time": starting_time, "k": train_subsample_amount}
-                    all_results.append(results)
-                    self.leaderboard.add_results(results)
+                if not is_segmentation(task):
+                    sampling_params= self.load_sampling_params(task)
+                    train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
+                    test_data =  self.prmt_test_data[task]
+                    metrics = self.evaluate(task, test_data, sampling_params, vllm=self.vllm)
+                    log_mem(f"tested on {task}")
+                    for metric in metrics:
+                        results = {"test_task": task, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model , "start_time": starting_time, "k": train_subsample_amount}
+                        all_results.append(results)
+                        self.leaderboard.add_results(results)
         else:
             sampling_params= self.load_sampling_params(self.test_dataset_name)
             train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
@@ -560,8 +522,14 @@ class Runner:
                 adapter_path = self.config.training_args_config.output_dir + "/best-model"
                 if os.path.exists(adapter_path):
                     lora_request = LoRARequest("adapter", 1, adapter_path+"/adapter")
+
             outlines_model = models.VLLM(vllm)
-            generator = outlines.generate.json(outlines_model, Output, whitespace_pattern="")
+
+            if is_segmentation(test_task_name):
+                generator = outlines.generate.json(outlines_model, Output, whitespace_pattern="")
+            else:
+                generator = outlines.generate.text(outlines_model)
+
             if self.config.peft_configs:
                 logger.debug("++++ lora input ++++")
                 outlines_model.load_lora(adapter_path)
@@ -585,10 +553,11 @@ class Runner:
                 output = [o.split(output_splitter)[-1] for o in output]
                 #set_trace()
                 predictions.append(output[0])
+
             if vllm:
 
                 print(text)
-                output = generator(text,  sampling_params= sampling_params)
+                output = generator(text, sampling_params= sampling_params)
                 predictions += [output]
 
                     #outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)

@@ -1,9 +1,19 @@
-import json
 import logging
 import os
+import time
+
+import psutil
+import torch
 from datetime import datetime
-from argbench.experiment.config import *
+from pydantic import BaseModel
 from yaml import load, Loader
+
+from argbench.experiment.config import *
+
+
+class Output(BaseModel):
+    output: list[dict]
+
 
 def get_logger(name):
     logger = logging.getLogger(name)
@@ -54,3 +64,18 @@ def extract_prediction(output):
         return extracted_output
     else:
         return [extracted_output]
+
+
+def is_segmentation(task):
+    return "segmentation" in task or "elecdeb60t020" in task or "aspect_detection" in task
+
+
+
+def eval_collate(batch):
+    out_batch = {k: [] for k in batch[0]}
+
+    for b in batch:
+        for k in b:
+            out_batch[k].append(b[k])
+
+    return out_batch
