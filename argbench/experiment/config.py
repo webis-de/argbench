@@ -312,6 +312,7 @@ class VLLMGenerationConfig(CommonConfig):
     top_p: float
     top_k: int
     max_tokens: int
+    min_tokens: int
 
 @dataclass
 class RunConfig:
