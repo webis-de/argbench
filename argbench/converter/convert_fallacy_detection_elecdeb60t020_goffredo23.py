@@ -108,9 +108,9 @@ def process_dataset(data_files, output_file, metadata, split_name):
 
             # print(snippet)
             for label_span in snippet.spans:
-                model_out.append(f"{label_span[1]}: {label_span[0]}")
+                model_out.append({label_span[0]: label_span[1]})
 
-            model_out = "\n".join(model_out)
+
 
             output.append_instance(id, prompt, [model_out])
 

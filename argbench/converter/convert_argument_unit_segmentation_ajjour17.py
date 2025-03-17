@@ -115,11 +115,11 @@ Do not add a new formating or enumeration also do not rephrase the argument unit
     test_output.append_definition(prompt)
 
     for file in tqdm(train_dataset):
-        extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in file.units])
+        extracted_units = [{unit.span.strip():unit.label} for unit in file.units]
         train_output.append_instance(file.fragment_id, file.text, [extracted_units])
 
     for file in tqdm(test_dataset):
-        extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in file.units])
+        extracted_units = [{unit.span.strip():unit.label} for unit in file.units]
         test_output.append_instance(file.fragment_id, file.text, [extracted_units])
 
     return train_output, test_output
