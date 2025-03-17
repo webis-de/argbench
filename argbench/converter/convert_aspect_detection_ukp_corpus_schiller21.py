@@ -8,7 +8,7 @@ def process_split(dataset_files, output_file, metadata, dataset_split):
     output = Output(dataset_name)
     output.append_definition("""Given the following argument,
      split the argument into spans of text that cover an aspect or not.
-     An aspect is a small substring of the argument that characterizes the argument.
+     An aspect is a span of the argument that characterizes the argument.
      Multiple aspects can be found in an argument.
      Generate a dictionary for each span with the span as key and Aspect or Not-aspect as a value.
      Do not rephrase the spans or modify it. Always process the whole argument. 
