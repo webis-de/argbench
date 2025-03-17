@@ -30,7 +30,7 @@
             },
             {
                 "label": "mistral-small",
-                "path" : "bigwork/nhwpajjy/pre-trained-models/Mistral-Small-Instruct-2409",
+                "path" : "/bigwork/nhwpajjy/pre-trained-models/Mistral-Small-Instruct-2409",
                 "prompt_template": "[INST]{definition}\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
                 "output_splitter": "[/INST]"
 
