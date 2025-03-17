@@ -78,7 +78,8 @@
         "temperature": 0,
         "top_p": 1,
         "top_k": 1,
-        "max_tokens": 1
+        "max_tokens": 1,
+        "min_tokens": 1
     }
 
 
