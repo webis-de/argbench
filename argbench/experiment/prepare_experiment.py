@@ -128,6 +128,7 @@ def compile_datasets(
         if not is_prompt or train_subsample_amount:
             train_path = train_files[dataset]
             df_training = pd.read_json(train_path, lines=True)
+            df_training['output'] = df_training['output'].apply(json.dumps)
             if train_subsample_amount :
                 df_training= df_training.sample(train_subsample_amount)
             elif train_subsample_rate:
@@ -144,6 +145,7 @@ def compile_datasets(
         if test_dataset and dataset !=test_dataset:
             continue
         df_test = pd.read_json(test_path, lines=True)
+        df_test['output'] = df_test['output'].apply(json.dumps)
         if test_subsample_rate:
             df_test = df_test.sample(frac=test_subsample_rate)
         elif test_subsample_amount:
