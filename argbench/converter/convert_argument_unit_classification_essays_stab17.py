@@ -12,7 +12,7 @@ def parse_xmi_file(xmi_path):
     sofa_string = root.xpath("//cas:Sofa/@sofaString", namespaces=root.nsmap)[0]
     units = root.xpath("//argumentation:ArgumentativeDiscourseUnit", namespaces=root.nsmap)
 
-    instance_output = []
+    sentences_with_labels = []
     for unit in units:
         unit_type = unit.get("unitType")
         begin = int(unit.get("begin"))
@@ -20,15 +20,15 @@ def parse_xmi_file(xmi_path):
         text_segment = sofa_string[begin:end]
 
         if unit_type == "majorclaim":
-            instance_output.append(f"Major Claim: {text_segment}")
+            sentences_with_labels.append((text_segment, "Major Claim"))
         elif unit_type in ["claim-for", "claim-against"]:
-            instance_output.append(f"Claim: {text_segment}")
+            sentences_with_labels.append((text_segment, "Claim"))
         elif unit_type == "premise":
-            instance_output.append(f"Premise: {text_segment}")
+            sentences_with_labels.append((text_segment, "Premise"))
 
-    combined_output = "\n".join(instance_output)
 
-    return filename, sofa_string, combined_output
+
+    return filename, sofa_string, sentences_with_labels
 
 
 def process_xmi_files(xmi_directory, output, split_map, split):
@@ -38,9 +38,10 @@ def process_xmi_files(xmi_directory, output, split_map, split):
             file = xmi_file.replace(".xmi", "")
             if split_map[file].lower() == split:
                 xmi_path = os.path.join(xmi_directory, xmi_file)
-                filename, sofa_string, combined_output = parse_xmi_file(xmi_path)
-
-                output.append_instance(filename, sofa_string, [combined_output])
+                filename, sofa_string, sentence_with_labels = parse_xmi_file(xmi_path)
+                for text_span, label in sentence_with_labels:
+                    instance = sofa_string + f"\nSentence: {text_span}"
+                    output.append_instance(filename, instance, [label])
                 print(f"Processed: {filename}")
 
 
@@ -51,7 +52,7 @@ def edit_metadata(metadata, dataset_file, split):
     metadata.add_dataset(dataset_file, split)
     metadata.add_genre(Genres.ESSAYS)
     metadata.add_skill(Skills.MINING)
-    metadata.add_evaluation_metric("sentence-fscore")
+    metadata.add_evaluation_metric("fscore")
 
 
 def main():
@@ -70,9 +71,9 @@ def main():
     xmi_directory = (datasets_path() / "essays-argument-mining")
     dataset_name = "argument_unit_classification_essays_stab17"
     dataset_file_template = "argument_unit_classification_essays_{split}_stab17.json"
-    task_definition = """Given the following essays extract the main claim, claims, and premises.
+    task_definition = """Given the following essay and sentence, classify the sentence into either main claim, claim, or premise.
      A claim is a controversial statement and the central component of an argument.
-     Premises are reasons for justifying or refuting the claim. 
+     A Premise is a reason for justifying or refuting the claim. 
      A major claim is the central thesis of the essay.
      Only output with one of these classes. Do not explain.
      """

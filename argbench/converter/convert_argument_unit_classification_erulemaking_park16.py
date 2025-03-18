@@ -6,7 +6,7 @@ def process_data(lines, dataset_name, dataset_file_name, metadata, split):
     """Process the JSON file and append examples to the output."""
     output = Output(dataset_name)
     output.append_definition(
-        """Classify each sentence into Fact, Testimony, Value, Policy, Resource,or Others.
+        """Given the document and the appended sentence, classify the sentence which appears in the document into Fact, Testimony, Value, Policy, Resource,or Others.
          Fact is objective proposition 'expressing or dealing with facts or conditions as perceived without distortion by
 personal feelings, prejudices, or interpretations.'
          Testimony: objective proposition about the author’s personal state or experience.
@@ -22,7 +22,7 @@ personal feelings, prejudices, or interpretations.'
         propositions = data.get("propositions", [])
 
         # 维护内容顺序
-        ordered_texts = []
+        labels = []
         input_texts = []  # 用于保存所有text文本的顺序
 
         for proposition in propositions:
@@ -30,26 +30,16 @@ personal feelings, prejudices, or interpretations.'
             prop_type = proposition.get("type")
 
             input_texts.append(text)  # 将所有text文本按顺序加入input
-
-            if prop_type == "fact":
-                ordered_texts.append(f"Fact: {text}")
-            elif prop_type == "testimony":
-                ordered_texts.append(f"Testimony: {text}")
-            elif prop_type == "value":
-                ordered_texts.append(f"Value: {text}")
-            elif prop_type == "policy":
-                ordered_texts.append(f"Policy: {text}")
-            elif prop_type == "resource":
-                ordered_texts.append(f"Resource: {text}")
-            else:
-                ordered_texts.append(f"Other: {text}")
+            labels.append(prop_type.capitalize())
 
         # 将所有文本合并为input，并将格式化文本合并为output
         combined_input = ' '.join(input_texts)  # 将input中的文本拼接成一个字符串
-        combined_output = '\n'.join(ordered_texts)  # 按类型拼接的格式化文本
+
 
         # 将input和output写入到实例中
-        output.append_instance(comment_id, combined_input, [combined_output])
+        for label, text in zip(labels, input_texts):
+            instance = combined_input + f"\nSentence: {text}"
+            output.append_instance(comment_id, instance, [label])
     output.write_output(dataset_file_name)
     metadata.add_dataset(dataset_file_name, split)
     output.append_genre(Genres.WEB_FORUMS)
@@ -83,7 +73,7 @@ def main():
         data_file_test = dataset_file_template.format(split="test")
         process_data(train, dataset_name, data_file_train, metadata, "train")
         process_data(test, dataset_name, data_file_test, metadata, "test")
-        metadata.add_evaluation_metric("sentence-fscore")
+        metadata.add_evaluation_metric("fscore")
         metadata.add_genre(Genres.WEB_FORUMS)
         metadata.add_skill(Skills.MINING)
 
