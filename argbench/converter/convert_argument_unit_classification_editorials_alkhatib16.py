@@ -47,7 +47,7 @@ def process_txt_file(txt_file_path, instances_dict, filename):
                 output_text = f"{block_label}: {sentence.strip()}{text_part}"
                 if filename not in instances_dict:
                     instances_dict[filename] = []
-                instances_dict[filename].append(output_text)
+                instances_dict[filename].append((f"{sentence.strip()}{text_part}", block_label))
             sentence = ""
             block_labels.clear()
         else:
@@ -60,7 +60,7 @@ def process_txt_file(txt_file_path, instances_dict, filename):
         output_text = f"{block_label}: {sentence.strip()}"
         if filename not in instances_dict:
             instances_dict[filename] = []
-        instances_dict[filename].append(output_text)
+        instances_dict[filename].append((sentence.strip(), block_label))
 
 def process_all_txt_files_in_directory(directory_path, instances_dict):
     """Process all .txt files in the specified directory and add to the instances dictionary."""
@@ -88,7 +88,7 @@ def main():
 
     instances_dict = defaultdict(list)
     process_all_txt_files_in_directory(txt_directory_path, instances_dict)
-    task_definition ="""Classify each sentence in the given document into the following argument unit types:
+    task_definition ="""Given the following document and span, classify the span that appears in the document into the following argument unit types:
     Common Ground, Assumption, Testimony, Statistics, Anecdote, or Other.
     Common Ground: is common knowledge, a self-evident fact, an accepted truth, or
 similar. 
@@ -112,21 +112,26 @@ the above classes.
     train_output.append_definition(task_definition)
 
     # output.append_metadata("Title", "All Data")  # Optional: Add a general title
-    indices = len(instances_dict)
+
     test_size = 2 * len(instances_dict) // 10
 
     test_indices = sample(list(instances_dict.keys()), test_size)
-    train_indices = [index for index in instances_dict if index not in test_indices]
+
 
     for instance_id, outputs in instances_dict.items():
         # Join multiple outputs with \n and add to the output
-        combined_output = "\n".join(outputs)
-        combined_input_tmp = "\n".join(remove_labels(text) for text in outputs)
-        combined_input = combined_input_tmp.replace('\n', ' ')
-        if instance_id in test_indices:
-            test_output.append_instance(instance_id, combined_input, [combined_output])
-        else:
-            train_output.append_instance(instance_id, combined_input, [combined_output])
+        sentences = [pair[0] for pair in outputs]
+
+        document = (" ").join(sentences)
+
+
+        for sentence, label in outputs:
+            combined_input = document + "\n" + f"Span: {sentence}"
+
+            if instance_id in test_indices:
+                test_output.append_instance(instance_id, combined_input, [label])
+            else:
+                train_output.append_instance(instance_id, combined_input, [label])
 
     train_output.append_genre(Genres.NEWS)
     train_output.append_subarea(Skills.MINING)
@@ -137,7 +142,7 @@ the above classes.
     test_output.write_output(dataset_test)
     metadata.add_dataset(dataset_test, "test")
     metadata.add_dataset(dataset_train, "train")
-    metadata.add_evaluation_metric("sentence-fscore")
+    metadata.add_evaluation_metric("fscore")
     metadata.add_genre(Genres.NEWS)
     metadata.add_skill(Skills.MINING)
     metadata.write_metadata()
