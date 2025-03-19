@@ -17,7 +17,6 @@ from peft import (PeftModel, prepare_model_for_kbit_training, LoraConfig, get_pe
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from transformers import *
-from utils import *
 from vllm import LLM, SamplingParams
 from vllm.distributed import destroy_model_parallel
 from vllm.lora.request import LoRARequest
@@ -28,7 +27,7 @@ from argbench.experiment.hpo_output import HPOOutput
 from argbench.experiment.leaderborad import Leaderboard
 from argbench.experiment.prepare_experiment import collect_datasets
 from argbench.experiment.testing import *
-from argbench.experiment.utils import get_logger, get_evaluation_metrics_map
+from argbench.experiment.utils import *
 
 logger = get_logger(__name__)
 
