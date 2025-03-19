@@ -12,7 +12,7 @@ import pandas as pd
 from datasets import Dataset
 from optuna import Trial, create_study
 from optuna.samplers import TPESampler
-from outlines import models
+from outlines import models as outline_models
 from peft import (PeftModel, prepare_model_for_kbit_training, LoraConfig, get_peft_model, )
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -522,7 +522,7 @@ class Runner:
                 if os.path.exists(adapter_path):
                     lora_request = LoRARequest("adapter", 1, adapter_path+"/adapter")
 
-            outlines_model = models.VLLM(vllm)
+            outlines_model = outline_models.VLLM(vllm)
 
             if is_segmentation(test_task_name):
                 generator = outlines.generate.json(outlines_model, Output, whitespace_pattern="")
