@@ -221,4 +221,4 @@ def collect_datasets(run_config):
     if run_config.is_prompting:
         return train_datasets, test_datasets
     else:
-        return train_datasets, test_datasets[run_config.test_dataset.name]
+        return train_datasets, test_config.get("name", None)
