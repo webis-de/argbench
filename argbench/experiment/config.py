@@ -1,12 +1,13 @@
-from dataclasses import dataclass, field
-from typing import List
-from pathlib import Path
 import json
+import os
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import List
 
 from optuna import Trial
 from peft.config import PeftConfig
 from peft.mapping import PEFT_TYPE_TO_CONFIG_MAPPING
-from IPython.core.debugger import set_trace
+
 
 def update_conf(config_update, config_other):
     for k, v in config_other.items():
@@ -79,7 +80,6 @@ class TrainingArgsConfig(CommonConfig):
 
     save_steps: int
 
-    output_dir: str = None
 
     save_total_limit: int = 3
 
@@ -346,7 +346,7 @@ class RunConfig:
 
 
 
-
+    models_folder: str
 
 
     # Data folder
@@ -562,6 +562,10 @@ class RunConfig:
 
         if args.data_folder:
             conf_obj.data_folder = args.data_folder
+
+        if args.models_folder:
+            conf_obj.models_folder = args.models_folder
+
         if args.load_adapter:
             peft_configs = []
             for i, adapter in enumerate(args.load_adapter):
@@ -712,3 +716,10 @@ class RunConfig:
             conf_obj.model_configs = model_configs
 
         return conf_obj
+
+
+    def get_model_path(self,time):
+
+        tag = f"{self.test_dataset}-{self.base_model}-{time}"
+
+        return os.path.join(self.models_folder, tag)
