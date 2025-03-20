@@ -166,8 +166,9 @@ def compile_datasets(
             df_test["example"] = example_str
             df_test["input"] = df_test.apply(few_shot_template_formatter, axis=1)
         else:
-            df_test.rename(columns={"input": "document"}, inplace=True)
             df_test["input"] = df_test.apply(template_formatter, axis=1)
+            df_test.rename(columns={"input": "document"}, inplace=True)
+
         for column in df_test.columns:
             df_test[column] = df_test[column].astype(str)
         df_test["task"] = dataset
@@ -218,7 +219,4 @@ def collect_datasets(run_config):
         test_config.get("name", None)
 
     )
-    if run_config.is_prompting:
-        return train_datasets, test_datasets
-    else:
-        return train_datasets, test_config.get("name", None)
+    return train_datasets, test_datasets

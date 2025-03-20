@@ -227,7 +227,8 @@ class Runner:
                 hf_test_dataset = Dataset.from_pandas(test_datasets[test_dataset])
                 self.prmt_test_data[test_dataset] = hf_test_dataset.map(generate_and_tokenize_prompt, num_proc=12)
         else:
-            train_datasets, test_dataset = collect_datasets(self.config)
+            train_datasets, test_datasets = collect_datasets(self.config)
+            test_dataset = test_datasets[self.test_dataset_name]
             train_datasets = pd.concat(train_datasets.values(), axis=0).reset_index(drop=True)
             hf_train_dataset = Dataset.from_pandas(train_datasets)
             hf_test_dataset = Dataset.from_pandas(test_dataset)
