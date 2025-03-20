@@ -67,6 +67,7 @@ def compute_f1_score(predictions, references):
     labels_lowered = {label.lower().strip() for label in labels}
     mappings = {}
     counter = 0
+    set_trace()
     for label in labels_lowered:
         mappings[label] = counter
         counter = counter + 1
