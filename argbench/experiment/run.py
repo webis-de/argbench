@@ -460,10 +460,12 @@ class Runner:
             model = self.load_model()
             self.trainer = self.prepare_trainer(model)
             self.trainer.train()
-            self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
+            model_path = self.config.get_model_path(starting_time)
+            self.trainer.save_model(model_path)
             log_mem("trained")
 
         self.vllm = self.prepare_model_for_generation()
+
 
 
         all_results = []
