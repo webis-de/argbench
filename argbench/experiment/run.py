@@ -559,6 +559,8 @@ class Runner:
 
                 print(text)
                 output = generator(text, sampling_params= sampling_params)
+                if output.startswith('\"') and output.endswith('\"'):
+                    output = output[1:-1]
                 predictions += [output]
 
                     #outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
