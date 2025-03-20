@@ -460,8 +460,8 @@ class Runner:
             model = self.load_model()
             self.trainer = self.prepare_trainer(model)
             self.trainer.train()
-            model_path = self.config.get_model_path(starting_time)
-            self.trainer.save_model(model_path)
+            self.adapter_path = self.config.get_model_path(starting_time)
+            self.trainer.save_model(self.adapter_path)
             log_mem("trained")
 
         self.vllm = self.prepare_model_for_generation()
@@ -519,10 +519,6 @@ class Runner:
         #trainer.model.eval()
         ## If an adapter will be fine-tuned then an output dir is there
         if vllm:
-            if self.config.training_args_config.output_dir:
-                adapter_path = self.config.training_args_config.output_dir + "/best-model"
-                if os.path.exists(adapter_path):
-                    lora_request = LoRARequest("adapter", 1, adapter_path+"/adapter")
 
             outlines_model = outline_models.VLLM(vllm)
 
@@ -533,7 +529,8 @@ class Runner:
 
             if self.config.peft_configs:
                 logger.debug("++++ lora input ++++")
-                outlines_model.load_lora(adapter_path)
+                if self.adapter_path:
+                    outlines_model.load_lora(self.adapter_path)
 
 
         #set_trace()
