@@ -75,6 +75,7 @@ class Runner:
         self.leaderboard = Leaderboard(config.leaderboard_path)
         if "name" in self.config.test_dataset:
             self.test_dataset_name = self.config.test_dataset["name"]
+
         if config.is_prompting:
             self.config.log_path = f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/prompting-{self.config.base_model}.log"
         else:
