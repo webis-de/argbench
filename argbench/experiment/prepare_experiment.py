@@ -115,6 +115,13 @@ def compile_datasets(
     :param subsample_rate: % of instances to take from dataset
     :returns: Full compiled DataFrame of all datasets instances
     """
+    def few_shot_template_formatter(row):
+        return prompt_template.format(
+            instance_input=row["document"],
+            definition=row["definition"],
+            example=row["example"]
+        )
+
     def template_formatter(row):
         return prompt_template.format(
             instance_input=row["document"],
@@ -158,7 +165,7 @@ def compile_datasets(
                 example_str += example_instance
             df_test.rename(columns={"input": "document"}, inplace=True)
             df_test["example"] = example_str
-            df_test["input"] = df_test.apply(template_formatter, axis=1)
+            df_test["input"] = df_test.apply(few_shot_template_formatter, axis=1)
         else:
             df_test.rename(columns={"input": "document"}, inplace=True)
             df_test["input"] = df_test.apply(template_formatter, axis=1)
