@@ -566,17 +566,17 @@ class Runner:
                 # for output in outputs:
                 #     prediction = extract_prediction(output.outputs[0].text)
                 #     predictions += prediction
-                #     logger.debug(f"""got the
-                #                                        #################################
-                #                                         prediction:
-                #                                        #################################
-                #                                        f"{prediction[0]}
-                #                                        ##################################
-                #                                        input
-                #                                        ##################################
-                #                                         {text}
-                #                                         #################################
-                #                                         """)
+                logger.debug(f"""got the
+                                                   #################################
+                                                    prediction:
+                                                   #################################
+                                                   f"{output}
+                                                   ##################################
+                                                   input
+                                                   ##################################
+                                                    {text}
+                                                    #################################
+                                                    """)
 
         metric = self.task_metrics[test_task_name]
         if metric == "fscore-detailed":
