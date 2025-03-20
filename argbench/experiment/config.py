@@ -557,7 +557,7 @@ class RunConfig:
         if args.test_subsample_amount:
             conf_obj.test_dataset["subsample_amount"] = args.test_subsample_amount
         if args.test_dataset_name:
-            conf_obj.test_dataset["name"] = [args.test_dataset_name]
+            conf_obj.test_dataset["name"] = args.test_dataset_name
         if args.base_model:
             conf_obj.base_model = args.base_model
 
