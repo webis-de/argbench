@@ -410,6 +410,7 @@ class RunConfig:
         arg_parser.add_argument("-an", "--adapter_name", action="append", help="Adapter name that is being loaded")
         arg_parser.add_argument("-co", "--config_output", type=Path, help="File to write config to")
         arg_parser.add_argument("-df", "--data_folder", type=Path, help="Data folder path")
+        arg_parser.add_argument("-mf" , "--model_folder", type=Path, help="Data folder path")
         # Training arguments
         arg_parser.add_argument("-tbs", "--train_batch_size", type=int, help="Training batch size")
         arg_parser.add_argument("-te", "--train_epochs", type=int, help="Number of training epochs")
