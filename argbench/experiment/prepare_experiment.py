@@ -141,9 +141,10 @@ def compile_datasets(
             if not is_prompt:
                 training_datasets[dataset]=df_training
 
-        test_path = test_files[dataset]
+
         if test_dataset and dataset !=test_dataset:
             continue
+        test_path = test_files[dataset]
         df_test = pd.read_json(test_path, lines=True)
         df_test['output'] = df_test['output'].apply(json.dumps)
         if test_subsample_rate:
@@ -204,8 +205,10 @@ def collect_datasets(run_config):
         test_config.get("subsample_amount", None),
         test_config.get("subsample_rate", None),
         train_config.get("subsample_amount", None),
-        train_config.get("subsample_rate", None)
-        ,run_config.is_prompting
+        train_config.get("subsample_rate", None),
+        run_config.is_prompting,
+        test_config.get("name", None)
+
     )
     if run_config.is_prompting:
         return train_datasets, test_datasets
