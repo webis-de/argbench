@@ -2,7 +2,7 @@
 #SBATCH --job-name=fine-tuning-2
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=12
-#SBATCH --mem=12G
+#SBATCH --mem=20G
 #SBATCH --time=24:00:00
 #SBATCH --output /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/output/fine-tuning-2.out
 #SBATCH --error /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/output/fine-tuning-2.err
