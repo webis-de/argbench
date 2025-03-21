@@ -13,7 +13,7 @@ from yaml import load, Loader
 from argbench.experiment.utils import *
 
 
-logger = get_logger(__name__)
+global logger
 
 class dataset:
     train_path: str
@@ -190,6 +190,7 @@ def collect_datasets(run_config):
     :param run_config: RunConfig with train_datasets and test_datasets config dicts
     :returns: Tuple of train and test datasets in pandas DataFrame
     """
+    logger = get_logger(run_config)
     train_config = run_config.train_datasets
     test_config = run_config.test_dataset
     tasks_path = Path(run_config.data_folder)
