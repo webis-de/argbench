@@ -745,4 +745,4 @@ class RunConfig:
 
         if not self.is_prompting:
             test_dataset_name = self.test_dataset["name"]
-            self.log_path = f"{self.output_dir}-{test_dataset_name}-{self.base_model}-{starting_time}.log"
+            return f"{self.output_dir}-{test_dataset_name}-{self.base_model}-{starting_time}.log"
