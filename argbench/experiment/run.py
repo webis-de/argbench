@@ -630,9 +630,10 @@ if __name__ == "__main__":
 
     args = arg_parser.parse_args()
     config = RunConfig.from_file([], args)
-    logger = get_logger(config)
+
     print(f"logging file is {config.log_path}")
     runner = Runner(config)
+    logger = get_logger(config)
     score = runner.execute()
 
 
