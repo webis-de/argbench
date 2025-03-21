@@ -9,7 +9,7 @@
     "leaderboard_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/stance-classification-barhaim17.csv",
     "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
-
+    "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
     "train_datasets": {
         "subsample_amount": 10
     },
@@ -74,7 +74,7 @@
         "logging_steps": 10,
         "lr_scheduler_type": "linear",
         "metric_for_best_model": "loss",
-        "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models/stance-classification"
+
     },
     "early_stopping_config": {
         "early_stopping_patience": 3,

@@ -162,7 +162,7 @@ class Runner:
 
         :returns: Trainer initialized with configuration parameters from RunConfig object and tokenized data
         """
-        train_args = TrainingArguments(
+        train_args = TrainingArguments(output_dir=self.config.get_output_path(),
             **self.config.training_args_config.to_conf(trial, training_arg_hpo)
         )
 

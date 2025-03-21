@@ -80,6 +80,7 @@ class TrainingArgsConfig(CommonConfig):
 
     save_steps: int
 
+    output_dir: str
 
     save_total_limit: int = 3
 
@@ -118,6 +119,7 @@ class TrainingArgsConfig(CommonConfig):
     group_by_length: bool = False
 
     do_eval: bool = True
+
 
 @dataclass
 class LLamaCausalConfig(CommonConfig):
@@ -326,6 +328,7 @@ class RunConfig:
     # Dataset metrics a dictionary that contains for each task which metric will be used
     task_metrics_path: str
 
+    output_dir: str
 
     # Model Task-specific configuration config path
 
@@ -388,6 +391,7 @@ class RunConfig:
     model: str = "mistral-7b-inst-3"
 
 
+
     @staticmethod
     def register_cli(arg_parser):
         """
@@ -420,7 +424,7 @@ class RunConfig:
         arg_parser.add_argument("-tss", "--train_save_strategy", type=str, help="Save strategy")
         arg_parser.add_argument("-tev", "--train_eval_steps", type=int, help="Eval steps")
         arg_parser.add_argument("-tsv", "--train_save_steps", type=int, help="Save steps")
-        arg_parser.add_argument("-tod", "--train_output_dir", type=str, help="Output directory")
+        arg_parser.add_argument("-tod", "--output_dir", type=str, help="Output directory")
         arg_parser.add_argument("-stl", "--train_save_total_limit", type=int, help="Maximum number of last checkpoint files to keep.")
         arg_parser.add_argument("-tw", "--train_warmup_steps", type=int, help="Linear warmup over warmup_steps")
         arg_parser.add_argument("-tfp", "--train_fp16", action="store_true", help="Use float16 training")
@@ -594,8 +598,8 @@ class RunConfig:
             conf_obj.training_args_config.eval_steps = args.train_eval_steps
         if args.train_save_steps:
             conf_obj.training_args_config.save_steps = args.train_save_steps
-        if args.train_output_dir:
-            conf_obj.training_args_config.output_dir = args.train_output_dir
+        if args.output_dir:
+            conf_obj.output_dir = args.output_dir
         if args.train_save_total_limit:
             conf_obj.training_args_config.save_total_limit = args.train_save_total_limit
         if args.train_warmup_steps:
@@ -734,3 +738,11 @@ class RunConfig:
         else:
             test_dataset_name = self.test_dataset["name"]
             self.log_path = f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/fine-tuning-{test_dataset_name}-{self.base_model}-{starting_time}.log"
+
+    def get_output_path(self):
+        now = datetime.now()
+        starting_time = now.strftime("%m-%d-%H:%M:%S")
+
+        if not self.is_prompting:
+            test_dataset_name = self.test_dataset["name"]
+            self.log_path = f"{self.output_dir}-{test_dataset_name}-{self.base_model}-{starting_time}.log"
