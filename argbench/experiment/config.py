@@ -724,8 +724,8 @@ class RunConfig:
 
 
     def get_model_path(self,time):
-
-        tag = f"{self.test_dataset}-{self.base_model}-{time}"
+        test_dataset_name = self.test_dataset["name"]
+        tag = f"{test_dataset_name}-{self.base_model}-{time}"
 
         return os.path.join(self.models_folder, tag)
 
@@ -745,4 +745,4 @@ class RunConfig:
 
         if not self.is_prompting:
             test_dataset_name = self.test_dataset["name"]
-            return f"{self.output_dir}-{test_dataset_name}-{self.base_model}-{starting_time}.log"
+            return f"{self.output_dir}-/{test_dataset_name}-{self.base_model}-{starting_time}.log"
