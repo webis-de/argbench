@@ -15,12 +15,10 @@ class Output(BaseModel):
     output: list[dict]
 
 
-def get_logger(name):
-    logger = logging.getLogger(name)
+def get_logger(config):
+    logger = logging.getLogger(config.log_path)
     logger.setLevel(logging.DEBUG)
-    now = datetime.now()
-    starting_time = now.strftime("%m-%d-%H:%M:%S")
-    file_handler = logging.FileHandler(f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/{name}-{starting_time}log.log")
+    file_handler = logging.FileHandler(config.log_path)
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(logging.Formatter("%(asctime)s %(message)s)"))
     logger.addHandler(file_handler)
