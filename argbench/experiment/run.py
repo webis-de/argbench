@@ -3,7 +3,7 @@ import gc
 import os.path
 import time
 from argparse import ArgumentParser
-from datetime import datetime
+
 from pathlib import Path
 
 import optuna
@@ -29,7 +29,7 @@ from argbench.experiment.prepare_experiment import collect_datasets
 from argbench.experiment.testing import *
 from argbench.experiment.utils import *
 
-global logger
+logger = None
 
 def with_timing(fn):
     def wrapper(*args, **kwargs):
@@ -76,12 +76,6 @@ class Runner:
         if "name" in self.config.test_dataset:
             self.test_dataset_name = self.config.test_dataset["name"]
 
-        now = datetime.now()
-        starting_time = now.strftime("%m-%d-%H:%M:%S")
-        if config.is_prompting:
-            self.config.log_path = f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/prompting-{self.config.base_model}-{starting_time}.log"
-        else:
-            self.config.log_path = f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/fine-tuning-{self.test_dataset_name}-{self.config.base_model}-{starting_time}.log"
 
         self.prepare_data()
 
@@ -630,10 +624,12 @@ if __name__ == "__main__":
 
     args = arg_parser.parse_args()
     config = RunConfig.from_file([], args)
-
-    print(f"logging file is {config.log_path}")
-    runner = Runner(config)
     logger = get_logger(config)
+    print(f"logging file is {config.log_path}")
+
+    runner = Runner(config)
+
+
     score = runner.execute()
 
 

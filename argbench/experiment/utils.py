@@ -15,8 +15,8 @@ class Output(BaseModel):
     output: list[dict]
 
 
-def get_logger(config):
-    logger = logging.getLogger(config.log_path)
+def get_logger(config: RunConfig):
+    logger = logging.getLogger(config.get_log_path())
     logger.setLevel(logging.DEBUG)
     file_handler = logging.FileHandler(config.log_path)
     file_handler.setLevel(logging.DEBUG)

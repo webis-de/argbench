@@ -13,7 +13,7 @@ from yaml import load, Loader
 from argbench.experiment.utils import *
 
 
-global logger
+logger = None
 
 class dataset:
     train_path: str
@@ -166,9 +166,9 @@ def compile_datasets(
             df_test["example"] = example_str
             df_test["input"] = df_test.apply(few_shot_template_formatter, axis=1)
         else:
-            df_test["input"] = df_test.apply(template_formatter, axis=1)
-            df_test.rename(columns={"input": "document"}, inplace=True)
 
+            df_test.rename(columns={"input": "document"}, inplace=True)
+            df_test["input"] = df_test.apply(template_formatter, axis=1)
         for column in df_test.columns:
             df_test[column] = df_test[column].astype(str)
         df_test["task"] = dataset
@@ -190,6 +190,7 @@ def collect_datasets(run_config):
     :param run_config: RunConfig with train_datasets and test_datasets config dicts
     :returns: Tuple of train and test datasets in pandas DataFrame
     """
+    global logger
     logger = get_logger(run_config)
     train_config = run_config.train_datasets
     test_config = run_config.test_dataset
