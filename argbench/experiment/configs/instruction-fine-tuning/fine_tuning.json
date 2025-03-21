@@ -10,6 +10,7 @@
     "leaderboard_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/prompting-mistral-results.csv",
     "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
+    "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
     "train_datasets": {
         "subsample_amount": 1
     },
@@ -94,7 +95,6 @@
         "save_strategy": "steps",
         "eval_steps": 1000,
         "save_steps": 1000,
-
 
         "load_best_model_at_end": true,
         "group_by_length": false,
