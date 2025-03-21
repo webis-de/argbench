@@ -12,6 +12,8 @@ conda activate task-specific
 cd /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/
 model=$1
 dataset=$2
+echo $model
+echo $dataset
 python -m  argbench.experiment.run -c /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/instruction-fine-tuning/fine_tuning.json \
 --leaderboard-path "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/fine-tuning-$model-results.csv" \
 --base_model "$model" --test_dataset_name "$dataset"
