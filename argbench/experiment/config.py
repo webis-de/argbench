@@ -3,7 +3,7 @@ import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List
-
+from datetime import datetime
 from optuna import Trial
 from peft.config import PeftConfig
 from peft.mapping import PEFT_TYPE_TO_CONFIG_MAPPING
@@ -724,3 +724,12 @@ class RunConfig:
         tag = f"{self.test_dataset}-{self.base_model}-{time}"
 
         return os.path.join(self.models_folder, tag)
+
+    def get_log_path(self):
+        now = datetime.now()
+        starting_time = now.strftime("%m-%d-%H:%M:%S")
+        test_dataset_name = self.test_dataset["name"]
+        if self.is_prompting:
+            self.log_path = f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/prompting-{self.base_model}-{starting_time}.log"
+        else:
+            self.log_path = f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/fine-tuning-{test_dataset_name}-{self.base_model}-{starting_time}.log"
