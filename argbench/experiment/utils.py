@@ -41,7 +41,7 @@ def tasks_path():
 
 def get_metadata():
     """Get metadata file"""
-    with open(tasks_path() / "metadata.json", "r") as f:
+    with open(tasks_path() / "metadata-sample.json", "r") as f:
         return json.load(f)
 
 def get_evaluation_metrics_map():

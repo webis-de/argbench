@@ -123,7 +123,7 @@ class Runner:
             llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed)
             #llm = LLM(model=base_model, enable_lora=True)
         else:
-            llm = LLM(model=self.model_config.path, seed=self.config.seed)
+            llm = LLM(model=self.model_config.path, seed=self.config.seed, device="cpu")
             #llm = LLM(model=base_model)
         log_mem("after loading vllm model")
         return llm
