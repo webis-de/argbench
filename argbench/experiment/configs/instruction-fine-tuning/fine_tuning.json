@@ -15,7 +15,7 @@
 
     },
     "test_dataset": {
-        "subsample_amount": 10
+
 
     },
     "model_configs":[
