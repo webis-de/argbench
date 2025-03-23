@@ -31,6 +31,8 @@ from argbench.experiment.utils import *
 
 logger = None
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 def with_timing(fn):
     def wrapper(*args, **kwargs):
         t = time.perf_counter()
@@ -43,15 +45,16 @@ def with_timing(fn):
     return wrapper
 
 def log_mem(message):
-    t = torch.cuda.mem_get_info()
-    free_gpu, total_gpu = (t[0]/(1024**3),t[1]/(1024**3))
-    used_cpu = (psutil.virtual_memory()[3]/1024**3)
-    perc_memory = psutil.virtual_memory()[2]/100
-    free_cpu_perc = 1 - perc_memory
-    total_cpu = (1/perc_memory)*used_cpu
-    free_cpu = total_cpu * free_cpu_perc
-    logger.info(f"*** GPU Memory {message}: {free_gpu:2.0f} GB free from {total_gpu:2.0f} GB  |  "
-                f" CPU Memory: {free_cpu:2.0f} GB free from {total_cpu:2.0f} GB")
+    if device =="cuda":
+        t = torch.cuda.mem_get_info()
+        free_gpu, total_gpu = (t[0]/(1024**3),t[1]/(1024**3))
+        used_cpu = (psutil.virtual_memory()[3]/1024**3)
+        perc_memory = psutil.virtual_memory()[2]/100
+        free_cpu_perc = 1 - perc_memory
+        total_cpu = (1/perc_memory)*used_cpu
+        free_cpu = total_cpu * free_cpu_perc
+        logger.info(f"*** GPU Memory {message}: {free_gpu:2.0f} GB free from {total_gpu:2.0f} GB  |  "
+                    f" CPU Memory: {free_cpu:2.0f} GB free from {total_cpu:2.0f} GB")
 
 class Runner:
     """Model runner class"""
@@ -123,7 +126,8 @@ class Runner:
             llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed)
             #llm = LLM(model=base_model, enable_lora=True)
         else:
-            llm = LLM(model=self.model_config.path, seed=self.config.seed, device="cpu")
+
+            llm = LLM(model=self.model_config.path, seed=self.config.seed, device=device)
             #llm = LLM(model=base_model)
         log_mem("after loading vllm model")
         return llm
