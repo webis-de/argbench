@@ -51,7 +51,7 @@
             },
             {
                 "label": "deepseek-r1-distill-1.5b",
-                "path" : "/home/yamen/Dropbox/research/models/DeepSeek-R1-Distill-Qwen-1.5B",
+                "path" : "/home/yamen/models/DeepSeek-R1-Distill-Qwen-1.5B",
                 "prompt_template": "{definition}\n{instance_input}<｜end▁of▁sentence｜>",
                 "output_splitter": "<｜begin▁of▁sentence｜><think>\\n"
             },
