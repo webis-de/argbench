@@ -557,18 +557,19 @@ class Runner:
             if vllm:
 
                 print(text)
-                output = generator(text, sampling_params= sampling_params)
-                if output.startswith('\"') and output.endswith('\"'):
-                    output = output[1:-1]
-                predictions += [output]
+                # output = generator(text, sampling_params= sampling_params)
+                # if output.startswith('\"') and output.endswith('\"'):
+                #     output = output[1:-1]
+                # predictions += [output]
+                if self.config.peft_configs and self.adapter_path:
+                    lora_request = LoRARequest("sql_adapter", 1,self.adapter_path)
+                    outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
+                else:
+                    outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
 
-                    #outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
-                #else:
-                    #outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
-
-                # for output in outputs:
-                #     prediction = extract_prediction(output.outputs[0].text)
-                #     predictions += prediction
+                for output in outputs:
+                    prediction = output.outputs[0].text
+                    predictions += prediction
                 logger.debug(f"""got the
                                                    #################################
                                                     prediction:
