@@ -74,12 +74,12 @@ def collect_files(
 
         logger.debug(f"reading {task_data_path}")
 
-        for task_file in os.listdir(task_data_path):
+        for task_file in metadata[task]["file_list"]:
             task_file_path = task_data_path / task_file
 
+            if not os.path.isfile(task_file_path):
+                raise ValueError("could not find file")
 
-            if not os.path.isfile(task_file_path) or task_file_path in test_files:
-                continue
             if metadata[task]["split_mapping"][task_file] == "train":
                 logger.info(f"adding {task_file_path} to training")
                 train_files[task] = task_file_path
