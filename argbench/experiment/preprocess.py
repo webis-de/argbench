@@ -8,8 +8,7 @@ from argparse import ArgumentParser
 from pathlib import Path
 from argbench.experiment.prepare_experiment import tasks_path
 from argbench.experiment.utils import *
-
-logger = get_logger(__name__)
+from pathlib import Path
 
 
 def process_task_file(output_path, task_file_path, filetype="ndjson"):
@@ -52,6 +51,37 @@ def process_task_file(output_path, task_file_path, filetype="ndjson"):
             })
         pd.DataFrame(data).to_parquet(output_path)
 
+
+def load_set(output_path: Path, sample_rate:float = None, sample_size: int = None):
+    path_sample = formulate_sample_path(output_path, sample_rate, sample_size)
+    if os.path.exists(path_sample):
+        return  pd.read_json(path_sample, lines=True)
+    else:
+        return sample_set(output_path, sample_rate, sample_size)
+
+def formulate_sample_path(output_path: Path, sample_rate: float = None, sample_size: int= None):
+    base, file_name = os.path.split(output_path)
+    if sample_rate:
+        sample_name = file_name.replace(".json", f"-rate-{sample_rate}.json")
+    elif sample_size:
+        sample_name = file_name.replace(".json", f"-size-{sample_size}.json")
+    else:
+        raise ValueError("no rate or size defined")
+
+    return os.path.join(base, sample_name)
+
+def sample_set(output_path: Path, sample_rate: float = None, sample_size: int = None ):
+
+    df_set = pd.read_json(output_path, lines=True)
+    path_sample = formulate_sample_path(output_path, sample_rate, sample_size)
+    if sample_rate:
+        df_sample = df_set.sample(frac=sample_rate)
+    elif sample_size:
+        df_sample = df_set.sample(sample_size)
+    else:
+        raise ValueError("no rate or size defined")
+    df_sample.to_json(path_sample, orient='records', lines=True)
+    return df_sample
 
 
 if __name__ == "__main__":

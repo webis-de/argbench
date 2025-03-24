@@ -1,18 +1,7 @@
-import json
-import logging
-import datasets
-import ndjson
-import os
 import pandas as pd
-
-
 from collections import defaultdict
-from pathlib import Path
-from IPython.core.debugger import set_trace
-from yaml import load, Loader
 from argbench.experiment.utils import *
-
-
+from argbench.experiment.preprocess import *
 logger = None
 
 class dataset:
@@ -131,32 +120,37 @@ def compile_datasets(
     test_datasets = {}
     training_datasets = {}
     for dataset in train_files:
-        if not is_prompt or train_subsample_amount:
-            train_path = train_files[dataset]
+        train_path = train_files[dataset]
+        if not is_prompt:
             df_training = pd.read_json(train_path, lines=True)
-#            df_training['output'] = df_training['output'].apply(json.dumps)
-            if train_subsample_amount :
-                df_training= df_training.sample(train_subsample_amount)
-            elif train_subsample_rate:
-                df_training= df_training.sample(frac=train_subsample_rate)
+        elif train_subsample_amount :
+            df_training = load_set(train_path, sample_size=train_subsample_amount)
+        elif train_subsample_rate:
+            df_training = load_set(train_path, sample_rate= train_subsample_rate)
+
+        #df_training['output'] = df_training['output'].apply(json.dumps)
+        if not is_prompt or train_subsample_rate or train_subsample_amount:
             for column in df_training.columns:
                 df_training[column] = df_training[column].astype(str)
 
-            df_training = df_training[["id", "input", "output"]]
-            df_training["task"] = dataset
-            if not is_prompt:
-                training_datasets[dataset]=df_training
+                df_training = df_training[["id", "input", "output"]]
+                df_training["task"] = dataset
+                if not is_prompt:
+                    training_datasets[dataset] = df_training
 
 
         if test_dataset and dataset !=test_dataset:
             continue
         test_path = test_files[dataset]
-        df_test = pd.read_json(test_path, lines=True)
+
 #        df_test['output'] = df_test['output'].apply(json.dumps)
         if test_subsample_rate:
-            df_test = df_test.sample(frac=test_subsample_rate)
+            df_test = load_set(test_path, sample_rate=test_subsample_rate)
         elif test_subsample_amount:
-            df_test = df_test.sample(test_subsample_amount)
+            df_test = load_set(test_path, sample_size=test_subsample_amount)
+        else:
+            df_test = pd.read_json(test_path, lines=True)
+
         if is_prompt and train_subsample_amount:
             example_str = ""
             for _, example in df_training.iterrows():
