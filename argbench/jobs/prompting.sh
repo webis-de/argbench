@@ -13,4 +13,16 @@ cd /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/
 model=$1
 python -m  argbench.experiment.run -c /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/prompting/prompting.json \
 --leaderboard-path "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/prompting-$model-results.csv" \
---base_model "$model"
+--base_model "$model" --test_dataset_name warrant_generation_ideological_debate_chakarbarty21
+
+python -m  argbench.experiment.run -c /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/prompting/prompting.json \
+--leaderboard-path "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/prompting-$model-results.csv" \
+--base_model "$model" --test_dataset_name warrant_generation_art_chakarbarty21
+
+python -m  argbench.experiment.run -c /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/prompting/prompting.json \
+--leaderboard-path "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/prompting-$model-results.csv" \
+--base_model "$model" --test_dataset_name warrant_generation_arc_chakarbarty21
+
+python -m  argbench.experiment.run -c /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/prompting/prompting.json \
+--leaderboard-path "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/prompting-$model-results.csv" \
+--base_model "$model" --test_dataset_name warrant_generation_ideological_debate_chakarbarty21
