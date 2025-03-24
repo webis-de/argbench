@@ -133,10 +133,10 @@ def compile_datasets(
             for column in df_training.columns:
                 df_training[column] = df_training[column].astype(str)
 
-                df_training = df_training[["id", "input", "output"]]
-                df_training["task"] = dataset
-                if not is_prompt:
-                    training_datasets[dataset] = df_training
+            df_training = df_training[["id", "input", "output"]]
+            df_training["task"] = dataset
+            if not is_prompt:
+                training_datasets[dataset] = df_training
 
 
         if test_dataset and dataset !=test_dataset:
