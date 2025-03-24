@@ -31,7 +31,7 @@ from argbench.experiment.utils import *
 
 logger = None
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = get_device()
 
 def with_timing(fn):
     def wrapper(*args, **kwargs):
@@ -126,7 +126,7 @@ class Runner:
             llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed)
             #llm = LLM(model=base_model, enable_lora=True)
         else:
-
+            print(device)
             llm = LLM(model=self.model_config.path, seed=self.config.seed, device=device)
             #llm = LLM(model=base_model)
         log_mem("after loading vllm model")
@@ -253,7 +253,7 @@ class Runner:
             base_model,
             torch_dtype=torch.float16,
             quantization_config=quant_conf,
-            device_map= "cuda:0"
+            device_map= device
         )
 
 
