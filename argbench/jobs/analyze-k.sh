@@ -1,11 +1,11 @@
 #!/bin/bash -l
-#SBATCH --job-name=task-specific
+#SBATCH --job-name=analyze-k
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=15G
 #SBATCH --time=24:00:00
 #SBATCH --output argbench/output/analyze-k.out
-#SBATCH --error /argbench/output/analyze-k.err
+#SBATCH --error argbench/output/analyze-k.err
 #SBATCH --gpus=a100:1
 
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"

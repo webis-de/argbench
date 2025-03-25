@@ -1,5 +1,5 @@
 #!/bin/bash -l
-#SBATCH --job-name=task-specific
+#SBATCH --job-name=hpo-stance
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=15G

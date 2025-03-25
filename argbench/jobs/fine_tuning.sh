@@ -4,8 +4,8 @@
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=20G
 #SBATCH --time=24:00:00
-#SBATCH --output /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/output/fine-tuning-2.out
-#SBATCH --error /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/output/fine-tuning-2.err
+#SBATCH --output argbench/output/fine-tuning-2.out
+#SBATCH --error argbench/output/fine-tuning-2.err
 #SBATCH --gpus=a100:1
 module load Miniforge3
 conda activate task-specific

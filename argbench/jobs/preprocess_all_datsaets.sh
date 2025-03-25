@@ -1,11 +1,11 @@
 #!/bin/bash -l
-#SBATCH --job-name=preprocess
+#SBATCH --job-name=preprocess-all-dataset
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=25G
 #SBATCH --time=24:00:00
 #SBATCH --output argbench/output/preprocess-all-dataset.out
-#SBATCH --error /argbench/output/preprocess-all-dataset.err
+#SBATCH --error argbench/output/preprocess-all-dataset.err
 
 
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"

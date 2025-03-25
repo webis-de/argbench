@@ -1,11 +1,11 @@
 #!/bin/bash -l
-#SBATCH --job-name=fine-tuning-all
+#SBATCH --job-name=ft-all-models
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=20G
 #SBATCH --time=24:00:00
-#SBATCH --output argbench/output/fine-tuning-2.out
-#SBATCH --error argbench/output/fine-tuning-2.err
+#SBATCH --output argbench/output/ft-all-models.out
+#SBATCH --error argbench/output/ft-all-models.err
 #SBATCH --gpus=a100:1
 module load Miniforge3
 conda activate task-specific
