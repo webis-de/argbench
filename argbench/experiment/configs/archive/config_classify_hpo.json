@@ -1,0 +1,120 @@
+{
+    "seed": 42,
+    "base_model": "/bigwork/nhwpbozd/decapoda-research-llama-7B-hf/",
+    "cutoff_len": 1200,
+    "data_folder": "/bigwork/nhwpbozd/datasets",
+    "data_type": "parquet",
+    "run_output_path": "./out.json",
+    "hpo_config": {
+        "n_trials": 50,
+        "storage": "sqlite:///db.sqlite3",
+        "study_name": "frame_identification_webis_stance_classification_19_ajjour19_study",
+        "direction": "maximize",
+        "val_metric": "rouge2",
+        "training_args_config": {
+            "learning_rate": {
+                "type": "float",
+                "name": "learning_rate",
+                "low": 0.00001,
+                "high": 0.001
+            },
+            "per_device_train_batch_size": {
+                "name": "batch_size",
+                "type": "int",
+                "low": 2,
+                "high": 4
+            },
+            "weight_decay": {
+                "name": "weight_decay",
+                "type": "float",
+                "low": 0.000001,
+                "high": 0.0001
+            }
+        }
+    },
+    "train_datasets": {
+        "leave_one_out": true,
+        "subsample_amount": 5,
+        "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
+        "exclude_datasets": [
+            "counter_argument_generation_candela_hua19",
+            "counter_argument_generation_cmv_hua18",
+            "frame_identification_webis_stance_classification_19_ajjour19"
+        ]
+    },
+    "test_datasets": {
+        "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:",
+        "name": "frame_identification_webis_stance_classification_19_ajjour19",
+        "match": "frame_identification_webis_stance_classification_19_ajjour19",
+        "subsample_amount": 20
+    },
+    "quant_config": {
+        "load_in_8bit": true
+    },
+    "model_config": {
+        "device_map": "cuda:0"
+    },
+    "peft_configs": [
+        {
+            "model_id": "/bigwork/nhwpbozd/alpaca-lora-7b/",
+            "adapter_name": "adapter",
+            "is_trainable": true,
+            "adapter_type": "LORA",
+            "config": {
+                "base_model_name_or_path": "decapoda-research/llama-7b-hf",
+                "bias": "none",
+                "fan_in_fan_out": false,
+                "inference_mode": true,
+                "lora_alpha": 16,
+                "lora_dropout": 0.05,
+                "modules_to_save": null,
+                "peft_type": "LORA",
+                "r": 16,
+                "target_modules": [
+                    "q_proj",
+                    "k_proj",
+                    "v_proj",
+                    "o_proj"
+                ],
+                "task_type": "CAUSAL_LM"
+            }
+        }
+    ],
+    "training_args_config": {
+        "per_device_train_batch_size": 2,
+        "num_train_epochs": 2,
+        "learning_rate": 0.0003,
+        "eval_steps": 20,
+        "optim": "adamw_torch",
+        "evaluation_strategy": "steps",
+        "save_strategy": "steps",
+        "save_steps": 20,
+        "save_total_limit": 20,
+        "load_best_model_at_end": true,
+        "group_by_length": false,
+        "do_eval": true,
+        "save_total_limit": 20,
+        "warmup_steps": 1,
+        "fp16": false,
+        "logging_steps": 10,
+        "metric_for_best_model": "loss",
+        "output_dir": "/bigwork/nhwpbozd/leave-one-out-frame_identification_webis_stance_classification_19_ajjour19"
+    },
+    "early_stopping_config": {
+        "early_stopping_patience": 3,
+        "early_stopping_threshold": 0.01
+    },
+    "data_collator_config": {
+        "padding": true,
+        "return_tensors": "pt"
+    },
+    "generation_config": {
+        "num_beams": 1,
+        "max_new_tokens": 500
+
+    },
+    "validation_config": {
+        "batch_size": 2,
+        "eval_metric": "rouge"
+    }
+}
