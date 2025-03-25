@@ -11,11 +11,11 @@
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 
-echo "${CODA_PATH}"/argbench/converter/convert*.py
+
 module load Miniforge3
 conda activate task-specific
 
-for f in "${CODA_PATH}"/argbench/converter/convert*.py;  do
+for f in "${CODE_PATH}/argbench/converter/convert*.py";  do
 python $f ;
 echo $f
 done
