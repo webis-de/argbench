@@ -2,7 +2,7 @@
 #SBATCH --job-name=preprocess
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=15G
+#SBATCH --mem=25G
 #SBATCH --time=24:00:00
 #SBATCH --output /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/output/preprocess-all-dataset.out
 #SBATCH --error /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/output/preprocess-all-dataset.err
