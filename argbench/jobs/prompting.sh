@@ -12,7 +12,13 @@ conda activate task-specific
 cd /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/
 model=$1
 
-python -m  argbench.experiment.run -c /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/prompting/prompting.json \
---leaderboard-path "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/prompting-$model-results.csv" \
+export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
+export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
+
+python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" \
 --base_model "$model"
 
+export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
+export JOB_ARGUMENTS="prompting;all-datasets;${model};\n"
+echo "$SLURM_JOB_ID,$SLURM_JOB_NAME,$TIME,$JOB_ARGUMENTS" >> "$CODE_PATH/jobs/job-accounting.csv"
