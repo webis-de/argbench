@@ -10,12 +10,14 @@
 
 module load Miniforge3
 conda activate task-specific
-cd /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/
+
 model=$1
 dataset=$2
 
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
+
+cd "$CODE_PATH"
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
 --leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model"
