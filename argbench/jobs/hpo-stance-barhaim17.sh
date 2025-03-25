@@ -1,7 +1,7 @@
 #!/bin/bash -l
 #SBATCH --job-name=hpo-stance
 #SBATCH --nodes=1 
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=12
 #SBATCH --mem=15G
 #SBATCH --time=24:00:00
 #SBATCH --output argbench/output/hpo-stance-barhaim.out
