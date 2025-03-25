@@ -11,6 +11,7 @@
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 
+echo $CODE_PATH
 module load Miniforge3
 conda activate task-specific
 
