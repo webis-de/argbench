@@ -1,18 +1,18 @@
 #!/bin/bash -l
-#SBATCH --job-name=prmt-all-data
+#SBATCH --job-name=prmt-dataset
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=25G
 #SBATCH --time=24:00:00
-#SBATCH --output argbench/output/prmt-all-data.out
-#SBATCH --error argbench/output/prmt-all-data.err
+#SBATCH --output argbench/output/prmt-dataset.out
+#SBATCH --error argbench/output/prmt-dataset.err
 #SBATCH --gpus=a100:1
+
 
 module load Miniforge3
 conda activate task-specific
 
 model=$1
-dataset=$2
 
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"

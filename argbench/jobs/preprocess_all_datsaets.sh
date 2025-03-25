@@ -1,18 +1,22 @@
 #!/bin/bash -l
-#SBATCH --job-name=preprocess
+#SBATCH --job-name=preprocess-all-dataset
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=25G
 #SBATCH --time=24:00:00
-#SBATCH --output /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/output/preprocess-all-dataset.out
-#SBATCH --error /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/output/preprocess-all-dataset.err
-module load Miniforge3
+#SBATCH --output argbench/output/preprocess-all-dataset.out
+#SBATCH --error argbench/output/preprocess-all-dataset.err
 
+
+export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
+export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
+
+module load Miniforge3
 conda activate task-specific
 
-for f in /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/converter/convert*.py;  do
+for f in "$CODA_PATH/argbench/converter/convert*.py";  do
 python $f ;
 echo $f
 done
-cd /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/
-python -m argbench.experiment.preprocess -o /bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks
+cd "$CODE_PATH"
+python -m argbench.experiment.preprocess -o "$DATA_PATH/tasks"
