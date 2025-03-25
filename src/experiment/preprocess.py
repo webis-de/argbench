@@ -124,7 +124,12 @@ def collect_files(
     return train_files, test_files
 
 
-def compile_datasets(dataset_paths, prompt_template, subsample_amount=None, subsample_rate=None):
+def compile_datasets(
+        dataset_paths,
+        prompt_template,
+        subsample_amount=None,
+        subsample_rate=None,
+        filetype="ndjson"):
     """
     Read dataset file and compile all datasets into one dataframe
 
@@ -142,7 +147,10 @@ def compile_datasets(dataset_paths, prompt_template, subsample_amount=None, subs
     datasets = []
     for task_path in dataset_paths:
         print(task_path)
-        task_data = pd.read_json(task_path, lines=True)
+        if filetype == "ndjson":
+            task_data = pd.read_json(task_path, lines=True)
+        elif filetype == "parquet":
+            task_data = pd.read_parquet(task_path)
 
         if subsample_amount:
             task_data = task_data.sample(subsample_amount, axis=0)
@@ -188,14 +196,16 @@ def collect_datasets(run_config):
         train_tasks,
         train_config["prompt_template"],
         train_config.get("subsample_amount", None),
-        train_config.get("subsample_rate", None)
+        train_config.get("subsample_rate", None),
+        run_config.data_type
     )
     print("Test datasets collected:")
     test_dataset = compile_datasets(
         test_tasks,
         test_config["prompt_template"],
         test_config.get("subsample_amount", None),
-        test_config.get("subsample_rate", None)
+        test_config.get("subsample_rate", None),
+        run_config.data_type
     )
 
     return train_dataset, test_dataset

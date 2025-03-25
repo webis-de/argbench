@@ -25,6 +25,7 @@ from preprocess import collect_datasets, PandasDataset
 from testing import compute_precision_recall_fscore_support, compute_rouge_score, compute_bleu_score
 from tqdm import tqdm
 from config import RunConfig
+import numpy as np
 import json
 import torch
 
@@ -286,7 +287,6 @@ class Runner:
         trainer.train()
 
         test_result = self.evaluate(trainer)
-
         if self.config.hpo_config.val_metric:
             return test_result[self.config.hpo_config.val_metric]
         return test_result
@@ -322,7 +322,7 @@ class Runner:
         """
         Writes run results of training
         """
-        with open(self.config.run_config_path, "w") as f:
+        with open(self.config.run_output_path, "w") as f:
             run_data = {
                 "run_sesults": run_results
             }

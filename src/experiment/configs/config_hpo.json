@@ -1,10 +1,25 @@
 {
     "seed": 42,
-    "base_model": "/mnt/home/yajjour/pre-trained-models/decapoda-research-llama-7B-hf/",
+    "base_model": "baffo32/decapoda-research-llama-7B-hf",
     "cutoff_len": 1000,
-    "run_output_path": "../output.out",
-    "data_folder": "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data",
-    "data_type": "ndjson",
+    "data_folder": "/home/dima/Data/data/",
+    "data_type": "parquet",
+    "run_output_path": "./out.json",
+    "hpo_config": {
+        "n_trials": 40,
+        "storage": "sqlite:///db.sqlite3",
+        "study_name": "start_study",
+        "direction": "maximize",
+        "val_metric": "fscore",
+        "training_args_config": {
+            "learning_rate": {
+                "type": "float",
+                "name": "learning_rate",
+                "low": 0.0001,
+                "high": 0.001
+            }
+        }
+    },
     "train_datasets": {
         "leave_one_out": true,
         "subsample_amount": 50,
@@ -28,12 +43,12 @@
     },
     "peft_configs": [
         {
-            "model_id": "/mnt/home/yajjour/pre-trained-models/alpaca-lora-7b",
+            "model_id": "/home/dima/Data/alpaca-lora-7b/",
             "adapter_name": "adapter",
             "is_trainable": true,
             "adapter_type": "LORA",
             "config": {
-                "base_model_name_or_path": "/mnt/home/yajjour/pre-trained-models/decapoda-research-llama-7B-hf/",
+                "base_model_name_or_path": "decapoda-research/llama-7b-hf",
                 "bias": "none",
                 "fan_in_fan_out": false,
                 "inference_mode": true,
@@ -71,7 +86,7 @@
         "logging_steps": 10,
         "lr_scheduler_type": "linear",
         "metric_for_best_model": "loss",
-        "output_dir": "/mnt/home/yajjour/task-specific-argument-mining-and-generation/src/jobs/output/complete_argument_unit-segmentation.out"
+        "output_dir": "/home/dima/Projects/evaluations/leave-one-out-argument_unit_segmentation_ajjour17"
     },
     "early_stopping_config": {
         "early_stopping_patience": 3,

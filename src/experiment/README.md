@@ -6,6 +6,23 @@ In order to run experiments, data must be preprocessed first into `ndjson` files
 $ python process_jsonl.py -o /output/folder/
 ```
 
+# Configuration paths
+
+Before running configuration you should change paths to data and models:
+
+``` json-with-comments
+{
+    "base_model": "baffo32/decapoda-research-llama-7B-hf", // path to base model to finetune
+    "data_folder": "/home/dima/Data/data/", // path to data folder
+    "run_output_path": "out_ajjour20.json", // path to write output to
+    "peft_configs": [
+        {
+            "model_id": "/home/dima/Data/alpaca-lora-7b/", // path to peft adapter checkpoint to load
+            
+        }
+    ]
+```
+
 # Running experiment
 
 ## Running with configuration file
@@ -223,3 +240,49 @@ Test dataset config structure:
 }
 ```
 
+# Hyperparameter optimization
+
+Hyperparameter optimization can be invoked using `-ih` `--is_hpo` shell paramter
+
+``` shell
+$ python run.py -c configs/config_hpo.json -ih
+```
+
+``` json-with-comments
+{
+    "hpo_config": {
+        "n_trials": 20, // Number of trials to run
+        "storage": "sqlite:///db.sqlite3", // Result output database
+        "study_name": "start_study", // Current study name
+        "direction": "maximize", // Optimization direction
+        "val_metric": "fscore", // Validation metric to take
+        "training_args_config": { // All hyperparameters have the same name as their respective parameters in config
+            "learning_rate": { // float hyperparameter example
+                "type": "float",
+                "name": "learning_rate",
+                "low": 0.0001,
+                "high": 0.001
+            },
+            "per_device_train_batch_size": { // integer hyperparameter
+                "type": "int",
+                "name": "per_device_train_batch_size",
+                "low": 1,
+                "high": 4
+            },
+        },
+        "quant_config": {
+            "quant_amount": { // categorical hyperparameter
+                "type": "categorical",
+                "name": "quant_amount",
+                "choices": ["4bit", "8bit"]
+            }
+        }
+    }
+}
+```
+
+Hyperparameters can be explored interactively using `optuna-dashboard`:
+
+``` shell
+$ optuna-dashboard sqlite:///db.sqlite3
+```
