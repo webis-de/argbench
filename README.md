@@ -1,5 +1,7 @@
 # ArgBench
 
+This repo comprises 42 datasets to evaluate how good are LLMs at computational argumentation tasks. 
+
 
 1. prepare the benchmark you have to run
 ```
