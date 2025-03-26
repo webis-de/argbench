@@ -87,7 +87,7 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args)
 
-    root_data_path = Path("/bigwork/nhwpajjy/computational-argumentation-tasks-instructions/datasets/warrant-generation-chakrabarty21")
+    root_data_path = Path(datasets_path() / "warrant-generation-chakrabarty21" )
 
     output_path = tasks_path()
 

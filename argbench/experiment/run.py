@@ -232,7 +232,7 @@ class Runner:
             train_datasets = pd.concat(train_datasets.values(), axis=0).reset_index(drop=True)
             hf_train_dataset = Dataset.from_pandas(train_datasets)
             hf_test_dataset = Dataset.from_pandas(test_dataset)
-            self.train_data = hf_train_dataset.map(generate_and_tokenize_prompt, num_proc=12, load_from_cache_file=f"/tmp/training_dataset.arrow")
+            self.train_data = hf_train_dataset.map(generate_and_tokenize_prompt, num_proc=12)
             self.ft_test_data = hf_test_dataset.map(generate_and_tokenize_prompt, num_proc=12)
             logger.debug(f"counting {len(self.train_data)}")
 
