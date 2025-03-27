@@ -132,6 +132,7 @@ def rewrite_config(config: dict, new_root_path: Path):
     :param new_root_path: the new root path path
     :return:
     """
+    print(config)
     for key in config:
         if isinstance(config[key],str):
             config[key] = config[key].replace("/bigwork/nhwpajjy",new_root_path)
@@ -139,8 +140,8 @@ def rewrite_config(config: dict, new_root_path: Path):
             rewrite_config(config[key], new_root_path)
         elif isinstance(config[key],list):
             for obj in config[key]:
-                print(obj)
-                rewrite_config(obj, new_root_path)
+                if isinstance(obj, dict):
+                    rewrite_config(obj, new_root_path)
         else:
             pass
     return config
