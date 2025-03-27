@@ -6,7 +6,6 @@
 #SBATCH --time=24:00:00
 #SBATCH --output argbench/output/prmt-all-data.out
 #SBATCH --error argbench/output/prmt-all-data.err
-#SBATCH --gpus=a100:1
 
 module load Miniforge3
 conda activate task-specific
