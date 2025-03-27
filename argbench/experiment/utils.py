@@ -130,6 +130,6 @@ def rewrite_config(config: dict, new_root_path: Path):
         if isinstance(config[key],str):
             config[key] = config[key].replace("/bigwork/nhwpajjy",new_root_path)
         elif isinstance(config[key],dict):
-            rewrite_config(config[key])
+            rewrite_config(config[key], new_root_path)
         else:
             pass
