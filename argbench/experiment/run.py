@@ -616,6 +616,8 @@ class Runner:
 
 if __name__ == "__main__":
 
+    if os.path.exists("/mnt/home/yajjour"):
+        adjust_config("/mnt/home/yajjour")
 
     #turn_off_warnings()
     arg_parser = ArgumentParser(description="Run peft finetuning experiment")
