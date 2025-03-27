@@ -86,3 +86,17 @@ def get_device():
         if total_gpu < 20:
             device = torch.device("cpu")
     return device
+
+
+def adjust_config(path: str):
+    for file in os.listdir(path):
+        pass
+
+def adjust_config(config, path):
+    for key in config:
+        if isinstance(config[key],str):
+            config[key] = config[key].replace("/bigwork/nhwpajjy",path)
+        elif isinstance(config[key],dict):
+            adjust_config(config[key])
+        else:
+            pass
