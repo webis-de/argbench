@@ -139,6 +139,7 @@ def rewrite_config(config: dict, new_root_path: Path):
             rewrite_config(config[key], new_root_path)
         elif isinstance(config[key],list):
             for obj in config[key]:
+                print(obj)
                 rewrite_config(obj, new_root_path)
         else:
             pass
