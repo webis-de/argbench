@@ -13,10 +13,10 @@
     "train_datasets": {
         "subsample_amount": 10
     },
-    "model_configs":[
+    "model_configs": [
         {
             "label": "mistral-7b-inst-3",
-            "path" : "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
             "prompt_template": "<s>[INST]{definition}\n{instance_input}\n[/INST]",
             "output_splitter": "[/INST]"
         }
@@ -31,29 +31,28 @@
     "model_config": {
         "device_map": "cuda:0"
     },
-    "peft_fresh_config":
-        {
-            "adapter_name": "adapter",
-            "adapter_type": "lora",
-            "config_args": {
-                "base_model_name_or_path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
-                "bias": "none",
-                "fan_in_fan_out": false,
-                "inference_mode": true,
-                "lora_alpha": 16,
-                "lora_dropout": 0.05,
-                "modules_to_save": null,
-                "peft_type": "LORA",
-                "r": 16,
-                "target_modules": [
-                    "q_proj",
-                    "k_proj",
-                    "v_proj",
-                    "o_proj"
-                ],
-                "task_type": "CAUSAL_LM"
-            }
-        },
+    "peft_fresh_config": {
+        "adapter_name": "adapter",
+        "adapter_type": "lora",
+        "config_args": {
+            "base_model_name_or_path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
+            "bias": "none",
+            "fan_in_fan_out": false,
+            "inference_mode": true,
+            "lora_alpha": 16,
+            "lora_dropout": 0.05,
+            "modules_to_save": null,
+            "peft_type": "LORA",
+            "r": 16,
+            "target_modules": [
+                "q_proj",
+                "k_proj",
+                "v_proj",
+                "o_proj"
+            ],
+            "task_type": "CAUSAL_LM"
+        }
+    },
     "training_args_config": {
         "per_device_train_batch_size": 1,
         "num_train_epochs": 1,
@@ -63,30 +62,26 @@
         "save_strategy": "steps",
         "eval_steps": 1000,
         "save_steps": 1000,
-
-
         "load_best_model_at_end": true,
         "group_by_length": false,
         "do_eval": true,
-
         "warmup_steps": 200,
         "fp16": false,
         "logging_steps": 10,
         "lr_scheduler_type": "linear",
-        "metric_for_best_model": "loss",
-
+        "metric_for_best_model": "loss"
     },
     "early_stopping_config": {
         "early_stopping_patience": 3,
         "early_stopping_threshold": 0.01
     },
     "data_collator_config": {
-	"padding": true,
+        "padding": true,
         "return_tensors": "pt"
     },
     "generation_config": {
         "max_length": 1500,
-	    "max_new_tokens": 1000
+        "max_new_tokens": 1000
     },
     "validation_config": {
         "batch_size": 1,
@@ -98,5 +93,4 @@
         "top_k": 1,
         "max_tokens": 1
     }
-
 }

@@ -9,7 +9,6 @@
     "leaderboard_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/tasks-sample-results.csv",
     "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
-
     "train_datasets": {
         "subsample_amount": 50,
         "prompt_template": "[INST]{definition}\n####\nExample:\n{example}\n####\n{instance_input}\n[/INST]",
@@ -28,21 +27,20 @@
         "device_map": "cuda:0"
     },
     "hpo_config": {
-    "n_trials": 3,
-    "storage": "sqlite:///db.sqlite3",
-    "study_name": "segmentation-ajjour17",
-    "direction": "maximize",
-    "val_metric": "bio",
-    "generation_config": {
-        "max_length": {
-            "name": "max_length",
-            "type": "int",
-            "low": 1000,
-            "high": 3000
-           }
-    }
-},
-
+        "n_trials": 3,
+        "storage": "sqlite:///db.sqlite3",
+        "study_name": "segmentation-ajjour17",
+        "direction": "maximize",
+        "val_metric": "bio",
+        "generation_config": {
+            "max_length": {
+                "name": "max_length",
+                "type": "int",
+                "low": 1000,
+                "high": 3000
+            }
+        }
+    },
     "training_args_config": {
         "per_device_train_batch_size": 32,
         "num_train_epochs": 1,
@@ -52,12 +50,9 @@
         "save_strategy": "steps",
         "eval_steps": 1000,
         "save_steps": 1000,
-
-
         "load_best_model_at_end": true,
         "group_by_length": false,
         "do_eval": true,
-
         "warmup_steps": 200,
         "fp16": true,
         "logging_steps": 10,
@@ -70,12 +65,12 @@
         "early_stopping_threshold": 0.01
     },
     "data_collator_config": {
-	"padding": true,
+        "padding": true,
         "return_tensors": "pt"
     },
     "generation_config": {
         "max_length": 1500,
-	    "max_new_tokens": 1000
+        "max_new_tokens": 1000
     },
     "validation_config": {
         "batch_size": 1,

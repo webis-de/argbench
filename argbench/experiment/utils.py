@@ -2,7 +2,8 @@ import json
 import logging
 import os
 import time
-
+from codecs import ignore_errors
+import codecs
 import psutil
 import torch
 from datetime import datetime
@@ -97,12 +98,15 @@ def adjust_config(new_root_path: Path):
     :param new_root_path: The desired root path where all code and data should reside
     :return: nothing
     """
-    for file in get_config_files("argbench/experiment/configs"):
-        with open(file) as stream:
-            config_json = json.load(stream)
-            rewrite_config(config_json, new_root_path)
-
-
+    for file in get_config_files("/home/yamen/projects/task-specific-argument-mining-and-generation/argbench/experiment/configs"):
+        new_config=None
+        print(file)
+        with codecs.open(file, "r", encoding='utf-8-sig') as stream:
+            stri = stream.read()
+            config_json = json.loads(stri)
+            new_config = rewrite_config(config_json, new_root_path)
+        with open(file, "w", encoding='utf-8') as stream:
+            json.dump(new_config, stream, indent=4)
 def get_config_files(root_path: str) -> List:
     """
     Return all json files in a directory, recursively.
@@ -113,10 +117,12 @@ def get_config_files(root_path: str) -> List:
     for root, dirs, files in os.walk(root_path):
         for file in files:
             if file.endswith("json"):
+
                 config_files.append(os.path.join(root, file))
         for subdir in dirs:
-            subdir_config_files = get_config_files(os.path.join(root, subdir))
-            config_files.extend(subdir_config_files)
+            if subdir != "archive":
+                subdir_config_files = get_config_files(os.path.join(root, subdir))
+                config_files.extend(subdir_config_files)
     return config_files
 
 def rewrite_config(config: dict, new_root_path: Path):
@@ -133,3 +139,4 @@ def rewrite_config(config: dict, new_root_path: Path):
             rewrite_config(config[key], new_root_path)
         else:
             pass
+    return config
