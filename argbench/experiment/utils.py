@@ -98,7 +98,7 @@ def adjust_config(new_root_path: Path):
     :param new_root_path: The desired root path where all code and data should reside
     :return: nothing
     """
-    for file in get_config_files("argbench/experiment/configs"):
+    for file in get_config_files("  argbench/experiment/configs"):
         new_config=None
         print(file)
         with codecs.open(file, "r", encoding='utf-8-sig') as stream:
