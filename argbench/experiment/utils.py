@@ -98,8 +98,8 @@ def adjust_config(new_root_path: Path):
     :return: nothing
     """
     for file in get_config_files("argbench/experiment/configs"):
-        with open(file) as stram:
-            config_json = json.load(stram)
+        with open(file) as stream:
+            config_json = json.load(stream)
             rewrite_config(config_json, new_root_path)
 
 
@@ -130,6 +130,6 @@ def rewrite_config(config: dict, new_root_path: Path):
         if isinstance(config[key],str):
             config[key] = config[key].replace("/bigwork/nhwpajjy",new_root_path)
         elif isinstance(config[key],dict):
-            adjust_config(config[key])
+            rewrite_config(config[key])
         else:
             pass
