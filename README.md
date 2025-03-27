@@ -1,6 +1,7 @@
 # ArgBench
 
 This repo comprises 42 datasets to evaluate how good are LLMs at computational argumentation tasks. 
+Before evaluating a mode, you have to transform the benchmark into the right format. 
 
 
 1. prepare the benchmark you have to run
