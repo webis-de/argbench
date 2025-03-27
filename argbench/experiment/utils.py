@@ -98,8 +98,9 @@ def adjust_config(new_root_path: Path):
     :return: nothing
     """
     for file in get_config_files("argbench/experiment/configs"):
-        config_json = json.load(file)
-        rewrite_config(config_json, new_root_path)
+        with open(file) as stram:
+            config_json = json.load(stram)
+            rewrite_config(config_json, new_root_path)
 
 
 def get_config_files(root_path: str) -> List:
