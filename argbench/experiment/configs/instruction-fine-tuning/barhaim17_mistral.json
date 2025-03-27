@@ -4,12 +4,12 @@
     "seed": 4112,
     "base_model": "mistral-7b-inst-3",
     "cutoff_len": 2000,
-    "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
+    "data_folder": "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/tasks",
     "data_type": "ndjson",
-    "leaderboard_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/stance-classification-barhaim17.csv",
-    "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
-    "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
-    "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
+    "leaderboard_path": "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/runs/stance-classification-barhaim17.csv",
+    "task_metrics_path": "/mnt/home/yajjour/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
+    "generation_config_path": "/mnt/home/yajjour/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
+    "output_dir": "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/training_output",
     "train_datasets": {
         "subsample_amount": 10
     },
@@ -35,7 +35,7 @@
         "adapter_name": "adapter",
         "adapter_type": "lora",
         "config_args": {
-            "base_model_name_or_path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
+            "base_model_name_or_path": "/mnt/home/yajjour/pre-trained-models/Mistral-7B-Instruct-v0.3",
             "bias": "none",
             "fan_in_fan_out": false,
             "inference_mode": true,
