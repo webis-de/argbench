@@ -15,59 +15,52 @@
         "subsample_amount": 1
     },
     "test_dataset": {
-        "subsample_rate" : 0.99
+        "subsample_rate": 0.99
     },
-    "model_configs":[
-            {
-                "label": "mistral-7b-inst-3",
-                "path" : "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
-                "prompt_template": "[INST]{definition}\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
-                "output_splitter": "[/INST]"
-            },
-            {
-                "label": "gemma-2-9b-it",
-                "path" : "/bigwork/nhwpajjy/pre-trained-models/gemma-2-9b-it",
-                "prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
-                "output_splitter": "<start_of_turn>model"
-            },
-            {
-                "label": "mistral-small",
-                "path" : "/bigwork/nhwpajjy/pre-trained-models/Mistral-Small-Instruct-2409",
-                "prompt_template": "[INST]{definition}\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
-                "output_splitter": "[/INST]"
-
-            },
-            {
-                "label": "deepseek-r1-distill-7b",
-                "path" : "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-7B",
-                "prompt_template": "{definition}\nExample:\n{example}\n{instance_input}<｜end▁of▁sentence｜>",
-                "output_splitter": "<｜begin▁of▁sentence｜><think>\\n"
-            },
-            {
-                "label": "llama-3-8b-instruct",
-                "path" : "/bigwork/nhwpajjy/pre-trained-models/Meta-Llama-3-8B-Instruct",
-                "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\nExample:{example}\n{instance_input}<|eot_id|>",
-                "output_splitter": "<|start_header_id|>assistant<|end_header_id|>"
-            },
-            {
-                "label": "deepseek-r1-distill-1.5b",
-                "path" : "/home/yamen/models/DeepSeek-R1-Distill-Qwen-1.5B",
-                "prompt_template": "{definition}\n{instance_input}<｜end▁of▁sentence｜>",
-                "output_splitter": "<｜begin▁of▁sentence｜><think>\\n"
-            },
-
-            {
-                "label": "qwen-7b",
-                "path" : "/bigwork/nhwpajjy/pre-trained-models/Qwen-7B",
-                "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\nExample:{example}\n{instance_input}<|eot_id|>",
-                "output_splitter": "<|start_header_id|>assistant<|end_header_id|>"
-            }
+    "model_configs": [
+        {
+            "label": "mistral-7b-inst-3",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
+            "prompt_template": "[INST]{definition}\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
+            "output_splitter": "[/INST]"
+        },
+        {
+            "label": "gemma-2-9b-it",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-2-9b-it",
+            "prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
+            "output_splitter": "<start_of_turn>model"
+        },
+        {
+            "label": "mistral-small",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-Small-Instruct-2409",
+            "prompt_template": "[INST]{definition}\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
+            "output_splitter": "[/INST]"
+        },
+        {
+            "label": "deepseek-r1-distill-7b",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-7B",
+            "prompt_template": "{definition}\nExample:\n{example}\n{instance_input}<\uff5cend\u2581of\u2581sentence\uff5c>"
+        },
+        {
+            "label": "llama-3-8b-instruct",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Meta-Llama-3-8B-Instruct",
+            "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\nExample:{example}\n{instance_input}<|eot_id|>"
+        },
+        {
+            "label": "deepseek-r1-distill-1.5b",
+            "path": "/home/yamen/models/DeepSeek-R1-Distill-Qwen-1.5B",
+            "prompt_template": "{definition}\n{instance_input}<\uff5cend\u2581of\u2581sentence\uff5c>"
+        },
+        {
+            "label": "qwen-7b",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Qwen-7B",
+            "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\nExample:{example}\n{instance_input}<|eot_id|>"
+        }
     ],
-
     "quant_config": {
         "load_in_4bit": true
-    }
-    ,"training_args_config": {
+    },
+    "training_args_config": {
         "per_device_train_batch_size": 1,
         "num_train_epochs": 1,
         "learning_rate": 0.0003,
@@ -76,30 +69,26 @@
         "save_strategy": "steps",
         "eval_steps": 1000,
         "save_steps": 1000,
-
-
         "load_best_model_at_end": true,
         "group_by_length": false,
         "do_eval": true,
-
         "warmup_steps": 200,
         "fp16": true,
         "logging_steps": 10,
         "lr_scheduler_type": "linear",
         "metric_for_best_model": "loss"
-
     },
     "early_stopping_config": {
         "early_stopping_patience": 3,
         "early_stopping_threshold": 0.01
     },
     "data_collator_config": {
-	"padding": true,
+        "padding": true,
         "return_tensors": "pt"
     },
     "generation_config": {
         "max_length": 1500,
-	    "max_new_tokens": 1000
+        "max_new_tokens": 1000
     },
     "validation_config": {
         "batch_size": 1,
@@ -112,5 +101,4 @@
         "max_tokens": 1,
         "min_tokens": 1
     }
-
 }

@@ -3,7 +3,9 @@
     "base_model": "/bigwork/nhwpbozd/decapoda-research-llama-7B-hf/",
     "cutoff_len": 1500,
     "train_datasets": {
-        "include_genres": ["essays"],
+        "include_genres": [
+            "essays"
+        ],
         "subsample_amount": 50,
         "prompt_template": "### Instruction:\n{definition}\n### Input: {instance_input}\n### Response:"
     },
@@ -42,7 +44,6 @@
         "group_by_length": false,
         "do_eval": true,
         "output_dir": "/bigwork/nhwpbozd/train-checkpoint",
-        "save_total_limit": 3,
         "warmup_steps": 200,
         "fp16": true,
         "logging_steps": 10,
