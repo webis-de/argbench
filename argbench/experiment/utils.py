@@ -1,10 +1,14 @@
+import json
 import logging
 import os
 import time
-
+from codecs import ignore_errors
+import codecs
 import psutil
 import torch
 from datetime import datetime
+
+from debugpy.common.json import JsonObject
 from pydantic import BaseModel
 from yaml import load, Loader
 
@@ -88,15 +92,56 @@ def get_device():
     return device
 
 
-def adjust_config(path: str):
-    for file in os.listdir(path):
-        pass
+def adjust_config(new_root_path: Path):
+    """
+    Modify all config files from /bigwork/nhwpajjy to new root path
+    :param new_root_path: The desired root path where all code and data should reside
+    :return: nothing
+    """
+    for file in get_config_files("argbench/experiment/configs"):
+        new_config=None
+        print(file)
+        with codecs.open(file, "r", encoding='utf-8-sig') as stream:
+            stri = stream.read()
+            config_json = json.loads(stri)
+            new_config = rewrite_config(config_json, new_root_path)
+        with open(file, "w", encoding='utf-8') as stream:
+            json.dump(new_config, stream, indent=4)
+def get_config_files(root_path: str) -> List:
+    """
+    Return all json files in a directory, recursively.
+    :param root_path: The path where the json files resides
+    :return: all json files in the directory
+    """
+    config_files = []
+    for root, dirs, files in os.walk(root_path):
+        for file in files:
+            if file.endswith("json"):
 
-def adjust_config(config, path):
+                config_files.append(os.path.join(root, file))
+        for subdir in dirs:
+            if subdir != "archive":
+                subdir_config_files = get_config_files(os.path.join(root, subdir))
+                config_files.extend(subdir_config_files)
+    return config_files
+
+def rewrite_config(config: dict, new_root_path: Path):
+    """
+    Rewrite the paths in a dictionary so that you substitute /bigwork/nhwpajjy with the new root path
+    :param config: the dictionary containing the configuration
+    :param new_root_path: the new root path path
+    :return:
+    """
+    print(config)
     for key in config:
         if isinstance(config[key],str):
-            config[key] = config[key].replace("/bigwork/nhwpajjy",path)
+            config[key] = config[key].replace("/bigwork/nhwpajjy",new_root_path)
         elif isinstance(config[key],dict):
-            adjust_config(config[key])
+            rewrite_config(config[key], new_root_path)
+        elif isinstance(config[key],list):
+            for obj in config[key]:
+                if isinstance(obj, dict):
+                    rewrite_config(obj, new_root_path)
         else:
             pass
+    return config

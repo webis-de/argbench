@@ -732,12 +732,16 @@ class RunConfig:
     def get_log_path(self):
         now = datetime.now()
         starting_time = now.strftime("%m-%d-%H:%M:%S")
+        if os.path.exists("/bigwork/nhwpajjy/"):
+            root_path = "/bigwork/nhwpajjy/"
+        else:
+            root_path = "/mnt/home/yajjour"
 
         if self.is_prompting:
-            self.log_path = f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/prompting-{self.base_model}-{starting_time}.log"
+            self.log_path = f"{root_path}/task-specific-argument-mining-and-generation-data/logs/prompting-{self.base_model}-{starting_time}.log"
         else:
             test_dataset_name = self.test_dataset["name"]
-            self.log_path = f"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/logs/fine-tuning-{test_dataset_name}-{self.base_model}-{starting_time}.log"
+            self.log_path = f"{root_path}/task-specific-argument-mining-and-generation-data/logs/fine-tuning-{test_dataset_name}-{self.base_model}-{starting_time}.log"
 
     def get_output_path(self):
         now = datetime.now()
