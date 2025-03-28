@@ -15,7 +15,7 @@
     "model_configs": [
         {
             "label": "mistral-7b-inst-3",
-            "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
+            "path": "/mnt/home/yajjour/pre-trained-models/Mistral-7B-Instruct-v0.3",
             "prompt_template": "<s>[INST]{definition}\n{instance_input}\n[/INST]",
             "output_splitter": "[/INST]"
         }
@@ -66,12 +66,12 @@
     },
     "peft_configs": [
         {
-            "model_id": "/bigwork/nhwpajjy/pre-trained-models/alpaca-lora-7b/",
+            "model_id": "/mnt/home/yajjour/pre-trained-models/alpaca-lora-7b/",
             "adapter_name": "adapter",
             "is_trainable": true,
             "adapter_type": "LORA",
             "config": {
-                "base_model_name_or_path": "/bigwork/nhwpajjy/pre-trained-models/baffo32/decapoda-research-llama-7B-hf",
+                "base_model_name_or_path": "/mnt/home/yajjour/pre-trained-models/baffo32/decapoda-research-llama-7B-hf",
                 "bias": "none",
                 "fan_in_fan_out": false,
                 "inference_mode": true,
