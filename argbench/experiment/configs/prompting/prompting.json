@@ -4,18 +4,18 @@
     "seed": 4112,
     "base_model": "deepseek-r1-distill-1.5b",
     "cutoff_len": 2000,
-    "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
-    "models_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models",
+    "data_folder": "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/tasks",
+    "models_folder": "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/fine-tuned-models",
     "data_type": "ndjson",
-    "leaderboard_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/prompting-mistral-results.csv",
-    "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
-    "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
-    "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
+    "leaderboard_path": "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/runs/prompting-mistral-results.csv",
+    "task_metrics_path": "/mnt/home/yajjour/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
+    "generation_config_path": "/mnt/home/yajjour/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
+    "output_dir": "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/training_output",
     "train_datasets": {
         "subsample_amount": 1
     },
     "test_dataset": {
-        "subsample_rate": 0.99
+        "subsample_rate": 0.1
     },
     "model_configs": [
         {
@@ -45,8 +45,8 @@
         {
             "label": "llama-3-8b-instruct",
             "path": "meta-llama/Meta-Llama-3-8B-Instruct",
-            "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\nExample:{example}\n{instance_input}<|eot_id|>",
-            "output_splitter": "<|start_header_id|>assistant<|end_header_id|>"
+            "output_splitter": "<|start_header_id|>assistant<|end_header_id|>",
+	    "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\n{instance_input}<|eot_id|>"
         },
         {
             "label": "deepseek-r1-distill-1.5b",
