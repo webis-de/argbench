@@ -123,11 +123,11 @@ class Runner:
     def prepare_model_for_generation(self):
 
         if self.config.peft_configs or self.config.peft_fresh_config:
-            llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed)
+            llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed, device=device)
             #llm = LLM(model=base_model, enable_lora=True)
         else:
-            print(device)
-            llm = LLM(model=self.model_config.path, seed=self.config.seed)
+
+            llm = LLM(model=self.model_config.path, seed=self.config.seed, device=device)
             #llm = LLM(model=base_model)
         log_mem("after loading vllm model")
         return llm
@@ -563,9 +563,9 @@ class Runner:
                 # predictions += [output]
                 if self.config.peft_configs and self.adapter_path:
                     lora_request = LoRARequest("sql_adapter", 1,self.adapter_path)
-                    outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
+                    outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False, device=device)
                 else:
-                    outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
+                    outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False, device=device)
 
                 for output in outputs:
                     prediction = output.outputs[0].text
