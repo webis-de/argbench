@@ -17,44 +17,71 @@
     "test_dataset": {},
     "model_configs": [
         {
+<<<<<<< HEAD
             "label": "mistral-7b-inst-3",
             "path": "/mnt/home/yajjour/pre-trained-models/Mistral-7B-Instruct-v0.3",
+=======
+            "label": "meta-llama/Meta-Llama-3-8B-Instruct",
+            "path": "mistralai/Mistral-7B-Instruct-v0.3",
+>>>>>>> cd01a50adba95202de5c55505154a1473a4967ad
             "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
             "output_splitter": "[/INST]"
         },
         {
             "label": "gemma-2-9b-it",
+<<<<<<< HEAD
             "path": "/mnt/home/yajjour/pre-trained-models/gemma-2-9b-it",
+=======
+            "path": "google/gemma-2-9b-it",
+>>>>>>> cd01a50adba95202de5c55505154a1473a4967ad
             "prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
             "output_splitter": "<start_of_turn>model"
         },
         {
             "label": "mistral-small",
+<<<<<<< HEAD
             "path": "/mnt/home/yajjour/pre-trained-models/Mistral-Small-Instruct-2409",
+=======
+            "path": "mistralai/Mistral-Small-Instruct-2409",
+>>>>>>> cd01a50adba95202de5c55505154a1473a4967ad
             "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
             "output_splitter": "[/INST]"
         },
         {
             "label": "deepseek-r1-distill-1.5b",
-            "path": "/home/yamen/Dropbox/research/models/DeepSeek-R1-Distill-Qwen-1.5B",
+            "path": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
             "prompt_template": "{definition}\n{instance_input}<\uff5cend\u2581of\u2581sentence\uff5c>",
             "output_splitter": "<\uff5cbegin\u2581of\u2581sentence\uff5c><think>\\n"
         },
         {
             "label": "deepseek-r1-distill-7b",
+<<<<<<< HEAD
             "path": "/mnt/home/yajjour/pre-trained-models/DeepSeek-R1-Distill-Qwen-7B",
+=======
+            "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-7B",
+            "path": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+>>>>>>> cd01a50adba95202de5c55505154a1473a4967ad
             "prompt_template": "{definition}\n{instance_input}<\uff5cend\u2581of\u2581sentence\uff5c>",
             "output_splitter": "<\uff5cbegin\u2581of\u2581sentence\uff5c><think>\\n"
         },
         {
             "label": "llama-3-8b-instruct",
+<<<<<<< HEAD
             "path": "/mnt/home/yajjour/pre-trained-models/Meta-Llama-3-8B-Instruct",
+=======
+            "path": "meta-llama/Meta-Llama-3-8B-Instruct",
+>>>>>>> cd01a50adba95202de5c55505154a1473a4967ad
             "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\n{instance_input}<|eot_id|>",
             "output_splitter": "<|start_header_id|>assistant<|end_header_id|>"
         },
         {
             "label": "qwen-7b",
+<<<<<<< HEAD
             "path": "/mnt/home/yajjour/pre-trained-models/Qwen-7B",
+=======
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Qwen-7B",
+            "path": "Qwen/Qwen-7B",
+>>>>>>> cd01a50adba95202de5c55505154a1473a4967ad
             "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\n{instance_input}<|eot_id|>",
             "output_splitter": "<|start_header_id|>assistant<|end_header_id|>"
         }
