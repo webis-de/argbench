@@ -92,7 +92,7 @@ def get_device():
     return device
 
 
-def adjust_config(new_root_path: Path):
+def adjust_config(root_path: Path, new_root_path: Path):
     """
     Modify all config files from /bigwork/nhwpajjy to new root path
     :param new_root_path: The desired root path where all code and data should reside
@@ -104,7 +104,7 @@ def adjust_config(new_root_path: Path):
         with codecs.open(file, "r", encoding='utf-8-sig') as stream:
             stri = stream.read()
             config_json = json.loads(stri)
-            new_config = rewrite_config(config_json, new_root_path)
+            new_config = rewrite_config(config_json, root_path,  new_root_path)
         with open(file, "w", encoding='utf-8') as stream:
             json.dump(new_config, stream, indent=4)
 def get_config_files(root_path: str) -> List:
@@ -125,7 +125,7 @@ def get_config_files(root_path: str) -> List:
                 config_files.extend(subdir_config_files)
     return config_files
 
-def rewrite_config(config: dict, new_root_path: Path):
+def rewrite_config(config: dict, root_path:Path, new_root_path: Path):
     """
     Rewrite the paths in a dictionary so that you substitute /bigwork/nhwpajjy with the new root path
     :param config: the dictionary containing the configuration
@@ -135,7 +135,7 @@ def rewrite_config(config: dict, new_root_path: Path):
     print(config)
     for key in config:
         if isinstance(config[key],str):
-            config[key] = config[key].replace("/bigwork/nhwpajjy",new_root_path)
+            config[key] = config[key].replace(root_path, new_root_path)
         elif isinstance(config[key],dict):
             rewrite_config(config[key], new_root_path)
         elif isinstance(config[key],list):
