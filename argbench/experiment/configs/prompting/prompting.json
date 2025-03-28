@@ -32,13 +32,13 @@
         },
         {
             "label": "mistral-small",
-            "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-Small-Instruct-2409",
+            "path": "mistralai/Mistral-Small-Instruct-2409",
             "prompt_template": "[INST]{definition}\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
             "output_splitter": "[/INST]"
         },
         {
             "label": "deepseek-r1-distill-7b",
-            "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-7B",
+            "path": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
             "prompt_template": "{definition}\nExample:\n{example}\n{instance_input}<\uff5cend\u2581of\u2581sentence\uff5c>",
             "output_splitter": "<\uff5cbegin\u2581of\u2581sentence\uff5c><think>\\n"
         },
