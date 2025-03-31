@@ -55,9 +55,9 @@ def process_task_file(output_path, task_file_path, filetype="ndjson"):
 def load_set(output_path: Path, sample_rate:float = None, sample_size: int = None):
     path_sample = formulate_sample_path(output_path, sample_rate, sample_size)
     if os.path.exists(path_sample):
-        return  pd.read_json(path_sample, lines=True)
+        return  pd.read_json(path_sample, lines=True), path_sample
     else:
-        return sample_set(output_path, sample_rate, sample_size)
+        return sample_set(output_path, sample_rate, sample_size), path_sample
 
 def formulate_sample_path(output_path: Path, sample_rate: float = None, sample_size: int= None):
     base, file_name = os.path.split(output_path)
@@ -81,7 +81,7 @@ def sample_set(output_path: Path, sample_rate: float = None, sample_size: int = 
     else:
         raise ValueError("no rate or size defined")
     df_sample.to_json(path_sample, orient='records', lines=True)
-    return df_sample
+    return df_sample, path_sample
 
 
 if __name__ == "__main__":
