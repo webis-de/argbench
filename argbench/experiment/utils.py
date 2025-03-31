@@ -82,12 +82,12 @@ def eval_collate(batch):
     return out_batch
 
 def get_device():
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = "cuda" if torch.cuda.is_available() else 'cpu'
     if device == "cuda":
         t = torch.cuda.mem_get_info()
         _, total_gpu = (t[0]/(1024**3),t[1]/(1024**3))
         if total_gpu < 20:
-            device = torch.device("cpu")
+            device = 'cpu'
     return device
 
 

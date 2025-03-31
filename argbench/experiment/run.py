@@ -120,7 +120,7 @@ class Runner:
         log_mem(f"created model for training")
         return model
 
-    def prepare_model_for_generation(self):
+    def  prepare_model_for_generation(self):
 
         if self.config.peft_configs or self.config.peft_fresh_config:
             llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed, device=device)
@@ -225,15 +225,15 @@ class Runner:
             _, test_datasets = collect_datasets(self.config)
             for test_dataset in test_datasets:
                 hf_test_dataset = Dataset.from_pandas(test_datasets[test_dataset])
-                self.prmt_test_data[test_dataset] = hf_test_dataset.map(generate_and_tokenize_prompt, num_proc=8)
+                self.prmt_test_data[test_dataset] = hf_test_dataset.map(generate_and_tokenize_prompt, num_proc=8, load_from_cache_file=True)
         else:
             train_datasets, test_datasets = collect_datasets(self.config)
             test_dataset = test_datasets[self.test_dataset_name]
             train_datasets = pd.concat(train_datasets.values(), axis=0).reset_index(drop=True)
             hf_train_dataset = Dataset.from_pandas(train_datasets)
             hf_test_dataset = Dataset.from_pandas(test_dataset)
-            self.train_data = hf_train_dataset.map(generate_and_tokenize_prompt, num_proc=8)
-            self.ft_test_data = hf_test_dataset.map(generate_and_tokenize_prompt, num_proc=8)
+            self.train_data = hf_train_dataset.map(generate_and_tokenize_prompt, num_proc=8, load_from_cache_file=True)
+            self.ft_test_data = hf_test_dataset.map(generate_and_tokenize_prompt, num_proc=8, load_from_cache_file=True)
             logger.debug(f"counting {len(self.train_data)}")
 
 
@@ -537,6 +537,7 @@ class Runner:
 
         #set_trace()
         output_splitter = self.model_config.output_splitter
+
         for data in tqdm(loader):
             text = data["input"]
             if model:
@@ -563,13 +564,13 @@ class Runner:
                 # predictions += [output]
                 if self.config.peft_configs and self.adapter_path:
                     lora_request = LoRARequest("sql_adapter", 1,self.adapter_path)
-                    outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False, device=device)
+                    outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
                 else:
-                    outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False, device=device)
+                    outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
 
                 for output in outputs:
                     prediction = output.outputs[0].text
-                    predictions += prediction
+                    predictions += [prediction]
                 logger.debug(f"""got the
                                                    #################################
                                                     prediction:

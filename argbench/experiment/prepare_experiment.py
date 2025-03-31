@@ -124,9 +124,11 @@ def compile_datasets(
         if not is_prompt:
             df_training = pd.read_json(train_path, lines=True)
         elif train_subsample_amount :
-            df_training = load_set(train_path, sample_size=train_subsample_amount)
+            df_training, train_path = load_set(train_path, sample_size=train_subsample_amount)
         elif train_subsample_rate:
-            df_training = load_set(train_path, sample_rate= train_subsample_rate)
+            df_training, train_path = load_set(train_path, sample_rate= train_subsample_rate)
+
+        df_training.path = train_path
 
         #df_training['output'] = df_training['output'].apply(json.dumps)
         if not is_prompt or train_subsample_rate or train_subsample_amount:
@@ -134,7 +136,7 @@ def compile_datasets(
                 df_training[column] = df_training[column].astype(str)
 
             df_training = df_training[["id", "input", "output"]]
-            df_training["task"] = dataset
+
             if not is_prompt:
                 training_datasets[dataset] = df_training
 
@@ -145,11 +147,12 @@ def compile_datasets(
 
 #        df_test['output'] = df_test['output'].apply(json.dumps)
         if test_subsample_rate:
-            df_test = load_set(test_path, sample_rate=test_subsample_rate)
+            df_test, test_path = load_set(test_path, sample_rate=test_subsample_rate)
         elif test_subsample_amount:
-            df_test = load_set(test_path, sample_size=test_subsample_amount)
+            df_test, test_path = load_set(test_path, sample_size=test_subsample_amount)
         else:
             df_test = pd.read_json(test_path, lines=True)
+        df_test.path = test_path
 
         if is_prompt and train_subsample_amount:
             example_str = ""
@@ -165,8 +168,8 @@ def compile_datasets(
             df_test["input"] = df_test.apply(template_formatter, axis=1)
         for column in df_test.columns:
             df_test[column] = df_test[column].astype(str)
-        df_test["task"] = dataset
-        df_test = df_test[["id","document", "input", "output", "task"]]
+
+        df_test = df_test[["id","document", "input", "output"]]
         test_datasets[dataset]= df_test
 
 
