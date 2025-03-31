@@ -4,13 +4,13 @@
     "seed": 4112,
     "base_model": "deepseek-r1-distill-1.5b",
     "cutoff_len": 2000,
-    "data_folder": "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/tasks",
-    "models_folder": "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/fine-tuned-models",
+    "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
+    "models_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models",
     "data_type": "ndjson",
-    "leaderboard_path": "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/runs/prompting-mistral-results.csv",
-    "task_metrics_path": "/mnt/home/yajjour/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
-    "generation_config_path": "/mnt/home/yajjour/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
-    "output_dir": "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/training_output",
+    "leaderboard_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/prompting-mistral-results.csv",
+    "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
+    "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
+    "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
     "train_datasets": {
         "subsample_amount": 1
     },
@@ -32,21 +32,27 @@
         },
         {
             "label": "mistral-small",
-            "path": "/mnt/home/yajjour/pre-trained-models/Mistral-Small-Instruct-2409",
+            "path": "mistralai/Mistral-Small-Instruct-2409",
             "prompt_template": "[INST]{definition}\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
             "output_splitter": "[/INST]"
         },
         {
             "label": "deepseek-r1-distill-7b",
-            "path": "/mnt/home/yajjour/pre-trained-models/DeepSeek-R1-Distill-Qwen-7B",
+            "path": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
             "prompt_template": "{definition}\nExample:\n{example}\n{instance_input}<\uff5cend\u2581of\u2581sentence\uff5c>",
             "output_splitter": "<\uff5cbegin\u2581of\u2581sentence\uff5c><think>\\n"
         },
         {
             "label": "llama-3-8b-instruct",
+<<<<<<< HEAD
+            "path": "meta-llama/Meta-Llama-3-8B-Instruct",
+            "output_splitter": "<|start_header_id|>assistant<|end_header_id|>",
+            "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\n{instance_input}<|eot_id|>"
+=======
             "path": "bigwork/nhwpajjy/pre-trained-models/Meta-Llama-3-8B-Instruct",
             "output_splitter": "<|start_header_id|>assistant<|end_header_id|>"
 	    "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\n{instance_input}<|eot_id|>"
+>>>>>>> dcdcfeb54dc71836bb801305573bd0878348f565
         },
         {
             "label": "deepseek-r1-distill-1.5b",
