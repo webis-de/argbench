@@ -121,7 +121,7 @@ class Runner:
         return model
 
     def  prepare_model_for_generation(self):
-        logger.log(f"running on {device}")
+        logger.info(f"running on {device}")
         if self.config.peft_configs or self.config.peft_fresh_config:
             llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed, device=device)
             #llm = LLM(model=base_model, enable_lora=True)
