@@ -493,6 +493,7 @@ class RunConfig:
         """
         config = {}
         for path in paths:
+
             with open(path, "r") as f:
                 conf_file = json.load(f)
                 update_conf(config, conf_file)
