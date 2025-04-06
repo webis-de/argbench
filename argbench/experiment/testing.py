@@ -14,7 +14,7 @@ from scipy.stats import kendalltau
 from nltk import word_tokenize
 from evaluate import load
 from bert_score import score
-
+from bleu import list_bleu
 logger = logging.getLogger(__name__)
 
 def compute_precision_recall_fscore_support(predictions, references, f1_average="macro", beta=1.0):
@@ -110,9 +110,8 @@ def compute_bleu_score(predictions, references):
     :param references: True labels
     :returns: dict with different BLEU scores
     """
-    bleu = evaluate.load("bleu")
-    bleu_score = bleu.compute(predictions=predictions, references=references)
-    return {"bleu": bleu_score["bleu"]}
+    bleu_score = list_bleu([references], predictions)
+    return {"bleu": bleu_score}
 
 def compute_bert_score(predictions, references):
 
