@@ -763,3 +763,9 @@ class RunConfig:
             return "<|endoftext|>"
         else:
             return self.pad_token_id
+
+    def get_unk_token_id(self):
+        if self.base_model == "qwen-7b":
+            return None
+        else:
+            return "<unk>"

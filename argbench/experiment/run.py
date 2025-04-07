@@ -77,14 +77,14 @@ class Runner:
         """
         self.config = config
         self.model_config = config.model_config
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_config.path, padding_side="left", unk_token="<unk>",
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_config.path, padding_side="left",
                                                        truncation=True, max_length = config.data_collator_config.max_length,
                                                        trust_remote_code=True
                                                        )
 
 
         self.tokenizer.pad_token_id = config.get_pad_token_id()
-
+        self.tokenizer.unk_token = config.get_unk_token_id()
 
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
         self.task_metrics = get_evaluation_metrics_map()
