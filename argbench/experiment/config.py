@@ -760,7 +760,7 @@ class RunConfig:
 
     def get_pad_token_id(self):
         if self.base_model == "qwen-7b":
-            return "<|endoftext|>"
+            return None
         else:
             return self.pad_token_id
 
