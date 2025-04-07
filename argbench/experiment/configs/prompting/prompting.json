@@ -47,7 +47,7 @@
             "label": "llama-3-8b-instruct",
             "path": "bigwork/nhwpajjy/pre-trained-models/Meta-Llama-3-8B-Instruct",
             "output_splitter": "<|start_header_id|>assistant<|end_header_id|>",
-	        "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\n{instance_input}<|eot_id|>"
+            "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\n{instance_input}<|eot_id|>"
         },
         {
             "label": "deepseek-r1-distill-1.5b",
