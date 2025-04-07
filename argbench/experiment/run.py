@@ -57,6 +57,12 @@ def log_mem(message):
         logger.info(f"*** GPU Memory {message}: {free_gpu:2.0f} GB free from {total_gpu:2.0f} GB  |  "
                     f" CPU Memory: {free_cpu:2.0f} GB free from {total_cpu:2.0f} GB")
 
+
+def clean_prediction(prediction):
+    if prediction.startswith("<|start_header_id|>assistant<|end_header_id|>"):
+        prediction = prediction.replace("<|start_header_id|>assistant<|end_header_id|>", "")
+    return prediction
+
 class Runner:
     """Model runner class"""
     base_model = None
@@ -571,6 +577,7 @@ class Runner:
 
                 for output in outputs:
                     prediction = output.outputs[0].text
+                    prediction = clean_prediction(prediction)
                     predictions += [prediction]
                 logger.debug(f"""got the
                                                    #################################
