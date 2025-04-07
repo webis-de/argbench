@@ -334,6 +334,7 @@ class RunConfig:
 
     generation_config_path: str
 
+    debug: bool
 
     # task-specific
 
@@ -397,6 +398,7 @@ class RunConfig:
         """
         Registers all cli parameters for RunConfig
         """
+        arg_parser.add_argument("-d", "--debug", action="store_true", default=False, help="Should prompting be performed")
         arg_parser.add_argument("-iprpt", "--is_prompting", action="store_true", default=False, help="Should prompting be performed")
         arg_parser.add_argument("-lbp", "--leaderboard-path", type=str, default=False)
         arg_parser.add_argument("-ie", "--is_evaluate", action="store_true", default=False, help="Should evaluation be performed")
@@ -547,6 +549,8 @@ class RunConfig:
         if not args:
             return conf_obj
         # Runner config
+        if args.debug:
+            conf_obj.debug = args.debug
         if args.seed:
             conf_obj.seed = args.seed
         if args.is_prompting:

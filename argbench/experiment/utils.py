@@ -20,9 +20,16 @@ class Output(BaseModel):
 
 def get_logger(config: RunConfig):
     logger = logging.getLogger(config.get_log_path())
-    logger.setLevel(logging.DEBUG)
+    if config.debug:
+        logger.setLevel(logging.DEBUG)
+    else:
+        logger.setLevel(logging.INFO)
     file_handler = logging.FileHandler(config.log_path)
-    file_handler.setLevel(logging.DEBUG)
+    if config.debug
+        file_handler.setLevel(logging.DEBUG)
+    else:
+        file_handler.setLevel(logging.INFO)
+
     file_handler.setFormatter(logging.Formatter("%(asctime)s %(message)s)"))
     logger.addHandler(file_handler)
 
