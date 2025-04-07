@@ -63,6 +63,7 @@ def clean_prediction(prediction):
         prediction = prediction.replace("<|start_header_id|>assistant<|end_header_id|>", "")
     return prediction
 
+
 class Runner:
     """Model runner class"""
     base_model = None
@@ -80,7 +81,9 @@ class Runner:
                                                        truncation=True, max_length = config.data_collator_config.max_length,
                                                        trust_remote_code=True
                                                        )
-        self.tokenizer.pad_token_id = config.pad_token_id
+
+
+        self.tokenizer.pad_token_id = config.get_pad_token_id()
 
 
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
