@@ -577,7 +577,7 @@ class Runner:
 
                 for output in outputs:
                     prediction = output.outputs[0].text
-                    clean_prediction(prediction)
+                    prediction = clean_prediction(prediction)
                     predictions += [prediction]
                 logger.debug(f"""got the
                                                    #################################
