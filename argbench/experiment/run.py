@@ -6,8 +6,9 @@ from argparse import ArgumentParser
 
 from pathlib import Path
 
-import optuna
+
 import outlines
+import optuna
 import pandas as pd
 from datasets import Dataset
 from optuna import Trial, create_study
