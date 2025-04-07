@@ -10,6 +10,7 @@
 module load Miniforge3
 conda activate task-specific
 
+export PYTHONPATH="mnt/home/yajjour/.conda/envs/task-specific/bin"
 model=$1
 
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
