@@ -18,3 +18,4 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 cd "$CODE_PATH"
 
 python -c "import outlines"
+python -c "import optuna"
