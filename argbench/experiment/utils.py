@@ -146,3 +146,4 @@ def rewrite_config(config: dict, root_path:Path, new_root_path: Path):
         else:
             pass
     return config
+

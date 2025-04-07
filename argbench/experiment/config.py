@@ -398,6 +398,7 @@ class RunConfig:
         """
         Registers all cli parameters for RunConfig
         """
+
         arg_parser.add_argument("-d", "--debug", action="store_true", default=False, help="Should prompting be performed")
         arg_parser.add_argument("-iprpt", "--is_prompting", action="store_true", default=False, help="Should prompting be performed")
         arg_parser.add_argument("-lbp", "--leaderboard-path", type=str, default=False)
@@ -755,3 +756,10 @@ class RunConfig:
         if not self.is_prompting:
             test_dataset_name = self.test_dataset["name"]
             return f"{self.output_dir}-/{test_dataset_name}-{self.base_model}-{starting_time}.log"
+
+
+    def get_pad_token_id(self):
+        if self.base_model == "qwen-7b":
+            return "<|endoftext|>"
+        else:
+            return self.pad_token_id
