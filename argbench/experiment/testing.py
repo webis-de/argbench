@@ -111,7 +111,7 @@ def compute_bleu_score(predictions, references):
     #set_trace()
 
     #bleu_score = list_bleu([references], predictions)
-    bleu = evaluate.load("argbench/experiment/bleu")
+    bleu = evaluate.load("bleu")
     results = bleu.compute(predictions=predictions, references=references)
     return {"bleu": results["bleu"]}
 
