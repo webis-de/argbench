@@ -25,7 +25,7 @@ def get_logger(config: RunConfig):
     else:
         logger.setLevel(logging.INFO)
     file_handler = logging.FileHandler(config.log_path)
-    if config.debug
+    if config.debug:
         file_handler.setLevel(logging.DEBUG)
     else:
         file_handler.setLevel(logging.INFO)
