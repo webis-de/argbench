@@ -99,7 +99,7 @@ def compute_rouge_score(predictions, references):
     :param references: True labels
     :returns: dict with different ROUGE scores
     """
-    rouge = evaluate.load("rouge")
+    rouge = evaluate.load("argbench/experiment/bleu")
     rouge_score = rouge.compute(predictions=predictions, references=references)
     return {"rouge": rouge_score}
 
