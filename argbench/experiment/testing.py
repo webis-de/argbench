@@ -6,15 +6,12 @@ import re
 import numpy as np
 import logging
 
-from IPython.core.debugger import set_trace
 from sklearn.metrics import precision_recall_fscore_support
-from sklearn.feature_selection import r_regression
 from sklearn.metrics import f1_score
 from scipy.stats import kendalltau
 from nltk import word_tokenize
-from evaluate import load
 from bert_score import score
-from bleu import list_bleu
+
 logger = logging.getLogger(__name__)
 
 def compute_precision_recall_fscore_support(predictions, references, f1_average="macro", beta=1.0):
