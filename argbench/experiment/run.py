@@ -571,9 +571,9 @@ class Runner:
                 # predictions += [output]
                 if self.config.peft_configs and self.adapter_path:
                     lora_request = LoRARequest("sql_adapter", 1,self.adapter_path)
-                    outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
+                    outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False, trust_remote_code=True)
                 else:
-                    outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
+                    outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False, trust_remote_code=True)
 
                 for output in outputs:
                     prediction = output.outputs[0].text
