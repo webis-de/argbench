@@ -5,7 +5,6 @@
     "debug": false,
     "base_model": "mistral-7b-inst-3",
     "cutoff_len": 2000,
-
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "models_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models",
     "data_type": "ndjson",
