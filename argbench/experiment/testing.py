@@ -99,7 +99,7 @@ def compute_rouge_score(predictions, references):
     :param references: True labels
     :returns: dict with different ROUGE scores
     """
-    rouge = evaluate.load("rouge")
+    rouge = evaluate.load("argbench/experiment/bleu")
     rouge_score = rouge.compute(predictions=predictions, references=references)
     return {"rouge": rouge_score}
 
@@ -111,9 +111,12 @@ def compute_bleu_score(predictions, references):
     :param references: True labels
     :returns: dict with different BLEU scores
     """
-    set_trace()
-    bleu_score = list_bleu([references], predictions)
-    return {"bleu": bleu_score}
+    #set_trace()
+
+    #bleu_score = list_bleu([references], predictions)
+    bleu = evaluate.load("bleu")
+    results = bleu.compute(predictions=predictions, references=references)
+    return {"bleu": results["bleu"]}
 
 def compute_bert_score(predictions, references):
 
