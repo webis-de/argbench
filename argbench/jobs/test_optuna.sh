@@ -8,8 +8,9 @@
 #SBATCH --error argbench/output/test-optuna.err
 #SBATCH --gpus=1
 module load Miniforge3
-conda activate task-specific-2
+conda activate task-specific
 
+export PYTHONPATH="mnt/home/yajjour/.conda/envs/task-specific/bin"
 model=$1
 
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
@@ -17,4 +18,4 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 
 cd "$CODE_PATH"
 
-python -c "import outlines"
+whereis python
