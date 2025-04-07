@@ -130,11 +130,11 @@ class Runner:
     def  prepare_model_for_generation(self):
         logger.info(f"running on {device}")
         if self.config.peft_configs or self.config.peft_fresh_config:
-            llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed, device=device)
+            llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed, device=device, trust_remote_code=True)
             #llm = LLM(model=base_model, enable_lora=True)
         else:
 
-            llm = LLM(model=self.model_config.path, seed=self.config.seed, device=device)
+            llm = LLM(model=self.model_config.path, seed=self.config.seed, device=device, trust_remote_code=True)
             #llm = LLM(model=base_model)
         log_mem("after loading vllm model")
         return llm
@@ -571,9 +571,9 @@ class Runner:
                 # predictions += [output]
                 if self.config.peft_configs and self.adapter_path:
                     lora_request = LoRARequest("sql_adapter", 1,self.adapter_path)
-                    outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False, trust_remote_code=True)
+                    outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
                 else:
-                    outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False, trust_remote_code=True)
+                    outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
 
                 for output in outputs:
                     prediction = output.outputs[0].text
