@@ -263,7 +263,8 @@ class Runner:
             base_model,
             torch_dtype=torch.float16,
             quantization_config=quant_conf,
-            device_map= device
+            device_map= device,
+            trust_remote_code=True
         )
 
 
