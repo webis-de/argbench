@@ -111,6 +111,7 @@ def compute_bleu_score(predictions, references):
     :param references: True labels
     :returns: dict with different BLEU scores
     """
+    set_trace()
     bleu_score = list_bleu([references], predictions)
     return {"bleu": bleu_score}
 
