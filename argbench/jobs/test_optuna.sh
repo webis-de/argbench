@@ -8,7 +8,7 @@
 #SBATCH --error argbench/output/test-optuna.err
 #SBATCH --gpus=1
 module load Miniforge3
-conda activate task-specific
+conda activate test-optuna
 
 model=$1
 
