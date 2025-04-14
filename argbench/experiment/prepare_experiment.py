@@ -1,3 +1,5 @@
+from typing import Dict
+
 import pandas as pd
 from collections import defaultdict
 from argbench.experiment.utils import *
@@ -94,7 +96,7 @@ def compile_datasets(
         test_subsample_rate=None,
         train_subsample_amount=None,
         train_subsample_rate=None,
-        is_prompt=False, test_dataset=None):
+        is_prompt=False, test_dataset=None, task_filter=None):
     """
     Read dataset file and compile all datasets into one dataframe
 
@@ -120,6 +122,8 @@ def compile_datasets(
     test_datasets = {}
     training_datasets = {}
     for dataset in train_files:
+        if task_filter and dataset not in task_filter:
+            continue
         train_path = train_files[dataset]
         if not is_prompt:
             df_training = pd.read_json(train_path, lines=True)
@@ -205,7 +209,10 @@ def collect_datasets(run_config):
     logger.info("Train datasets collected:")
 
 
-
+    if run_config.skill_filter:
+        task_filter = get_filters_by_skill(run_config.skill_filter)
+    else:
+        task_filter = {}
     train_datasets, test_datasets  = compile_datasets(
         train_files,
         test_files,
@@ -215,7 +222,17 @@ def collect_datasets(run_config):
         train_config.get("subsample_amount", None),
         train_config.get("subsample_rate", None),
         run_config.is_prompting,
-        test_config.get("name", None)
+        test_config.get("name", None),
+        task_filter
 
     )
     return train_datasets, test_datasets
+
+
+def get_filters_by_skill(skill: str) -> Dict[str, float]:
+    filter = {}
+    metadata = get_metadata()
+    for task in metadata:
+        if metadata[task]["skill"] == skill:
+            filter[task] = 1
+    return filter
