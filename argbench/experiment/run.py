@@ -266,7 +266,7 @@ class Runner:
             base_model,
             torch_dtype=torch.float16,
             quantization_config=quant_conf,
-            device_map= device,
+            device_map= "cuda:0",
             trust_remote_code=True
         )
 
