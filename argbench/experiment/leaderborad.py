@@ -19,8 +19,10 @@ class Leaderboard:
     def read_file(self):
         if os.path.exists(self.output_path):
             self.df_results = pd.read_csv(self.output_path, sep="\t")
+            if "filter" not in self.df_results:
+                self.df_results["filter"] = "None"
         else:
-            self.df_results = pd.DataFrame(columns=["model",  "test_task",  "metric", "score", "start_time", "k"])
+            self.df_results = pd.DataFrame(columns=["model",  "test_task",  "metric", "score", "start_time", "k", "filter"])
 
 
     def add_aggregated_results(self):
@@ -44,6 +46,7 @@ class Leaderboard:
             model = self.added_results[0]["model"]
             start_time = self.added_results[0]["start_time"]
             k = self.added_results[0]["k"]
+            filter = self.added_results[0]["filter"]
 
         for skill in skill_records:
             score = skill_results[skill] / skill_counts[skill]
@@ -51,7 +54,7 @@ class Leaderboard:
                 metric = "bertscore"
             else:
                 metric =  "fscore"
-            skill_records[skill] = {"model": model, "start_time": start_time, "k": k, "score": score, "metric": metric, "test_task": skill}
+            skill_records[skill] = {"model": model, "start_time": start_time, "k": k, "score": score, "metric": metric, "test_task": skill, "filter" : filter}
             df_record = pd.DataFrame([skill_records[skill]])
             self.df_results = pd.concat([self.df_results, df_record])
 

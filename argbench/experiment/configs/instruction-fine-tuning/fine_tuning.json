@@ -18,6 +18,12 @@
     "test_dataset": {},
     "model_configs": [
         {
+            "label": "mistral-7b-inst-3",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
+            "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
+            "output_splitter": "[/INST]"
+        },
+        {
             "label": "meta-llama/Meta-Llama-3-8B-Instruct",
             "path": "mistralai/Mistral-7B-Instruct-v0.3",
             "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
