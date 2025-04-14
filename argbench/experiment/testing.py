@@ -5,16 +5,13 @@ import evaluate
 import re
 import numpy as np
 import logging
-
-from IPython.core.debugger import set_trace
+import nltk
 from sklearn.metrics import precision_recall_fscore_support
-from sklearn.feature_selection import r_regression
 from sklearn.metrics import f1_score
 from scipy.stats import kendalltau
 from nltk import word_tokenize
-from evaluate import load
 from bert_score import score
-from bleu import list_bleu
+
 logger = logging.getLogger(__name__)
 
 def compute_precision_recall_fscore_support(predictions, references, f1_average="macro", beta=1.0):
@@ -99,7 +96,7 @@ def compute_rouge_score(predictions, references):
     :param references: True labels
     :returns: dict with different ROUGE scores
     """
-    rouge = evaluate.load("argbench/experiment/bleu")
+    rouge = evaluate.load("rouge")
     rouge_score = rouge.compute(predictions=predictions, references=references)
     return {"rouge": rouge_score}
 
@@ -114,9 +111,11 @@ def compute_bleu_score(predictions, references):
     #set_trace()
 
     #bleu_score = list_bleu([references], predictions)
-    bleu = evaluate.load("bleu")
-    results = bleu.compute(predictions=predictions, references=references)
-    return {"bleu": results["bleu"]}
+    references = [word_tokenize(ref) for ref in references]
+    predictions = [word_tokenize(pred) for pred in predictions]
+    bleu = nltk.translate.bleu_score.corpus_bleu(references, predictions, weights=(1/3, 1/3, 1/3))
+    #results = bleu.compute(predictions=predictions, references=references)
+    return {"bleu": bleu}
 
 def compute_bert_score(predictions, references):
 

@@ -320,6 +320,9 @@ class VLLMGenerationConfig(CommonConfig):
 class RunConfig:
     """Config for instruction finetuning run"""
 
+
+
+
     test_dataset: dict
 
     # Experiment results path
@@ -365,6 +368,9 @@ class RunConfig:
 
     is_hpo: bool
     # Padding token id
+
+    skill_filter: str = None
+
     model_config: ModelConfig = None
     pad_token_id: int = 0
     # Peft combination type
@@ -398,7 +404,7 @@ class RunConfig:
         """
         Registers all cli parameters for RunConfig
         """
-
+        arg_parser.add_argument("-sf", "--skill-filter", type=str, help="filter the tasks based on skill")
         arg_parser.add_argument("-d", "--debug", action="store_true", default=False, help="Should prompting be performed")
         arg_parser.add_argument("-iprpt", "--is_prompting", action="store_true", default=False, help="Should prompting be performed")
         arg_parser.add_argument("-lbp", "--leaderboard-path", type=str, default=False)
@@ -550,6 +556,8 @@ class RunConfig:
         if not args:
             return conf_obj
         # Runner config
+        if args.skill_filter:
+            conf_obj.skill_filter = args.skill_filter
         if args.debug:
             conf_obj.debug = args.debug
         if args.seed:
