@@ -485,6 +485,11 @@ class Runner:
 
 
         all_results = []
+        if self.config.skill_filter:
+            filter = config.skill_filter
+        else:
+            filter = "None"
+
         if self.config.is_prompting:
             for task in self.prmt_test_data:
                 if not is_segmentation(task):
@@ -493,8 +498,10 @@ class Runner:
                     test_data =  self.prmt_test_data[task]
                     metrics = self.evaluate(task, test_data, sampling_params, vllm=self.vllm)
                     log_mem(f"tested on {task}")
+
                     for metric in metrics:
-                        results = {"test_task": task, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model , "start_time": starting_time, "k": train_subsample_amount}
+                        results = {"test_task": task, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model,
+                                   "start_time": starting_time, "k": train_subsample_amount, "filter": filter}
                         all_results.append(results)
                         self.leaderboard.add_results(results)
         else:
@@ -502,7 +509,8 @@ class Runner:
             train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
             metrics = self.evaluate(self.test_dataset_name, self.ft_test_data, sampling_params, vllm=self.vllm)
             for metric in metrics:
-                results = {"test_task": self.test_dataset_name, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model , "start_time": starting_time, "k": train_subsample_amount}
+                results = {"test_task": self.test_dataset_name, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model,
+                           "start_time": starting_time, "k": train_subsample_amount, "filter":filter}
                 all_results.append(results)
                 log_mem(f"tested on {self.test_dataset_name}")
                 self.leaderboard.add_results(results)

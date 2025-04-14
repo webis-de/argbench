@@ -20,7 +20,7 @@ class Leaderboard:
         if os.path.exists(self.output_path):
             self.df_results = pd.read_csv(self.output_path, sep="\t")
         else:
-            self.df_results = pd.DataFrame(columns=["model",  "test_task",  "metric", "score", "start_time", "k"])
+            self.df_results = pd.DataFrame(columns=["model",  "test_task",  "metric", "score", "start_time", "k", "filter"])
 
 
     def add_aggregated_results(self):
