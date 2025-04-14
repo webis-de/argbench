@@ -122,27 +122,27 @@ def compile_datasets(
     test_datasets = {}
     training_datasets = {}
     for dataset in train_files:
-        if task_filter and dataset not in task_filter:
-            continue
         train_path = train_files[dataset]
-        if not is_prompt:
-            df_training = pd.read_json(train_path, lines=True)
-        elif train_subsample_amount :
-            df_training, train_path = load_set(train_path, sample_size=train_subsample_amount)
-        elif train_subsample_rate:
-            df_training, train_path = load_set(train_path, sample_rate= train_subsample_rate)
-
-        df_training.path = train_path
-
-        #df_training['output'] = df_training['output'].apply(json.dumps)
-        if not is_prompt or train_subsample_rate or train_subsample_amount:
-            for column in df_training.columns:
-                df_training[column] = df_training[column].astype(str)
-
-            df_training = df_training[["id", "input", "output"]]
+        if not task_filter or (task_filter and dataset in task_filter):
 
             if not is_prompt:
-                training_datasets[dataset] = df_training
+                df_training = pd.read_json(train_path, lines=True)
+            elif train_subsample_amount :
+                df_training, train_path = load_set(train_path, sample_size=train_subsample_amount)
+            elif train_subsample_rate:
+                df_training, train_path = load_set(train_path, sample_rate= train_subsample_rate)
+
+            df_training.path = train_path
+
+            #df_training['output'] = df_training['output'].apply(json.dumps)
+            if not is_prompt or train_subsample_rate or train_subsample_amount:
+                for column in df_training.columns:
+                    df_training[column] = df_training[column].astype(str)
+
+                df_training = df_training[["id", "input", "output"]]
+
+                if not is_prompt:
+                    training_datasets[dataset] = df_training
 
 
         if test_dataset and dataset !=test_dataset:
