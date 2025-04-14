@@ -26,7 +26,7 @@ do
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/instruction-fine-tuning/fine_tuning.json" \
 --leaderboard-path "${DATA_PATH}/runs/fine-tuning-$model-skills-results.csv" \
---base_model "$model" --test_dataset_name "$dataset" --skill-filter "${skill}"
+--base_model "$model" --test_dataset_name "$dataset" --skill-filter "${skill}" --debug
 python -c "print(1*2)"
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
