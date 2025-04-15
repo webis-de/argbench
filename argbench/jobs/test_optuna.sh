@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=25G
-#SBATCH --time=24:00:00
+#SBATCH --time=96:00:00
 #SBATCH --output argbench/output/test-optuna.out
 #SBATCH --error argbench/output/test-optuna.err
 #SBATCH --gpus=1
