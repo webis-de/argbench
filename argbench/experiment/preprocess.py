@@ -57,7 +57,7 @@ def load_set(output_path: Path, sample_rate:float = None, sample_size: int = Non
     if os.path.exists(path_sample):
         return  pd.read_json(path_sample, lines=True), path_sample
     else:
-        return sample_set(output_path, sample_rate, sample_size), path_sample
+        return sample_set(output_path, sample_rate, sample_size)
 
 def formulate_sample_path(output_path: Path, sample_rate: float = None, sample_size: int= None):
     base, file_name = os.path.split(output_path)
