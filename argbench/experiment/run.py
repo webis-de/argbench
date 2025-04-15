@@ -478,6 +478,8 @@ class Runner:
             self.trainer.train()
             self.adapter_path = self.config.get_model_path(starting_time)
             self.trainer.save_model(self.adapter_path)
+            for obj in self.trainer.state.log_history:
+                logger.debug(obj)
             log_mem("trained")
 
         self.vllm = self.prepare_model_for_generation()
