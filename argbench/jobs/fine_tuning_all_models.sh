@@ -3,7 +3,7 @@
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=20G
-#SBATCH --time=24:00:00
+#SBATCH --time=96:00:00
 #SBATCH --output argbench/output/ft-all-models.out
 #SBATCH --error argbench/output/ft-all-models.err
 #SBATCH --gpus=a100:1

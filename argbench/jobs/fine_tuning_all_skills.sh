@@ -3,7 +3,7 @@
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=20G
-#SBATCH --time=24:00:00
+#SBATCH --time=96:00:00
 #SBATCH --output argbench/output/fnt-skills.out
 #SBATCH --error argbench/output/fnt-skills.err
 #SBATCH --gpus=a100:1

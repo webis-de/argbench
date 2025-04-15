@@ -3,7 +3,7 @@
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=15G
-#SBATCH --time=24:00:00
+#SBATCH --time=96:00:00
 #SBATCH --output argbench/output/hpo-stance-barhaim.out
 #SBATCH --error argbench/output/hpo-stance-barhaim.err
 #SBATCH --gpus=a100:1
