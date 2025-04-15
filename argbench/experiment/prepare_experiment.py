@@ -132,10 +132,10 @@ def compile_datasets(
             elif train_subsample_rate:
                 df_training, train_path = load_set(train_path, sample_rate= train_subsample_rate)
 
-            df_training.path = train_path
 
             #df_training['output'] = df_training['output'].apply(json.dumps)
             if not is_prompt or train_subsample_rate or train_subsample_amount:
+                df_training.path = train_path
                 for column in df_training.columns:
                     df_training[column] = df_training[column].astype(str)
 
