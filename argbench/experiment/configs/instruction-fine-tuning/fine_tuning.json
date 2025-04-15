@@ -15,7 +15,9 @@
     "train_datasets": {
         "subsample_rate": 0.01
     },
-    "test_dataset": {},
+    "test_dataset": {
+        "subsample_rate": 0.01
+    },
     "model_configs": [
         {
             "label": "mistral-7b-inst-3",
