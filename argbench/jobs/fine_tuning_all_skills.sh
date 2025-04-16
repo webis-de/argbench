@@ -25,7 +25,7 @@ if [ -z "$dataset" ]; then
 else:
   datasets=($dataset)
 fi
-
+echo $datasets
 
 for dataset in datasets   ;
 do
