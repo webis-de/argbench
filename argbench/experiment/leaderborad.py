@@ -102,8 +102,8 @@ class Leaderboard:
 
     def save_file(self):
         self.add_aggregated_results()
-        pd.options.display.float_format = '{:.2f}'.format
-        self.df_results.to_csv(self.output_path, sep="\t", index=False)
+
+        self.df_results.to_csv(self.output_path, sep="\t", index=False,  float_format ="%.2f")
         pivated_results = self.pivot()
         columns = list(pivated_results.columns)
         columns.remove("filter")
@@ -111,4 +111,4 @@ class Leaderboard:
         columns.insert(0, "model")
         columns.insert(0, "filter")
 
-        pivated_results.to_csv(self.output_path.replace(".csv", "-pivoted.csv"), sep="\t", index=False, columns=columns)
+        pivated_results.to_csv(self.output_path.replace(".csv", "-pivoted.csv"), sep="\t", index=False, columns=columns,  float_format ="%.2f")
