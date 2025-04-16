@@ -13,7 +13,7 @@ class Leaderboard:
     This class keeps track of LLM models' score for one experiment for example leave five tasks evaluation
     """
     def __init__(self, output_path):
-        pd.options.display.float_format = '{:.2f}'.format
+
         self.output_path = output_path
         self.read_file()
         self.added_results = []
@@ -102,6 +102,7 @@ class Leaderboard:
 
     def save_file(self):
         self.add_aggregated_results()
+        pd.options.display.float_format = '{:.2f}'.format
         self.df_results.to_csv(self.output_path, sep="\t", index=False)
         pivated_results = self.pivot()
         columns = list(pivated_results.columns)
@@ -109,4 +110,5 @@ class Leaderboard:
         columns.remove("model")
         columns.insert(0, "model")
         columns.insert(0, "filter")
+
         pivated_results.to_csv(self.output_path.replace(".csv", "-pivoted.csv"), sep="\t", index=False, columns=columns)
