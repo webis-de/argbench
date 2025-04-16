@@ -2,33 +2,31 @@
     "is_prompting": false,
     "is_hpo": true,
     "seed": 4112,
+    "debug": false,
     "base_model": "mistral-7b-inst-3",
     "cutoff_len": 2000,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
+    "models_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models",
     "data_type": "ndjson",
     "leaderboard_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/stance-classification-barhaim17.csv",
     "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
+    "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
     "train_datasets": {
         "subsample_amount": 10
     },
+
     "model_configs": [
         {
             "label": "mistral-7b-inst-3",
             "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
-            "prompt_template": "<s>[INST]{definition}\n{instance_input}\n[/INST]",
+            "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
             "output_splitter": "[/INST]"
         }
     ],
     "test_dataset": {
         "subsample_amount": 10,
         "name": "stance_classification_ibmsc_barhaim17"
-    },
-    "quant_config": {
-        "load_in_4bit": true
-    },
-    "model_config": {
-        "device_map": "cuda:0"
     },
     "hpo_config": {
         "n_trials": 3,
@@ -75,6 +73,9 @@
             "task_type": "CAUSAL_LM"
         }
     },
+    "quant_config": {
+        "load_in_4bit": true
+    },
     "training_args_config": {
         "per_device_train_batch_size": 1,
         "num_train_epochs": 10,
@@ -91,8 +92,7 @@
         "fp16": false,
         "logging_steps": 10,
         "lr_scheduler_type": "linear",
-        "metric_for_best_model": "loss",
-        "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models/barhaim-stance-classification"
+        "metric_for_best_model": "loss"
     },
     "early_stopping_config": {
         "early_stopping_patience": 3,
@@ -103,7 +103,8 @@
         "return_tensors": "pt"
     },
     "generation_config": {
-        "max_new_tokens": 1
+        "max_length": 1500,
+        "max_new_tokens": 1000
     },
     "validation_config": {
         "batch_size": 1,
@@ -113,6 +114,7 @@
         "temperature": 0,
         "top_p": 1,
         "top_k": 1,
-        "max_tokens": 1
+        "max_tokens": 1,
+        "min_tokens": 1
     }
 }

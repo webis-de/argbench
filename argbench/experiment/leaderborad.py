@@ -13,6 +13,7 @@ class Leaderboard:
     This class keeps track of LLM models' score for one experiment for example leave five tasks evaluation
     """
     def __init__(self, output_path):
+        pd.options.display.float_format = '{:.2f}'.format
         self.output_path = output_path
         self.read_file()
         self.added_results = []
@@ -94,7 +95,7 @@ class Leaderboard:
     def pivot(self):
 
         self.df_results["metric"] = self.df_results.apply(lambda record: record["test_task"]+"_"+record["metric"],axis=1)
-        pivoted_df = self.df_results.pivot(index=["model",  "start_time"],values="score",columns="metric").reset_index()
+        pivoted_df = self.df_results.pivot(index=["model",  "start_time", "filter"],values="score",columns="metric").reset_index()
 
 
         return pivoted_df
@@ -103,4 +104,9 @@ class Leaderboard:
         self.add_aggregated_results()
         self.df_results.to_csv(self.output_path, sep="\t", index=False)
         pivated_results = self.pivot()
-        pivated_results.to_csv(self.output_path.replace(".csv", "-pivoted.csv"), sep="\t", index=False)
+        columns = pivated_results.columns
+        columns.remove("filter")
+        columns.remove("model")
+        columns.insert(0, "model")
+        columns.insert(0, "filter")
+        pivated_results.to_csv(self.output_path.replace(".csv", "-pivoted.csv"), sep="\t", index=False, columns=columns)
