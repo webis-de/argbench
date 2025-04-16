@@ -13,7 +13,7 @@
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
     "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
     "train_datasets": {
-        "subsample_rate": 0.01
+        "subsample_amount": 20
     },
     "test_dataset": {
         "subsample_rate": 0.01
@@ -104,7 +104,7 @@
         "save_steps": 1000,
         "load_best_model_at_end": true,
         "group_by_length": false,
-        "do_eval": true,
+        "do_eval": false,
         "warmup_steps": 200,
         "fp16": true,
         "logging_steps": 10,
