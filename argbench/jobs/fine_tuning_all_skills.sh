@@ -21,7 +21,7 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 cd "$CODE_PATH"
 
 if [ -z "$dataset" ]; then
-  datasets=$(jq 'keys[]'  "${CODE_PATH}../computational-argumentation-tasks-instructions/tasks/metadata.json")
+  datasets=$(jq 'keys[]'  "${CODE_PATH}/../computational-argumentation-tasks-instructions/tasks/metadata.json")
 else
   datasets=($dataset)
 fi
