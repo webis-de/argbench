@@ -20,17 +20,26 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 
 cd "$CODE_PATH"
 
+if [ -z "$dataset" ]; then
+  datasets=$(jq 'keys[]'  "${CODE_PATH}../computational-argumentation-tasks-instructions/tasks/metadata.json")
+else:
+  datasets=($dataset)
+fi
 
-for skill in mining perspective-assessment quality assessment generation reasoning ;
+
+for dataset in datasets   ;
 do
+  for skill in mining perspective-assessment quality assessment generation reasoning ;
+  do
 
-python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/instruction-fine-tuning/fine_tuning.json" \
---leaderboard-path "${DATA_PATH}/runs/fine-tuning-$model-skills-results.csv" \
---base_model "$model" --test_dataset_name "$dataset" --skill-filter "${skill}" --debug
-python -c "print(1*2)"
+  python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/instruction-fine-tuning/fine_tuning.json" \
+  --leaderboard-path "${DATA_PATH}/runs/fine-tuning-$model-skills-results.csv" \
+  --base_model "$model" --test_dataset_name "$dataset" --skill-filter "${skill}" --debug
+  python -c "print(1*2)"
 
-export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
-export JOB_ARGUMENTS="fine-tuning-skills;${dataset};${model};\n"
-echo "$SLURM_JOB_ID,$SLURM_JOB_NAME,$TIME,$JOB_ARGUMENTS" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
+  export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
+  export JOB_ARGUMENTS="fine-tuning-skills;${dataset};${model};\n"
+  echo "$SLURM_JOB_ID,$SLURM_JOB_NAME,$TIME,$JOB_ARGUMENTS" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 
+  done
 done
