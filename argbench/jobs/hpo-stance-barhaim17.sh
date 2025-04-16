@@ -12,4 +12,4 @@ export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 module load Miniforge3
 conda activate task-specific
 
-python "$CODE_PATH/argbench/experiment/run.py" -c "$CODE_PATH/argbench/experiment/configs/hpo/barhaim17_mistral_hpo.json"
+python -m  argbench.experiment.run  -c "$CODE_PATH/argbench/experiment/configs/hpo/barhaim17_mistral_hpo.json"
