@@ -104,7 +104,7 @@ class Leaderboard:
         self.add_aggregated_results()
         self.df_results.to_csv(self.output_path, sep="\t", index=False)
         pivated_results = self.pivot()
-        columns = pivated_results.columns
+        columns = list(pivated_results.columns)
         columns.remove("filter")
         columns.remove("model")
         columns.insert(0, "model")

@@ -22,12 +22,12 @@ cd "$CODE_PATH"
 
 if [ -z "$dataset" ]; then
   datasets=$(jq 'keys[]'  "${CODE_PATH}../computational-argumentation-tasks-instructions/tasks/metadata.json")
-else:
+else
   datasets=($dataset)
 fi
 echo $datasets
 
-for dataset in datasets   ;
+for dataset in ${datasets[@]};
 do
   for skill in mining perspective-assessment quality assessment generation reasoning ;
   do
