@@ -397,13 +397,13 @@ class Runner:
 ### This function is deprecated since it does not use VLLMs and is still dependent on one test dataset
 
     def hpo_objective(self, trial: Trial):
-
+        log_mem(f"loading model for hpo")
         self.model = self.prepare_model_for_training(
             trial,
             self.config.hpo_config.quant_config,
             self.config.hpo_config.model_config
         )
-
+        log_mem(f"loaded model for hpo")
         self.trainer = self.prepare_trainer(
             self.model,
             trial,
@@ -411,7 +411,7 @@ class Runner:
             self.config.hpo_config.data_collator_config,
             self.config.hpo_config.early_stopping_config
         )
-
+        log_mem(f"started training")
         self.trainer.train()
         log_mem(f"trained model")
 
