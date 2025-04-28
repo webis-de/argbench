@@ -57,13 +57,16 @@ if __name__ == "__main__":
     data_path = datasets_path() / "claim-revisions" / "acl23_revised.csv"
     metadata = Metadata(dataset_name)
     dataset = read_tabular(data_path)
-    dataset["data_split"] = dataset["data_split"].map(lambda x: "train" if x == "train" or x =="dev" else "test")
+    #dataset["data_split"] = dataset["data_split"].map(lambda x: "train" if x == "train" or x =="dev" else "test")
     train_dataset = dataset[dataset["data_split"] == "train"]
     test_dataset = dataset[dataset["data_split"] == "test"]
+    val_dataset = dataset[dataset["data_split"] == "dev"]
     print(f"train {len(train_dataset)}")
     print(f"test {len(test_dataset)}")
+    print(f"dev {len(val_dataset)}")
     process_data(train_dataset, metadata, "train")
     process_data(test_dataset, metadata, "test")
+    process_data(val_dataset, metadata, "val")
 
     metadata.add_genre(Genres.DEBATE_PORTALS)
     metadata.add_skill(Skills.QUALITY_ASSESSMENT)

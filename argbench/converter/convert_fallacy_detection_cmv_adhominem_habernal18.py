@@ -1,6 +1,6 @@
 import math
 
-from common import Genres, Output, Skills, datasets_path, Metadata, add_seed_arg, set_seed
+from common import Genres, Output, Skills, datasets_path, Metadata, add_seed_arg, set_seed, split_test_val_train
 from argparse import ArgumentParser
 import ndjson
 from random import sample
@@ -48,13 +48,8 @@ if __name__ == "__main__":
     metadata = Metadata(dataset_name)
     with open(fallacy_file, "r") as df:
         post_data = ndjson.load(df)
-
-    indices = range(len(post_data))
-    test_size = math.ceil(len(post_data) * 0.2)
-    test_indices = sample(indices, test_size )
-    train_indices = [i for i in range(len(post_data)) if i not in test_indices]
-    test_data = [post_data[i] for i in test_indices]
-    train_data = [post_data[i] for i in train_indices]
+    test_data, val_data, train_data = split_test_val_train(post_data)
 
     process_data(test_data, "test")
+    process_data(val_data, "val")
     process_data(train_data, "train")

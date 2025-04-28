@@ -9,6 +9,8 @@ from tqdm import tqdm
 DATASET_NAME = "argument_summarization_open_debate_evidence_roush23"
 DATASET_FILE_TEST = "argument_summarization_open_debate_evidence_test_roush23.json"
 DATASET_FILE_TRAIN = "argument_summarization_open_debate_evidence_train_roush23.json"
+DATASET_FILE_VAL = "argument_summarization_open_debate_evidence_val_roush23.json"
+
 def make_output(dataset, metadata, output_file, split):
     output = Output(DATASET_NAME)
 
@@ -36,15 +38,19 @@ def process_dataset(cache_directory):
             all_data_frames.append(df)
 
     df_all = pd.concat(all_data_frames)
-    df_test, df_train = find_topic_size_to_split(df_all, "block")
+    df_test, df_train = find_topic_size_to_split(df_all, "block", 0.2)
+    df_val, df_train = find_topic_size_to_split(df_train, "block", 0.25)
 
 
     metadata = Metadata(DATASET_NAME)
     metadata.add_genre(Genres.DEBATES)
     metadata.add_skill(Skills.GENERATION)
     metadata.add_evaluation_metric("generation-score")
+
     make_output(df_test, metadata, DATASET_FILE_TEST, "test")
     make_output(df_train, metadata, DATASET_FILE_TRAIN, "train")
+    make_output(df_val, metadata, DATASET_FILE_VAL, "val")
+
     metadata.write_metadata()
 
 if __name__ == "__main__":

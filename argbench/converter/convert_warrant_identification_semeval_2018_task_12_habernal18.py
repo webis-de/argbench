@@ -50,10 +50,11 @@ if __name__ == "__main__":
     print(f"{len(train_dataset)}")
     print(f"{len(dev_dataset)}")
 
-    train_dataset = pd.concat([train_dataset, dev_dataset])
+
     print(f"{len(train_dataset)}")
     print("Train")
     process_split(train_dataset, metadata, "train")
+    process_split(dev_dataset, metadata, "val")
     print("Test")
     process_split(test_dataset, metadata, "test")
 

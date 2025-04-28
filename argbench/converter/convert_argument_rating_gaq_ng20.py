@@ -91,6 +91,10 @@ if __name__ == "__main__":
 
     df_test = df_all.sample(frac=0.2)
     df_training = df_all[~df_all["id"].isin(df_test["id"])]
+
+    df_val = df_training.sample(frac=0.25)
+    df_training = df_training[~df_training["id"].isin(df_val["id"])]
+
     for dimension in task_defnitions:
         dataset_name = dataset_name_template.format(dimension=dimension)
         metadata = Metadata(dataset_name)
@@ -98,6 +102,7 @@ if __name__ == "__main__":
         metadata.add_skill(Skills.QUALITY_ASSESSMENT)
         task_definition = task_defnitions[dimension]
         format_dataset(df_training, task_definition, dimension, metadata, "train")
+        format_dataset(df_val, task_definition, dimension, metadata, "val")
         format_dataset(df_test, task_definition, dimension, metadata, "test")
         metadata.add_evaluation_metric("fscore")
         metadata.write_metadata()

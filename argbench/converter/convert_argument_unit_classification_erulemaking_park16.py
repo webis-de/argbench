@@ -1,4 +1,4 @@
-from common import Output, add_seed_arg, set_seed, Genres, Skills, Metadata, datasets_path, split_test_train
+from common import Output, add_seed_arg, set_seed, Genres, Skills, Metadata, datasets_path, split_test_val_train
 from argparse import ArgumentParser
 import json
 
@@ -62,7 +62,8 @@ def main():
     dataset_name = "argument_unit_classification_erulemaking_park16"
     dataset_file_template = "argument_unit_classification_erulemaking_{split}_park16.json"
     with open(data_path, 'r') as f:
-        test, train = split_test_train(list(f))
+        test, val, train = split_test_val_train(list(f))
+
     # Class for collecting dataset file data
 
 
@@ -71,8 +72,12 @@ def main():
         # Read JSON file and process
         data_file_train = dataset_file_template.format(split="train")
         data_file_test = dataset_file_template.format(split="test")
+        data_file_val = dataset_file_template.format(split="val")
+
         process_data(train, dataset_name, data_file_train, metadata, "train")
         process_data(test, dataset_name, data_file_test, metadata, "test")
+        process_data(val, dataset_name, data_file_val, metadata, "val")
+
         metadata.add_evaluation_metric("fscore")
         metadata.add_genre(Genres.WEB_FORUMS)
         metadata.add_skill(Skills.MINING)

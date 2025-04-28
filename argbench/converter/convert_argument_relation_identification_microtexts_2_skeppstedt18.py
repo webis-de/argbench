@@ -130,6 +130,7 @@ if __name__ == "__main__":
     metadata = Metadata(DATASET_NAME)
     metadata.add_dataset(DATASET_FILE.format(split="train"), "train")
     metadata.add_dataset(DATASET_FILE.replace("{split}", "test"), "test")
+    metadata.add_dataset(DATASET_FILE.replace("{split}", "val"), "val")
     metadata.add_genre(Genres.ESSAYS)
     metadata.add_skill(Skills.MINING)
     metadata.add_evaluation_metric("fscore")
@@ -144,8 +145,13 @@ if __name__ == "__main__":
         indices = range(size)
         test_indices = sample(indices, test_size)
         train_indices = [index for index in indices if index not in test_indices]
+        val_indices = sample(train_indices, test_size)
+        train_indices = [index for index in train_indices if index not in val_indices]
 
         test_set = [files[index] for index in test_indices]
         train_set = [files[index] for index in train_indices]
+        val_set = [files[index] for index in val_indices]
+
+        write_split(val_set, "val")
         write_split(test_set, "test")
         write_split(train_set, "train")

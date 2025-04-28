@@ -41,12 +41,12 @@ def set_seed(parsed_args):
     random.seed(parsed_args.seed)
     np.random.seed(parsed_args.seed)
 
-def find_topic_size_to_split(df, topic_label):
+def find_topic_size_to_split(df, topic_label, ratio):
 
     topics = df[topic_label].unique().tolist()
 
-    df_test_ideal = df.sample(frac=0.2)
-    test_topic_size = math.ceil(len(topics) * 0.2)
+    df_test_ideal = df.sample(frac=ratio)
+    test_topic_size = math.ceil(len(topics) * ratio)
 
     min_dist = sys.maxsize
     best_test_topic = random.sample(topics, test_topic_size)
@@ -63,14 +63,30 @@ def find_topic_size_to_split(df, topic_label):
     df_train = df[df[topic_label].isin(train_topics)]
     return df_test, df_train
 
-def split_test_train(iteratable):
+def split_test_val_train(iteratable):
     size = len(list(iteratable))
     test_size = math.ceil(size * 0.2)
     test_indices = sample(list(range(size)), test_size)
     train_indices = [i for i in range(size) if i not in test_indices]
+    val_indices = sample(train_indices, test_size)
+    train_indices = [i for i in train_indices if i not in val_indices]
     test = [iteratable[i] for i in test_indices]
     train = [iteratable[i] for i in train_indices]
-    return test, train
+    val = [iteratable[i] for i in val_indices]
+    return test, val, train
+
+
+def split_val_train(iteratable):
+    size = len(list(iteratable))
+    val_size = math.ceil(size * 0.25)
+    val_indices = sample(list(range(size)), val_size)
+
+    train_indices = [i for i in range(size) if i not in val_indices]
+    val = [iteratable[i] for i in val_indices]
+    train = [iteratable[i] for i in train_indices]
+
+    return val, train
+
 class Genres(Enum):
     """Valid genres"""
     ESSAYS = "essays"

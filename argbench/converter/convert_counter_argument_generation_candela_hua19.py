@@ -63,11 +63,20 @@ if __name__ == "__main__":
 
     metadata = Metadata(DATASET_NAME)
 
-    train_datafiles = [data_path / "train.jsonl", data_path / "dev.jsonl"]
+    val_datafiles = [ data_path / "dev.jsonl"]
+    train_datafiles = [data_path / "train.jsonl"]
     process_dataset(
         train_datafiles,
         "counter_argument_generation_candela_train_hua19.json",
         "train",
+        metadata
+    )
+    print("Train processed")
+
+    process_dataset(
+        val_datafiles,
+        "counter_argument_generation_candela_val_hua19.json",
+        "val",
         metadata
     )
     print("Train processed")

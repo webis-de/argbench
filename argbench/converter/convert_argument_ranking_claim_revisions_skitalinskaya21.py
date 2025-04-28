@@ -37,18 +37,25 @@ if __name__ == "__main__":
     data_path = datasets_path() / "claim-revisions-arg-ranking" / "eacl21_extended.csv"
 
     metadata = Metadata(dataset_name)
-
     dataset = read_tabular(data_path)
     unique_claim_ids = dataset["claim_id"].unique().tolist()
     size_test_claim_ids = len(unique_claim_ids) * 2 //10
+
+
     test_claim_ids = sample(unique_claim_ids, size_test_claim_ids)
+    training_claim_ids = [claim_id for claim_id in unique_claim_ids if claim_id not in test_claim_ids]
+
+    val_claim_ids = sample(training_claim_ids, size_test_claim_ids)
+    training_claim_ids = [claim_id for claim_id in training_claim_ids if claim_id not in val_claim_ids]
 
     df_test = dataset[dataset["claim_id"].isin(test_claim_ids)]
-    print(len(df_test))
-    df_training = dataset[~dataset["claim_id"].isin(test_claim_ids)]
-    print(len(df_training))
+    df_training = dataset[dataset["claim_id"].isin(training_claim_ids)]
+    df_val = dataset[dataset["claim_id"].isin(val_claim_ids)]
+
     process_data(df_training, metadata, "train")
     process_data(df_test, metadata, "test")
+    process_data(df_val, metadata, "val")
+
     metadata.add_evaluation_metric("fscore")
     metadata.add_genre(Genres.DEBATE_PORTALS)
     metadata.add_skill(Skills.QUALITY_ASSESSMENT)

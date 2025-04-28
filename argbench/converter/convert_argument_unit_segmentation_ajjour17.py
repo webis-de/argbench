@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path
+
+from argbench.converter.common import split_val_train
 from common import Genres, Output, Skills, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
 from dataclasses import dataclass
 from argparse import ArgumentParser
@@ -87,21 +89,30 @@ DATASET_FILE_TEMPLATE = "argument_unit_segmentation_{dataset}_{split}_ajjour17.j
 def process_folder(path: Path):
     train_dataset = []
     test_dataset = []
+    val_dataset = []
     train_path = path / "trainingSet"
     test_path = path / "testingSet"
 
-    for f in train_path.iterdir():
+    train_files = list(train_path.iterdir())
+    val_files, train_files = split_val_train(train_files)
+
+    for f in train_files:
         text = extract_file(f)
         train_dataset.append(text)
+
+    for f in val_files:
+        text = extract_file(f)
+        val_dataset.append(text)
 
     for f in test_path.iterdir():
         text = extract_file(f)
         test_dataset.append(text)
 
-    return train_dataset, test_dataset
+
+    return test_dataset, val_dataset, train_dataset
 
 
-def convert_arguments(dataset_name, test_dataset, train_dataset):
+def convert_arguments(dataset_name, test_dataset, val_dataset, train_dataset):
     prompt = """Given the following document, split all of the document into argumentative units and non-argumentative units.
 An argumentative unit is a statement that has an argumentative function for example a claim or anecdote.
 Prepend each argumentative unit with argumentative: and spans that are not Argumentative with Non-argumentative:.
@@ -110,9 +121,11 @@ Do not add a new formating or enumeration also do not rephrase the argument unit
 
     train_output = Output(dataset_name)
     test_output = Output(dataset_name)
+    val_output = Output(dataset_name)
 
     train_output.append_definition(prompt)
     test_output.append_definition(prompt)
+    val_output.append_definition(prompt)
 
     for file in tqdm(train_dataset):
         extracted_units = [{unit.span.strip():unit.label} for unit in file.units]
@@ -122,7 +135,11 @@ Do not add a new formating or enumeration also do not rephrase the argument unit
         extracted_units = [{unit.span.strip():unit.label} for unit in file.units]
         test_output.append_instance(file.fragment_id, file.text, [extracted_units])
 
-    return train_output, test_output
+    for file in tqdm(val_dataset):
+        extracted_units = [{unit.span.strip():unit.label} for unit in file.units]
+        val_output.append_instance(file.fragment_id, file.text, [extracted_units])
+
+    return test_output, val_output, train_output
 
 
 def find_matching_non_arg(non_arg_seqs, bin_start, bin_end):
@@ -162,9 +179,12 @@ if __name__ == "__main__":
 
         dataset_name = DATASET_NAME_TEMPLATE.replace("{dataset}", dataset)
         dataset_file_train = DATASET_FILE_TEMPLATE.replace("{dataset}", dataset).format(split="train")
-        dataset_file_test = DATASET_FILE_TEMPLATE.replace("{dataset}", dataset).replace("{split}", "test")
-        train_data, test_data = process_folder(dataset_path)
-        train_data, test_data = convert_arguments(dataset_name, test_data, train_data)
+        dataset_file_test = DATASET_FILE_TEMPLATE.replace("{dataset}", dataset).format(split="test")
+        dataset_file_val = DATASET_FILE_TEMPLATE.replace("{dataset}", dataset).format(split="val")
+
+        test_data, val_data, train_data  = process_folder(dataset_path)
+        test_data, val_data, train_data = convert_arguments(dataset_name, test_data, val_data, train_data)
+
         if dataset == "essays":
             genre = Genres.ESSAYS
         elif dataset == "editorials":
@@ -178,9 +198,13 @@ if __name__ == "__main__":
 
         train_data.write_output(dataset_file_train)
         test_data.write_output(dataset_file_test)
+        val_data.write_output(dataset_file_val)
+
         metadata = Metadata(dataset_name)
         metadata.add_dataset(dataset_file_train, "train")
         metadata.add_dataset(dataset_file_test, "test")
+        metadata.add_dataset(dataset_file_val, "val")
+
         metadata.add_genre(genre)
         metadata.add_evaluation_metric("argument-bio-fscore")
         metadata.add_skill(Skills.MINING)

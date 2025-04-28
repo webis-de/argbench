@@ -9,6 +9,7 @@ import uuid
 DATASET_NAME = "premise_extraction_ibm_evidence_sentence_eindor20"
 DATASET_FILE_TRAIN = "premise_extraction_ibm_evidence_sentence_train_eindor20.json"
 DATASET_FILE_TEST = "premise_extraction_ibm_evidence_sentence_test_eindor20.json"
+DATASET_FILE_VAL = "premise_extraction_ibm_evidence_sentence_val_eindor20.json"
 
 ACCEPTANCE_RATE = 0.7
 
@@ -54,17 +55,21 @@ if __name__ == "__main__":
                     / "ein-dor-20-corpus-wide-argument-mining-a-working-solution.csv")
 
     dataset = read_tabular(dataset_path)
-    df_test, df_train =    find_topic_size_to_split(dataset, "Dominant Concept")
-
+    df_test, df_train = find_topic_size_to_split(dataset, "Dominant Concept", 0.2)
+    df_val, df_train =  find_topic_size_to_split(df_train, "Dominant Concept", 0.25)
 
     print(len(df_test))
     print(len(df_train))
+    print(len(df_val))
+
     process_split(df_test, DATASET_FILE_TEST)
     process_split(df_train, DATASET_FILE_TRAIN)
+    process_split(df_val, DATASET_FILE_VAL)
 
     metadata = Metadata(DATASET_NAME)
     metadata.add_dataset(DATASET_FILE_TEST, "test")
     metadata.add_dataset(DATASET_FILE_TRAIN, "train")
+    metadata.add_dataset(DATASET_FILE_VAL, "val")
     metadata.add_genre(Genres.WIKIPEDIA)
     metadata.add_skill(Skills.MINING)
     metadata.add_evaluation_metric("fscore")
