@@ -7,6 +7,7 @@ from dataclasses import dataclass
 
 DATASET_NAME = "argument_generation_argu_saha23"
 DATASET_FILE_TRAIN = "argument_generation_argu_train_saha23.json"
+DATASET_FILE_VAL = "argument_generation_argu_val_saha23.json"
 DATASET_FILE_TEST = "argument_generation_argu_test_saha23.json"
 
 @dataclass
@@ -17,6 +18,7 @@ class Prompt:
 
 def process_split(data, data_path):
     output = Output(DATASET_NAME)
+    arguments = []
     for _, arg_data in data.iterrows():
         id = arg_data["id"]
         argument_label = arg_data["basn_lbl"]
@@ -53,20 +55,25 @@ if __name__ == "__main__":
     splits_path = datasets_path() / "argu" / "argu_generator_keys.pkl"
     data_path = datasets_path() / "argu" / "argu_generator_data.pkl"
 
-    arguments = []
+
     records = pd.read_pickle(data_path)
     ids, records = list(records.keys()), list(records.values())
 
     df_data = pd.DataFrame.from_records(records)
     df_data["id"] = ids
     print(df_data.info())
-    df_test, df_train = find_topic_size_to_split(df_data, "topic")
+    df_test, df_train = find_topic_size_to_split(df_data, "topic", 0.2)
+    print(f"test {len(df_test)}, train {len(df_train)}")
+    df_val, df_train = find_topic_size_to_split(df_train, "topic", 0.25)
+    print(f"val {len(df_val)}, train {len(df_train)}")
     process_split(df_test, DATASET_FILE_TEST)
     process_split(df_train, DATASET_FILE_TRAIN)
-    print(len(df_test))
-    print(len(df_train))
+    process_split(df_val, DATASET_FILE_VAL)
+
     metadata.add_dataset(DATASET_FILE_TEST, "test")
     metadata.add_dataset(DATASET_FILE_TRAIN, "train")
+    metadata.add_dataset(DATASET_FILE_VAL, "val")
+
     metadata.add_genre(Genres.DEBATE_PORTALS)
     metadata.add_skill(Skills.GENERATION)
     metadata.add_evaluation_metric("generation-score")

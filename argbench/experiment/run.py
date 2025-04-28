@@ -270,7 +270,6 @@ class Runner:
             trust_remote_code=True
         )
 
-
     def prepare_peft_model(self, model):
         """
         loads one or many combined peft models
@@ -305,7 +304,6 @@ class Runner:
 
         return model
 
-
     def prepare_new_peft_model(self, model):
         """
         Initializes new Peft adapter instead of loading ready one.
@@ -323,7 +321,6 @@ class Runner:
             if 'lora' in name or 'Lora' in name:
                 param.requires_grad = True
         return model
-
 
     def tokenize(self, prompt, cutoff_len, add_eos_token=True):
         """
@@ -348,7 +345,6 @@ class Runner:
 
         return result
 
-
     def generate_and_tokenize_prompt(self, data_point, cutoff_len, train=True):
         """
         Tokenizes data instance for feeding the model during training/testing
@@ -366,14 +362,12 @@ class Runner:
             return full_prompt
         return input_prompt
 
-
     def load_model(self):
         """Loads model checkpoint"""
         log_mem("loading model")
         model = self.prepare_model_for_training()
 
         return model
-
 
     def free_model(self):
         if self.base_model:
@@ -384,7 +378,6 @@ class Runner:
         gc.collect()
         log_mem(f"saved and free model")
 
-
     def free_vllm_model(self):
         if self.vllm:
             destroy_model_parallel()
@@ -392,7 +385,6 @@ class Runner:
             gc.collect()
             torch.cuda.empty_cache()
             torch.distributed.destroy_process_group()
-
 
 ### This function is deprecated since it does not use VLLMs and is still dependent on one test dataset
 

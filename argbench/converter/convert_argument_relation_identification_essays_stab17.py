@@ -7,6 +7,7 @@ from argparse import ArgumentParser
 
 
 
+
 def parse_xmi_file(xmi_path):
     """Parse a single XMI file and extract required information."""
     tree = etree.parse(xmi_path)
@@ -88,14 +89,19 @@ def main():
 
     df_split = pd.read_csv(split_path, sep=";")
     print(df_split.info())
+
     ids = df_split["ID"].values
-    splits = df_split["SET"].values
+    df_train = df_split[df_split["SET"]=="TRAIN"]
+    df_test = df_split[df_split["SET"]=="TEST"]
+    val_ids = df_train["ID"].sample(len(df_test)).values
+    df_split["SET"] = df_split.apply(lambda x: "VAL" if x["ID"] in val_ids else x["SET"], axis=1)
+    splits = df_split["SET"]
     split_map = {ids[i]:splits[i] for i in range(len(ids))}
     task_definition = """Given the following essay in which the given premise and conclusion appear.\n
      Classify whether the premise supports or attacks the conclusion.
          Only output Support or Attack. Do not Explain."""
     metadata = Metadata(dataset_name)
-    for split in ["train", "test"]:
+    for split in ["train", "test", "val"]:
         output = Output(dataset_name)
         output.append_definition(task_definition)
 

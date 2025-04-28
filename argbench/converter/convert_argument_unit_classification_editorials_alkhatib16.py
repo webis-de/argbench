@@ -84,6 +84,8 @@ def main():
     txt_directory_path = datasets_path() / "editorials" / "txt" / "txt" / "complete-annotated-final"
     dataset_train = "argument_unit_classification_editorials_train_alkhatib16.json"
     dataset_test = "argument_unit_classification_editorials_test_alkhatib16.json"
+    dataset_val = "argument_unit_classification_editorials_val_alkhatib16.json"
+
     dataset_name = "argument_unit_classification_editorials_alkhatib16"
 
     instances_dict = defaultdict(list)
@@ -106,16 +108,21 @@ the above classes.
      """
     train_output = Output(dataset_name)
     test_output = Output(dataset_name)
+    val_output = Output(dataset_name)
+
     metadata = Metadata(dataset_name)
 
     test_output.append_definition( task_definition)
     train_output.append_definition(task_definition)
+    val_output.append_definition(task_definition)
 
     # output.append_metadata("Title", "All Data")  # Optional: Add a general title
 
     test_size = 2 * len(instances_dict) // 10
 
     test_indices = sample(list(instances_dict.keys()), test_size)
+    training_indices = [id for id in instances_dict.keys() if id not in test_indices]
+    val_indices = sample(training_indices, test_size)
 
 
     for instance_id, outputs in instances_dict.items():
@@ -130,6 +137,8 @@ the above classes.
 
             if instance_id in test_indices:
                 test_output.append_instance(instance_id, combined_input, [label])
+            elif instance_id in val_indices:
+                val_output.append_instance(instance_id, combined_input, [label])
             else:
                 train_output.append_instance(instance_id, combined_input, [label])
 
@@ -140,8 +149,15 @@ the above classes.
     test_output.append_genre(Genres.NEWS)
     test_output.append_subarea(Skills.MINING)
     test_output.write_output(dataset_test)
+
+    val_output.append_genre(Genres.NEWS)
+    val_output.append_subarea(Skills.MINING)
+    val_output.write_output(dataset_val)
+
     metadata.add_dataset(dataset_test, "test")
     metadata.add_dataset(dataset_train, "train")
+    metadata.add_dataset(dataset_val, "val")
+
     metadata.add_evaluation_metric("fscore")
     metadata.add_genre(Genres.NEWS)
     metadata.add_skill(Skills.MINING)

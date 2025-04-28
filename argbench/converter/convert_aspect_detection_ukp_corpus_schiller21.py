@@ -53,18 +53,26 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
 
-    data_path = datasets_path() / "ukp-corpus-argument-generation" / "argument_aspect_detection_v1.0" / "in_topic"
+    data_path = datasets_path() / "ukp-corpus-argument-generation" / "argument_aspect_detection_v1.0" / "cross_topic"
 
     metadata = Metadata(dataset_name)
 
     process_split(
-        [data_path / "train.jsonl", data_path / "dev.jsonl"],
+        [data_path / "death_penalty.jsonl"],
+        "aspect_detection_ukp_corpus_val_schiller21.json",
+        metadata,
+        "val"
+    )
+
+    process_split(
+        [data_path / "cloning.jsonl", data_path / "marijuana_legalization.jsonl", data_path / "minimum_wage.jsonl",
+         data_path / "abortion.jsonl", data_path / "nuclear_energy.jsonl"],
         "aspect_detection_ukp_corpus_train_schiller21.json",
         metadata,
         "train"
     )
     process_split(
-        [data_path / "test.jsonl"],
+        [data_path / "gun_control.jsonl", data_path / "school_uniformsc.jsonl"],
         "aspect_detection_ukp_corpus_test_schiller21.json",
         metadata,
         "test"

@@ -36,8 +36,10 @@ if __name__ == "__main__":
     # Dataset name specifies folder where dataset will be written
 
     metadata = Metadata(dataset_name)
-    metadata.add_dataset(dataset_file.replace("{split}","train"), "train")
+    metadata.add_dataset(dataset_file.format(split="train"), "train")
     metadata.add_dataset(dataset_file.format(split="test"), "test")
+    metadata.add_dataset(dataset_file.format(split="val"), "val")
+
     metadata.add_evaluation_metric("fscore")
     metadata.add_genre(Genres.DEBATES)
     metadata.add_skill(Skills.MINING)
@@ -52,11 +54,14 @@ if __name__ == "__main__":
         "attack": "Attack"
     })
 
-    df_test, df_train = find_topic_size_to_split(dataset, "topic")
+    df_test, df_train = find_topic_size_to_split(dataset, "topic", 0.2)
+    df_val, df_train = find_topic_size_to_split(df_train, "topic", 0.25)
     print(len(df_train))
     print(len(df_test))
     print(len(dataset))
-    process_split(df_train, dataset_file.replace("{split}","train"))
-    process_split(df_train, dataset_file.format(split="test"))
+
+    process_split(df_train, dataset_file.format(split="train"))
+    process_split(df_test, dataset_file.format(split="test"))
+    process_split(df_val, dataset_file.format(split="val"))
 
 

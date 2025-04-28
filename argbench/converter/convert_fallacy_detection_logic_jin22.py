@@ -64,6 +64,15 @@ def process_data(dataset, data_name, data_split, metadata):
     metadata.add_evaluation_metric("fscore")
     return len(output.instances)
 
+def read_dataset(files):
+    all_dfs = []
+    for file in files:
+        dataset = read_tabular(data_path / file)
+        if "updated_label" in dataset.columns:
+            dataset.rename(columns={"updated_label":"logical_fallacies"}, inplace=True)
+            all_dfs.append(dataset[["source_article", "logical_fallacies"]])
+    return pd.concat(all_dfs)
+
 if __name__ == "__main__":
     # Input arguments for dataset generation
     arg_parser = ArgumentParser(description="What dataset will be processed?")
@@ -71,34 +80,21 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
     data_path = datasets_path() / "logic" # path to data
-    all_training_datasets = ["climate_train.csv", "climate_dev.csv", "edu_train.csv", "edu_dev.csv"]
+    all_training_datasets = ["climate_train.csv", "edu_train.csv"]
+    all_val_datasets = ["climate_dev.csv", "edu_dev.csv"]
     all_test_datasets = ["climate_test.csv", "edu_test.csv"]
     all_training_df = []
-    for training_dataset in all_training_datasets:
+    df_train = read_dataset(all_training_datasets)
+    df_val = read_dataset(all_val_datasets)
+    df_test = read_dataset(all_test_datasets)
 
-        dataset = read_tabular(data_path / training_dataset)
-        if "updated_label" in dataset.columns:
-            dataset.rename(columns={"updated_label":"logical_fallacies"}, inplace=True)
-
-        all_training_df.append(dataset[["source_article", "logical_fallacies"]])
-
-    df_train = pd.concat(all_training_df)
-    all_test_dfs = []
-
-    for test_dataset in all_test_datasets:
-        dataset = read_tabular(data_path / test_dataset)
-        if "updated_label" in dataset.columns:
-            dataset.rename(columns={"updated_label":"logical_fallacies"}, inplace=True)
-
-        all_test_dfs.append(dataset[["source_article", "logical_fallacies"]])
-
-    df_test = pd.concat(all_test_dfs)
     metadata = Metadata(dataset_name)
 
     count_train = process_data(df_train, "fallacy_detection_logic_train_goffredo23.json", "train", metadata)
     count_test = process_data(df_test, "fallacy_detection_logic_test_goffredo23.json", "test", metadata)
+    count_val = process_data(df_val, "fallacy_detection_logic_val_goffredo23.json", "val", metadata)
 
-    print(f"Found {count_test + count_train} sentences")
+    print(f"Found {count_test + count_train + count_val} sentences")
     
     metadata.add_genre(Genres.WEB)
     metadata.add_skill(Skills.REASONING)

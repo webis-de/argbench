@@ -45,8 +45,9 @@ if __name__ == "__main__":
     metadata = Metadata(dataset_name)
 
     dataset = read_tabular(data_path)
-    dataset["data_split"] = dataset["data_split"].map(lambda x: "train" if x == "train" or x =="dev" else "test")
+
     print("Train")
+    process_split(dataset[dataset["data_split"] == "dev"], metadata, "val")
     process_split(dataset[dataset["data_split"] == "train"], metadata, "train")
     print("Test")
     process_split(dataset[dataset["data_split"] == "test"], metadata, "test")

@@ -308,6 +308,7 @@ class ModelConfig(CommonConfig):
     prompt_template: str
     output_splitter: str
 
+
 @dataclass
 class VLLMGenerationConfig(CommonConfig):
     temperature: float
@@ -351,6 +352,7 @@ class RunConfig:
 
     model_configs: List[ModelConfig]
 
+    experiment_splits_path: str
 
 
     models_folder: str
@@ -368,6 +370,8 @@ class RunConfig:
 
     is_hpo: bool
     # Padding token id
+
+    is_in_task: bool = False
 
     skill_filter: str = None
 
@@ -404,6 +408,7 @@ class RunConfig:
         """
         Registers all cli parameters for RunConfig
         """
+        arg_parser.add_argument("-int", "--is_in_task", type=bool, help="whether to conduct a cross task or in task experiment")
         arg_parser.add_argument("-sf", "--skill-filter", type=str, help="filter the tasks based on skill")
         arg_parser.add_argument("-d", "--debug", action="store_true", default=False, help="Should prompting be performed")
         arg_parser.add_argument("-iprpt", "--is_prompting", action="store_true", default=False, help="Should prompting be performed")
@@ -558,6 +563,10 @@ class RunConfig:
         # Runner config
         if args.skill_filter:
             conf_obj.skill_filter = args.skill_filter
+        if args.is_in_task:
+            conf_obj.is_in_task = True
+        else:
+            conf_obj.is_in_task = False
         if args.debug:
             conf_obj.debug = args.debug
         if args.seed:
@@ -724,6 +733,8 @@ class RunConfig:
             conf_obj.quant_config.double_quant = args.double_quant
         if args.leaderboard_path:
             conf_obj.leaderboard_path = args.leaderboard_path
+        if args.experiment_splits_path:
+            conf_obj.experiment_splits_path = args.expreiment_splits_path
 
         if config.get("model_configs"):
             model_configs = []

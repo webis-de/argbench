@@ -1,4 +1,4 @@
-from common import Genres, Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Skills
+from common import Genres, Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Skills, split_val_train
 from argparse import ArgumentParser
 from pathlib import Path
 import pickle
@@ -48,6 +48,9 @@ if __name__ == "__main__":
             model_split_idx[split_model] = []
             for id in splits[split_type][split_idx][split_model]:
                 model_split_idx[split_model].append(str(id))
+    val_ids, train_ids = split_val_train(model_split_idx["train"])
+    model_split_idx["train"] = train_ids
+    model_split_idx["val"] = val_ids
 
     for split_model in model_split_idx:
         output = Output(DATASET_NAME)

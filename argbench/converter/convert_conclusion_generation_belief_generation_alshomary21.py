@@ -68,6 +68,15 @@ if __name__ == "__main__":
         bows_dataset,
         metadata,
         dataset_name,
+        "conclusion_generation_belief_generation_val_alshomary21.json",
+        [data_path / "preprocessed_data" / "valid_with_claim_df.csv"],
+        "val"
+    )
+
+    process_dataset(
+        bows_dataset,
+        metadata,
+        dataset_name,
         "conclusion_generation_belief_generation_test_alshomary21.json",
         [data_path / "preprocessed_data" / "test_with_claim_df.csv"],
         "test"

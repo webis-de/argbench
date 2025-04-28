@@ -133,7 +133,14 @@ if __name__ == "__main__":
     metadata = Metadata(DATASET_NAME)
 
     process_dataset(
-        [data_path / "train.conll", data_path / "dev.conll"],
+        [data_path / "dev.conll"],
+        "fallacy_detection_elecdeb60t020_val_goffredo23.json",
+        metadata,
+        "val"
+    )
+
+    process_dataset(
+        [data_path / "train.conll"],
         "fallacy_detection_elecdeb60t020_train_goffredo23.json",
         metadata,
         "train"

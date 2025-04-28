@@ -1,10 +1,9 @@
-from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Skills
+from common import Output, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Skills, find_topic_size_to_split
 from argparse import ArgumentParser
 import uuid
 
 
-def convert_dataset(data_path, data_file, metadata, split):
-    dataset = read_tabular(data_path)
+def convert_dataset(dataset, data_file, metadata, split):
     output = Output(dataset_name)
     output.append_definition("Given the topic and the two evidences, is the first evidence more convincing than" +
                              "the second evidence. Only respond with better or worse, do not explain.")
@@ -34,17 +33,27 @@ if __name__ == "__main__":
     args = arg_parser.parse_known_args()[0]
     set_seed(args) # Seed random number generation
 
+
+
     data_path = datasets_path() / "ibm-evidence-quality" # path to data
 
     # Set name of the dataset to identify it and files of that dataset
     dataset_name = "argument_ranking_ibm_evidence_quality_gleize19"
     dataset_file_train = "argument_ranking_ibm_evidence_quality_train_gleize19.json"
     dataset_file_test = "argument_ranking_ibm_evidence_quality_test_gleize19.json"
+    dataset_file_val = "argument_ranking_ibm_evidence_quality_val_gleize19.json"
+
+    train_dataset = read_tabular(data_path / "train.csv")
+    test_dataset = read_tabular(data_path / "test.csv")
+    val_dataset, train_dataset = find_topic_size_to_split(train_dataset,"topic", 0.25)
 
     metadata = Metadata(dataset_name)
 
-    convert_dataset(data_path / "train.csv", dataset_file_train, metadata, "train")
-    convert_dataset(data_path / "test.csv", dataset_file_test, metadata, "test")
+
+    convert_dataset(train_dataset, dataset_file_train, metadata, "train")
+    convert_dataset(test_dataset, dataset_file_test, metadata, "test")
+    convert_dataset(val_dataset, dataset_file_val, metadata, "val")
+
     metadata.add_evaluation_metric("fscore")
     metadata.add_genre(Genres.WIKIPEDIA)
     metadata.add_skill(Skills.QUALITY_ASSESSMENT)

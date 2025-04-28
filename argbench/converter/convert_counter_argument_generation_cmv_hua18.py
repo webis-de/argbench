@@ -67,7 +67,7 @@ if __name__ == "__main__":
     print(f"train {len(train.instances)}")
 
     print("Valid")
-    process_dataset(valid_op_path, valid_arg_path, valid_kw_path, train)
+    val = process_dataset(valid_op_path, valid_arg_path, valid_kw_path)
     print(f"train + valid {len(train.instances)}")
 
     print("Test")
@@ -81,13 +81,16 @@ if __name__ == "__main__":
     test.append_genre(Genres.WEB_FORUMS)
     test.append_subarea(Skills.GENERATION)
 
+    val.append_genre(Genres.WEB_FORUMS)
+    val.append_subarea(Skills.GENERATION)
 
     train.write_output("counter_argument_generation_cmv_train_hua18.json")
     test.write_output("counter_argument_generation_cmv_test_hua18.json")
+    val.write_output("counter_argument_generation_cmv_val_hua18.json")
 
     metadata.add_dataset("counter_argument_generation_cmv_train_hua18.json", "train")
     metadata.add_dataset("counter_argument_generation_cmv_test_hua18.json", "test")
-
+    metadata.add_dataset("counter_argument_generation_cmv_val_hua18.json", "val")
 
     metadata.add_genre(Genres.WEB_FORUMS)
     metadata.add_skill(Skills.GENERATION)

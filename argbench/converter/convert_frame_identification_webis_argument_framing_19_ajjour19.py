@@ -53,19 +53,24 @@ if __name__ == "__main__":
 
 
     train_data_file = "frame_identification_webis_argument_framing_19_train_ajjour19.json"
+    val_data_file = "frame_identification_webis_argument_framing_19_val_ajjour19.json"
     test_data_file = "frame_identification_webis_argument_framing_19_test_ajjour19.json"
-    df_test, df_training = find_topic_size_to_split(dataset, "topic_id")
 
+    df_test, df_training = find_topic_size_to_split(dataset, "topic_id", 0.2)
+    df_val, df_training = find_topic_size_to_split(df_training, "topic_id", 0.25)
 
     print(len(df_training))
     print(len(df_test
               ))
     process_split(df_training, train_data_file)
     process_split(df_test, test_data_file)
+    process_split(df_val, val_data_file)
+
     metadata = Metadata(DATASET_NAME)
     metadata.add_dataset(train_data_file, "train")
     metadata.add_dataset(test_data_file, "test")
-    
+    metadata.add_dataset(val_data_file, "val")
+
     metadata.add_genre(Genres.DEBATE_PORTALS)
     metadata.add_skill(Skills.PERSPECTIVE_ASSESSMENT)
     metadata.add_evaluation_metric("fscore")

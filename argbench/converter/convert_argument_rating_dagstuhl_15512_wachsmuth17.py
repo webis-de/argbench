@@ -8,11 +8,13 @@ p = re.compile(r"\(([a-zA-Z]+)\)")
 QUALITY_SCORES = ["Low", "Average", "High"]
 DATASET_NAME = "argument_rating_dagstuhl_15512_{dimension}_wachsmuth17"
 
-def aggregate_labels_and_split(dataset, column):
+def  aggregate_labels_and_split(dataset, column):
     arguments = dataset.groupby(["argument", "issue"])[["argument", "issue", column]].apply(lambda row: row[column].value_counts().index[0]).reset_index()
 
-    df_test, df_train = find_topic_size_to_split(arguments, "issue")
-    return df_test, df_train
+    df_test, df_train = find_topic_size_to_split(arguments, "issue", 0.2)
+    df_val, df_train = find_topic_size_to_split(df_train, "issue", 0.25)
+
+    return df_test, df_val, df_train
 
 def make_output(dataset, metadata, column, aspect_description, dataset_file, split):
     dimension = column.replace(' ', '_')
@@ -88,10 +90,14 @@ if __name__ == "__main__":
 
         dataset_name = DATASET_NAME.format(dimension= task_name.replace(' ', '_'))
         metadata = Metadata(dataset_name)
-        df_test, df_train = aggregate_labels_and_split(dataset, task_name)
+        df_test, df_val, df_train = aggregate_labels_and_split(dataset, task_name)
+
         test_filename = f"argument_rating_dagstuhl_15512_{task_name.replace(' ', '_')}_test_wachsmuth17.json"
         train_filename = f"argument_rating_dagstuhl_15512_{task_name.replace(' ', '_')}_train_wachsmuth17.json"
+        val_filename = f"argument_rating_dagstuhl_15512_{task_name.replace(' ', '_')}_val_wachsmuth17.json"
+
         make_output(df_test, metadata, task_name, description, test_filename, "test")
+        make_output(df_val, metadata, task_name, description, val_filename, "val")
         make_output(df_train, metadata, task_name, description, train_filename, "train")
 
         metadata.add_evaluation_metric("fscore")

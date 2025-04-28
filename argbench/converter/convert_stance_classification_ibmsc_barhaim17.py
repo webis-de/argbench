@@ -1,3 +1,4 @@
+from argbench.converter.common import find_topic_size_to_split
 from common import Genres, Output, Skills, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import uuid
@@ -37,13 +38,18 @@ if __name__ == "__main__":
     dataset = str(datasets_path() / "ibmsc" / "ibmsc-stance-classification.csv")
 
     data = read_tabular(dataset)
+    df_train = data[data["split"] == "train"]
 
-    process_dataset(data[data["split"] == "train"], "stance_classification_ibmsc_train_barhaim17.json")
+    df_val, df_train = find_topic_size_to_split(df_train, "topicText", 0.25)
+
+    process_dataset(df_train, "stance_classification_ibmsc_train_barhaim17.json")
+    process_dataset(df_val, "stance_classification_ibmsc_val_barhaim17.json")
     process_dataset(data[data["split"] == "test"], "stance_classification_ibmsc_test_barhaim17.json")
 
 
     metadata.add_dataset("stance_classification_ibmsc_train_barhaim17.json", "train")
     metadata.add_dataset("stance_classification_ibmsc_test_barhaim17.json", "test")
+    metadata.add_dataset("stance_classification_ibmsc_val_barhaim17.json", "val")
 
     metadata.add_genre(Genres.WIKIPEDIA)
     metadata.add_skill(Skills.PERSPECTIVE_ASSESSMENT)

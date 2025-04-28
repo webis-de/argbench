@@ -43,11 +43,12 @@ if __name__ == "__main__":
                     / "ArgKP-2021_dataset.csv")
 
     dataset = read_tabular(dataset_path)
-    df_test, df_train = find_topic_size_to_split(dataset, "topic")
+    df_test, df_train = find_topic_size_to_split(dataset, "topic", 0.2)
+    df_val, df_train = find_topic_size_to_split(df_train, "topic", 0.25)
 
     metadata = Metadata(dataset_name)
     preprocess_data(df_test, "test", metadata)
     preprocess_data(df_train, "train", metadata)
-
+    preprocess_data(df_val, "val", metadata)
 
     metadata.write_metadata()

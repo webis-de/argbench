@@ -66,6 +66,11 @@ def main():
     df_split = pd.read_csv(split_path, sep=";")
     print(df_split.info())
     ids = df_split["ID"].values
+    df_train = df_split[df_split["SET"]=="TRAIN"]
+    df_test = df_split[df_split["SET"]=="TEST"]
+    val_ids = df_train["ID"].sample(len(df_test)).values
+
+    df_split["SET"] = df_split.apply(lambda x: "VAL" if x["ID"] in val_ids else x["SET"] ,axis=1)
     splits = df_split["SET"].values
     split_map = {ids[i]:splits[i] for i in range(len(ids))}
     xmi_directory = (datasets_path() / "essays-argument-mining")
@@ -78,7 +83,7 @@ def main():
      Only output with one of these classes. Do not explain.
      """
     metadata = Metadata(dataset_name)
-    for split in ["test", "train"]:
+    for split in ["test", "train", "val"]:
         output = Output(dataset_name)
         output.append_definition(task_definition)
         dataset_file = dataset_file_template.format(split=split)

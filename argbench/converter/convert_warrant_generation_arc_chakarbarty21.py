@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from common import Genres, Output, Skills, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, split_test_train
+from common import Genres, Output, Skills, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, split_test_val_train, split_val_train
 from argparse import ArgumentParser
 from dataclasses import dataclass
 from pathlib import Path
@@ -126,18 +126,20 @@ if __name__ == "__main__":
             train_data_para_path =  root_data_path /dataset_source["art_train"]
             test_data_para_path = root_data_path /dataset_source["art_test"]
             train_data, train_para_data = read_para_comet(train_data_path, train_data_para_path)
+            val_data, train_data = split_val_train(train_data)
+            val_para_data, train_para_data = split_val_train(train_para_data)
             test_data, test_para_data = read_para_comet(test_data_path, test_data_para_path)
-            data_set = {"test": test_data, "train": train_data}
-            data_para_set = {"test": test_para_data, "train": train_para_data}
+            data_set = {"test": test_data, "train": train_data, "val": val_data}
+            data_para_set = {"test": test_para_data, "train": train_para_data, "val": val_para_data}
         else:
             data_path = root_data_path / datsaet_target[dataset]
             para_comet_path = root_data_path / dataset_source[dataset]
             data, para_comet_data = read_para_comet(data_path, para_comet_path)
-            test_data, train_data = split_test_train(data)
-            test_para_data, train_para_data = split_test_train(para_comet_data)
-            data_set = {"test": test_data, "train": train_data}
-            data_para_set = {"test": test_para_data, "train": train_para_data}
-        for split in ["test", "train"]:
+            test_data, val_data, train_data = split_test_val_train(data)
+            test_para_data, val_para_data, train_para_data = split_test_val_train(para_comet_data)
+            data_set = {"test": test_data, "train": train_data, "val" : val_data}
+            data_para_set = {"test": test_para_data, "train": train_para_data, "val": val_para_data}
+        for split in ["test", "train", "val"]:
             dataset_file_name = f"warrant_generation_{dataset}_{split}_chakarbarty21.json"
             dataset_para_file_name = f"warrant_generation_{dataset}_para_comet_{split}_chakarbarty21.json"
 

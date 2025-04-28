@@ -57,6 +57,8 @@ def main():
     dataset_name = "argument_relation_identification_erulemaking_park18"
     dataset_file_test = "argument_relation_identification_erulemaking_test_park18.json"
     dataset_file_train = "argument_relation_identification_erulemaking_train_park18.json"
+    dataset_file_val = "argument_relation_identification_erulemaking_val_park18.json"
+
     output = create_output(dataset_name)
     metadata = Metadata(dataset_name)
     
@@ -70,16 +72,28 @@ def main():
         test_size = len(docs) * 2 // 10
         test_indices = sample(indices, test_size)
         train_indices = [i for i in range(len(docs)) if i not in test_indices]
+        val_indices = sample(train_indices, test_size)
+        train_indices = [i for i in train_indices if i not in val_indices]
+
         test_docs = [docs[i] for i in test_indices]
         train_docs = [docs[i] for i in train_indices]
-        process_json_file(train_docs, output, )
+        val_docs = [docs[i] for i in val_indices]
+
+        process_json_file(train_docs, output)
         output.write_output(dataset_file_train)
+
         output = create_output(dataset_name)
-        process_json_file(test_docs, output )
+        process_json_file(test_docs, output)
         output.write_output(dataset_file_test)
+
+        output = create_output(dataset_name)
+        process_json_file(val_docs, output)
+        output.write_output(dataset_file_val)
+
 
     metadata.add_dataset(dataset_file_test, "test")
     metadata.add_dataset(dataset_file_train, "train")
+    metadata.add_dataset(dataset_file_val, "val")
     metadata.add_genre(Genres.WEB_FORUMS)
     metadata.add_skill(Skills.MINING)
     metadata.add_evaluation_metric("fscore")
