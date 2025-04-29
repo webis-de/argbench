@@ -22,7 +22,7 @@ cd "$CODE_PATH"
 datasets=$(jq '.validation'  "${CODE_PATH}/argbench/experiment/configs/experiment_splits.json")
 for dataset in ${datasets[@]};
 do
-
+echo $dataset
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/in_task_hpo.json" \
 --base_model "$model" --test_dataset_name "$dataset"
 
