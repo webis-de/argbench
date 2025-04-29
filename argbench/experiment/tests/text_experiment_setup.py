@@ -105,5 +105,6 @@ class ExperimentSetupTest(TestCase):
             "fallacy_detection_cmv_adhominem_habernal18"
         ])
 
-        self.assertIn("argument_relation_identification_erulemaking_park18",list(train_datasets.keys())
-        )
+        self.assertIn("argument_relation_identification_erulemaking_park18",list(train_datasets.keys()))
+        self.assertNotIn("aspect_detection_ukp_corpus_schiller21",list(train_datasets.keys()))
+
