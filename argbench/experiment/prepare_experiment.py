@@ -122,7 +122,7 @@ def split_datasets_fine_tuning(task_data_path,
     training_datasets = {}
 
     if task_filter:
-        experiment_split_training = experiment_split_training.intersection(task_filter)
+        experiment_split_training = set(experiment_split_training).intersection(task_filter)
 
 
     for dataset in experiment_split_training:
