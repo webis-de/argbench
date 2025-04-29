@@ -1,0 +1,127 @@
+{
+    "is_prompting": false,
+    "is_hpo": false,
+    "is_in_task": true,
+    "experiment_splits_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/experiment_splits.json",
+    "seed": 4112,
+    "debug": false,
+    "base_model": "mistral-7b-inst-3",
+    "cutoff_len": 2000,
+    "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
+    "models_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models",
+    "data_type": "ndjson",
+    "leaderboard_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/stance-classification-barhaim17.csv",
+    "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
+    "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
+    "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
+    "train_datasets": {
+    },
+
+    "model_configs": [
+        {
+            "label": "mistral-7b-inst-3",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
+            "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
+            "output_splitter": "[/INST]"
+        },
+        {
+            "label": "deepseek-r1-distill-1.5b",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-1.5B",
+            "prompt_template": "{definition}\n{instance_input}<\uff5cend\u2581of\u2581sentence\uff5c>",
+            "output_splitter": "<\uff5cbegin\u2581of\u2581sentence\uff5c><think>\\n"
+        }
+    ],
+    "test_dataset": {
+
+        "name": "stance_classification_ibmsc_barhaim17"
+    },
+    "hpo_config": {
+        "n_trials": 3,
+        "study_name": "stance-barhaim17",
+        "storage": "sqlite:///db.sqlite3",
+        "hpo_fine_grained_output": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo/hpo-results/",
+        "hpo_coarse_output": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo-results.csv",
+        "direction": "maximize",
+        "val_metric": "fscore",
+        "training_args_config": {
+            "learning_rate": {
+                "name": "learning_rate",
+                "type": "float",
+                "low": 1e-06,
+                "high": 0.001
+            },
+            "per_device_train_batch_size": {
+                "name": "batch_size",
+                "type": "int",
+                "low": 2,
+                "high": 16
+            }
+        }
+    },
+    "peft_fresh_config": {
+        "adapter_name": "adapter",
+        "adapter_type": "lora",
+        "config_args": {
+            "base_model_name_or_path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
+            "bias": "none",
+            "fan_in_fan_out": false,
+            "inference_mode": true,
+            "lora_alpha": 16,
+            "lora_dropout": 0.05,
+            "modules_to_save": null,
+            "peft_type": "LORA",
+            "r": 16,
+            "target_modules": [
+                "q_proj",
+                "k_proj",
+                "v_proj",
+                "o_proj"
+            ],
+            "task_type": "CAUSAL_LM"
+        }
+    },
+    "quant_config": {
+        "load_in_4bit": true
+    },
+    "training_args_config": {
+        "per_device_train_batch_size": 1,
+        "num_train_epochs": 10,
+        "learning_rate": 0.0003,
+        "optim": "adamw_bnb_8bit",
+        "evaluation_strategy": "steps",
+        "save_strategy": "steps",
+        "eval_steps": 1000,
+        "save_steps": 1000,
+        "load_best_model_at_end": true,
+        "group_by_length": false,
+        "do_eval": true,
+        "warmup_steps": 200,
+        "fp16": false,
+        "logging_steps": 10,
+        "lr_scheduler_type": "linear",
+        "metric_for_best_model": "loss"
+    },
+    "early_stopping_config": {
+        "early_stopping_patience": 3,
+        "early_stopping_threshold": 0.01
+    },
+    "data_collator_config": {
+        "padding": true,
+        "return_tensors": "pt"
+    },
+    "generation_config": {
+        "max_length": 1500,
+        "max_new_tokens": 1000
+    },
+    "validation_config": {
+        "batch_size": 1,
+        "eval_metric": "fscore"
+    },
+    "vllm_config": {
+        "temperature": 0,
+        "top_p": 1,
+        "top_k": 1,
+        "max_tokens": 1,
+        "min_tokens": 1
+    }
+}
