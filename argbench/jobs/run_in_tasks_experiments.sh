@@ -1,11 +1,11 @@
 #!/bin/bash -l
-#SBATCH --job-name=fine-tuning-2
+#SBATCH --job-name=in-task-hpo
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=20G
 #SBATCH --time=96:00:00
-#SBATCH --output argbench/output/fine-tuning-2.out
-#SBATCH --error argbench/output/fine-tuning-2.err
+#SBATCH --output argbench/output/in-task-hpo.out
+#SBATCH --error argbench/output/in-task-hpo.err
 #SBATCH --gpus=a100:1
 module load Miniforge3
 conda activate task-specific
