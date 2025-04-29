@@ -556,7 +556,14 @@ class RunConfig:
         if config.get("vllm_config"):
             conf_obj.vllm_config = VLLMGenerationConfig(**conf_obj.vllm_config)
 
-
+        if config.get("model_configs"):
+            model_configs = []
+            for conf in conf_obj.model_configs:
+                model_config = ModelConfig(**conf)
+                model_configs.append(model_config)
+                if model_config.label == conf_obj.base_model:
+                    conf_obj.model_config = model_config
+            conf_obj.model_configs = model_configs
 
         if not args:
             return conf_obj
@@ -736,14 +743,7 @@ class RunConfig:
         if args.experiment_splits_path:
             conf_obj.experiment_splits_path = args.expreiment_splits_path
 
-        if config.get("model_configs"):
-            model_configs = []
-            for conf in conf_obj.model_configs:
-                model_config = ModelConfig(**conf)
-                model_configs.append(model_config)
-                if model_config.label == conf_obj.base_model:
-                    conf_obj.model_config = model_config
-            conf_obj.model_configs = model_configs
+
 
         return conf_obj
 

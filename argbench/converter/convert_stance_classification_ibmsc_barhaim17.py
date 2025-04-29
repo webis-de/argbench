@@ -1,4 +1,4 @@
-from argbench.converter.common import find_topic_size_to_split
+from common import find_topic_size_to_split
 from common import Genres, Output, Skills, datasets_path, read_tabular, tasks_path, Metadata, add_seed_arg, set_seed
 from argparse import ArgumentParser
 import uuid
