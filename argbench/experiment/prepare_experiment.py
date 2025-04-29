@@ -53,7 +53,10 @@ def load_set(dataset, task_data_path, split, sample_rate:float = None, sample_si
         return pd.concat([train_set, test_set]), None
     split = split.value
     path = get_dataset_split(dataset, split, metadata, task_data_path)
-    path_sample = formulate_sample_path(path, sample_rate, sample_size)
+    if sample_rate or sample_size:
+        path_sample = formulate_sample_path(path, sample_rate, sample_size)
+    else:
+        path_sample = path
     if os.path.exists(path_sample):
         return  pd.read_json(path_sample, lines=True), path_sample
     else:
@@ -101,8 +104,8 @@ def split_datasets_fine_tuning(task_data_path,
     else:
         experiment_split_training, experiment_split_test = get_experiment_split(is_validate, experiment_splits)
 
-    if not test_dataset or test_dataset in experiment_split_training:
-        raise ValueError("test dataset must be set and should not be in the training set!")
+    if not test_dataset :
+        raise ValueError("test dataset must be set")
 
     if test_dataset not in experiment_split_test:
         logger.warning(f"{test_dataset} not in experiment split_test {experiment_split_test}")
