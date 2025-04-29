@@ -17,6 +17,7 @@
     "train_datasets": {
         "subsample_amount": 10
     },
+
     "model_configs": [
         {
             "label": "mistral-7b-inst-3",
@@ -32,7 +33,7 @@
         }
     ],
     "test_dataset": {
-        "subsample_amount": 10,
+
         "name": "stance_classification_ibmsc_barhaim17"
     },
     "hpo_config": {
