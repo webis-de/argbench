@@ -421,14 +421,14 @@ class Runner:
     def perform_hpo(self):
         """Perform HPO search"""
 
-        # optuna.logging.get_logger("optuna").addHandler(logging.StreamHandler(sys.stdout))
-        #
-        # hpo_path = self.config.hpo_config.hpo_fine_grained_output + "/" + self.config.hpo_config.study_name + ".log"
-        # storage = optuna.storages.JournalStorage(
-        #     optuna.storages.journal.JournalFileBackend(hpo_path),  # NFS path for distributed optimization
-        # )
+        optuna.logging.get_logger("optuna").addHandler(logging.StreamHandler(sys.stdout))
+
+        hpo_path = self.config.hpo_config.hpo_fine_grained_output + "/" + self.config.hpo_config.study_name + ".log"
+        storage = optuna.storages.JournalStorage(
+            optuna.storages.journal.JournalFileBackend(hpo_path),  # NFS path for distributed optimization
+        )
         study = create_study(
-#            storage=storage,
+            storage=self.config.get_experiment_name(),
             study_name=self.config.hpo_config.study_name,
             direction=self.config.hpo_config.direction,
             sampler=TPESampler(),
