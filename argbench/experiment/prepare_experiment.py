@@ -46,10 +46,12 @@ def get_dataset_split(dataset, set, metadata, task_data_path):
 
 def load_set(dataset, task_data_path, split, sample_rate:float = None, sample_size: int = None):
     metadata = get_metadata()
-    if split == DatasetSplit.TRIN_AND_VAL:
-        train_set = load_set(dataset, task_data_path, DatasetSplit.TRAIN, sample_rate, sample_size)
-        test_set = load_set(dataset, task_data_path, DatasetSplit.VAL, sample_rate, sample_size)
-        return pd.concat([train_set, test_set])
+    print(dataset)
+    if split == DatasetSplit.TRAIN_AND_VAL:
+        train_set,_ = load_set(dataset, task_data_path, DatasetSplit.TRAIN, sample_rate, sample_size)
+        test_set,_ = load_set(dataset, task_data_path, DatasetSplit.VAL, sample_rate, sample_size)
+        return pd.concat([train_set, test_set]), None
+    split = split.value
     path = get_dataset_split(dataset, split, metadata, task_data_path)
     path_sample = formulate_sample_path(path, sample_rate, sample_size)
     if os.path.exists(path_sample):
@@ -165,6 +167,9 @@ def split_datasets_prompting(
     tasks = get_metadata()
 
     for dataset in tasks:
+        if test_dataset and dataset !=test_dataset:
+            continue
+
         df_training, train_path = load_set(dataset, task_data_path, DatasetSplit.TRAIN_AND_VAL, sample_size=train_subsample_amount,
                                                sample_rate = train_subsample_rate)
         df_training.path = train_path
@@ -172,8 +177,6 @@ def split_datasets_prompting(
             df_training[column] = df_training[column].astype(str)
         df_training = df_training[["id", "input", "output"]]
 
-        if test_dataset and dataset !=test_dataset:
-            continue
 
 
 #        df_test['output'] = df_test['output'].apply(json.dumps)

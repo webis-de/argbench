@@ -494,7 +494,7 @@ class RunConfig:
         arg_parser.add_argument("-4qt", "--bnb_4bit_quant_type", choices=["fp4", "nf4"], help="BitsAndBytes 4-bit quantization type")
         arg_parser.add_argument("-dq", "--double_quant", action="store_true", help="Enable double quantization for BitsAndBytes 4-bit")
         arg_parser.add_argument("-bm", "--base_model", type=str, help="base model")
-
+        arg_parser.add_argument("-esp", "--experiment_splits_path", type=str)
 
     @classmethod
     def from_file(cls, paths: List[Path], args=None):
