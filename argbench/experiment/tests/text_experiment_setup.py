@@ -21,3 +21,5 @@ class ExperimentSetupTest(TestCase):
         config = RunConfig.from_file(["/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/test/barhaim17_mistral_hpo.json"], None)
         train_datasets, test_datasets = collect_datasets(config)
         self.assertEqual(len(test_datasets["stance_classification_ibmsc_barhaim17"]), 262)
+        self.assertEqual(list(test_datasets.keys()), ["stance_classification_ibmsc_barhaim17"])
+        self.assertEqual(len(train_datasets["stance_classification_ibmsc_barhaim17"]), 604)
