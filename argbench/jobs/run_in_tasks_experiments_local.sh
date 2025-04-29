@@ -1,14 +1,6 @@
 #!/bin/bash -l
-#SBATCH --job-name=in-task-hpo
-#SBATCH --nodes=1
-#SBATCH --cpus-per-task=12
-#SBATCH --mem=20G
-#SBATCH --time=96:00:00
-#SBATCH --output argbench/output/in-task-hpo.out
-#SBATCH --error argbench/output/in-task-hpo.err
-#SBATCH --gpus=a100:1
-module load Miniforge3
-conda activate task-specific
+BIGWORK=/bigwork/nhwpajjy
+
 
 model=$1
 echo $model
@@ -23,6 +15,7 @@ datasets=$(jq '.validation[]'  "${CODE_PATH}/argbench/experiment/configs/experim
 for dataset in ${datasets[@]};
 do
 echo $dataset
+
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/in_task_hpo.json" \
 --base_model "$model" --test_dataset_name "${dataset:1:-1}"
 
