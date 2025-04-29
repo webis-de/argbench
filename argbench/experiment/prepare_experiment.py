@@ -103,7 +103,7 @@ def split_datasets_fine_tuning(task_data_path,
         experiment_split_training = {test_dataset}
         experiment_split_test = {test_dataset}
     else:
-        experiment_split_training, experiment_split_test = get_experiment_split(is_validate, experiment_splits)
+        experiment_split_test, experiment_split_training = get_experiment_split(is_validate, experiment_splits)
 
     if not test_dataset :
         raise ValueError("test dataset must be set")
