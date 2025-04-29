@@ -448,9 +448,10 @@ class Runner:
             now = datetime.now()
             starting_time = now.strftime("%m-%d-%H:%M:%S")
             best_params, best_value = self.perform_hpo()
-
+            experiment_name = self.config.get_experiment_name()
             results = {"test_task": self.test_dataset_name, "metric" : self.config.hpo_config.val_metric, "score": best_value,
-                       "experiment": "cross-task",  "model" : self.model_config.label  , "start_time": starting_time, "best-parameters":best_params}
+                       "experiment": experiment_name,  "model" : self.model_config.label  , "start_time": starting_time,
+                       "learning_rate":best_params["learning_rate"], "batch_size":best_params["batch_size"]}
 
             hpo_output.add_results(results)
 

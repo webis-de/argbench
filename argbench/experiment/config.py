@@ -749,8 +749,9 @@ class RunConfig:
 
 
     def get_model_path(self,time):
-        test_dataset_name = self.test_dataset["name"]
-        tag = f"{test_dataset_name}-{self.base_model}-{time}"
+
+        experiment_name = self.get_experiment_name()
+        tag = f"{experiment_name}-{time}"
 
         return os.path.join(self.models_folder, tag)
 
@@ -771,10 +772,8 @@ class RunConfig:
     def get_output_path(self):
         now = datetime.now()
         starting_time = now.strftime("%m-%d-%H:%M:%S")
-
-        if not self.is_prompting:
-            test_dataset_name = self.test_dataset["name"]
-            return f"{self.output_dir}-/{test_dataset_name}-{self.base_model}-{starting_time}.log"
+        experiment_name = self.get_experiment_name()
+        return f"{self.output_dir}-/{experiment_name}-{starting_time}"
 
 
     def get_pad_token_id(self):
@@ -788,3 +787,21 @@ class RunConfig:
             return None
         else:
             return "<unk>"
+
+    def get_experiment_name(self):
+        model = self.base_model
+        if self.is_in_task:
+            experiment = "in-task"
+        else:
+            experiment = "cross-task"
+
+        test_dataset_name = self.test_dataset["name"]
+        exp = f"{model}-{experiment}-{test_dataset_name}"
+        if "subsample_rate" in self.test_dataset:
+            test_subsample_rate = self.test_dataset["subsample_rate"]
+            return exp + f"-rate-{test_subsample_rate}"
+        elif "subsample_amount" in self.test_dataset:
+            test_subsample_amount = self.test_dataset["subsample_amount"]
+            return exp + f"-amount-{test_subsample_amount}"
+        else:
+            return exp
