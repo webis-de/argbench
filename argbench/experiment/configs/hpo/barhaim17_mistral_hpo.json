@@ -15,7 +15,6 @@
     "train_datasets": {
         "subsample_amount": 10
     },
-
     "model_configs": [
         {
             "label": "mistral-7b-inst-3",
