@@ -429,7 +429,7 @@ class Runner:
         )
         study = create_study(
             storage=storage,
-            study_name=self.config.hpo_config.study_name,
+            study_name=self.config.get_experiment_name(),
             direction=self.config.hpo_config.direction,
             sampler=TPESampler(),
             load_if_exists=True
