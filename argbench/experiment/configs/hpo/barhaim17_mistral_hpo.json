@@ -23,6 +23,12 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
             "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
             "output_splitter": "[/INST]"
+        },
+        {
+            "label": "deepseek-r1-distill-1.5b",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-1.5B",
+            "prompt_template": "{definition}\n{instance_input}<\uff5cend\u2581of\u2581sentence\uff5c>",
+            "output_splitter": "<\uff5cbegin\u2581of\u2581sentence\uff5c><think>\\n"
         }
     ],
     "test_dataset": {
