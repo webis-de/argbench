@@ -77,3 +77,34 @@ class ExperimentSetupTest(TestCase):
             "argument_similarity_ukp_aspect_reimers19",
             "fallacy_detection_cmv_adhominem_habernal18"
         ])
+        self.assertIs([
+            "warrant_generation_art_chakarbarty21",
+            "argument_rating_dagstuhl_15512_overall_quality_wachsmuth17",
+            "argument_relation_identification_microtexts_2_skeppstedt18",
+            "stance_classification_ukp_sentential_stab18",
+            "fallacy_detection_logic_jin22"
+        ],train_datasets.keys())
+
+
+    def test_experiment_setup_corss_task_skill_filtering(self):
+
+
+        torch.backends.cuda.matmul.allow_tf32 = True
+        torch.backends.cudnn.allow_tf32 = True
+
+
+
+        config = RunConfig.from_file(["/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/test/barhaim17_mistral_cs_skill_filter.json"], None)
+        train_datasets, test_datasets = collect_datasets(config)
+        self.assertEqual(len(test_datasets["fallacy_detection_cmv_adhominem_habernal18"]), 1449)
+        self.assertEqual(list(test_datasets.keys()), [
+            "counter_argument_generation_cmv_hua18",
+            "argument_rating_dagstuhl_15512_effectiveness_wachsmuth17",
+            "argument_unit_segmentation_webDiscourse_ajjour17",
+            "argument_similarity_ukp_aspect_reimers19",
+            "fallacy_detection_cmv_adhominem_habernal18"
+        ])
+
+        self.assertIn("argument_relation_identification_erulemaking_park18",list(train_datasets.keys()))
+        self.assertNotIn("aspect_detection_ukp_corpus_schiller21",list(train_datasets.keys()))
+
