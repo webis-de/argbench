@@ -10,7 +10,7 @@ class ExperimentSetupTest(TestCase):
         self.assertEqual(len(df_train) + len(df_val), len(df_train_val))
 
 
-    def test_experiment_setup(self):
+    def test_experiment_setup_in_task_hpo(self):
 
 
         torch.backends.cuda.matmul.allow_tf32 = True
@@ -22,4 +22,19 @@ class ExperimentSetupTest(TestCase):
         train_datasets, test_datasets = collect_datasets(config)
         self.assertEqual(len(test_datasets["stance_classification_ibmsc_barhaim17"]), 262)
         self.assertEqual(list(test_datasets.keys()), ["stance_classification_ibmsc_barhaim17"])
-        self.assertEqual(len(train_datasets["stance_classification_ibmsc_barhaim17"]), 604)
+        self.assertEqual(len(train_datasets["stance_classification_ibmsc_barhaim17"]), 435 - 262 + 604)
+
+
+def test_experiment_setup_in_task(self):
+
+
+    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cudnn.allow_tf32 = True
+
+
+
+    config = RunConfig.from_file(["/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/test/barhaim17_mistral.json"], None)
+    train_datasets, test_datasets = collect_datasets(config)
+    self.assertEqual(len(test_datasets["stance_classification_ibmsc_barhaim17"]), 1355)
+    self.assertEqual(list(test_datasets.keys()), ["stance_classification_ibmsc_barhaim17"])
+    self.assertEqual(len(train_datasets["stance_classification_ibmsc_barhaim17"]), 435  + 604)
