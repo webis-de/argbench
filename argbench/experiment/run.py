@@ -416,7 +416,8 @@ class Runner:
         metrics = self.evaluate(self.test_dataset_name, self.ft_test_data, sampling_params, model=self.trainer.model)
         log_mem(f"finished evaluation")
         logger.debug(f"metrics are {metrics}")
-        return metrics[self.config.hpo_config.val_metric]
+        metric = self.task_metrics[self.test_dataset_name]
+        return metrics[metric]
 
     def perform_hpo(self):
         """Perform HPO search"""
@@ -617,6 +618,8 @@ class Runner:
             bleu = compute_bleu_score(predictions, labels)
             bert= compute_bert_score(predictions, labels)
             bleu.update(bert)
+            average = (bleu["bleu"] + bert["bertscore"])/2
+            bleu.update({"generation-score":average})
             return bleu
         elif metric == "meteor":
             return compute_meteor_score(predictions, labels)
