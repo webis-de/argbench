@@ -87,7 +87,7 @@ class ExperimentSetupTest(TestCase):
 
 
 
-        config = RunConfig.from_file(["/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/test/barhaim17_mistral_hpo_skill_filtering.json"], None)
+        config = RunConfig.from_file(["/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/test/barhaim17_mistral_skill_filtering.json"], None)
         train_datasets, test_datasets = collect_datasets(config)
         self.assertEqual(len(test_datasets["fallacy_detection_cmv_adhominem_habernal18"]), 1449)
         self.assertEqual(list(test_datasets.keys()), [
