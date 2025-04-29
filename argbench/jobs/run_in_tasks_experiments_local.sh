@@ -11,7 +11,7 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 
 cd "$CODE_PATH"
 
-datasets=$(jq '.validation[]'  "${CODE_PATH}/argbench/experiment/configs/experiment_splits.json")
+datasets=$(jq '.test[]'  "${CODE_PATH}/argbench/experiment/configs/experiment_splits.json")
 for dataset in ${datasets[@]};
 do
 echo $dataset
