@@ -5,7 +5,7 @@ import time
 from argparse import ArgumentParser
 
 from pathlib import Path
-
+import sys
 
 import outlines
 import optuna
