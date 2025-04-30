@@ -626,9 +626,11 @@ class Runner:
         elif metric == "argument-fscore":
             return compute_seg_match_f1_score(predictions, labels, test_data["document"], ["Argumentative", "Non-argumentative"], ["Non-argumentative"])
         elif metric == "aspect-fscore":
-            return compute_seg_match_f1_score(predictions, labels, test_data["document"], [], [])
+            return compute_seg_match_f1_score(predictions, labels, test_data["document"],
+                            ["Aspect", "Not-aspect"], ["Not-aspect"])
         elif metric == "fallacy-fscore":
-            return compute_seg_match_f1_score(predictions, labels, test_data["document"], [], [])
+            return compute_seg_match_f1_score(predictions, labels, test_data["document"],
+                                              ["Ad Hominem", "Appeal to Emotion", "Appeal to Authority", "Slippery Slope", "False Cause", "Slogans", "No-fallacy"], ["No-fallacy"])
         elif metric == "kendalltau":
             return compute_kendall_tau(predictions, labels)
         else:
