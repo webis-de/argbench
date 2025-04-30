@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from pathlib import Path
-
 from common import split_val_train
 from common import Genres, Output, Skills, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
 from dataclasses import dataclass
@@ -109,6 +108,7 @@ def process_folder(path: Path):
         test_dataset.append(text)
 
 
+
     return test_dataset, val_dataset, train_dataset
 
 
@@ -128,15 +128,15 @@ Do not add a new formating or enumeration also do not rephrase the argument unit
     val_output.append_definition(prompt)
 
     for file in tqdm(train_dataset):
-        extracted_units = [{unit.span.strip():unit.label} for unit in file.units]
+        extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in file.units])
         train_output.append_instance(file.fragment_id, file.text, [extracted_units])
 
     for file in tqdm(test_dataset):
-        extracted_units = [{unit.span.strip():unit.label} for unit in file.units]
+        extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in file.units])
         test_output.append_instance(file.fragment_id, file.text, [extracted_units])
 
     for file in tqdm(val_dataset):
-        extracted_units = [{unit.span.strip():unit.label} for unit in file.units]
+        extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in file.units])
         val_output.append_instance(file.fragment_id, file.text, [extracted_units])
 
     return test_output, val_output, train_output
@@ -206,6 +206,6 @@ if __name__ == "__main__":
         metadata.add_dataset(dataset_file_val, "val")
 
         metadata.add_genre(genre)
-        metadata.add_evaluation_metric("argument-bio-fscore")
+        metadata.add_evaluation_metric("argument-fscore")
         metadata.add_skill(Skills.MINING)
         metadata.write_metadata()

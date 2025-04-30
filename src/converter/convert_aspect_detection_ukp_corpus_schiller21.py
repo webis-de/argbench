@@ -1,0 +1,63 @@
+from common import Output, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed, Genres, Subareas
+from argparse import ArgumentParser
+import ndjson
+
+dataset_name = "aspect_detection_ukp_corpus_schiller21"
+
+def process_split(dataset_file, output_file, metadata, dataset_split):
+    output = Output(dataset_name)
+    output.append_definition("Extract a list of aspects for the given argument. An aspect is a small substring of original text that characterizes the argument.")
+
+    with open(dataset_file, "r") as f:
+        dataset = ndjson.load(f)
+
+        for row in dataset:
+            id = row["hash"]
+            argument = row["sentence"]
+            aspect_pos_string = row["aspect_pos_string"]
+
+            prompt = f"Argument: {argument}"
+            aspect_output = "\n".join([asp_text for asp_text in aspect_pos_string])
+
+            output.append_instance(id, prompt, [aspect_output])
+
+    output.append_genre(Genres.WIKIPEDIA)
+    output.append_subarea(Subareas.GENERATION)
+    output.write_output(output_file)
+    metadata.add_dataset(output_file, dataset_split=dataset_split)
+
+
+if __name__ == "__main__":
+    # Input arguments for dataset generation
+    arg_parser = ArgumentParser(description="What dataset will be processed?")
+    add_seed_arg(arg_parser)
+    args = arg_parser.parse_known_args()[0]
+    set_seed(args) # Seed random number generation
+
+    data_path = datasets_path() / "ukp-corpus-argument-generation" / "argument_aspect_detection_v1.0" / "in_topic"
+
+    metadata = Metadata(dataset_name)
+
+    process_split(
+        data_path / "train.jsonl",
+        "aspect_detection_ukp_corpus_train_schiller21.json",
+        metadata,
+        "train"
+    )
+    process_split(
+        data_path / "test.jsonl",
+        "aspect_detection_ukp_corpus_test_schiller21.json",
+        metadata,
+        "test"
+    )
+    process_split(
+        data_path / "dev.jsonl",
+        "aspect_detection_ukp_corpus_dev_schiller21.json",
+        metadata,
+        "dev"
+    )
+
+    metadata.add_genre(Genres.WIKIPEDIA)
+    metadata.add_subarea(Subareas.GENERATION)
+    metadata.add_evaluation_metric("rouge")
+    metadata.write_metadata()

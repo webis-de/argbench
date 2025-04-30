@@ -29,7 +29,7 @@ from argbench.experiment.leaderborad import Leaderboard
 from argbench.experiment.prepare_experiment import collect_datasets
 from argbench.experiment.testing import *
 from argbench.experiment.utils import *
-
+from argbench.experiment.segmentation_metric import *
 logger = None
 
 device = get_device()
@@ -623,14 +623,14 @@ class Runner:
             return bleu
         elif metric == "meteor":
             return compute_meteor_score(predictions, labels)
-        elif metric == "argument-bio-fscore":
-            return compute_seg_bio_f1_score(predictions, labels, test_data["document"])
-        elif metric == "aspect-bio-fscore":
-            return compute_aspect_bio_f1_score(predictions, labels, test_data["document"])
-        elif metric == "fallacy-bio-fscore":
-            return compute_fallacy_bio_f1_score(predictions, labels, test_data["document"])
-        elif metric == "sentence-fscore":
-            return compute_sentence_f1(predictions, labels, test_data["document"])
+        elif metric == "argument-fscore":
+            return compute_seg_match_f1_score(predictions, labels, test_data["document"], ["Argumentative", "Non-argumentative"], ["Non-argumentative"])
+        elif metric == "aspect-fscore":
+            return compute_seg_match_f1_score(predictions, labels, test_data["document"],
+                            ["Aspect", "Not-aspect"], ["Not-aspect"])
+        elif metric == "fallacy-fscore":
+            return compute_seg_match_f1_score(predictions, labels, test_data["document"],
+                                              ["Ad Hominem", "Appeal to Emotion", "Appeal to Authority", "Slippery Slope", "False Cause", "Slogans", "No-fallacy"], ["No-fallacy"])
         elif metric == "kendalltau":
             return compute_kendall_tau(predictions, labels)
         else:
