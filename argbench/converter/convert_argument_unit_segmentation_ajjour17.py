@@ -206,6 +206,6 @@ if __name__ == "__main__":
         metadata.add_dataset(dataset_file_val, "val")
 
         metadata.add_genre(genre)
-        metadata.add_evaluation_metric("argument-bio-fscore")
+        metadata.add_evaluation_metric("argument-fscore")
         metadata.add_skill(Skills.MINING)
         metadata.write_metadata()

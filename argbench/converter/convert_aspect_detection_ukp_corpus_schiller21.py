@@ -78,5 +78,5 @@ if __name__ == "__main__":
 
     metadata.add_genre(Genres.WEB)
     metadata.add_skill(Skills.GENERATION)
-    metadata.add_evaluation_metric("aspect-bio-fscore")
+    metadata.add_evaluation_metric("aspect-fscore")
     metadata.write_metadata()

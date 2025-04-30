@@ -1,5 +1,6 @@
 from unittest import *
-from ..testing import *
+from argbench.experiment.testing import *
+from argbench.experiment.segmentation_metric import *
 
 class TestF1Segment(TestCase):
     def test_f1_score(self):
@@ -18,6 +19,50 @@ class TestF1Segment(TestCase):
         expected_f1 = (0 + i_f1 + o_f1) /3
         print(metrics)
         self.assertEqual(expected_f1, metrics["fscore"])
+
+    def test_parse(self):
+        ground_truth = """If you come to think about it,: Non-argumentative\nemails can be count as one of the most benefical results of modern technology: Argumentative"""
+        spans = parse(ground_truth, ["Non-argumentative", "Argumentative"])
+        self.assertIn("Argumentative", spans.keys())
+        self.assertIn("Non-argumentative", spans.keys())
+        self.assertEqual("If you come to think about it,", spans["Non-argumentative"][0])
+        self.assertEqual("emails can be count as one of the most benefical results of modern technology", spans["Argumentative"][0])
+
+    def test_match_f1_score(self):
+        document = "If you come to think about it, emails can be count as one of the most benefical results of modern technology"
+        ground_truth = """If you come to think about it,: Non-argumentative\nemails can be count as one of the most benefical results of modern technology: Argumentative"""
+        prediction =  """If you come to: Non-argumentative\nthink about it, emails can be count as one of the most benefical results of modern technology: Argumentative"""
+        metrics = compute_seg_match_f1_score([prediction], [ground_truth], [document],
+                                             ["Non-argumentative", "Argumentative"], ["Non-argumentative"])
+        self.assertEqual(0, metrics["fscore"])
+        document = "If you come to think about it, emails can be count as one of the most benefical results of modern technology"
+        ground_truth = """If you come to think about it,: Non-argumentative\nemails can be count as one of the most benefical results of modern technology: Argumentative"""
+        prediction =  """If you come to think about it,: Non-argumentative\nemails can be count as one of the most benefical results of modern technology: Argumentative"""
+        metrics = compute_seg_match_f1_score([prediction], [ground_truth], [document],
+                                             ["Non-argumentative", "Argumentative"], ["Non-argumentative"])
+        self.assertEqual(1, metrics["fscore"])
+
+
+        document = "If you come to think about it, emails can be count as one of the most benefical results of modern technology"
+        ground_truth = """If you come to think about it,: Non-argumentative\nemails can be count as one of the most benefical results of modern technology: Argumentative"""
+        prediction =  """If you come to think about it,: Non-argumentative\nemails can be count as one of the most benefical results: Argumentative\n of modern technology: Argumentative"""
+        metrics = compute_seg_match_f1_score([prediction], [ground_truth], [document],
+                                             ["Non-argumentative", "Argumentative"], ["Non-argumentative"])
+        self.assertEqual(0, metrics["fscore"])
+
+        document = "If you come to think about it, emails can be count as one of the most benefical results of modern technology"
+        ground_truth = """If you come to think about it,: Non-argumentative\nemails can be count as one of the most benefical results of modern technology: Argumentative"""
+        prediction =  """If you come to think about it,: Argumentative\nemails can be count as one of the most benefical results of modern technology: Argumentative"""
+        metrics = compute_seg_match_f1_score([prediction], [ground_truth], [document],
+                                             ["Non-argumentative", "Argumentative"], ["Non-argumentative"])
+        self.assertAlmostEquals(0.67, metrics["fscore"],2)
+
+        document = "If you come to think about it, emails can be count as one of the most benefical results of modern technology"
+        ground_truth = """If you come to think about it,: Non-argumentative\nemails can be count as one of the most benefical results of modern technology: Argumentative"""
+        prediction =  """If you come to think about it,: Non-argumentative\nemails can be count as one of the most benefical results of modern technology: Argumentative\nI also believe in Science: Argumentative\n"""
+        metrics = compute_seg_match_f1_score([prediction], [ground_truth], [document],
+                                             ["Non-argumentative", "Argumentative"], ["Non-argumentative"])
+        self.assertAlmostEquals(0.67, metrics["fscore"],2)
 
 
 class TestF1Sentence(TestCase):

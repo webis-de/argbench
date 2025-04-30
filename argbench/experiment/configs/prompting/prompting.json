@@ -62,6 +62,12 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/Qwen-7B",
             "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\nExample:{example}\n{instance_input}<|eot_id|>",
             "output_splitter": "<|start_header_id|>assistant<|end_header_id|>"
+        },
+        {
+            "label": "tiny-llama-1.1b-chat-v1",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/TinyLlama-1.1B-Chat-v1.0",
+            "prompt_template": "<|system|> you are an expert in linguistics <|user|>{definition}\nExample:{example}\n{instance_input}<assistant>",
+            "output_splitter": "<assistant>"
         }
     ],
     "quant_config": {

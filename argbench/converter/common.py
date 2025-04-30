@@ -222,7 +222,14 @@ class Metadata:
         "fallacy-bio-fscore",
         "aspect-bio-fscore",
         "sentence-fscore",
-        "generation-score"
+        "generation-score",
+        "argument-fscore",
+        "fallacy-fscore",
+        "aspect-fscore",
+        "argument-dict-fscore",
+        "fallacy-dict-fscore",
+        "aspect-dict-fscore",
+
     ]
 
     def __init__(self, dataset_name: str) -> None:

@@ -53,6 +53,19 @@ def process_task_file(output_path, task_file_path, filetype="ndjson"):
         pd.DataFrame(data).to_parquet(output_path)
 
 
+multi_dataset_tasks = {"argument_unit_segmentation_ajjour17":
+                           [
+                            "argument_unit_segmentation_essays_ajjour17",
+                            "argument_unit_segmentation_editorials_ajjour17",
+                            "argument_unit_segmentation_webDiscourse_ajjour17"
+                            ],
+                            "argument_unit_segmentation_dictionaries_ajjour17":
+                            [
+                                "argument_unit_segmentation_dictionaries_essays_ajjour17",
+                                "argument_unit_segmentation_dictionaries_editorials_ajjour17",
+                                "argument_unit_segmentation_dictionaries_webDiscourse_ajjour17"
+                            ],
+                       }
 
 if __name__ == "__main__":
     arg_parse = ArgumentParser(description="Convert tasks into ndjson format")
@@ -67,11 +80,14 @@ if __name__ == "__main__":
 
 
     path = tasks_path()
+    if args.task in multi_dataset_tasks:
+        tasks = multi_dataset_tasks[args.task]
+    else:
+        tasks = [args.task]
 
     for item in os.listdir(path):
 
-        if args.task and item!=args.task:
-            print(args.task)
+        if tasks and item not in tasks:
             print(item)
             continue
         task_path = path / item
