@@ -72,7 +72,7 @@
         {
             "label": "tiny-llama-1.1b-chat-v1",
             "path": "/bigwork/nhwpajjy/pre-trained-models/TinyLlama-1.1B-Chat-v1.0",
-            "prompt_template": "<|system|> you are an expert in linguistics <|user|>{definition}\nExample:{example}\n{instance_input}<assistant>",
+            "prompt_template": "<|system|> you are an expert in linguistics <|user|>{definition}\n{instance_input}<assistant>",
             "output_splitter": "<assistant>"
         }
 
