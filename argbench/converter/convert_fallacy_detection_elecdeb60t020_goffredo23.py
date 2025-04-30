@@ -24,7 +24,7 @@ def process_dataset(data_files, output_file, metadata, split_name):
     """
     output = Output(DATASET_NAME)
     output.append_definition("Given the following argument, split the argument into spans that contains one of the following fallacy. In case a span does not contain a fallacy, simply prepend it with No-fallacy"+
-                             "The splitted spans should be separated by newlines and be output in the exact order they appear in the argument. Add before each span that covers a fallacy the name of the fallacy and a colon.\n" +
+                             "The split spans should be separated by newlines and be output in the exact order they appear in the argument. Add before each span that covers a fallacy the name of the fallacy and a colon.\n" +
                              "Do not explain and do not rephrase anything in the argument." +
                              "Here are the candidate fallacies: Ad Hominem: When the argument becomes an excessive attack on an arguer’s position\n" +
                              "Appeal to Emotion: The unessential loading of the argument with emotional language to exploit the audience emotional instinct.\n" +
@@ -108,9 +108,9 @@ def process_dataset(data_files, output_file, metadata, split_name):
 
             # print(snippet)
             for label_span in snippet.spans:
-                model_out.append({label_span[0]: label_span[1]})
+                model_out.append(f"{label_span[1]}: {label_span[0]}")
 
-
+            model_out = "\n".join(model_out)
 
             output.append_instance(id, prompt, [model_out])
 
