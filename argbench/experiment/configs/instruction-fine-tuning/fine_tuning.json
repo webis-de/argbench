@@ -93,13 +93,13 @@
         }
     },
     "quant_config": {
-        "load_in_4bit": false
+        "load_in_4bit": true
     },
     "training_args_config": {
         "per_device_train_batch_size": 1,
         "num_train_epochs": 1,
         "learning_rate": 0.0003,
-        "optim": "adamw_torch",
+        "optim": "adamw_bnb_8bit",
         "evaluation_strategy": "steps",
         "save_strategy": "steps",
         "eval_steps": 1000,
