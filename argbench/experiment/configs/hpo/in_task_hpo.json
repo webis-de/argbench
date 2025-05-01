@@ -14,9 +14,7 @@
     "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
     "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
-    "train_datasets": {
-
-    },
+    "train_datasets": {},
     "model_configs": [
         {
             "label": "mistral-7b-inst-3",
@@ -31,9 +29,7 @@
             "output_splitter": "<\uff5cbegin\u2581of\u2581sentence\uff5c><think>\\n"
         }
     ],
-    "test_dataset": {
-
-    },
+    "test_dataset": {},
     "hpo_config": {
         "n_trials": 3,
         "study_name": "stance-barhaim17",
