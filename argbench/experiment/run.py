@@ -488,18 +488,17 @@ class Runner:
 
         if self.config.is_prompting:
             for task in self.prmt_test_data:
-                if not is_segmentation(task):
-                    sampling_params= self.load_sampling_params(task)
-                    train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
-                    test_data =  self.prmt_test_data[task]
-                    metrics = self.evaluate(task, test_data, sampling_params, vllm=self.vllm)
-                    log_mem(f"tested on {task}")
+                sampling_params= self.load_sampling_params(task)
+                train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
+                test_data =  self.prmt_test_data[task]
+                metrics = self.evaluate(task, test_data, sampling_params, vllm=self.vllm)
+                log_mem(f"tested on {task}")
 
-                    for metric in metrics:
-                        results = {"test_task": task, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model,
-                                   "start_time": starting_time, "k": train_subsample_amount, "filter": filter}
-                        all_results.append(results)
-                        self.leaderboard.add_results(results)
+                for metric in metrics:
+                    results = {"test_task": task, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model,
+                               "start_time": starting_time, "k": train_subsample_amount, "filter": filter}
+                    all_results.append(results)
+                    self.leaderboard.add_results(results)
         else:
             sampling_params= self.load_sampling_params(self.test_dataset_name)
             train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
