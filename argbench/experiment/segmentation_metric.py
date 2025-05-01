@@ -21,10 +21,11 @@ def parse(text, labels):
         best_match = match.group(0)
         spans = best_match.split("\n")
         for span in spans:
-
-            span_text = span.split(":")[0].strip()
-            span_label = span.split(":")[1].strip()
-            parsed_document[span_label].append(span_text)
+            print(span)
+            if span:
+                span_text = span.split(":")[0].strip()
+                span_label = span.split(":")[1].strip()
+                parsed_document[span_label].append(span_text)
     return parsed_document
 
 def compute_seg_match_f1_score(predictions, references, inputs, labels, label_out):
