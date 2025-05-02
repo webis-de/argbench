@@ -490,6 +490,9 @@ class Runner:
         else:
             filter = "None"
 
+        prompting_technique = ""
+        if self.config.is_chain_of_thoughts:
+            prompting_technique = "cot"
         if self.config.is_prompting:
             for task in self.prmt_test_data:
                 sampling_params= self.load_sampling_params(task)
@@ -499,7 +502,7 @@ class Runner:
                 log_mem(f"tested on {task}")
 
                 for metric in metrics:
-                    results = {"test_task": task, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model,
+                    results = {"test_task": task, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model+prompting_technique,
                                "start_time": starting_time, "k": train_subsample_amount, "filter": filter}
                     all_results.append(results)
                     self.leaderboard.add_results(results)
