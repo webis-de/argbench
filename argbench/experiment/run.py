@@ -533,7 +533,8 @@ class Runner:
             batch_size=1,
             shuffle=False,
             collate_fn=eval_collate,
-            pin_memory=True
+            pin_memory=True,
+            num_workers=8
         )
 
 
