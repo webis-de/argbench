@@ -83,7 +83,7 @@
         "load_in_4bit": false
     },
     "training_args_config": {
-        "per_device_train_batch_size": 1,
+        "per_device_train_batch_size": 128,
         "num_train_epochs": 5,
         "learning_rate": 0.0003,
         "optim": "adamw_torch",
@@ -96,7 +96,7 @@
         "do_eval": true,
         "warmup_steps": 200,
         "fp16": false,
-        "logging_steps": 10,
+        "logging_steps": 1000,
         "lr_scheduler_type": "linear",
         "metric_for_best_model": "loss"
     },
