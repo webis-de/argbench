@@ -61,7 +61,7 @@
         {
             "label": "deepseek-r1-distill-1.5b",
             "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-1.5B",
-            "prompt_template": "<|begin of sentence|><|User|>{definition}\n{instance_input}<|end of sentence|><|Assistant|><think>\n",
+            "prompt_template": "<|begin of sentence|><|User|>{definition}\n{instance_input}<|end of sentence|><|Assistant|>\n",
             "output_splitter": "</think>"
         },
         {
