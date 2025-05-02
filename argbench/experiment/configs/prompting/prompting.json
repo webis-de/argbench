@@ -19,7 +19,6 @@
     },
     "test_dataset": {
         "subsample_amount": 100
-
     },
     "model_configs": [
         {
