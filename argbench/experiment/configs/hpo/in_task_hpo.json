@@ -91,7 +91,7 @@
         "group_by_length": false,
         "do_eval": true,
         "warmup_steps": 200,
-        "fp16": false,
+        "bf16": true,
         "logging_steps": 1000,
         "lr_scheduler_type": "linear",
         "metric_for_best_model": "loss"
