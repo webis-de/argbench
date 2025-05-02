@@ -58,7 +58,9 @@ def log_mem(message):
                     f" CPU Memory: {free_cpu:2.0f} GB free from {total_cpu:2.0f} GB")
 
 
-def clean_prediction(prediction):
+def clean_prediction(prediction, is_chain_of_thoughts):
+    if is_chain_of_thoughts:
+        prediction = prediction.split("Output:")[1]
     if prediction.startswith("<|start_header_id|>assistant<|end_header_id|>"):
         prediction = prediction.replace("<|start_header_id|>assistant<|end_header_id|>", "")
     if "</think>" in prediction:
@@ -573,7 +575,9 @@ class Runner:
                 output = self.tokenizer.batch_decode(generated.sequences)
                 output = [o.split(output_splitter)[-1] for o in output]
                 #set_trace()
-                predictions.append(output[0])
+                prediction = output[0]
+                prediction = clean_prediction(prediction, self.config.is_chain_of_thoughts)
+                predictions.append(prediction)
 
             if vllm:
 
@@ -590,7 +594,8 @@ class Runner:
 
                 for output in outputs:
                     prediction = output.outputs[0].text
-                    prediction = clean_prediction(prediction)
+
+                    prediction = clean_prediction(prediction, self.config.is_chain_of_thoughts)
                     predictions += [prediction]
                 logger.debug(f"""got the
                                                    #################################

@@ -2,7 +2,7 @@
     "is_prompting": true,
     "is_hpo": false,
     "is_in_task": false,
-    "is_chain_of_thoughts": false,
+    "is_chain_of_thoughts": true,
     "experiment_splits_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/experiment_splits.json",
     "seed": 4112,
     "debug": false,
@@ -13,13 +13,14 @@
     "data_type": "ndjson",
     "leaderboard_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs/prompting-mistral-results.csv",
     "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
-    "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
+    "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation_cot.json",
     "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
     "train_datasets": {
-        "subsample_amount": 1
+
     },
     "test_dataset": {
         "subsample_amount": 128
+
     },
     "model_configs": [
         {
@@ -67,7 +68,7 @@
         {
             "label": "deepseek-r1-distill-1.5b",
             "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-1.5B",
-            "prompt_template": "<|begin of sentence|><|User|>{definition}\n{instance_input}<|end of sentence|><|Assistant|>\n",
+            "prompt_template": "<|begin of sentence|><|User|>{definition}\n{instance_input}<|end of sentence|><|Assistant|><think>\n",
             "cot_prompt_template": "<|begin of sentence|><|User|>{definition}\nPrepend your output with Output:, but before generating the output let us think step by step.\n{instance_input}<|end of sentence|><|Assistant|>\n",
             "output_splitter": "</think>"
         },

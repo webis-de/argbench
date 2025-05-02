@@ -306,6 +306,7 @@ class ModelConfig(CommonConfig):
     path: str
     prompt_template: str
     output_splitter: str
+    cot_prompt_template : str
 
 
 @dataclass
@@ -367,8 +368,10 @@ class RunConfig:
 
 
 
+
     is_hpo: bool
     # Padding token id
+    is_chain_of_thoughts : bool = False
 
     is_in_task: bool = False
 
@@ -407,6 +410,7 @@ class RunConfig:
         """
         Registers all cli parameters for RunConfig
         """
+        arg_parser.add_argument("-icot", "--is_chain_of_thoughts", type=bool)
         arg_parser.add_argument("-int", "--is_in_task", type=bool, help="whether to conduct a cross task or in task experiment")
         arg_parser.add_argument("-sf", "--skill-filter", type=str, help="filter the tasks based on skill")
         arg_parser.add_argument("-d", "--debug", action="store_true", default=False, help="Should prompting be performed")
@@ -576,6 +580,8 @@ class RunConfig:
             conf_obj.debug = args.debug
         if args.seed:
             conf_obj.seed = args.seed
+        if args.is_chain_of_thoughts:
+            conf_obj.is_chain_of_thoughts = True
         if args.is_prompting:
             conf_obj.is_prompting = True
         if args.train_subsample_rate:
