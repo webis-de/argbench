@@ -18,7 +18,8 @@
         "subsample_amount": 1
     },
     "test_dataset": {
-        "subsample_rate": 0.1
+        "subsample_amount": 1
+
     },
     "model_configs": [
         {
