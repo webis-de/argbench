@@ -572,8 +572,7 @@ class RunConfig:
             conf_obj.skill_filter = args.skill_filter
         if args.is_in_task:
             conf_obj.is_in_task = True
-        else:
-            conf_obj.is_in_task = False
+
         if args.debug:
             conf_obj.debug = args.debug
         if args.seed:
