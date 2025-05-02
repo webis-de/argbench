@@ -112,7 +112,6 @@ class TrainingArgsConfig(CommonConfig):
 
     gradient_checkpointing: bool = False
 
-    gradient_accumulation_steps: int = 1
 
     load_best_model_at_end: bool = True
 
