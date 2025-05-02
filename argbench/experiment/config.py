@@ -595,14 +595,10 @@ class RunConfig:
         if args.base_model:
             conf_obj.base_model = args.base_model
         ## This should be executed after choosing the model
-        if config.get("model_configs"):
-            model_configs = []
-            for conf in conf_obj.model_configs:
-                model_config = ModelConfig(**conf)
-                model_configs.append(model_config)
-                if model_config.label == conf_obj.base_model:
-                    conf_obj.model_config = model_config
-            conf_obj.model_configs = model_configs
+        for conf in conf_obj.model_configs:
+            if conf.label == conf_obj.base_model:
+                conf_obj.model_config = conf
+
 
         if args.data_folder:
             conf_obj.data_folder = args.data_folder
