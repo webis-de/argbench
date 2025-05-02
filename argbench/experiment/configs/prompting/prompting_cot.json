@@ -27,7 +27,7 @@
             "label": "mistral-7b-inst-3",
             "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
             "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
-            "cot_prompt_template": "[INST]{definition}\nPrepend your output with Output:, but before generating the output let us think step by step.\n{instance_input}\n[/INST]",,
+            "cot_prompt_template": "[INST]{definition}\nPrepend your output with Output:, but before generating the output let us think step by step.\n{instance_input}\n[/INST]",
             "output_splitter": "[/INST]"
         },
         {
