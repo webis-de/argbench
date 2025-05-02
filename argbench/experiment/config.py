@@ -98,7 +98,7 @@ class TrainingArgsConfig(CommonConfig):
 
     warmup_steps: int = None
 
-    fp16: bool = True
+    fp16: bool = False
 
     logging_steps: int = 10
 
