@@ -102,8 +102,11 @@ def split_datasets_fine_tuning(task_data_path,
     if experiment_type == ExperimentType.IN_TASK:
         experiment_split_training = {test_dataset}
         experiment_split_test = {test_dataset}
+        logger.info(f"In-task experiment on {test_dataset}")
     else:
         experiment_split_test, experiment_split_training = get_experiment_split(is_validate, experiment_splits)
+        logger.info(f"Cross-task experiment")
+        logger.info(f"Cross-task experiment")
 
     if not test_dataset :
         raise ValueError("test dataset must be set")
@@ -114,9 +117,11 @@ def split_datasets_fine_tuning(task_data_path,
     if is_validate:
         train_dataset_split = DatasetSplit.TRAIN
         test_dataset_split = DatasetSplit.VAL
+        logger.info(f"Validation experiment")
     else:
         train_dataset_split = DatasetSplit.TRAIN_AND_VAL
         test_dataset_split = DatasetSplit.TEST
+        logger.info(f"Training experiment")
 
     test_datasets = {}
     training_datasets = {}
