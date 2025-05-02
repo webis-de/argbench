@@ -632,6 +632,8 @@ class Runner:
                                               ["Ad Hominem", "Appeal to Emotion", "Appeal to Authority", "Slippery Slope", "False Cause", "Slogans", "No-fallacy"], ["No-fallacy"])
         elif metric == "kendalltau":
             return compute_kendall_tau(predictions, labels)
+        elif "dict" in metric:
+            return 0
         else:
             raise RuntimeError(f"No such metric: {metric}")
 
