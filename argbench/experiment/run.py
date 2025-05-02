@@ -633,7 +633,7 @@ class Runner:
         elif metric == "kendalltau":
             return compute_kendall_tau(predictions, labels)
         else:
-            raise RuntimeError(f"No such metric: {self.config.validation_config.eval_metric}")
+            raise RuntimeError(f"No such metric: {metric}")
 
 if __name__ == "__main__":
 
