@@ -228,7 +228,7 @@ class Runner:
             if train:
                 full_prompt = self.tokenize(f"{data_point['input']}{data_point['output']}", cutoff_len)
                 instruction_len = len(input_prompt) - 1
-                full_prompt["labels"] = [-100] * instruction_len + full_prompt["labels"][instruction_len:]
+                full_prompt["labels"] = [-100] * instruction_len + full_prompt["labels"][instructiqon_len:]
                 return full_prompt
             return input_prompt
 
