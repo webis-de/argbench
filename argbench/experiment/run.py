@@ -61,8 +61,8 @@ def log_mem(message):
 def clean_prediction(prediction):
     if prediction.startswith("<|start_header_id|>assistant<|end_header_id|>"):
         prediction = prediction.replace("<|start_header_id|>assistant<|end_header_id|>", "")
-    if prediction.startswith("</think>"):
-        prediction = prediction.replace("</think>", "")
+    if prediction.contains("</think>"):
+        prediction = prediction.split("</think>")[1]
     return prediction
 
 
