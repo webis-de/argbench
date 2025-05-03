@@ -307,7 +307,7 @@ class ModelConfig(CommonConfig):
     prompt_template: str
     output_splitter: str
     cot_prompt_template : str
-
+    cutoff_len: int
 
 @dataclass
 class VLLMGenerationConfig(CommonConfig):

@@ -218,7 +218,7 @@ class Runner:
         Using configuration object collects train and test datasets
         """
         log_mem("preparing data")
-        cutoff_len = self.config.cutoff_len
+        cutoff_len = self.model_config.cutoff_len
         train = True
 
         def generate_and_tokenize_prompt(data_point):
