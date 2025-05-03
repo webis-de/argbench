@@ -23,25 +23,32 @@
     },
     "model_configs": [
         {
-            "label": "mistral-7b-inst-3",
-            "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
-            "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
-            "cot_prompt_template": "[INST]{definition}\nPrepend your output with Output:, but before generating the output let us think step by step.\n{instance_input}\n[/INST]",,
+            "label": "gemma-2-2b-it",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-2-2b-it",
+            "prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
+            "cot_prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
+            "output_splitter": "<start_of_turn>model"
+        },
+        {
+            "label": "gemma-2-9b-it",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-2-9b-it",
+            "prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
+            "cot_prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
+            "output_splitter": "<start_of_turn>model"
+        },
+        {
+            "label": "mistral-nemo",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-Nemo-Instruct-2407",
+            "prompt_template": "[INST]{definition}\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
+            "cot_prompt_template": "[INST]{definition}\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
             "output_splitter": "[/INST]"
         },
         {
-            "label": "gemma-2-9b-it",
-            "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-2-9b-it",
-            "prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
-            "cot_prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
-            "output_splitter": "<start_of_turn>model"
-        },
-        {
-            "label": "gemma-2-9b-it",
-            "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-2-9b-it",
-            "prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
-            "cot_prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
-            "output_splitter": "<start_of_turn>model"
+            "label": "mistral-7b-inst-3",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
+            "prompt_template": "[INST]{definition}\n{instance_input}\n[/INST]",
+            "cot_prompt_template": "[INST]{definition}\nPrepend your output with Output:, but before generating the output let us think step by step.\n{instance_input}\n[/INST]",
+            "output_splitter": "[/INST]"
         },
         {
             "label": "mistral-small",
@@ -51,15 +58,22 @@
             "output_splitter": "[/INST]"
         },
         {
-            "label": "deepseek-r1-distill-7b",
-            "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-7B",
-            "prompt_template": "<|begin of sentence|><|User|>{definition}\n{instance_input}<|end of sentence|><|Assistant|>",
-            "cot_prompt_template": "<|begin of sentence|><|User|>{definition}\n{instance_input}<|end of sentence|><|Assistant|>",
-            "output_splitter": "<|Assistant|>"
+            "label": "tiny-llama-1.1b-chat-v1",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/TinyLlama-1.1B-Chat-v1.0",
+            "prompt_template": "<|system|> you are an expert in linguistics <|user|>{definition}\nExample:{example}\n{instance_input}<assistant>",
+            "cot_prompt_template": "<|system|> you are an expert in linguistics <|user|>{definition}\nExample:{example}\n{instance_input}<assistant>",
+            "output_splitter": "<assistant>"
         },
         {
             "label": "llama-3-8b-instruct",
             "path": "/bigwork/nhwpajjy/pre-trained-models/Meta-Llama-3-8B-Instruct",
+            "output_splitter": "<|start_header_id|>assistant<|end_header_id|>",
+            "cot_prompt_template": "<|start_header_id|>assistant<|end_header_id|>",
+            "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\n{instance_input}<|eot_id|>"
+        },
+        {
+            "label": "llama-3.1-70b-instruct",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Llama-3.1-70B-Instruct",
             "output_splitter": "<|start_header_id|>assistant<|end_header_id|>",
             "cot_prompt_template": "<|start_header_id|>assistant<|end_header_id|>",
             "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\n{instance_input}<|eot_id|>"
@@ -72,18 +86,32 @@
             "output_splitter": "</think>"
         },
         {
-            "label": "qwen-7b",
-            "path": "/bigwork/nhwpajjy/pre-trained-models/Qwen-7B",
+            "label": "deepseek-r1-distill-7b",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-7B",
+            "prompt_template": "<|begin of sentence|><|User|>{definition}\n{instance_input}<|end of sentence|><|Assistant|>",
+            "cot_prompt_template": "<|begin of sentence|><|User|>{definition}\n{instance_input}<|end of sentence|><|Assistant|>",
+            "output_splitter": "<|Assistant|>"
+        },
+        {
+            "label": "qwen3-1.7b",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Qwen3-1.7B",
             "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\nExample:{example}\n{instance_input}<|eot_id|>",
             "cot_prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\nExample:{example}\n{instance_input}<|eot_id|>",
             "output_splitter": "<|start_header_id|>assistant<|end_header_id|>"
         },
         {
-            "label": "tiny-llama-1.1b-chat-v1",
-            "path": "/bigwork/nhwpajjy/pre-trained-models/TinyLlama-1.1B-Chat-v1.0",
-            "prompt_template": "<|system|> you are an expert in linguistics <|user|>{definition}\nExample:{example}\n{instance_input}<assistant>",
-            "cot_prompt_template": "<|system|> you are an expert in linguistics <|user|>{definition}\nExample:{example}\n{instance_input}<assistant>",
-            "output_splitter": "<assistant>"
+            "label": "qwen3-4b",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Qwen3-4B",
+            "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\nExample:{example}\n{instance_input}<|eot_id|>",
+            "cot_prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\nExample:{example}\n{instance_input}<|eot_id|>",
+            "output_splitter": "<|start_header_id|>assistant<|end_header_id|>"
+        },
+        {
+            "label": "qwen3-32b",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Qwen3-32B",
+            "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\nExample:{example}\n{instance_input}<|eot_id|>",
+            "cot_prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\nExample:{example}\n{instance_input}<|eot_id|>",
+            "output_splitter": "<|start_header_id|>assistant<|end_header_id|>"
         }
     ],
     "quant_config": {
