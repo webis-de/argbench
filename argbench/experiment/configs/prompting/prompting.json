@@ -74,16 +74,16 @@
             "label": "llama-3-8b-instruct",
             "path": "/bigwork/nhwpajjy/pre-trained-models/Meta-Llama-3-8B-Instruct",
             "output_splitter": "<|start_header_id|>assistant<|end_header_id|>",
-            "cot_prompt_template": "<|start_header_id|>assistant<|end_header_id|>",
-            "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\n###Example:\n{example}\n#####\n{instance_input}<|eot_id|>",
-            "cutoff_len": 256000
+            "cot_prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>\\n\\n{definition}\n###Example:\n{example}\n#####\n{instance_input}<|eot_id|>",
+            "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>\\n\\n{definition}\n###Example:\n{example}\n#####\n{instance_input}<|eot_id|>",
+            "cutoff_len": 8192
         },
         {
             "label": "llama-3.1-70b-instruct",
             "path": "/bigwork/nhwpajjy/pre-trained-models/Llama-3.1-70B-Instruct",
             "output_splitter": "<|start_header_id|>assistant<|end_header_id|>",
-            "cot_prompt_template": "<|start_header_id|>assistant<|end_header_id|>",
-            "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\n###Example:\n{example}\n#####\n{instance_input}<|eot_id|>",
+            "cot_prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>\\n\\n{definition}\n###Example:\n{example}\n#####\n{instance_input}<|eot_id|>",
+            "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>\\n\\n{definition}\n###Example:\n{example}\n#####\n{instance_input}<|eot_id|>",
             "cutoff_len": 128000
         },
         {
@@ -91,7 +91,7 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-1.5B",
             "prompt_template": "<|begin of sentence|><|User|>{definition}\n###Example:\n{example}\n#####\n{instance_input}<|end of sentence|><|Assistant|>\n",
             "cot_prompt_template": "<|begin of sentence|><|User|>{definition}\nPrepend your output with Output:, but before generating the output let us think step by step.\n{instance_input}<|end of sentence|><|Assistant|>\n",
-            "output_splitter": "</think>",
+            "output_splitter": "<|Assistant|>",
             "cutoff_len": 128000
         },
         {
@@ -105,25 +105,25 @@
         {
             "label": "qwen3-1.7b",
             "path": "/bigwork/nhwpajjy/pre-trained-models/Qwen3-1.7B",
-            "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\n###Example:\n{example}\n#####\n{instance_input}<|eot_id|>",
-            "cot_prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\nExample:{example}\n{instance_input}<|eot_id|>",
-            "output_splitter": "<|start_header_id|>assistant<|end_header_id|>",
+            "prompt_template": "<|im_start|>user\n{definition}\n###Example:\n{example}\n#####\n{instance_input}<|im_end|>\n<|im_start|>assistant\n\n<think>\n\n</think>\n\n",
+            "cot_prompt_template": "<|im_start|>user\n{definition}\n###Example:\n{example}\n#####\n{instance_input}<|im_end|>\n<|im_start|>assistant",
+            "output_splitter": "/think>",
             "cutoff_len": 32000
         },
         {
             "label": "qwen3-4b",
             "path": "/bigwork/nhwpajjy/pre-trained-models/Qwen3-4B",
-            "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\n###Example:\n{example}\n#####\n{instance_input}<|eot_id|>",
-            "cot_prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\nExample:{example}\n{instance_input}<|eot_id|>",
-            "output_splitter": "<|start_header_id|>assistant<|end_header_id|>",
+            "prompt_template": "<|im_start|>user\n{definition}\n###Example:\n{example}\n#####\n{instance_input}<|im_end|>\n<|im_start|>assistant\n\n<think>\n\n</think>\n\n",
+            "cot_prompt_template": "<|im_start|>user\n{definition}\n###Example:\n{example}\n#####\n{instance_input}<|im_end|>\n<|im_start|>assistant",
+            "output_splitter": "/think>",
             "cutoff_len": 32000
         },
         {
             "label": "qwen3-32b",
             "path": "/bigwork/nhwpajjy/pre-trained-models/Qwen3-32B",
-            "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\n###Example:\n{example}\n#####\n{instance_input}<|eot_id|>",
-            "cot_prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>{definition}\nExample:{example}\n{instance_input}<|eot_id|>",
-            "output_splitter": "<|start_header_id|>assistant<|end_header_id|>",
+            "prompt_template": "<|im_start|>user\n{definition}\n###Example:\n{example}\n#####\n{instance_input}<|im_end|>\n<|im_start|>assistant\n\n<think>\n\n</think>\n\n",
+            "cot_prompt_template": "<|im_start|>user\n{definition}\n###Example:\n{example}\n#####\n{instance_input}<|im_end|>\n<|im_start|>assistant",
+            "output_splitter": "/think>",
             "cutoff_len": 128000
         }
     ],
