@@ -19,8 +19,10 @@ cd "$CODE_PATH"
 
 if [ -z "$model" ]; then
 
-models=$(jq '.model_configs[].label' "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" ;)
+models=$(jq '.model_configs[].label' "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json")
+
 else
+
 models=($model)
 fi
 

@@ -1,6 +1,5 @@
 {
-    "aspect_detection_ukp_corpus_schiller21":
-    {
+    "aspect_detection_ukp_corpus_schiller21": {
         "temperature": 0,
         "top_p": 1,
         "top_k": -1,
