@@ -142,7 +142,7 @@
 
     },
     "hpo_config": {
-        "n_trials": 20,
+        "n_trials": 1,
         "study_name": "stance-barhaim17",
         "storage": "sqlite:///db.sqlite3",
         "hpo_fine_grained_output": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo/hpo-results/",
@@ -159,7 +159,7 @@
             "per_device_train_batch_size": {
                 "name": "batch_size",
                 "type": "int",
-                "low": 32,
+                "low": 127,
                 "high": 128
             }
         }
