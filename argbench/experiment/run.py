@@ -3,10 +3,11 @@ import gc
 import os.path
 import time
 from argparse import ArgumentParser
-
+from accelerate import Accelerator
 from pathlib import Path
 import sys
 
+import accelerate
 import outlines
 import optuna
 import pandas as pd
@@ -135,8 +136,10 @@ class Runner:
         if self.config.peft_fresh_config:
             model = self.prepare_new_peft_model(model)
 
+
         self.peft_model = model
         log_mem(f"created model for training")
+
         return model
 
     def  prepare_model_for_generation(self):
@@ -421,7 +424,8 @@ class Runner:
             self.config.hpo_config.early_stopping_config
         )
         log_mem(f"started training")
-
+        accelerator = Accelerator()
+        self.model, self.trainer.optimizer = accelerator.prepare(self.model, self.trainer.optimizer)
         self.trainer.train()
         log_mem(f"trained model")
 
