@@ -188,7 +188,7 @@
         }
     },
     "quant_config": {
-        "load_in_4bit": false
+        "load_in_4bit": true
     },
     "training_args_config": {
         "per_device_train_batch_size": 128,
