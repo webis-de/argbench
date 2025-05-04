@@ -15,9 +15,7 @@
     "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
     "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
-    "train_datasets": {
-
-    },
+    "train_datasets": {},
     "model_configs": [
         {
             "label": "gemma-2-2b-it",
