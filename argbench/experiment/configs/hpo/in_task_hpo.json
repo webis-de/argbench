@@ -16,7 +16,7 @@
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
     "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
     "train_datasets": {
-
+        "subsample_amount": 1
     },
     "model_configs": [
         {
@@ -33,7 +33,7 @@
         }
     ],
     "test_dataset": {
-
+        "subsample_amount": 1
     },
     "hpo_config": {
         "n_trials": 20,
