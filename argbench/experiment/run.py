@@ -10,6 +10,7 @@ import sys
 import outlines
 import optuna
 import pandas as pd
+import torch
 from datasets import Dataset
 from optuna import Trial, create_study
 from optuna.samplers import TPESampler
@@ -26,6 +27,7 @@ from argbench.experiment.config import RunConfig
 from argbench.experiment.filter_warnings import *
 from argbench.experiment.hpo_output import HPOOutput
 from argbench.experiment.leaderborad import Leaderboard
+from argbench.experiment.memory_profiling import MemoryUsageCallback
 from argbench.experiment.prepare_experiment import collect_datasets
 from argbench.experiment.testing import *
 from argbench.experiment.utils import *
@@ -191,8 +193,9 @@ class Runner:
             self.tokenizer,
             **self.config.data_collator_config.to_conf(trial, data_collator_hpo)
         )
-
         callbacks = []
+        if self.config.debug:
+            callbacks.append(MemoryUsageCallback(logger))
 
         if self.config.early_stopping_config:
             callbacks = [
@@ -268,7 +271,7 @@ class Runner:
         quant_conf = BitsAndBytesConfig(**quant_config)
         return AutoModelForCausalLM.from_pretrained(
             base_model,
-            torch_dtype=torch.float16,
+            torch_dtype=torch.float32,
             quantization_config=quant_conf,
             device_map= "cuda:0",
             trust_remote_code=True
@@ -408,6 +411,7 @@ class Runner:
             self.config.hpo_config.early_stopping_config
         )
         log_mem(f"started training")
+
         self.trainer.train()
         log_mem(f"trained model")
 
