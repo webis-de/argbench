@@ -47,7 +47,7 @@ def get_dataset_split(dataset, set, metadata, task_data_path):
 
 def load_set(dataset, task_data_path, split, sample_rate:float = None, sample_size: int = None):
     metadata = get_metadata()
-    print(dataset)
+
     if split == DatasetSplit.TRAIN_AND_VAL:
         train_set,_ = load_set(dataset, task_data_path, DatasetSplit.TRAIN, sample_rate, sample_size)
         test_set,_ = load_set(dataset, task_data_path, DatasetSplit.VAL, sample_rate, sample_size)
