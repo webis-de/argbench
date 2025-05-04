@@ -18,6 +18,7 @@ fi
 
 for model in ${models[@]};
 do
+  echo $model
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
 --leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug
 done
