@@ -424,8 +424,8 @@ class Runner:
             self.config.hpo_config.early_stopping_config
         )
         log_mem(f"started training")
-        accelerator = Accelerator()
-        self.model, self.trainer.optimizer = accelerator.prepare(self.model, self.trainer.optimizer)
+#        accelerator = Accelerator()
+#        self.model, self.trainer.optimizer = accelerator.prepare(self.model, self.trainer.optimizer)
         self.trainer.train()
         log_mem(f"trained model")
 
