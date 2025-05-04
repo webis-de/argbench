@@ -276,11 +276,11 @@ class Runner:
         :param model_config: Configuration parameters for model
         :returns: ModelForCausalLM initialized from config
         """
-        #quant_conf = BitsAndBytesConfig(**quant_config)
+        quant_conf = BitsAndBytesConfig(**quant_config)
         return AutoModelForCausalLM.from_pretrained(
             base_model,
             torch_dtype=torch.bfloat16,
-#            quantization_config=quant_conf,
+            quantization_config=quant_conf,
             #device_map= "cuda:0",
             device_map= "auto",
             trust_remote_code=True
