@@ -193,7 +193,7 @@ class Runner:
             tensorboard_dir = None
         train_args = TrainingArguments(output_dir=self.config.get_output_path(),
             report_to=report_to,
-            logging_dir=tensorboard_dir,dataloader_pin_memory=True
+            logging_dir=tensorboard_dir,dataloader_pin_memory=True,
             **self.config.training_args_config.to_conf(trial, training_arg_hpo)
         )
 
