@@ -279,7 +279,7 @@ class Runner:
         #quant_conf = BitsAndBytesConfig(**quant_config)
         return AutoModelForCausalLM.from_pretrained(
             base_model,
-            torch_dtype=torch.float32,
+            torch_dtype=torch.bfloat16,
 #            quantization_config=quant_conf,
             #device_map= "cuda:0",
             device_map= "auto",
