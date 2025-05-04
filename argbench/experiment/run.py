@@ -597,7 +597,7 @@ class Runner:
 
             if vllm:
 
-                print(text)
+
                 # output = generator(text, sampling_params= sampling_params)
                 # if output.startswith('\"') and output.endswith('\"'):
                 #     output = output[1:-1]
