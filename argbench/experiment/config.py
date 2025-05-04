@@ -345,7 +345,7 @@ class RunConfig:
     # Seed to use
     seed: int
     # Prompt cutoff length
-    cutoff_len: int
+
     # Training datasets
     train_datasets: dict
     # Test datasets
