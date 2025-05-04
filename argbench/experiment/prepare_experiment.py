@@ -230,6 +230,8 @@ def collect_datasets(run_config):
     tasks_path = Path(run_config.data_folder)
     if run_config.is_prompting and run_config.is_chain_of_thoughts:
         prompt_template = run_config.model_config.cot_prompt_template
+    elif run_config.is_prompting and train_config.get("subsample_amount", None):
+        prompt_template = run_config.model_config.show_prompt_template
     else:
         prompt_template = run_config.model_config.prompt_template
 
