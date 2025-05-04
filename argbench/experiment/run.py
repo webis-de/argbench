@@ -198,9 +198,9 @@ class Runner:
             callbacks.append(MemoryUsageCallback(logger))
 
         if self.config.early_stopping_config:
-            callbacks = [
+            callbacks.append(
                 EarlyStoppingCallback(**self.config.early_stopping_config.to_conf(trial, early_stopping_hpo))
-            ]
+            )
         log_mem("preparing trainer")
         trainer = Trainer(
             model=model,
