@@ -80,8 +80,6 @@ class TrainingArgsConfig(CommonConfig):
 
     save_steps: int
 
-
-
     save_total_limit: int = 3
 
     weight_decay: float = 0.0
@@ -112,12 +110,13 @@ class TrainingArgsConfig(CommonConfig):
 
     gradient_checkpointing: bool = False
 
-
     load_best_model_at_end: bool = True
 
     group_by_length: bool = False
 
     do_eval: bool = True
+
+
 
 
 @dataclass
@@ -367,7 +366,7 @@ class RunConfig:
     is_prompting: bool
     # Should HPO be performed
 
-
+    tensorboard_logs: str
 
 
     is_hpo: bool
@@ -783,7 +782,7 @@ class RunConfig:
         now = datetime.now()
         starting_time = now.strftime("%m-%d-%H:%M:%S")
         experiment_name = self.get_experiment_name()
-        return f"{self.output_dir}-/{experiment_name}-{starting_time}"
+        return f"{self.output_dir}/{experiment_name}-{starting_time}"
 
 
     def get_pad_token_id(self):
@@ -800,10 +799,14 @@ class RunConfig:
 
     def get_experiment_name(self):
         model = self.base_model
+
+
         if self.is_in_task:
             experiment = "in-task"
         else:
             experiment = "cross-task"
+        if self.is_hpo:
+            experiment = "hpo-" + experiment
 
         test_dataset_name = self.test_dataset["name"]
         exp = f"{model}-{experiment}-{test_dataset_name}"
@@ -815,3 +818,10 @@ class RunConfig:
             return exp + f"-amount-{test_subsample_amount}"
         else:
             return exp
+
+    def get_tensorboard_log_dir(self):
+        path_tensorboard_main = self.tensorboard_logs
+        now = datetime.now()
+        starting_time = now.strftime("%m-%d-%H:%M:%S")
+        experiment_name = self.get_experiment_name()
+        return f"{path_tensorboard_main}/{experiment_name}-{starting_time}"

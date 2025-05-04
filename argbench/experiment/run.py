@@ -185,7 +185,15 @@ class Runner:
 
         :returns: Trainer initialized with configuration parameters from RunConfig object and tokenized data
         """
+        if self.config.debug:
+            report_to = "tensorboard"
+            tensorboard_dir = self.config.get_tensorboard_log_dir()
+        else:
+            report_to = None
+            tensorboard_dir = None
         train_args = TrainingArguments(output_dir=self.config.get_output_path(),
+            report_to=report_to,
+            logging_dir=tensorboard_dir,
             **self.config.training_args_config.to_conf(trial, training_arg_hpo)
         )
 

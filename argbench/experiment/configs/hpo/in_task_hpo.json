@@ -15,7 +15,10 @@
     "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
     "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
-    "train_datasets": {},
+    "tensorboard_logs":"/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tensorboard",
+    "train_datasets": {
+
+    },
     "model_configs": [
         {
             "label": "gemma-2-2b-it",
@@ -200,7 +203,9 @@
         "bf16": true,
         "logging_steps": 1000,
         "lr_scheduler_type": "linear",
-        "metric_for_best_model": "loss"
+        "metric_for_best_model": "loss",
+        "logging_dir":,
+        "report_to":"tensorboard"
     },
     "early_stopping_config": {
         "early_stopping_patience": 3,
