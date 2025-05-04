@@ -667,6 +667,7 @@ if __name__ == "__main__":
     if os.path.exists("/bigwork/nhwpajjy"):
         adjust_config("/mnt/home/yajjour", "/bigwork/nhwpajjy")
     #turn_off_warnings()
+
     arg_parser = ArgumentParser(description="Run peft finetuning experiment")
 
     arg_parser.add_argument("-c", "--config", type=Path, action="append", help="Path to experiment config")
@@ -680,7 +681,7 @@ if __name__ == "__main__":
     config = RunConfig.from_file([], args)
     logger = get_logger(config)
     print(f"logging file is {config.log_path}")
-
+    logger.info(" ".join(sys.argv[1:]))
     runner = Runner(config)
 
 
