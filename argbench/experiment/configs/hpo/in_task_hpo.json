@@ -136,7 +136,7 @@
         }
     ],
     "test_dataset": {
-        "subsample_amount": 1
+
     },
     "hpo_config": {
         "n_trials": 20,
