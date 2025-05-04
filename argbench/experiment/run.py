@@ -193,8 +193,7 @@ class Runner:
             tensorboard_dir = None
         train_args = TrainingArguments(output_dir=self.config.get_output_path(),
             report_to=report_to,
-            logging_dir=tensorboard_dir,dataloader_pin_memory=True,
-            dataloader_num_workers=8,
+            logging_dir=tensorboard_dir,dataloader_pin_memory=True
             **self.config.training_args_config.to_conf(trial, training_arg_hpo)
         )
 
@@ -282,7 +281,8 @@ class Runner:
             base_model,
             torch_dtype=torch.float32,
             quantization_config=quant_conf,
-            device_map= "cuda:0",
+            #device_map= "cuda:0",
+            device_map= "auto",
             trust_remote_code=True
         )
 
