@@ -333,7 +333,7 @@ class RunConfig:
     task_metrics_path: str
 
     output_dir: str
-
+    cutoff_len: int
     # Model Task-specific configuration config path
 
     generation_config_path: str
