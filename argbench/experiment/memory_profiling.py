@@ -30,7 +30,7 @@ class MemoryUsageCallback(TrainerCallback):
 
         # Log if needed (Trainer already logs to W&B/Tensorboard if configured)
             self.log_mem("on step end")
-            self.logger.info(f"cuda max memory allocated{torch.cuda.max_memory_allocated() / (1024**3)}")
+            self.logger.info(f"cuda max memory allocated: {torch.cuda.max_memory_allocated() / (1024**3):2.0f} GB")
 
     def on_train_end(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
         if torch.cuda.is_available():
