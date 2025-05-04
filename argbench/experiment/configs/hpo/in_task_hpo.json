@@ -204,8 +204,6 @@
         "logging_steps": 1000,
         "lr_scheduler_type": "linear",
         "metric_for_best_model": "loss",
-        "logging_dir":,
-        "report_to":"tensorboard"
     },
     "early_stopping_config": {
         "early_stopping_patience": 3,
