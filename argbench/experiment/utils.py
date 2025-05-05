@@ -19,7 +19,7 @@ class Output(BaseModel):
 
 
 def get_logger(config: RunConfig):
-    logger = logging.getLogger(config.get_log_path())
+    logger = logging.getLogger()
     if config.debug:
         logger.setLevel(logging.DEBUG)
     else:

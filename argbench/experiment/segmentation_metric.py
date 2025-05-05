@@ -7,13 +7,16 @@ import regex as re
 from nltk import word_tokenize
 from sklearn.metrics import f1_score
 
-logger = logging.getLogger(__name__)
+
+logger = logging.getLogger()
+
 
 def formulate_regex(labels):
     labels = "|".join(labels + [label.lower() for label in  labels])
     return f"(.+:\s?(?:{labels})\\n)*(.+:\s?(?:{labels}))"
 
 def parse(text, labels):
+    logger.debug(f"segmenting the document {text}")
     regular_expression = formulate_regex(labels)
     match  = re.match(regular_expression, text)
     parsed_document = defaultdict(list)
@@ -21,7 +24,7 @@ def parse(text, labels):
         best_match = match.group(0)
         spans = best_match.split("\n")
         for span in spans:
-            print(span)
+            logger.debug(f"the sentence to be segmented {span}")
             if span:
                 span_text = span.split(":")[0].strip()
                 span_label = span.split(":")[1].strip()
@@ -31,6 +34,7 @@ def parse(text, labels):
 def compute_seg_match_f1_score(predictions, references, inputs, labels, label_out):
 
     metric = {}
+
     for label in labels:
         if label in label_out:
             continue
@@ -47,6 +51,7 @@ def compute_seg_match_f1_score(predictions, references, inputs, labels, label_ou
 
             reference_spans = parse(reference, labels)
             prediction_spans = parse(prediction, labels)
+            logger.debug(f"evaluating predictions {prediction_spans} and references {reference_spans}")
             if label in prediction_spans:
                 for prediction_span in prediction_spans[label]:
                     if prediction_span in reference_spans[label]:
