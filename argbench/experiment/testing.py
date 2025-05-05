@@ -12,7 +12,8 @@ from scipy.stats import kendalltau
 from nltk import word_tokenize
 from bert_score import score
 
-logger = logging.getLogger(__name__)
+
+logger = logging.getLogger()
 
 def compute_precision_recall_fscore_support(predictions, references, f1_average="macro", beta=1.0):
     """
