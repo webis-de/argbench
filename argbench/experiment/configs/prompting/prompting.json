@@ -17,7 +17,7 @@
     "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
     "tensorboard_logs": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tensorboard",
     "train_datasets": {
-        "subsample_rate": 0.1
+        "subsample_amount": 1
     },
     "test_dataset": {
         "subsample_rate": 0.1
