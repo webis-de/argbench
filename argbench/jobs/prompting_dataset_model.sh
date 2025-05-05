@@ -21,7 +21,7 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 cd "$CODE_PATH"
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset"
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset" --debug
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
 export JOB_ARGUMENTS="prompting;${dataset};${model};\n"
