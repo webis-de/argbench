@@ -33,3 +33,8 @@ All jobs create results for the model in
 and the time for the job can be tracked in 
 
 /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/jobs
+
+Push to github
+ ```
+ git push upstream main
+ ```
