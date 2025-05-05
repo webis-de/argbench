@@ -13,12 +13,12 @@ logger = logging.getLogger()
 
 def formulate_regex(labels):
     labels = "|".join(labels + [label.lower() for label in  labels])
-    return f"(.+:\s?(?:{labels})\\n)*(.+:\s?(?:{labels}))"
+    return f"(?:(?:{labels}):\s?[^\n]+\n+)*(?:(?:{labels}):\s?[^\n]+)"
 
 def parse(text, labels):
     logger.debug(f"segmenting the document {text}")
     regular_expression = formulate_regex(labels)
-    match  = re.match(regular_expression, text)
+    match  = re.search(regular_expression, text)
     parsed_document = defaultdict(list)
     if match:
         best_match = match.group(0)
@@ -26,8 +26,9 @@ def parse(text, labels):
         for span in spans:
             logger.debug(f"the sentence to be segmented {span}")
             if span:
-                span_text = span.split(":")[0].strip()
-                span_label = span.split(":")[1].strip()
+                span_label = span.split(":")[0].strip()
+                span_text = span.split(":")[1].strip()
+
                 parsed_document[span_label].append(span_text)
     return parsed_document
 
