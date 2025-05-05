@@ -777,7 +777,7 @@ class RunConfig:
         else:
             test_dataset_name = self.test_dataset["name"]
             self.log_path = f"{root_path}/task-specific-argument-mining-and-generation-data/logs/fine-tuning-{test_dataset_name}-{self.base_model}-{starting_time}.log"
-
+        return self.log_path
     def get_output_path(self):
         now = datetime.now()
         starting_time = now.strftime("%m-%d-%H:%M:%S")
