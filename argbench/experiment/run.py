@@ -662,7 +662,7 @@ class Runner:
         elif metric == "kendalltau":
             return compute_kendall_tau(predictions, labels)
         elif "dict" in metric:
-            return 0
+            return {"fscore":0}
         else:
             raise RuntimeError(f"No such metric: {metric}")
 
