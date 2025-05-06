@@ -78,7 +78,7 @@ if __name__ == "__main__":
     if not os.path.exists(args.output):
         os.mkdir(args.output)
 
-
+    tasks = []
     path = tasks_path()
     if args.task in multi_dataset_tasks:
         tasks = multi_dataset_tasks[args.task]
@@ -91,8 +91,9 @@ if __name__ == "__main__":
             print(item)
             continue
         task_path = path / item
-        print(task_path)
+        print(f"working on {task_path}")
         if not os.path.isdir(task_path):
+            print(f"did not find {task_path}")
             continue
 
         if not os.path.exists(args.output / item):
