@@ -112,7 +112,7 @@ def compute_bleu_score(predictions, references):
 
 
 
-    references = [word_tokenize(ref) for ref in references]
+    references = [[word_tokenize(ref)] for ref in references]
     predictions = [word_tokenize(pred) for pred in predictions]
     bleu = nltk.translate.bleu_score.corpus_bleu(references, predictions, weights=(0.5, 0.5))
 
