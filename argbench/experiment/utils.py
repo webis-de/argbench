@@ -65,7 +65,7 @@ def extract_prediction(output):
     left_index = output.find("{")
     right_index = output.rindex("}")
     output_str = output[left_index:right_index+1]
-    print(output_str)
+
     output = json.loads(output_str)
     extracted_output = output["output"]
     if type(extracted_output) == list:
@@ -133,7 +133,7 @@ def rewrite_config(config: dict, root_path:Path, new_root_path: Path):
     :param new_root_path: the new root path path
     :return:
     """
-    print(config)
+
     for key in config:
         if isinstance(config[key],str):
             config[key] = config[key].replace(root_path, new_root_path)
