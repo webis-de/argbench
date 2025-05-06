@@ -99,8 +99,7 @@ def write_split(files, split):
     output = Output(DATASET_NAME)
 
     output.append_definition("""Given the following essay and the appended source and target argument units that appear in the essay.\n
-    Output Support if the source argument unit supports the target argument unit, or output Attack if the source attacks the target.\n
-    Do not Explain.""")
+    Output Support if the source argument unit supports the target argument unit, or output Attack if the source attacks the target.\n""")
 
     for file_name in files:
         print(file_name)

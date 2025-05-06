@@ -27,8 +27,8 @@ controversy_dataset = "controversy_scoring_cmv_habernal18"
 controversy_dataset_template = "controversy_scoring_cmv_{split}_habernal18.json"
 reaonsableness_dataset_template = "reasonableness_scoring_{split}_habernal18.json"
 
-controversy_task_definition = "Classify the following post according to its controversy into either Not Really Controversial, Somehow Controversial, or Very Controversial. Do not explain."
-reasonableness_task_definition = "Classify the following post according to its reasonableness into : Quite Stupid, Neutral, Quite Reasonable. Do not explain."
+controversy_task_definition = "Classify the following post according to its controversy into either Not Really Controversial, Somehow Controversial, or Very Controversial."
+reasonableness_task_definition = "Classify the following post according to its reasonableness into : Quite Stupid, Neutral, Quite Reasonable."
 
 def process_dataset(data, split, controversy_metadata, reasonableness_metadata):
     controversy_data_file = controversy_dataset_template.format(split=split)

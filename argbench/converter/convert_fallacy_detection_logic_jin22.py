@@ -38,7 +38,7 @@ def process_data(dataset, data_name, data_split, metadata):
                              "Ad Populum: a fallacious argument which is based on affirming that something is real or better because the majority thinks so\n" +
                              "Equivocation: when a key term or phrase in an argument is used in an ambiguous way, with one meaning in one portion of the argument and then another meaning in another portion of the argument.\n" +
                              "Circular Reasoning: when the end of an argument comes back to the beginning without having proven itself.\n" +
-                             "False Dilemma: presenting only two options or sides when there are many options or sides.\n" + "Do not explain or change the labels.")
+                             "False Dilemma: presenting only two options or sides when there are many options or sides.\n")
 
     for row in dataset.iterrows():
         row = row[1]

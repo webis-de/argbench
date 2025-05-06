@@ -10,7 +10,7 @@ DATASET_NAME = "stance_classification_ukp_sentential_stab18"
 def make_output(dataset, dataset_name):
     output = Output(DATASET_NAME)
 
-    output.append_definition("Classify the following claim to Pro if the claim supports the topic, Con if the claim attacks the topic, or Neutral if neither. Only answer with Con, Por, or Neutral, Do not explain.")
+    output.append_definition("Classify the following claim to Pro if the claim supports the topic, Con if the claim attacks the topic, or Neutral if neither. Only answer with Con, Por, or Neutral")
 
     label_mappings = {"NoArgument": "Neutral", "Argument_for": "Pro", "Argument_against": "Con"}
 

@@ -35,7 +35,7 @@ def process_split(data, data_path):
         completion = arg_data["clean_sent"]
         id = str(id)
         arguments.append(Prompt(id, prompt, completion))
-    output.append_definition("Given the following argument type, topic, stance, and facts, generate an argument that holds that stance on the topic and is based on the facts. Do not explain.")
+    output.append_definition("Given the following argument type, topic, stance, and facts, generate an argument that holds that stance on the topic and is based on the facts.")
     for arg in arguments:
         output.append_instance(arg.id, arg.prompt, [arg.output])
     output.append_genre(Genres.DEBATE_PORTALS)

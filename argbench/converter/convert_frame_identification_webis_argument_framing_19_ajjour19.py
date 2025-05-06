@@ -10,7 +10,7 @@ DATASET_NAME = "frame_identification_webis_argument_framing_19_ajjour19"
 
 def process_split(df, data_file):
     output = Output(DATASET_NAME)
-    output.append_definition("Identify the frame of the following argument on the given topic form the following candidate frames. The frame is main highlighted the aspect of the topic which resonate with as specific audience. Do not explain.")
+    output.append_definition("Identify the frame of the following argument on the given topic form the following candidate frames. The frame is main highlighted the aspect of the topic which resonate with as specific audience.")
 
     for row in df.iterrows():
         row = row[1]

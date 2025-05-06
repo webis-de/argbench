@@ -14,7 +14,7 @@ personal feelings, prejudices, or interpretations.'
          Resource: reference to a source of objective evidence.
          Others: anything that does not full under these categories.
          Keep the order of the sentences as provided in the text.
-         Only output with one of these classes. Do not explain.
+         Only output with one of these classes.
          """)
     for line in lines:
         data = json.loads(line.strip())

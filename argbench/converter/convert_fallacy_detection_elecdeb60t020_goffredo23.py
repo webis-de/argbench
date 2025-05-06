@@ -25,7 +25,7 @@ def process_dataset(data_files, output_file, metadata, split_name):
     output = Output(DATASET_NAME)
     output.append_definition("Given the following argument, split the argument into spans that contains one of the following fallacy. In case a span does not contain a fallacy, simply prepend it with No-fallacy"+
                              "The split spans should be separated by newlines and be output in the exact order they appear in the argument. Add before each span that covers a fallacy the name of the fallacy and a colon.\n" +
-                             "Do not explain and do not rephrase anything in the argument." +
+                             "Do not rephrase anything in the argument." +
                              "Here are the candidate fallacies: Ad Hominem: When the argument becomes an excessive attack on an arguer’s position\n" +
                              "Appeal to Emotion: The unessential loading of the argument with emotional language to exploit the audience emotional instinct.\n" +
                              "Appeal to Authority: It occurs when the arguer relies on the endorsement of an authority figure or a group consensus without providing sufficient evidence. It may also involve the citation of non-experts or the majority to support their claim.\n" +

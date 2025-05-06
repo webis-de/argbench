@@ -71,15 +71,15 @@ if __name__ == "__main__":
     task_defnitions = {
         "cogency": f"""Judge the quality of the following argument according to quality aspect: cogency.  
                                      "Quality aspect description: {cogency_description} Possible outputs: 
-                                     "Very Low, Low, Medium, High, Very High, Cannot Judge. Do not Explain"""
+                                     "Very Low, Low, Medium, High, Very High, Cannot Judge."""
                    ,
         "effectiveness": f"""Judge the quality the following argument according to quality aspect: effectiveness. 
                                            Quality aspect description: {effectiveness_description} Possible outputs: 
-                                           Very Low, Low, Medium, High, Very High, Cannot Judge. Do not Explain""",
+                                           Very Low, Low, Medium, High, Very High, Cannot Judge.""",
 
         "reasonableness" : f"""Judge the quality of the following argument according to quality aspect: reasonableness. 
                                             Quality aspect description: {reasonableness_description} Possible outputs: 
-                                            Very Low, Low, Medium, High, Very High, Cannot Judge. Do not Explain"""
+                                            Very Low, Low, Medium, High, Very High, Cannot Judge."""
     }
     df_debate_crowd = convert_dataset(data_path / "debate_forums_crowd.csv")
     df_debate_experts = convert_dataset(data_path / "debate_forums_experts.csv")

@@ -10,7 +10,6 @@ def process_split(dataset, path):
     """Given the following two arguments on the given topic:\n 
     "Detect whether the first argument supports, attacks, or is unrelated to the second argument.
     Only output support, attack, or unrelated.
-    Do not Explain.
     """)
     for row in dataset.iterrows():
         instance = row[1]

@@ -39,6 +39,7 @@ class PandasDataset:
 
 
 def get_dataset_split(dataset, set, metadata, task_data_path):
+
     for file in metadata[dataset]["file_list"]:
         if metadata[dataset]["split_mapping"][file] == set:
 
@@ -58,6 +59,8 @@ def load_set(dataset, task_data_path, split, sample_rate:float = None, sample_si
         path_sample = formulate_sample_path(path, sample_rate, sample_size)
     else:
         path_sample = path
+    logger.debug(f"path:{path}")
+    logger.debug(f"sample path:{path_sample}")
     if os.path.exists(path_sample):
         return  pd.read_json(path_sample, lines=True), path_sample
     else:

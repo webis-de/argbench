@@ -8,7 +8,7 @@ DATASET_NAME = "counter_argument_generation_candela_hua19"
 
 def process_dataset(data_files, output_file, split_name, metadata):
     output = Output(DATASET_NAME)
-    output.append_definition("Write a counterargument to the following original post and take into account retrieved passages related to the post. Do not explain.")
+    output.append_definition("Write a counterargument to the following original post and take into account retrieved passages related to the post.")
     for data_file in data_files:
         dataset = open(data_file, "r")
         file_instances = ndjson.load(dataset)

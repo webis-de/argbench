@@ -9,7 +9,7 @@ DATASET_NAME = "counter_argument_generation_cmv_hua18"
 def process_dataset(op_path, arg_path, keynote_path, output=None):
     if not output:
         output = Output(DATASET_NAME)
-        output.append_definition("""Given a statement and relevant evidence, generate a counterargument that attacks to the original argument and highlights the given key phrases. Do not explain.""")
+        output.append_definition("""Given a statement and relevant evidence, generate a counterargument that attacks to the original argument and highlights the given key phrases.""")
 
     op_file = open(op_path, "r")
     arg_file = open(arg_path, "r")

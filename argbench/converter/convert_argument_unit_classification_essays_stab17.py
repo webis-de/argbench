@@ -80,7 +80,7 @@ def main():
      A claim is a controversial statement and the central component of an argument.
      A Premise is a reason for justifying or refuting the claim. 
      A major claim is the central thesis of the essay.
-     Only output with one of these classes. Do not explain.
+     Only output with one of these classes.
      """
     metadata = Metadata(dataset_name)
     for split in ["test", "train", "val"]:
