@@ -84,7 +84,8 @@ if __name__ == "__main__":
     if args.task in multi_dataset_tasks:
         tasks = multi_dataset_tasks[args.task]
     else:
-        tasks = [args.task]
+        if args.task:
+            tasks = [args.task]
     print(tasks)
     for item in os.listdir(path):
 
