@@ -14,7 +14,7 @@ def process_split(dataset_files, output_file, metadata, dataset_split):
      Do not rephrase the spans or modify it. Always process the whole argument. 
      In case there is no aspect, simply output the argument as key and Not-aspect as a value. 
      Output the dictionaries as a list with the order the spans appear in the text. The list should be the value of a dictionary with the key output. 
-     Do not explain.""")
+     """)
     for dataset_file in dataset_files:
         with open(dataset_file, "r") as f:
             dataset = ndjson.load(f)

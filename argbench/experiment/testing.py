@@ -112,10 +112,13 @@ def compute_bleu_score(predictions, references):
 
 
 
-    references = [word_tokenize(ref) for ref in references]
+    references = [[word_tokenize(ref)] for ref in references]
     predictions = [word_tokenize(pred) for pred in predictions]
-    bleu = nltk.translate.bleu_score.corpus_bleu(references, predictions, weights=(1/3, 1/3, 1/3))
-
+    try:
+        bleu = nltk.translate.bleu_score.corpus_bleu(references, predictions, weights=(0.5, 0.5))
+    except:
+        bleu = 0
+        logger.debug(f"Problem with calculating bleu ref {references} and pred {predictions}")
     return {"bleu": bleu}
 
 def compute_bert_score(predictions, references):

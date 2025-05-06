@@ -11,7 +11,7 @@ def process_split(dataset, metadata, split):
     dataset_file = f"claim_optimization_claim_revisions_{split}_skitalinskaya23.json"
     output.append_definition("Given the following input argumentative claim with context information on the " +
                              "debate, rewrite the claim such that the output claim improves upon input claim in terms of text quality " +
-                             "and argument quality, and preserves the meaning of the claim as far as possible.  Do not explain.")
+                             "and argument quality, and preserves the meaning of the claim as far as possible.")
 
     unrevised_docs = dataset[dataset["revision_id"] == 1][["claim_id", "revision_id", "claim_text", "thesis"]]
     last_revision_docs = dataset[dataset["revision_id"] == dataset["max_revision_id"]][["claim_id", "revision_id", "claim_text"]]

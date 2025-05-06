@@ -56,8 +56,8 @@ def make_outputs(target_data, para_comet_data, dataset_name, para_comet_name, me
     target_output = Output(dataset_name)
     output_para_comet = Output(para_comet_name)
 
-    target_output.append_definition("Given a premise and a claim, generate an enthymem. An enthymem is a reason with which the claim follows logically form the premise.  Do not explain.")
-    output_para_comet.append_definition("Given a premise and a claim, generate an enthymem using provided context.  An enthymem is a reason with which the claim follows logically form the premise. Do not explain.")
+    target_output.append_definition("Given a premise and a claim, generate an enthymem. An enthymem is a reason with which the claim follows logically form the premise.")
+    output_para_comet.append_definition("Given a premise and a claim, generate an enthymem using provided context.  An enthymem is a reason with which the claim follows logically form the premise.")
 
     for i in range(len(target_data)):
         prompt = f"Premise: {target_data[i].reason}\nClaim: {target_data[i].claim}"

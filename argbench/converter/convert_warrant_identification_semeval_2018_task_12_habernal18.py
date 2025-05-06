@@ -11,7 +11,7 @@ def process_split(dataset, metadata, split):
     dataset_file = f"warrant_identification_semeval_2018_task_12_{split}_habernal18.json"
     output.append_definition("""Given the following reason and claim along with the debate title and a short description of the debate they occur in, 
                              identify the correct warrant from two candidates\n
-                             Warrant 1 and Warrant 2. The warrant explains why the claim follows from the reason. Do not explain.\n""")
+                             Warrant 1 and Warrant 2. The warrant explains why the claim follows from the reason.""")
 
     for row in dataset.iterrows():
         row = row[1]

@@ -99,7 +99,7 @@ def main():
     split_map = {ids[i]:splits[i] for i in range(len(ids))}
     task_definition = """Given the following essay in which the given premise and conclusion appear.\n
      Classify whether the premise supports or attacks the conclusion.
-         Only output Support or Attack. Do not Explain."""
+         Only output Support or Attack."""
     metadata = Metadata(dataset_name)
     for split in ["train", "test", "val"]:
         output = Output(dataset_name)

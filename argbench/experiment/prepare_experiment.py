@@ -39,6 +39,7 @@ class PandasDataset:
 
 
 def get_dataset_split(dataset, set, metadata, task_data_path):
+
     for file in metadata[dataset]["file_list"]:
         if metadata[dataset]["split_mapping"][file] == set:
 
@@ -58,6 +59,8 @@ def load_set(dataset, task_data_path, split, sample_rate:float = None, sample_si
         path_sample = formulate_sample_path(path, sample_rate, sample_size)
     else:
         path_sample = path
+    logger.debug(f"path:{path}")
+    logger.debug(f"sample path:{path_sample}")
     if os.path.exists(path_sample):
         return  pd.read_json(path_sample, lines=True), path_sample
     else:
@@ -223,8 +226,8 @@ def collect_datasets(run_config):
     :param run_config: RunConfig with train_datasets and test_datasets config dicts
     :returns: Tuple of train and test datasets in pandas DataFrame
     """
-    global logger
-    logger = get_logger(run_config)
+
+
     train_config = run_config.train_datasets
     test_config = run_config.test_dataset
     tasks_path = Path(run_config.data_folder)

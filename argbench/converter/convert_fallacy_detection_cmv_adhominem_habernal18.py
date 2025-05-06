@@ -13,7 +13,7 @@ def process_data(data, split):
 
     dataset_file_name = dataset_file_format.format(split=split)
     output = Output(dataset_name)
-    output.append_definition("Classify if the following argument is an ad-hominem (personal attack) or not. Answer with ad-hominem or not-ad-hominem. Do not explain.")
+    output.append_definition("Classify if the following argument is an ad-hominem (personal attack) or not. Answer with ad-hominem or not-ad-hominem.")
 
     for post in data:
 

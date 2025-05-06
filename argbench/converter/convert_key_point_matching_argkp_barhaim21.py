@@ -12,7 +12,7 @@ def preprocess_data(dataset, split, metadata):
     dataset_file = dataset_file_template.format(split=split)
 
     output.append_definition("""Judge if the following keypoint summarizes the given argument.
-     Possible responses: Match if argument is summarized by key point and No Match if argument is not summarized by key point. Do not explain""")
+     Possible responses: Match if argument is summarized by key point and No Match if argument is not summarized by key point.""")
     for row in dataset.iterrows():
         row = row[1]
         prompt = f"Argument: {row['argument']}\nKey Point: {row['key_point']}"

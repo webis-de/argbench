@@ -55,7 +55,7 @@ if __name__ == "__main__":
     for split_model in model_split_idx:
         output = Output(DATASET_NAME)
         output.append_definition("Classify argument according to Walton's argument schemes. "
-                                 "Possible argument schemes: means for goal, goal from means, from consequence, source knowledge, source authority, rule or principle, and other. \n Do not explain.")
+                                 "Possible argument schemes: means for goal, goal from means, from consequence, source knowledge, source authority, rule or principle, and other.")
         for id in model_split_idx[split_model]:
             for arg in arguments:
                 if arg.id == id:

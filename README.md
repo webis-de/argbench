@@ -1,6 +1,6 @@
 # ArgBench
 
-This repo comprises 32 datasets and 22 tasks covering 5 skills to evaluate how good are LLMs at computational argumentation tasks.
+This repo comprises 32 datasets and 57 tasks covering 5 skills to evaluate how good are LLMs at computational argumentation tasks.
 The skills are argument mining, argument perspective and quality assessment, argument reasoning, and argument generation.
 You can evaluate your language model in Prompting, i.e. how good is your models at computational argumentation tasks. Or
 how good is your model at generalizing to unseen computational tasks (Leave-one-out), by evaluating it on five hold-out tasks

@@ -23,7 +23,7 @@ def make_output(dataset, metadata, column, aspect_description, dataset_file, spl
     output.append_definition(f"""Judge the quality of argument according to quality aspect: {column}. 
                             Quality aspect description: {aspect_description} Possible outputs:
                             Low if arguments aspect quality is low, Average if argument's aspect quality is average,
-                            High if arguments aspect quality is high. Do not explain.""")
+                            High if arguments aspect quality is high.""")
 
     for row in dataset.iterrows():
         row = row[1]
