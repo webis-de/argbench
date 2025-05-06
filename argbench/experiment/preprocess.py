@@ -79,12 +79,13 @@ if __name__ == "__main__":
         os.mkdir(args.output)
 
     tasks = []
+
     path = tasks_path()
     if args.task in multi_dataset_tasks:
         tasks = multi_dataset_tasks[args.task]
     else:
         tasks = [args.task]
-
+    print(tasks)
     for item in os.listdir(path):
 
         if tasks and item not in tasks:
