@@ -1,3 +1,3 @@
 from vllm import LLM, SamplingParams
-llm = LLM(model="/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-1.5B", device="cpu")
+llm = LLM(model="/mnt/home/yajjour/pre-trained-models/Llama-3.3-70B-Instruct")
 print(llm.generate("hello"))
