@@ -18,7 +18,11 @@
     "tensorboard_logs": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tensorboard",
     "train_datasets": {},
     "test_dataset": {
+<<<<<<< HEAD
         "subsample_rate": 0.1
+=======
+
+>>>>>>> af924f6b06933a01049eeb744690eaea73a9d7c2
     },
     "model_configs": [
         {
@@ -140,7 +144,7 @@
         }
     ],
     "hpo_config": {
-        "n_trials": 1,
+        "n_trials": 10,
         "study_name": "stance-barhaim17",
         "storage": "sqlite:///db.sqlite3",
         "hpo_fine_grained_output": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo/hpo-results/",
