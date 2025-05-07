@@ -162,22 +162,8 @@
                 "name": "batch_size",
                 "type": "int",
                 "low": 4,
-                "step": 4,
+                "step": 1,
                 "high": 32
-            },
-            "lora_alpha" : {
-                "name": "r",
-                "type": "int",
-                "low": 4,
-                "step": 4,
-                "high": 32
-            },
-            "r" : {
-                "name": "lora_alpha",
-                "type": "int",
-                "low": 4,
-                "step": 4,
-                "high": 16
             }
         }
     },
