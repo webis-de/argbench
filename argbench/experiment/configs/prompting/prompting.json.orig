@@ -20,8 +20,12 @@
         "subsample_amount": 1
     },
     "test_dataset": {
+<<<<<<< HEAD
+        "subsample_rate": 0.1
+=======
         "subsample_rate": 0.01
 
+>>>>>>> fabf24e9dd7599a09bdd87a6c925443bc97f29b1
     },
     "model_configs": [
         {
