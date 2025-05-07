@@ -4,5 +4,5 @@ models=("gemma-9-2b-it" "gemma-2-27b-it")
 
 for model in ${models[@]};
 do
-sbatch argbench/jobs/run_in_tasks_experiments.sh "$model" --output "argbench/output/in-task-hpo-experiment-$model.out" --error "argbench/output/in-task-hpo-experiment-$model.errr"
+sbatch argbench/jobs/run_in_tasks_experiments.sh "$model"
 done
