@@ -4,8 +4,8 @@
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=25G
 #SBATCH --time=96:00:00
-#SBATCH --output argbench/output/prmt-$1.out
-#SBATCH --error argbench/output/prmt-$1.err
+#SBATCH --output argbench/output/prmt-dataset-%j.out
+#SBATCH --error argbench/output/prmt-dataset-%j.err
 #SBATCH --gpus=a100:1
 
 
@@ -14,7 +14,7 @@ conda activate task-specific
 
 model=$2
 dataset=$1
-
+echo "working on $dataset"
 
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
@@ -32,7 +32,7 @@ cd "$CODE_PATH"
 
 for model in ${models[@]};
 do
-
+echo "using the model $model"
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
 --leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset" --debug
 done
