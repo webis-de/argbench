@@ -4,8 +4,8 @@
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=20G
 #SBATCH --time=96:00:00
-#SBATCH --output argbench/output/ft-all-models.out
-#SBATCH --error argbench/output/ft-all-models.err
+#SBATCH --output argbench/output/ft-all-models-%j.out
+#SBATCH --error argbench/output/ft-all-models-%j.err
 #SBATCH --gpus=a100:1
 module load Miniforge3
 conda activate task-specific

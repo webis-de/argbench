@@ -4,8 +4,8 @@
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=25G
 #SBATCH --time=96:00:00
-#SBATCH --output argbench/output/prmt-cot-dataset.out
-#SBATCH --error argbench/output/prmt-cot-dataset.err
+#SBATCH --output argbench/output/prmt-cot-dataset-%j.out
+#SBATCH --error argbench/output/prmt-cot-dataset-%j.err
 #SBATCH --gpus=a100:1
 
 

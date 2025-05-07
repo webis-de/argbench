@@ -4,8 +4,8 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=15G
 #SBATCH --time=24:00:00
-#SBATCH --output argbench/output/analyze-k.out
-#SBATCH --error argbench/output/analyze-k.err
+#SBATCH --output argbench/output/analyze-k-%j.out
+#SBATCH --error argbench/output/analyze-k-%j.err
 #SBATCH --gpus=a100:1
 
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
