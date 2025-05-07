@@ -446,7 +446,7 @@ class Runner:
 
         optuna.logging.get_logger("optuna").addHandler(logging.StreamHandler(sys.stdout))
 
-        hpo_path = self.config.hpo_config.hpo_fine_grained_output + "/" + self.config.hpo_config.study_name + ".log"
+        hpo_path = self.config.hpo_config.hpo_fine_grained_output + "/" + self.config.get_experiment_name() + ".log"
         storage = optuna.storages.JournalStorage(
             optuna.storages.journal.JournalFileBackend(hpo_path),  # NFS path for distributed optimization
         )
@@ -455,7 +455,7 @@ class Runner:
             study_name=self.config.get_experiment_name(),
             direction=self.config.hpo_config.direction,
             sampler=TPESampler(),
-            load_if_exists=True
+            load_if_exists=False
         )
         study.optimize(self.hpo_objective, self.config.hpo_config.n_trials)
         return study.best_params, study.best_trial.value
