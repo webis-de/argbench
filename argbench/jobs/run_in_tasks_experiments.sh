@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=20G
 #SBATCH --time=96:00:00
-#SBATCH --gpus=a100:2
+#SBATCH --gpus=a100:1
 module load Miniforge3
 conda activate task-specific
 
