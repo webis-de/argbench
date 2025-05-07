@@ -160,9 +160,9 @@
                 "low": 4,
                 "step": 1,
                 "high": 32
+            }
         }
-    }
-  },
+    },
     "peft_fresh_config": {
         "adapter_name": "adapter",
         "adapter_type": "lora",

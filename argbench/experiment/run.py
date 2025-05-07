@@ -455,7 +455,7 @@ class Runner:
             study_name=self.config.get_experiment_name(),
             direction=self.config.hpo_config.direction,
             sampler=TPESampler(),
-            load_if_exists=False
+            load_if_exists=True
         )
         study.optimize(self.hpo_objective, self.config.hpo_config.n_trials)
         return study.best_params, study.best_trial.value
