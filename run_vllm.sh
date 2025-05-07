@@ -6,8 +6,12 @@
 #SBATCH --time=12:00:00
 #SBATCH --output argbench/output/run_vllm.out
 #SBATCH --error argbench/output/run_vllm.err
+<<<<<<< HEAD
 #SBATCH --partition ainlp
 #SBATCH --gpus=a100:2
+=======
+#SBATCH --gpus=a100:1
+>>>>>>> b99b580b83c0b48a6b679818709c44a555ae7302
 module load Miniforge3
 conda activate task-specific
 

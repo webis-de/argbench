@@ -1,3 +1,3 @@
 from vllm import LLM, SamplingParams
-llm = LLM(model="/bigwork/nhwpajjy/pre-trained-models/Llama-3.3-70B-Instruct", tensor_parallel_size=2)
+llm = LLM(model="/bigwork/nhwpajjy/pre-trained-models/Llama-3.3-70B-Instruct", quantization="fp8")
 print(llm.generate("hello"))
