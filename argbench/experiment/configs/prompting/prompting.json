@@ -99,7 +99,6 @@
             "label": "llama-3.3-70b-instruct",
             "path": "/bigwork/nhwpajjy/pre-trained-models/Llama-3.3-70B-Instruct",
             "output_splitter": "<|start_header_id|>assistant<|end_header_id|>",
-
             "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>\n{definition}\nDo not explain and do not rephrase the input.\n{instance_input}<|eot_id|>",
             "shot_prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>\n{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}<|eot_id|>",
             "cot_prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>\n{definition}\n###Example:\n{example}\n#####\n{instance_input}<|eot_id|>",
