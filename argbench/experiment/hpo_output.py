@@ -15,7 +15,7 @@ class HPOOutput:
         if os.path.exists(self.output_path):
             self.df_results = pd.read_csv(self.output_path, sep="\t")
         else:
-            self.df_results = pd.DataFrame(columns=["model", "experiment", "test_task",  "metric", "score", "start_time", "learning_rate", "batch_size"])
+            self.df_results = pd.DataFrame(columns=["model", "experiment", "test_task",  "metric", "score", "start_time", "learning_rate", "batch_size", "r", "lora_alpha"])
 
     def add_results(self, results):
         """
