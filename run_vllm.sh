@@ -8,7 +8,7 @@
 #SBATCH --error argbench/output/run_vllm.err
 #SBATCH --gpus=a100:1
 module load Miniforge3
-conda activate task-specific
+conda activate few-shot-priming
 
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 
