@@ -619,11 +619,15 @@ class Runner:
                     outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
 
                 for output in outputs:
-                    prediction = output.outputs[0].text
+                    response = output.outputs[0].text
 
-                    prediction = clean_prediction(prediction, self.config.is_chain_of_thoughts)
+                    prediction = clean_prediction(response, self.config.is_chain_of_thoughts)
                     predictions += [prediction]
                 logger.debug(f"""got the
+                                                   #################################
+                                                    repsonse:
+                                                   #################################
+                                                    f{response}
                                                    #################################
                                                     prediction:
                                                    #################################
