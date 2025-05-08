@@ -527,8 +527,8 @@ class RunConfig:
                 task_specific_generation_configs = json.load(task_config_stream)
             for task in task_specific_generation_configs["shot"]:
                 conf_obj.shot_task_generation_config[task] = VLLMGenerationConfig(**task_specific_generation_configs["shot"][task])
-            for task in task_specific_generation_configs["cot"]:
-                conf_obj.cot_task_generation_config[task] = VLLMGenerationConfig(**task_specific_generation_configs["cot"][task])
+            for task in task_specific_generation_configs["chain-of-thought"]:
+                conf_obj.cot_task_generation_config[task] = VLLMGenerationConfig(**task_specific_generation_configs["chain-of-thought"][task])
 
 
         if config.get("peft_configs"):
