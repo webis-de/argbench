@@ -76,7 +76,6 @@
             "prompt_template": "<|system|> you are an expert in linguistics <|user|>{definition}\n{instance_input}<assistant>",
             "output_splitter": "<assistant>"
         }
-
     ],
     "peft_fresh_config": {
         "adapter_name": "adapter",

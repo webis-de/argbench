@@ -6,7 +6,7 @@
 #SBATCH --time=96:00:00
 #SBATCH --output argbench/output/in-task-hpo-%j.out
 #SBATCH --error argbench/output/in-task-hpo-%j.err
-#SBATCH --gpus=a100:2
+#SBATCH --gpus=a100:1
 module load Miniforge3
 conda activate task-specific
 
