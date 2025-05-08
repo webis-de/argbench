@@ -157,14 +157,19 @@ class Runner:
     def load_sampling_params(self, test_dataset, trial=None, hpo_config=None):
 
         task_specific_vllm_config = None
-        for decoding_setup in self.config.task_generation_config:
+        if self.config.is_chain_of_thoughts:
+            task_generation_config = self.config.cot_task_generation_config
+        else:
+            task_generation_config = self.config.shot_task_generation_config
+
+        for decoding_setup in task_generation_config:
             if decoding_setup in test_dataset:
-                task_specific_vllm_config = self.config.task_generation_config[decoding_setup]
+                task_specific_vllm_config = task_generation_config[decoding_setup]
                 logger.debug(f"using generation config for {test_dataset}")
 
-        if not task_specific_vllm_config  and "default" in self.config.task_generation_config:
+        if not task_specific_vllm_config  and "default" in task_generation_config:
             logger.debug("using default generation config")
-            task_specific_vllm_config = self.config.task_generation_config["default"]
+            task_specific_vllm_config = task_generation_config["default"]
 
         elif not task_specific_vllm_config :
             task_specific_vllm_config = self.config.vllm_config

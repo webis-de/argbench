@@ -29,7 +29,7 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-2-2b-it",
             "prompt_template": "<start_of_turn>user{definition}\nDo not explain and do not rephrase the input.\n{instance_input}<end_of_turn><start_of_turn>model",
             "shot_prompt_template": "<start_of_turn>user{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}<end_of_turn><start_of_turn>model",
-            "cot_prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
+            "cot_prompt_template": "<start_of_turn>user{definition}\nThink step by step and prepend your output with Output:\n{instance_input}<end_of_turn><start_of_turn>model",
             "output_splitter": "<start_of_turn>model",
             "cutoff_len": 8192
         },
@@ -38,7 +38,7 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-2-9b-it",
             "prompt_template": "<start_of_turn>user{definition}\nDo not explain and do not rephrase the input.\n{instance_input}<end_of_turn><start_of_turn>model",
             "shot_prompt_template": "<start_of_turn>user{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}<end_of_turn><start_of_turn>model",
-            "cot_prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
+            "cot_prompt_template": "<start_of_turn>user{definition}\nThink step by step and prepend your output with Output:\n{instance_input}<end_of_turn><start_of_turn>model",
             "output_splitter": "<start_of_turn>model",
             "cutoff_len": 8192
         },
@@ -47,7 +47,7 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-2-27b-it",
             "prompt_template": "<start_of_turn>user{definition}\nDo not explain and do not rephrase the input.\n{instance_input}<end_of_turn><start_of_turn>model",
             "shot_prompt_template": "<start_of_turn>user{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}<end_of_turn><start_of_turn>model",
-            "cot_prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
+            "cot_prompt_template": "<start_of_turn>user{definition}\nThink step by step and prepend your output with Output:\n{instance_input}<end_of_turn><start_of_turn>model",
             "output_splitter": "<start_of_turn>model",
             "cutoff_len": 8192
         },        {
@@ -55,7 +55,7 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-2-27b-it-8bit",
             "prompt_template": "<start_of_turn>user{definition}\nDo not explain and do not rephrase the input.\n{instance_input}<end_of_turn><start_of_turn>model",
             "shot_prompt_template": "<start_of_turn>user{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}<end_of_turn><start_of_turn>model",
-            "cot_prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
+            "cot_prompt_template": "<start_of_turn>user{definition}\nThink step by step and prepend your output with Output:\n{instance_input}<end_of_turn><start_of_turn>model",
             "output_splitter": "<start_of_turn>model",
             "cutoff_len": 8192
         },
@@ -64,7 +64,7 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-Nemo-Instruct-2407",
             "prompt_template": "[INST]{definition}\nDo not explain and do not rephrase the input\n{instance_input}\n[/INST]",
             "shot_prompt_template": "[INST]{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
-            "cot_prompt_template": "[INST]{definition}\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
+            "cot_prompt_template": "[INST]{definition}\nThink step by step and prepend your output with Output:\n{instance_input}\n[/INST]",
             "output_splitter": "[/INST]",
             "cutoff_len": 128000
         },
@@ -73,7 +73,7 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
             "prompt_template": "[INST]{definition}\nDo not explain and do not rephrase the input.\n{instance_input}\n[/INST]",
             "shot_prompt_template": "[INST]{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
-            "cot_prompt_template": "[INST]{definition}\nPrepend your output with Output:, but before generating the output think step by step.\n{instance_input}\n[/INST]",
+            "cot_prompt_template": "[INST]{definition}\nThink step by step and prepend your output with Output:\n{instance_input}\n[/INST]",
             "output_splitter": "[/INST]",
             "cutoff_len": 8192
         },
@@ -82,7 +82,7 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-Small-Instruct-2409",
             "prompt_template": "[INST]{definition}\nDo not explain and do not rephrase the input.\n{instance_input}\n[/INST]",
             "shot_prompt_template": "[INST]{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
-            "cot_prompt_template": "[INST]{definition}\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
+            "cot_prompt_template": "[INST]{definition}\nThink step by step and prepend your output with Output:\n{instance_input}\n[/INST]",
             "output_splitter": "[/INST]",
             "cutoff_len": 128000
         },
@@ -91,7 +91,7 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-Small-Instruct-2409-8bit",
             "prompt_template": "[INST]{definition}\nDo not explain and do not rephrase the input.\n{instance_input}\n[/INST]",
             "shot_prompt_template": "[INST]{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
-            "cot_prompt_template": "[INST]{definition}\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
+            "cot_prompt_template": "[INST]{definition}\nThink step by step and prepend your output with Output:\n{instance_input}\n[/INST]",
             "output_splitter": "[/INST]",
             "cutoff_len": 128000
         },
@@ -100,7 +100,7 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/TinyLlama-1.1B-Chat-v1.0",
             "prompt_template": "<|system|> you are an expert in linguistics <|user|>{definition}\nDo not explain and do not rephrase the input.\n{instance_input}<assistant>",
             "shot_prompt_template": "<|system|> you are an expert in linguistics <|user|>{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}<assistant>",
-            "cot_prompt_template": "<|system|> you are an expert in linguistics <|user|>{definition}\nExample:{example}\n{instance_input}<assistant>",
+            "cot_prompt_template": "<|system|> you are an expert in linguistics <|user|>{definition}\nThink step by step and prepend your output with Output:\n{instance_input}<assistant>",
             "output_splitter": "<assistant>",
             "cutoff_len": 2048
         },
@@ -110,7 +110,7 @@
             "output_splitter": "<|start_header_id|>assistant<|end_header_id|>",
             "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>\n{definition}\nDo not explain and do not rephrase the input.\n{instance_input}<|eot_id|>",
             "shot_prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>\n{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}<|eot_id|>",
-            "cot_prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>\n{definition}\n###Example:\n{example}\n#####\n{instance_input}<|eot_id|>",
+            "cot_prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>\n{definition}\nThink step by step and prepend your output with Output:\n{instance_input}<|eot_id|>",
             "cutoff_len": 8192
         },
         {
@@ -119,7 +119,7 @@
             "output_splitter": "<|start_header_id|>assistant<|end_header_id|>",
             "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>\n{definition}\nDo not explain and do not rephrase the input.\n{instance_input}<|eot_id|>",
             "shot_prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>\n{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}<|eot_id|>",
-            "cot_prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>\n{definition}\n###Example:\n{example}\n#####\n{instance_input}<|eot_id|>",
+            "cot_prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>\n{definition}\nThink step by step and prepend your output with Output:\n{instance_input}<|eot_id|>",
             "cutoff_len": 128000
         },
         {
@@ -127,7 +127,7 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-1.5B",
             "prompt_template": "<|begin of sentence|><|User|>{definition}\nDo not explain and do not rephrase the input.\n{instance_input}<|end of sentence|><|Assistant|>\n",
             "shot_prompt_template": "<|begin of sentence|><|User|>{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}<|end of sentence|><|Assistant|>\n",
-            "cot_prompt_template": "<|begin of sentence|><|User|>{definition}\nPrepend your output with Output:, but before generating the output let us think step by step.\n{instance_input}<|end of sentence|><|Assistant|>\n",
+            "cot_prompt_template": "<|begin of sentence|><|User|>{definition}\nThink step by step and prepend your output with Output:\n{instance_input}<|end of sentence|><|Assistant|>\n",
             "output_splitter": "<|Assistant|>",
             "cutoff_len": 128000
         },
@@ -136,7 +136,7 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-7B",
             "prompt_template": "<|begin of sentence|><|User|>{definition}\nDo not explain and do not rephrase the input.\n{instance_input}<|end of sentence|><|Assistant|>",
             "shot_prompt_template": "<|begin of sentence|><|User|>{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}<|end of sentence|><|Assistant|>",
-            "cot_prompt_template": "<|begin of sentence|><|User|>{definition}\n{instance_input}<|end of sentence|><|Assistant|>",
+            "cot_prompt_template": "<|begin of sentence|><|User|>{definition}\nThink step by step and prepend your output with Output:\n{instance_input}<|end of sentence|><|Assistant|>",
             "output_splitter": "<|Assistant|>",
             "cutoff_len": 128000
         },
@@ -145,7 +145,7 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-32B",
             "prompt_template": "<|begin of sentence|><|User|>{definition}\nDo not explain and do not rephrase the input.\n{instance_input}<|end of sentence|><|Assistant|>",
             "shot_prompt_template": "<|begin of sentence|><|User|>{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}<|end of sentence|><|Assistant|>",
-            "cot_prompt_template": "<|begin of sentence|><|User|>{definition}\n{instance_input}<|end of sentence|><|Assistant|>",
+            "cot_prompt_template": "<|begin of sentence|><|User|>{definition}\nThink step by step and prepend your output with Output:\n{instance_input}<|end of sentence|><|Assistant|>",
             "output_splitter": "<|Assistant|>",
             "cutoff_len": 128000
         },
@@ -154,7 +154,7 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-32B-MLX-8Bit",
             "prompt_template": "<|begin of sentence|><|User|>{definition}\nDo not explain and do not rephrase the input.\n{instance_input}<|end of sentence|><|Assistant|>",
             "shot_prompt_template": "<|begin of sentence|><|User|>{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}<|end of sentence|><|Assistant|>",
-            "cot_prompt_template": "<|begin of sentence|><|User|>{definition}\n{instance_input}<|end of sentence|><|Assistant|>",
+            "cot_prompt_template": "<|begin of sentence|><|User|>{definition}\nThink step by step and prepend your output with Output:\n{instance_input}<|end of sentence|><|Assistant|>",
             "output_splitter": "<|Assistant|>",
             "cutoff_len": 128000
         },
@@ -163,7 +163,7 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/Qwen3-1.7B",
             "prompt_template": "<|im_start|>user\n{definition}\nDo not explain and do not rephrase the input.\n{instance_input}<|im_end|>\n<|im_start|>assistant\n\n<think>\n\n</think>\n\n",
             "shot_prompt_template": "<|im_start|>user\n{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}<|im_end|>\n<|im_start|>assistant\n\n<think>\n\n</think>\n\n",
-            "cot_prompt_template": "<|im_start|>user\n{definition}\n###Example:\n{example}\n#####\n{instance_input}<|im_end|>\n<|im_start|>assistant",
+            "cot_prompt_template": "<|im_start|>user\n{definition}\nThink step by step and prepend your output with Output:\n{instance_input}<|im_end|>\n<|im_start|>assistant",
             "output_splitter": "/think>",
             "cutoff_len": 32000
         },
@@ -172,7 +172,7 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/Qwen3-4B",
             "prompt_template": "<|im_start|>user\n{definition}\nDo not explain and do not rephrase the input.\n{instance_input}<|im_end|>\n<|im_start|>assistant\n\n<think>\n\n</think>\n\n",
             "shot_prompt_template": "<|im_start|>user\n{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}<|im_end|>\n<|im_start|>assistant\n\n<think>\n\n</think>\n\n",
-            "cot_prompt_template": "<|im_start|>user\n{definition}\n###Example:\n{example}\n#####\n{instance_input}<|im_end|>\n<|im_start|>assistant",
+            "cot_prompt_template": "<|im_start|>user\n{definition}\nThink step by step and prepend your output with Output:\n{instance_input}<|im_end|>\n<|im_start|>assistant",
             "output_splitter": "/think>",
             "cutoff_len": 32000
         },
@@ -181,7 +181,7 @@
             "path": "/bigwork/nhwpajjy/pre-trained-models/Qwen3-32B",
             "prompt_template": "<|im_start|>user\n{definition}\nDo not explain and do not rephrase the input.\n{instance_input}<|im_end|>\n<|im_start|>assistant\n\n<think>\n\n</think>\n\n",
             "shot_prompt_template": "<|im_start|>user\n{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}<|im_end|>\n<|im_start|>assistant\n\n<think>\n\n</think>\n\n",
-            "cot_prompt_template": "<|im_start|>user\n{definition}\n###Example:\n{example}\n#####\n{instance_input}<|im_end|>\n<|im_start|>assistant",
+            "cot_prompt_template": "<|im_start|>user\n{definition}\nThink step by step and prepend your output with Output:\n{instance_input}<|im_end|>\n<|im_start|>assistant",
             "output_splitter": "/think>",
             "cutoff_len": 128000
         }
