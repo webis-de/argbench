@@ -65,7 +65,7 @@ def clean_prediction(prediction, is_chain_of_thoughts):
     if is_chain_of_thoughts:
         prediction = prediction.split("Output:")[1]
     if prediction.startswith("<|start_header_id|>assistant<|end_header_id|>"):
-        prediction = prediction.replace("<|start_header_id|>assistant<|end_header_id|>", "")
+        prediction = prediction.replacereplace("<|start_header_id|>assistant<|end_header_id|>", "")
     if "</think>" in prediction:
         prediction = prediction.split("</think>")[1]
     return prediction
