@@ -1,11 +1,11 @@
 #!/bin/bash -l
-#SBATCH --job-name=prmt-all-data
+#SBATCH --job-name=prmt-all-sample
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=25G
 #SBATCH --time=96:00:00
-#SBATCH --output argbench/output/prmt-all-data-%j.out
-#SBATCH --error argbench/output/prmt-all-data-%j.err
+#SBATCH --output argbench/output/prmt-all-sample-%j.out
+#SBATCH --error argbench/output/prmt-all-sample-%j.err
 #SBATCH --gpus=a100:1
 module load Miniforge3
 conda activate task-specific
