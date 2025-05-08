@@ -14,6 +14,7 @@ conda activate task-specific
 
 model=$2
 dataset=$1
+technique=$3
 echo "working on $dataset"
 
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
@@ -34,7 +35,7 @@ for model in ${models[@]};
 do
 echo "using the model $model"
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset" --debug
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset" --debug "$technique"
 done
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
