@@ -20,7 +20,7 @@
     },
     "test_dataset": {
 
-        "subsample_rate": 0.1
+
     },
     "model_configs": [
         {
