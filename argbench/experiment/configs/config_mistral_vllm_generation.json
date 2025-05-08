@@ -1,51 +1,90 @@
 {
-    "aspect_detection_ukp_corpus_schiller21": {
-        "temperature": 0,
-        "top_p": 1,
-        "top_k": -1,
-        "max_tokens": 3000,
-        "min_tokens": 500
+    "shot": {
+        "aspect_detection_ukp_corpus_schiller21": {
+            "temperature": 0,
+            "top_p": 1,
+            "top_k": -1,
+            "max_tokens": 200,
+            "min_tokens": 50
+        },
+        "argument_unit_segmentation": {
+            "temperature": 0,
+            "top_p": 1,
+            "top_k": -1,
+            "max_tokens": 3000,
+            "min_tokens": 500
+        },
+        "fallacy_detection_elecdeb60t020_goffredo23": {
+            "temperature": 0,
+            "top_p": 1,
+            "top_k": -1,
+            "max_tokens": 1000,
+            "min_tokens": 100
+        },
+        "generation": {
+            "temperature": 0.5,
+            "top_p": 1,
+            "top_k": -1,
+            "max_tokens": 2000,
+            "min_tokens": 100
+        },
+        "claim_optimization": {
+            "temperature": 0.5,
+            "top_p": 1,
+            "top_k": -1,
+            "max_tokens": 2000,
+            "min_tokens": 100
+        },
+        "default": {
+            "temperature": 0,
+            "top_p": 1,
+            "top_k": 1,
+            "max_tokens": 8,
+            "min_tokens": 1
+        }
     },
-    "argument_unit_segmentation": {
-        "temperature": 0,
-        "top_p": 1,
-        "top_k": -1,
-        "max_tokens": 3000,
-        "min_tokens": 500
-    },
-    "argument_unit_classification": {
-        "temperature": 0,
-        "top_p": 1,
-        "top_k": -1,
-        "max_tokens": 3000,
-        "min_tokens": 100
-    },
-    "fallacy_detection_elecdeb60t020_goffredo23": {
-        "temperature": 0,
-        "top_p": 1,
-        "top_k": -1,
-        "max_tokens": 3000,
-        "min_tokens": 100
-    },
-    "generation": {
-        "temperature": 0.5,
-        "top_p": 1,
-        "top_k": -1,
-        "max_tokens": 2000,
-        "min_tokens": 100
-    },
-    "claim_optimization": {
-        "temperature": 0.5,
-        "top_p": 1,
-        "top_k": -1,
-        "max_tokens": 2000,
-        "min_tokens": 100
-    },
-    "default": {
-        "temperature": 0,
-        "top_p": 1,
-        "top_k": 1,
-        "max_tokens": 8,
-        "min_tokens": 1
+    "cot": {
+        "aspect_detection_ukp_corpus_schiller21": {
+            "temperature": 0,
+            "top_p": 1,
+            "top_k": -1,
+            "max_tokens": 250,
+            "min_tokens": 100
+        },
+        "argument_unit_segmentation": {
+            "temperature": 0,
+            "top_p": 1,
+            "top_k": -1,
+            "max_tokens": 3200,
+            "min_tokens": 700
+        },
+        "fallacy_detection_elecdeb60t020_goffredo23": {
+            "temperature": 0,
+            "top_p": 1,
+            "top_k": -1,
+            "max_tokens": 1200,
+            "min_tokens": 300
+        },
+        "generation": {
+            "temperature": 0.5,
+            "top_p": 1,
+            "top_k": -1,
+            "max_tokens": 2200,
+            "min_tokens": 300
+        },
+        "claim_optimization": {
+            "temperature": 0.5,
+            "top_p": 1,
+            "top_k": -1,
+            "max_tokens": 2300,
+            "min_tokens": 300
+        },
+        "default": {
+            "temperature": 0,
+            "top_p": 1,
+            "top_k": 1,
+            "max_tokens": 50,
+            "min_tokens": 30
+        }
     }
 }
