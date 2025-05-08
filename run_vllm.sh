@@ -6,7 +6,7 @@
 #SBATCH --time=12:00:00
 #SBATCH --output argbench/output/run_vllm.out
 #SBATCH --error argbench/output/run_vllm.err
-#SBATCH --gpus=a100:1
+#SBATCH --gpus=a100:2
 module load Miniforge3
 conda activate few-shot-priming
 
