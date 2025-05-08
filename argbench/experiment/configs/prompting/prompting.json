@@ -50,6 +50,14 @@
             "cot_prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
             "output_splitter": "<start_of_turn>model",
             "cutoff_len": 8192
+        },        {
+            "label": "gemma-2-27b-it-8bit",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-2-27b-it-8bit",
+            "prompt_template": "<start_of_turn>user{definition}\nDo not explain and do not rephrase the input.\n{instance_input}<end_of_turn><start_of_turn>model",
+            "shot_prompt_template": "<start_of_turn>user{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}<end_of_turn><start_of_turn>model",
+            "cot_prompt_template": "<start_of_turn>user{definition}\n{instance_input}<end_of_turn><start_of_turn>model",
+            "output_splitter": "<start_of_turn>model",
+            "cutoff_len": 8192
         },
         {
             "label": "mistral-nemo",
@@ -72,6 +80,15 @@
         {
             "label": "mistral-small",
             "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-Small-Instruct-2409",
+            "prompt_template": "[INST]{definition}\nDo not explain and do not rephrase the input.\n{instance_input}\n[/INST]",
+            "shot_prompt_template": "[INST]{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
+            "cot_prompt_template": "[INST]{definition}\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
+            "output_splitter": "[/INST]",
+            "cutoff_len": 128000
+        },
+        {
+            "label": "mistral-small-8bit",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-Small-Instruct-2409-8bit",
             "prompt_template": "[INST]{definition}\nDo not explain and do not rephrase the input.\n{instance_input}\n[/INST]",
             "shot_prompt_template": "[INST]{definition}\nDo not explain and do not rephrase the input.\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
             "cot_prompt_template": "[INST]{definition}\n###Example:\n{example}\n#####\n{instance_input}\n[/INST]",
