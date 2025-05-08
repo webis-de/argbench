@@ -526,9 +526,9 @@ class RunConfig:
             with open(config.get("generation_config_path")) as task_config_stream:
                 task_specific_generation_configs = json.load(task_config_stream)
             for task in task_specific_generation_configs["shot"]:
-                conf_obj.shot_task_generation_config[task] = VLLMGenerationConfig(**task_specific_generation_configs[task])
+                conf_obj.shot_task_generation_config[task] = VLLMGenerationConfig(**task_specific_generation_configs["shot"][task])
             for task in task_specific_generation_configs["cot"]:
-                conf_obj.cot_task_generation_config[task] = VLLMGenerationConfig(**task_specific_generation_configs[task])
+                conf_obj.cot_task_generation_config[task] = VLLMGenerationConfig(**task_specific_generation_configs["cot"][task])
 
 
         if config.get("peft_configs"):
