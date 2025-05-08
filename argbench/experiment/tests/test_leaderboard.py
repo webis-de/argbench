@@ -8,11 +8,11 @@ class testLeaderboard(TestCase):
         now = datetime.now()
         starting_time = now.strftime("%m-%d-%H:%M:%S")
 
-        metric = {"test_task": "argument_relation_identification_erulemaking_park18", "metric":"bleuscore", "score" : 1/10, "training_data":"MOC", "model": "llama", "start_time":starting_time, "k":10}
+        metric = {"filter":"none","test_task": "argument_relation_identification_erulemaking_park18", "metric":"bleuscore","k":2, "score" : 1/10, "training_data":"MOC", "model": "llama", "start_time":starting_time, "k":10}
         leaderboard.add_results(metric)
-        metric = {"test_task": "argument_relation_identification_erulemaking_park18", "metric":"fscore", "score" : 2/10, "training_data":"MOC", "model": "llama", "start_time":starting_time, "k":10}
+        metric = {"filter":"none","test_task": "argument_relation_identification_erulemaking_park18", "metric":"fscore", "k":2, "score" : 2/10, "training_data":"MOC", "model": "llama", "start_time":starting_time, "k":10}
         leaderboard.add_results(metric)
-        metric = {"test_task": "argument_rating_dagstuhl_15512_overall_quality_wachsmuth17", "metric":"fscore", "score" : 3/10, "training_data":"MOC", "model": "llama", "start_time":starting_time, "k":10}
+        metric = {"filter":"none","test_task": "argument_rating_dagstuhl_15512_overall_quality_wachsmuth17", "metric":"fscore", "k":2, "score" : 3/10, "training_data":"MOC", "model": "llama", "start_time":starting_time, "k":10}
         leaderboard.add_results(metric)
 
         leaderboard.save_file()
