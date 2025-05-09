@@ -1,5 +1,5 @@
 #!/bin/bash -l
-#SBATCH --job-name=prmt-all-sample
+#SBATCH --job-name=prmt-tests-seed
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=10G
