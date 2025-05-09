@@ -4,8 +4,8 @@
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=10G
 #SBATCH --time=24:00:00
-#SBATCH --output argbench/output/prmt-all-sample-%j.out
-#SBATCH --error argbench/output/prmt-all-sample-%j.err
+#SBATCH --output argbench/output/prmt--test-seeds-%j.out
+#SBATCH --error argbench/output/prmt--test-seeds-%j.err
 #SBATCH --gpus=a100:1
 module load Miniforge3
 conda activate task-specific
@@ -35,13 +35,10 @@ python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/
 --leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --test-subsample_amount 100
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --is_chain_of_thoughts --test_subsample_amount 100
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --seed 124 --test_subsample_amount 100
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --train_subsample_amount 1 --test_subsample_amount 100
-
-python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --train_subsample_amount 4 --test_subsample_amount 100
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --seed 42 --test_subsample_amount 100
 done
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"

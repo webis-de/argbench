@@ -1,25 +1,17 @@
+from collections import defaultdict
+
 from common import tasks_path
 from statistics import mean
-from transformers import LlamaTokenizer, LlamaTokenizerFast
+from transformers import LlamaTokenizer, LlamaTokenizerFast, AutoTokenizer
 from argparse import ArgumentParser
 import json
 import pandas as pd
 
 
 if __name__ == "__main__":
-    arg_parser = ArgumentParser(description="Count length of each dataset")
 
-    arg_parser.add_argument("-tn", "--tokenizer_name", type=str, help="Tokenizer name to use")
-    arg_parser.add_argument("-tt", "--tokenizer_type", choices=["llama_tokenizer"], help="Type of tokenizer to use")
-
-    args = arg_parser.parse_args()
-
-    if args.tokenizer_type == "llama_tokenizer":
-        tokenizer = LlamaTokenizerFast.from_pretrained(args.tokenizer_name, unk_token="<unk>")
+    tokenizer = AutoTokenizer.from_pretrained("/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-1.5B", unk_token="<unk>")
         # LlamaTokenizerFast
-    else:
-        tokenizer = None
-
     with open(tasks_path() / "metadata.json", "r") as f:
             metadata = json.load(f)
 
@@ -33,10 +25,13 @@ if __name__ == "__main__":
         "MIN Output Len": [],
         "MAX Output Len": [],
         "MAX Definition + Instance": [],
-        "MAX ALL": []
+        "MAX ALL": [],
+        "Dataset": [],
+        "Count": []
     }
 
     for dataset in metadata:
+
         for file in metadata[dataset]["file_list"]:
             file_path = tasks_path() / dataset / file
             try:
@@ -52,8 +47,10 @@ if __name__ == "__main__":
             if not file_data["Instances"]:
                 print(f"File has no instances: {file_path}")
                 continue
-
+            if dataset=="argument_summarization_open_debate_evidence_roush23":
+                continue
             instances = [inst["input"] for inst in file_data["Instances"]]
+
             outputs = [inst["output"][0] for inst in file_data["Instances"]]
 
             definition = file_data["Definition"][0]
@@ -82,8 +79,9 @@ if __name__ == "__main__":
             print(avg_instance_len)
             print(max_instance_len)
             print(min_instance_len)
-
+            data["Dataset"].append(dataset)
             data["Data File"].append(file)
+            data["Count"].append(len(instances))
             data["AVG Instance Len"].append(avg_instance_len)
             data["MIN Instance Len"].append(min_instance_len)
             data["MAX Instance Len"].append(max_instance_len)
@@ -93,7 +91,21 @@ if __name__ == "__main__":
             data["Definition Len"].append(description_len)
             data["MAX Definition + Instance"].append(max_def_inst)
             data["MAX ALL"].append(max_all)
-
     df = pd.DataFrame(data)
+    dataset_records = {}
+    for column in df.columns:
+        if "MIN" in column:
+            dataset_records[column] = df.groupby("Dataset").agg({column: "min"}).values[0]
+        elif "MAX" in column:
+            dataset_records[column] = df.groupby("Dataset").agg({column: "max"}).values[0]
+        elif column == "Data File":
+            dataset_records[column] = "Aggregated"
+        elif column == "Dataset":
+            dataset_records[column] = df.groupby("Dataset").agg({column: pd.DataFrame.sample}).values[0]
+        elif column == "Count":
+            dataset_records[column] = df.groupby("Dataset").agg({column: "sum"}).values[0]
+        else:
+            dataset_records[column] = df.groupby("Dataset").agg({column: "mean"}).values[0]
 
-    print(df.to_markdown())
+    df = pd.concat([df, pd.DataFrame(dataset_records)])
+    df.to_csv("/bigwork/nhwpajjy/benchmark-count.csv", index=False)

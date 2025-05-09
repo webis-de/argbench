@@ -17,7 +17,7 @@ class Leaderboard:
         self.output_path = output_path
 
         self.added_results = []
-        self.skills_columns = ["filter", "model", "start_time", "k", "mining_fscore", "perspective-assessment_fscore", "quality-assessment_fscore", "reasoning_fscore",
+        self.skills_columns = ["filter", "model", "start_time", "k", "seed", "mining_fscore", "perspective-assessment_fscore", "quality-assessment_fscore", "reasoning_fscore",
                                 "generation_bertscore","generation_bleu", "generation_generation_score"]
         self.read_file()
     def read_file(self):
@@ -26,7 +26,7 @@ class Leaderboard:
             if "filter" not in self.df_results:
                 self.df_results["filter"] = "None"
         else:
-            self.df_results = pd.DataFrame(columns=["model",  "test_task",  "metric", "score", "start_time", "k", "filter"])
+            self.df_results = pd.DataFrame(columns=["model",  "test_task",  "metric", "score", "start_time", "k", "filter", "seed"])
         self.output_skills_path = self.output_path.replace(".csv", "-skills.csv")
         if os.path.exists(self.output_skills_path):
             self.df_skills_results = pd.read_csv(self.output_skills_path, sep="\t")
@@ -68,12 +68,12 @@ class Leaderboard:
             start_time = self.added_results[0]["start_time"]
             k = self.added_results[0]["k"]
             filter = self.added_results[0]["filter"]
-
+            seed = self.added_results[0]["seed"]
 
         for skill in skill_records:
             score = skill_results[skill] / skill_counts[skill]
             metric =  "fscore"
-            skill_records[skill] = {"model": model, "start_time": start_time, "k": k, "score": score, "metric": metric, "test_task": skill, "filter" : filter}
+            skill_records[skill] = {"model": model, "start_time": start_time, "k": k, "score": score, "metric": metric, "test_task": skill, "filter" : filter, "seed": seed}
             df_record = pd.DataFrame([skill_records[skill]])
             self.df_results = pd.concat([self.df_results, df_record])
 
@@ -82,9 +82,12 @@ class Leaderboard:
             aggregtged_bertscore_results = generation_bertscore_results/generation_task_count
             aggregated_generation_results = generation_score_results/generation_task_count
 
-            bleu_record = pd.DataFrame([{"model": model, "start_time": start_time, "k": k, "score": aggregated_bleu_results, "metric": "bleu", "test_task": "generation", "filter" : filter}])
-            bertscore_record =  pd.DataFrame([{"model": model, "start_time": start_time, "k": k, "score": aggregtged_bertscore_results, "metric": "bertscore", "test_task": "generation", "filter" : filter}])
-            generation_score_record =  pd.DataFrame([{"model": model, "start_time": start_time, "k": k, "score": aggregated_generation_results, "metric": "generation-score", "test_task": "generation", "filter" : filter}])
+            bleu_record = pd.DataFrame([{"model": model, "start_time": start_time, "k": k, "score": aggregated_bleu_results,
+                                         "metric": "bleu", "test_task": "generation", "filter" : filter, "seed": seed}])
+            bertscore_record =  pd.DataFrame([{"model": model, "start_time": start_time, "k": k, "score": aggregtged_bertscore_results,
+                                               "metric": "bertscore", "test_task": "generation", "filter" : filter, "seed": seed}])
+            generation_score_record =  pd.DataFrame([{"model": model, "start_time": start_time, "k": k, "score": aggregated_generation_results,
+                                                      "metric": "generation-score", "test_task": "generation", "filter" : filter, "seed": seed}])
             self.df_results = pd.concat([self.df_results, bertscore_record, bleu_record, generation_score_record])
 
 
@@ -108,7 +111,7 @@ class Leaderboard:
     def pivot(self):
         df_skills_results = self.df_results[self.df_results["test_task"].isin(["generation", "mining", "quality-assessment", "perspective-assessment", "reasoning"])]
         df_skills_results["metric"] = df_skills_results.apply(lambda record: record["test_task"]+"_"+record["metric"],axis=1)
-        df_skills_results = df_skills_results.pivot(index=["model",  "start_time", "filter", "k"],values="score",columns="metric").reset_index()
+        df_skills_results = df_skills_results.pivot(index=["model",  "start_time", "filter", "k", "seed"],values="score",columns="metric").reset_index()
 
 
         return df_skills_results

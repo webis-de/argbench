@@ -526,7 +526,7 @@ class Runner:
 
                 for metric in metrics:
                     results = {"test_task": task, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model+prompting_technique,
-                               "start_time": starting_time, "k": train_subsample_amount, "filter": filter}
+                               "start_time": starting_time, "k": train_subsample_amount, "filter": filter, "seed": self.config.seed}
                     all_results.append(results)
                     self.leaderboard.add_results(results)
         else:
@@ -535,7 +535,7 @@ class Runner:
             metrics = self.evaluate(self.test_dataset_name, self.ft_test_data, sampling_params, vllm=self.vllm)
             for metric in metrics:
                 results = {"test_task": self.test_dataset_name, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model,
-                           "start_time": starting_time, "k": train_subsample_amount, "filter":filter}
+                           "start_time": starting_time, "k": train_subsample_amount, "filter":filter, "seed": self.config.seed}
                 all_results.append(results)
                 log_mem(f"tested on {self.test_dataset_name}")
                 self.leaderboard.add_results(results)
