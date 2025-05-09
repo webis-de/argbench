@@ -32,7 +32,7 @@ for model in ${models[@]};
 do
   echo "$model"
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --test-subsample_amount 100
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --test_subsample_amount 100
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
 --leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --seed 124 --test_subsample_amount 100
