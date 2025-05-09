@@ -32,8 +32,7 @@ if __name__ == "__main__":
     }
     counter = 0
     for dataset in metadata:
-        if "claim" in dataset:
-            continue
+
         for file in metadata[dataset]["file_list"]:
             instances = []
             outputs = []
@@ -101,8 +100,6 @@ if __name__ == "__main__":
         df = pd.DataFrame(data)
         dataset_records = {}
         counter += 1
-        if counter == 2:
-            break
 
     for column in df.columns:
         if "MIN" in column:
