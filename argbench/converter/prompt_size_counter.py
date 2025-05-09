@@ -47,11 +47,9 @@ if __name__ == "__main__":
             if not file_data["Instances"]:
                 print(f"File has no instances: {file_path}")
                 continue
-            if dataset=="argument_summarization_open_debate_evidence_roush23":
-                continue
             instances = [inst["input"] for inst in file_data["Instances"]]
 
-            outputs = [inst["output"][0] for inst in file_data["Instances"]]
+            outputs = [inst["output"][0] for inst in file_data["Instances"] if isinstance(inst["output"], list)]
 
             definition = file_data["Definition"][0]
 
@@ -91,21 +89,21 @@ if __name__ == "__main__":
             data["Definition Len"].append(description_len)
             data["MAX Definition + Instance"].append(max_def_inst)
             data["MAX ALL"].append(max_all)
-    df = pd.DataFrame(data)
-    dataset_records = {}
-    for column in df.columns:
-        if "MIN" in column:
-            dataset_records[column] = df.groupby("Dataset").agg({column: "min"}).values[0]
-        elif "MAX" in column:
-            dataset_records[column] = df.groupby("Dataset").agg({column: "max"}).values[0]
-        elif column == "Data File":
-            dataset_records[column] = "Aggregated"
-        elif column == "Dataset":
-            dataset_records[column] = df.groupby("Dataset").agg({column: pd.DataFrame.sample}).values[0]
-        elif column == "Count":
-            dataset_records[column] = df.groupby("Dataset").agg({column: "sum"}).values[0]
-        else:
-            dataset_records[column] = df.groupby("Dataset").agg({column: "mean"}).values[0]
+        df = pd.DataFrame(data)
+        dataset_records = {}
+        for column in df.columns:
+            if "MIN" in column:
+                dataset_records[column] = df.groupby("Dataset").agg({column: "min"}).values[0]
+            elif "MAX" in column:
+                dataset_records[column] = df.groupby("Dataset").agg({column: "max"}).values[0]
+            elif column == "Data File":
+                dataset_records[column] = "Aggregated"
+            elif column == "Dataset":
+                dataset_records[column] = df.groupby("Dataset").agg({column: pd.DataFrame.sample}).values[0]
+            elif column == "Count":
+                dataset_records[column] = df.groupby("Dataset").agg({column: "sum"}).values[0]
+            else:
+                dataset_records[column] = df.groupby("Dataset").agg({column: "mean"}).values[0]
 
     df = pd.concat([df, pd.DataFrame(dataset_records)])
-    df.to_csv("/bigwork/nhwpajjy/benchmark-count.csv", index=False)
+    df.to_csv("/bigwork/nhwpajjy/benchmark-count.csv", index=False, float_format ="%.2f")

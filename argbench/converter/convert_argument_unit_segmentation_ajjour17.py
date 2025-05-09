@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
-from common import split_val_train
+from common import split_test_val_train
 from common import Genres, Output, Skills, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
 from dataclasses import dataclass
 from argparse import ArgumentParser
@@ -89,11 +89,11 @@ def process_folder(path: Path):
     train_dataset = []
     test_dataset = []
     val_dataset = []
-    train_path = path / "trainingSet"
-    test_path = path / "testingSet"
 
-    train_files = list(train_path.iterdir())
-    val_files, train_files = split_val_train(train_files)
+    data_path = path / "testingSet"
+
+    files = list(data_path.iterdir())
+    test_files, val_files, train_files = split_test_val_train(files)
 
     for f in train_files:
         text = extract_file(f)
@@ -103,7 +103,7 @@ def process_folder(path: Path):
         text = extract_file(f)
         val_dataset.append(text)
 
-    for f in test_path.iterdir():
+    for f in test_files:
         text = extract_file(f)
         test_dataset.append(text)
 

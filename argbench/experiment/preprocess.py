@@ -36,13 +36,15 @@ def process_task_file(output_path, task_file_path, filetype="ndjson"):
             writer = ndjson.writer(f, ensure_ascii=False)
 
             for instance in task_contents["Instances"]:
-                if instance["output"] and instance["input"]:
+                if isinstance(instance["output"],list) or isinstance(instance["output"],str) and isinstance(instance["input"],str):
                     writer.writerow({
                         "id": instance["id"],
                         "definition": definition,
                         "input": instance["input"],
                         "output": instance["output"][0] if isinstance(instance["output"], list) else instance["output"]
                     })
+                else:
+                    print(instance)
     elif filetype == "parquet":
         data = []
         for instance in task_contents["Instances"]:
