@@ -21,7 +21,8 @@ if [ -z "$model" ]; then
 
 #models=$(jq '.model_configs[].label' "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json")
 #models=("gemma-9-2b-it" "gemma-2-27b-it" "mistral-7b-inst-3" "mistral-small")
-models=("gemma-9-2b-it" "gemma-2-27b-it" "mistral-7b-inst-3" "mistral-small" "deepseek-r1-distill-1.5b" "deepseek-r1-distill-32b")
+#models=("gemma-9-2b-it" "gemma-2-27b-it" "mistral-7b-inst-3" "mistral-small" "deepseek-r1-distill-1.5b" "deepseek-r1-distill-32b")
+models=("gemma-9-2b-it"  "mistral-7b-inst-3" "deepseek-r1-distill-7b" )
 else
 
 models=($model)
