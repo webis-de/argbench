@@ -2,7 +2,7 @@
 #SBATCH --job-name=prmt-all-sample
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=12
-#SBATCH --mem=10G
+#SBATCH --mem=20G
 #SBATCH --time=24:00:00
 #SBATCH --output argbench/output/prmt-all-sample-%j.out
 #SBATCH --error argbench/output/prmt-all-sample-%j.err
