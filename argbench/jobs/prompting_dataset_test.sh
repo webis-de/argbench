@@ -7,7 +7,6 @@
 #SBATCH --output argbench/output/prmt-dataset-tnt%j.out
 #SBATCH --error argbench/output/prmt-dataset--tnt%j.err
 #SBATCH --gpus=1
-#SBATCH --partition=tnt
 
 module load Miniforge3
 conda activate task-specific
