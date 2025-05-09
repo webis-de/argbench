@@ -200,9 +200,11 @@ def split_datasets_prompting(
         ###  Formatting
         if train_subsample_amount:
             example_str = ""
+            counter = 0
             for _, example in df_training.iterrows():
-                example_instance = f'Input: {example["input"]}\nOutput: {example["output"]}'
+                example_instance = f'\nExample {counter}:\n Input: {example["input"]}\nOutput: {example["output"]}\n'
                 example_str += example_instance
+                counter += 1
             df_test.rename(columns={"input": "document"}, inplace=True)
             df_test["example"] = example_str
             df_test["input"] = df_test.apply(few_shot_template_formatter, axis=1)
