@@ -6,7 +6,7 @@
 #SBATCH --time=96:00:00
 #SBATCH --output argbench/output/prmt-all-sample-%j.out
 #SBATCH --error argbench/output/prmt-all-sample-%j.err
-#SBATCH --partition=ainlp
+#SBATCH --partition ainlp
 #SBATCH --gpus=a100:1
 module load Miniforge3
 conda activate task-specific
