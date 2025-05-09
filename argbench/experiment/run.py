@@ -63,7 +63,8 @@ def log_mem(message):
 
 def clean_prediction(prediction, is_chain_of_thoughts):
     if is_chain_of_thoughts and "Output:" in prediction:
-        prediction = prediction.split("Output:")[1]
+        index = prediction.rindex("Output:")
+        prediction = prediction[index+7:]
     if prediction.startswith("<|start_header_id|>assistant<|end_header_id|>"):
         prediction = prediction.replacereplace("<|start_header_id|>assistant<|end_header_id|>", "")
     if "</think>" in prediction:
@@ -617,27 +618,27 @@ class Runner:
                     outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
                 else:
                     outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
-
                 for output in outputs:
                     response = output.outputs[0].text
 
                     prediction = clean_prediction(response, self.config.is_chain_of_thoughts)
                     predictions += [prediction]
-                logger.debug(f"""got the
-                                                   #################################
-                                                    repsonse:
-                                                   #################################
-                                                    f{response}
-                                                   #################################
-                                                    prediction:
-                                                   #################################
-                                                   f"{output.outputs[0].text}
-                                                   ##################################
-                                                   input
-                                                   ##################################
-                                                    {text}
-                                                    #################################
-                                                    """)
+                if prediction:
+                    logger.debug(f"""got the
+                                                       #################################
+                                                        repsonse:
+                                                       #################################
+                                                        f{response}
+                                                       #################################
+                                                        prediction:
+                                                       #################################
+                                                       f"{prediction}
+                                                       ##################################
+                                                       input
+                                                       ##################################
+                                                        {text}
+                                                        #################################
+                                                        """)
 
         metric = self.task_metrics[test_task_name]
         if metric == "fscore-detailed":

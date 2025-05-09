@@ -32,6 +32,8 @@ if __name__ == "__main__":
     }
     counter = 0
     for dataset in metadata:
+        if "claim" in dataset:
+            continue
         for file in metadata[dataset]["file_list"]:
             instances = []
             outputs = []
@@ -97,23 +99,23 @@ if __name__ == "__main__":
             data["MAX Definition + Instance"].append(max_def_inst)
             data["MAX ALL"].append(max_all)
         df = pd.DataFrame(data)
-        dataset_records = defaultdict(list)
+        dataset_records = {}
         counter += 1
         if counter == 2:
             break
 
     for column in df.columns:
         if "MIN" in column:
-            dataset_records[column].extend(df.groupby("Dataset").agg({column: "min"}).values.tolist())
+            dataset_records[column]= df.groupby("Dataset").agg({column: "min"}).values.tolist()[0]
         elif "MAX" in column:
-            dataset_records[column].extend(df.groupby("Dataset").agg({column: "max"}).values.tolist())
+            dataset_records[column] = df.groupby("Dataset").agg({column: "max"}).values.tolist()[0]
         elif column == "Data File":
-            dataset_records[column].extend(df.groupby("Dataset").agg(lambda x: "dataset").values.tolist())
+            dataset_records[column]= df.groupby("Dataset").agg({"Dataset": lambda x: set(x)}).values.tolist()[0]
         elif column == "Dataset":
-            dataset_records[column].extend(df.groupby("Dataset").agg({column: pd.DataFrame.sample}).values.tolist())
+            dataset_records[column]= df.groupby("Dataset").agg({column: pd.DataFrame.sample}).values.tolist()[0]
         elif column == "Count":
-            dataset_records[column].extend(df.groupby("Dataset").agg({column: "sum"}).values.tolist())
+            dataset_records[column]= df.groupby("Dataset").agg({column: "sum"}).values.tolist()[0]
         else:
-            dataset_records[column].extend(df.groupby("Dataset").agg({column: "mean"}).values.tolist())
+            dataset_records[column]= df.groupby("Dataset").agg({column: "mean"}).values.tolist()[0]
     df = pd.concat([df, pd.DataFrame(dataset_records)])
     df.to_csv("/bigwork/nhwpajjy/benchmark-count.csv", index=False, float_format ="%.2f")
