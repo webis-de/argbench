@@ -110,7 +110,7 @@ if __name__ == "__main__":
         elif "MAX" in column:
             dataset_records[column] = df.groupby("Dataset").agg({column: "max"})[column].values.tolist()
         elif column == "Data File":
-            dataset_records[column]= df.groupby("Dataset").agg({"Dataset": lambda x: set(x)})["Dataset"].values.tolist()
+            dataset_records[column]= df.groupby("Dataset").agg({"Dataset": lambda x: list(set(x))})["Dataset"].apply(lambda x: x[0]).values.tolist()
         elif column == "Dataset":
             dataset_records[column]= df.groupby("Dataset").agg({column: pd.DataFrame.sample})[column].values.tolist()
         elif column == "Count":
