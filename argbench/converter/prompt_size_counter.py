@@ -2,6 +2,7 @@ from collections import defaultdict
 
 from common import tasks_path
 from statistics import mean
+import math
 from transformers import LlamaTokenizer, LlamaTokenizerFast, AutoTokenizer
 from argparse import ArgumentParser
 import json
@@ -31,8 +32,10 @@ if __name__ == "__main__":
     }
 
     for dataset in metadata:
-
         for file in metadata[dataset]["file_list"]:
+            instances = []
+            outputs = []
+
             file_path = tasks_path() / dataset / file
             try:
                 with open(file_path, "r") as f:
@@ -47,9 +50,14 @@ if __name__ == "__main__":
             if not file_data["Instances"]:
                 print(f"File has no instances: {file_path}")
                 continue
-            instances = [inst["input"] for inst in file_data["Instances"]]
+            for inst in file_data["Instances"]:
+                if not inst["input"] or not inst["output"] or isinstance(inst["input"], float) or isinstance(inst["output"], float):
+                    continue
+                instances.append(inst["input"])
+                print((not inst["output"]))
+                print(inst["output"])
+                outputs.append(inst["output"][0])
 
-            outputs = [inst["output"][0] for inst in file_data["Instances"] if isinstance(inst["output"], list)]
 
             definition = file_data["Definition"][0]
 
