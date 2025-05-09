@@ -623,22 +623,22 @@ class Runner:
 
                     prediction = clean_prediction(response, self.config.is_chain_of_thoughts)
                     predictions += [prediction]
-                if prediction:
-                    logger.debug(f"""got the
-                                                       #################################
-                                                        repsonse:
-                                                       #################################
-                                                        f{response}
-                                                       #################################
-                                                        prediction:
-                                                       #################################
-                                                       f"{prediction}
-                                                       ##################################
-                                                       input
-                                                       ##################################
-                                                        {text}
-                                                        #################################
-                                                        """)
+                    if prediction:
+                        logger.debug(f"""got the
+                                                           #################################
+                                                            repsonse:
+                                                           #################################
+                                                            f{response}
+                                                           #################################
+                                                            prediction:
+                                                           #################################
+                                                           f"{prediction}
+                                                           ##################################
+                                                           input
+                                                           ##################################
+                                                            {text}
+                                                            #################################
+                                                            """)
 
         metric = self.task_metrics[test_task_name]
         if metric == "fscore-detailed":
