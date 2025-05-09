@@ -4,6 +4,7 @@
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=25G
 #SBATCH --time=96:00:00
+#SBATCH --partition=ainlp
 #SBATCH --output argbench/output/prmt-all-data-%j.out
 #SBATCH --error argbench/output/prmt-all-data-%j.err
 #SBATCH --gpus=a100:1
