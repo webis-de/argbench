@@ -29,5 +29,5 @@ python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/
 done
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
-export JOB_ARGUMENTS="hpo;all-datasets;in-task;${model};\n"
+export JOB_ARGUMENTS="hpo;all-datasets-0.25;in-task;${model};\n"
 echo "$SLURM_JOB_ID,$SLURM_JOB_NAME,$TIME,$JOB_ARGUMENTS" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
