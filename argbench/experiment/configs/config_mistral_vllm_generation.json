@@ -83,8 +83,8 @@
             "temperature": 0,
             "top_p": 1,
             "top_k": 1,
-            "max_tokens": 50,
-            "min_tokens": 30
+            "max_tokens": 500,
+            "min_tokens": 200
         }
     }
 }

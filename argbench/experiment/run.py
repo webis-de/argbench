@@ -62,7 +62,7 @@ def log_mem(message):
 
 
 def clean_prediction(prediction, is_chain_of_thoughts):
-    if is_chain_of_thoughts:
+    if is_chain_of_thoughts and "Output:" in prediction:
         prediction = prediction.split("Output:")[1]
     if prediction.startswith("<|start_header_id|>assistant<|end_header_id|>"):
         prediction = prediction.replacereplace("<|start_header_id|>assistant<|end_header_id|>", "")
