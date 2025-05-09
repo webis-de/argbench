@@ -33,7 +33,7 @@ class Leaderboard:
         else:
             self.df_skills_results = pd.DataFrame(columns=self.skills_columns)
 
-    def add_aggregated_results(self):
+    def get_aggregated_results(self):
         metadata = get_metadata()
         task_skill_mapping = {task: metadata[task]["skill"] for task in metadata}
         generation_blue_results = 0
@@ -69,13 +69,13 @@ class Leaderboard:
             k = self.added_results[0]["k"]
             filter = self.added_results[0]["filter"]
             seed = self.added_results[0]["seed"]
-
+        all_records = []
         for skill in skill_records:
             score = skill_results[skill] / skill_counts[skill]
             metric =  "fscore"
             skill_records[skill] = {"model": model, "start_time": start_time, "k": k, "score": score, "metric": metric, "test_task": skill, "filter" : filter, "seed": seed}
             df_record = pd.DataFrame([skill_records[skill]])
-            self.df_results = pd.concat([self.df_results, df_record])
+            all_records.append(df_record)
 
         if generation_task_count:
             aggregated_bleu_results = generation_blue_results/generation_task_count
@@ -88,8 +88,11 @@ class Leaderboard:
                                                "metric": "bertscore", "test_task": "generation", "filter" : filter, "seed": seed}])
             generation_score_record =  pd.DataFrame([{"model": model, "start_time": start_time, "k": k, "score": aggregated_generation_results,
                                                       "metric": "generation-score", "test_task": "generation", "filter" : filter, "seed": seed}])
-            self.df_results = pd.concat([self.df_results, bertscore_record, bleu_record, generation_score_record])
+            all_records.extend([bertscore_record, bleu_record, generation_score_record])
 
+        df_new_records = pd.concat(all_records)
+
+        return df_new_records
 
     def add_results(self, results):
         """
@@ -108,20 +111,24 @@ class Leaderboard:
         self.added_results.append(results)
         self.df_results = pd.concat([self.df_results, df_record])
 
-    def pivot(self):
-        df_skills_results = self.df_results[self.df_results["test_task"].isin(["generation", "mining", "quality-assessment", "perspective-assessment", "reasoning"])]
-        df_skills_results["metric"] = df_skills_results.apply(lambda record: record["test_task"]+"_"+record["metric"],axis=1)
-        df_skills_results = df_skills_results.pivot(index=["model",  "start_time", "filter", "k", "seed"],values="score",columns="metric").reset_index()
+    def pivot(self,df_new_records):
+
+
+
+        df_new_records["metric"] = df_new_records.apply(lambda record: record["test_task"]+"_"+record["metric"],axis=1)
+        df_skills_results = df_new_records.pivot(index=["model",  "start_time", "filter", "k", "seed"],values="score",columns="metric").reset_index()
 
 
         return df_skills_results
 
     def save_file(self):
-        self.add_aggregated_results()
+        df_new_records = self.get_aggregated_results()
+
+        self.df_results = pd.concat([self.df_results, df_new_records])
         self.df_results.to_csv(self.output_path, sep="\t", index=False,  float_format ="%.2f")
 
-        pivated_results = self.pivot()
-        self.df_skills_results = pd.concat([self.df_skills_results, pivated_results])
+        pivoted_results = self.pivot(df_new_records)
+        self.df_skills_results = pd.concat([self.df_skills_results, pivoted_results])
 
 
         self.df_skills_results.to_csv(self.output_skills_path, sep="\t", index=False, columns=self.skills_columns,  float_format ="%.2f")

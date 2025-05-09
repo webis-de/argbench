@@ -17,7 +17,9 @@
     "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
     "tensorboard_logs": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tensorboard",
     "train_datasets": {},
-    "test_dataset": {  },
+    "test_dataset": {
+        "subsample_rate": 0.5
+    },
     "model_configs": [
         {
             "label": "gemma-2-2b-it",
