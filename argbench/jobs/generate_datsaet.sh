@@ -2,7 +2,7 @@
 if [ -e "$file" ]; then
   BIGWORK=/bigwork/nhwpajjy/
   else
-  BIGWORK=/mnt/hme/yajjour
+  BIGWORK=/mnt/home/yajjour
 fi
 
 
