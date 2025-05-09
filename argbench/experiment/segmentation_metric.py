@@ -25,7 +25,7 @@ def parse(text, labels):
         spans = best_match.split("\n")
         for span in spans:
             logger.debug(f"the sentence to be segmented {span}")
-            if span:
+            if span and ":" in span:
                 span_label = span.split(":")[0].strip()
                 span_text = span.split(":")[1].strip()
 
