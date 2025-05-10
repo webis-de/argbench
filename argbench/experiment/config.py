@@ -84,7 +84,7 @@ class TrainingArgsConfig(CommonConfig):
 
     weight_decay: float = 0.0
 
-    per_device_eval_batch_size: int = 8
+    per_device_eval_batch_size: int = 1
 
     adam_beta1: float = 0.9
 
@@ -108,7 +108,7 @@ class TrainingArgsConfig(CommonConfig):
 
     bf16: bool = False
 
-    gradient_checkpointing: bool = False
+    gradient_checkpointing: bool = True
 
     load_best_model_at_end: bool = True
 

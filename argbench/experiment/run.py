@@ -264,6 +264,7 @@ class Runner:
                 instruction_len = len(input_prompt) - 1
                 full_prompt["labels"] = [-100] * instruction_len + full_prompt["labels"][instruction_len:]
                 return full_prompt
+
             return input_prompt
 
         self.prmt_test_data = {}
