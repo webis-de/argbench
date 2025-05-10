@@ -155,6 +155,16 @@ class Runner:
         log_mem("after loading vllm model")
         return llm
 
+    @staticmethod
+    def get_generation_config_from_vllm_params(sampling_params: SamplingParams):
+        temperature = sampling_params.temperature
+        top_p = sampling_params.top_p
+        top_k = sampling_params.top_k
+        max_tokens = sampling_params.max_tokens
+        min_tokens = sampling_params.min_tokens
+        generation_config = GenerationConfig(max_new_tokens=max_tokens, min_new_tokens=min_tokens, top_p=top_p, top_k=top_k, temperature=temperature)
+        return generation_config
+
     def load_sampling_params(self, test_dataset, trial=None, hpo_config=None):
 
         task_specific_vllm_config = None
@@ -583,7 +593,9 @@ class Runner:
                 if self.adapter_path:
                     outlines_model.load_lora(self.adapter_path)
 
+        elif model:
 
+            generation_config = Runner.get_generation_config_from_vllm_params(sampling_params)
         #set_trace()
         output_splitter = self.model_config.output_splitter
 
@@ -595,7 +607,7 @@ class Runner:
 
                 generated = model.generate(
                     input_ids=inputs,
-                    generation_config=self.generation_config,
+                    generation_config=generation_config,
                     return_dict_in_generate=True
                 )
 
