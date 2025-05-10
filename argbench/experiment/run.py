@@ -127,7 +127,7 @@ class Runner:
         self.base_model = model
 
         if not self.config.is_prompting:
-            model = prepare_model_for_kbit_training(model)
+            #model = prepare_model_for_kbit_training(model)
             model.enable_input_require_grads()
         logger.info("loaded model")
         if self.config.peft_configs and self.config.peft_fresh_config:
@@ -296,11 +296,11 @@ class Runner:
         :param model_config: Configuration parameters for model
         :returns: ModelForCausalLM initialized from config
         """
-        quant_conf = BitsAndBytesConfig(**quant_config)
+        #quant_conf = BitsAndBytesConfig(**quant_config)
         return AutoModelForCausalLM.from_pretrained(
             base_model,
             torch_dtype=torch.bfloat16,
-            quantization_config=quant_conf,
+        #    quantization_config=quant_conf,
             #device_map= "cuda:0",
             device_map= "auto",
             trust_remote_code=True
@@ -442,7 +442,7 @@ class Runner:
         log_mem(f"started training")
 #        accelerator = Accelerator()
 #        self.model, self.trainer.optimizer = accelerator.prepare(self.model, self.trainer.optimizer)
-        self.trainer.train()
+        #self.trainer.train()
         log_mem(f"trained model")
 
 #        self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
@@ -617,6 +617,22 @@ class Runner:
                 prediction = output[0]
                 prediction = clean_prediction(prediction, self.config.is_chain_of_thoughts)
                 predictions.append(prediction)
+                if prediction:
+                    logger.debug(f"""got the
+                                                           #################################
+                                                            repsonse:
+                                                           #################################
+                                                            f{output[0]}
+                                                           #################################
+                                                            prediction:
+                                                           #################################
+                                                           f"{prediction}
+                                                           ##################################
+                                                           input
+                                                           ##################################
+                                                            {text}
+                                                            #################################
+                                                            """)
 
             if vllm:
 

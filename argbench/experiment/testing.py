@@ -84,7 +84,7 @@ def compute_f1_score(predictions, references):
                 break
         if not found:
 
-            predictions_int.append(-1)
+            predictions_int.append(np.random.choice(list(mappings.values())))
     references_int = [mappings[reference.lower()] for reference in references]
     logger.log(level=logging.INFO, msg=f"referecnes {references_int}")
     logger.log(level=logging.INFO, msg=f"predictions {predictions_int}")

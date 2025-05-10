@@ -194,16 +194,6 @@ class QuantConfig(CommonConfig):
 
     load_in_4bit: bool = False
 
-    llm_int8_threshold: float = 6.0
-
-    llm_int8_skip_modules: List[str] = None
-
-    llm_int8_enable_fp32_cpu_offload: bool = False
-
-    llm_int8_has_fp16_weight: bool = False
-
-    bnb_4bit_quant_type: str = "fp4"
-
     bnb_4bit_use_double_quant: bool = False
 
 @dataclass
