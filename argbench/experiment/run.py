@@ -442,7 +442,7 @@ class Runner:
         log_mem(f"started training")
 #        accelerator = Accelerator()
 #        self.model, self.trainer.optimizer = accelerator.prepare(self.model, self.trainer.optimizer)
-        #self.trainer.train()
+        self.trainer.train()
         log_mem(f"trained model")
 
 #        self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
