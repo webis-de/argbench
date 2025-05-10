@@ -422,7 +422,6 @@ class Runner:
             torch.cuda.empty_cache()
             torch.distributed.destroy_process_group()
 
-### This function is deprecated since it does not use VLLMs and is still dependent on one test dataset
 
     def hpo_objective(self, trial: Trial):
         log_mem(f"loading model for hpo")
@@ -455,7 +454,10 @@ class Runner:
         log_mem(f"finished evaluation")
         logger.debug(f"metrics are {metrics}")
         metric = self.task_metrics[self.test_dataset_name]
-        return metrics[metric]
+        if "fscore" in metric:
+            return metrics["fscore"]
+        else:
+            return metrics["generation-score"]
 
     def perform_hpo(self):
         """Perform HPO search"""
