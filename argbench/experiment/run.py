@@ -275,6 +275,7 @@ class Runner:
                 hf_test_dataset = Dataset.from_pandas(test_datasets[test_dataset])
                 log_mem(f"tokenizing {test_dataset}")
                 self.prmt_test_data[test_dataset] = hf_test_dataset.map(generate_and_tokenize_prompt, num_proc=8, load_from_cache_file=True)
+
         else:
             train_datasets, test_datasets = collect_datasets(self.config)
             test_dataset = test_datasets[self.test_dataset_name]

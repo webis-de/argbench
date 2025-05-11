@@ -23,7 +23,7 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 if [ -z "$model" ]; then
 
 #models=$(jq '.model_configs[].label' "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json")
-models=("gemma-9-2b-it" "gemma-2-27b-it" "mistral-7b-inst-3" "mistral-small" "deepseek-r1-distill-7b" "deepseek-r1-distill-32b")
+models=("gemma-2-9b-it" "gemma-2-27b-it" "mistral-7b-inst-3" "mistral-small" "deepseek-r1-distill-7b" "deepseek-r1-distill-32b")
 else
 
 models=($model)
