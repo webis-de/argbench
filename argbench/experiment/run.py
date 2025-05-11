@@ -117,7 +117,7 @@ class Runner:
         :param new_peft_hpo: New peft hyperparameters
         :returns: Model to be trained
         """
-        logger.info(f"preparing model on {device}")
+        logger.info(f"preparing model {self.model_config.path} on {device}")
 
         model = self.prepare_model_for_causal_llm(
             self.model_config.path,

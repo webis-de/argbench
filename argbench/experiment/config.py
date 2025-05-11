@@ -592,6 +592,7 @@ class RunConfig:
             conf_obj.base_model = args.base_model
         ## This should be executed after choosing the model
         for conf in conf_obj.model_configs:
+
             if conf.label == conf_obj.base_model:
                 conf_obj.model_config = conf
 
