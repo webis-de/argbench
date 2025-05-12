@@ -549,7 +549,7 @@ class Runner:
         #set_trace()
         log_mem(f"testing {test_task_name}")
         dataset = test_data
-        labels = test_data["output"]
+        labels = []
         predictions = []
         ## is the batch size here a bottleneck?
         loader = DataLoader(dataset, batch_size=1, shuffle=False, collate_fn=eval_collate, pin_memory=True, num_workers=8)
@@ -571,6 +571,8 @@ class Runner:
         output_splitter = self.model_config.output_splitter
 
         for data in tqdm(loader):
+
+            labels.append(data["output"])
             text = data["input"]
             if model:
                 inputs = data["input_ids"].cuda()
