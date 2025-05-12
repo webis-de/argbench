@@ -2,11 +2,11 @@
 #SBATCH --job-name=prmt-tests-seed
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=12
-#SBATCH --mem=20G
+#SBATCH --mem=10G
 #SBATCH --time=24:00:00
 #SBATCH --output argbench/output/prmt--test-seeds-%j.out
 #SBATCH --error argbench/output/prmt--test-seeds-%j.err
-#SBATCH --gpus=a100:1
+#SBATCH --gpus=1
 module load Miniforge3
 conda activate task-specific
 
