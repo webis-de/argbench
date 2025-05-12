@@ -270,22 +270,22 @@ class Runner:
         experiment_type = self.config.get_experiment_type()
         prompting_technique = self.config.get_prompting_technique()
         sample = self.config.sample
-        self.dataset = load_experiment(experiment_type,prompting_technique, sample, test_task= self.config.test_dataset, run_config=self.config)
+        self.dataset = load_experiment(experiment_type,prompting_technique, sample, test_task= self.test_dataset_name, run_config=self.config)
         template_formatter = formate_model_template(self.config.model_config.prompt_template)
         if self.config.prompting:
             #tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
             for task_label in self.dataset:
                 task = task_label.replace("test_", "")
                 log_mem(f"formatting {task}")
-                self.dataset[task_label] = self.dataset[task_label].to_iterable_dataset().map(template_formatter, num_proc=8, load_from_cache_file=True)
+                self.dataset[task_label] = self.dataset[task_label].to_iterable_dataset().map(template_formatter)
                 log_mem(f"tokenizing {task}")
                 #self.dataset[task_label] = self.dataset[task_label].to_iterable_dataset().map(tokenizer, num_proc=8, load_from_cache_file=True)
         else:
             tokenizer = get_tokenizer(cutoff_len, self.tokenizer, True)
             for split in self.dataset:
-                log_mem(f"formatting {split} of {self.config.test_dataset}")
+                log_mem(f"formatting {split} of {self.test_dataset_name}")
                 self.dataset[split] = self.dataset[split].to_iterable_dataset().map(template_formatter)
-                log_mem(f"tokenizing {split} of {self.config.test_dataset}")
+                log_mem(f"tokenizing {split} of {self.test_dataset_name}")
                 self.dataset[split] = self.dataset[split].map(tokenizer)
         log_mem(f"Finished preprocessing ")
 
