@@ -552,7 +552,7 @@ class Runner:
         labels = []
         predictions = []
         ## is the batch size here a bottleneck?
-        loader = DataLoader(dataset, batch_size=1, shuffle=False, collate_fn=eval_collate, pin_memory=True, num_workers=8)
+        loader = DataLoader(dataset, batch_size=1, shuffle=False, collate_fn=eval_collate)
 
 
         #trainer.model.eval()
@@ -572,7 +572,7 @@ class Runner:
 
         for data in tqdm(loader):
 
-            labels.append(data["output"])
+            labels.extend(data["output"])
             text = data["input"]
             if model:
                 inputs = data["input_ids"].cuda()
