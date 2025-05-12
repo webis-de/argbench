@@ -852,14 +852,11 @@ class RunConfig:
             return ExperimentType.LEAVE_ONE_TASK
 
     def get_prompting_technique(self):
-        if self.prompting:
-            if self.chain_of_thoughts:
-                return PromptingTechnique.COT
-            elif "subsample_amount" in self.train_datasets and self.train_datasets["subsample_amount"] == 1:
-                return PromptingTechnique.ONE_SHOT
-            elif "subsample_amount" in self.train_datasets and self.train_datasets["subsample_amount"] == 4:
-                return PromptingTechnique.FOUR_SHOT
-            else:
-                return PromptingTechnique.ZERO_SHOT
+        if self.chain_of_thoughts:
+            return PromptingTechnique.COT
+        elif "subsample_amount" in self.train_datasets and self.train_datasets["subsample_amount"] == 1:
+            return PromptingTechnique.ONE_SHOT
+        elif "subsample_amount" in self.train_datasets and self.train_datasets["subsample_amount"] == 4:
+            return PromptingTechnique.FOUR_SHOT
         else:
-            raise ValueError("choose Prompting")
+            return PromptingTechnique.ZERO_SHOT
