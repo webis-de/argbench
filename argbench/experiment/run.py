@@ -242,7 +242,7 @@ class Runner:
             tensorboard_dir = None
         train_args = TrainingArguments(output_dir=self.config.get_output_path(),
             report_to=report_to,
-            logging_dir=tensorboard_dir,dataloader_pin_memory=True,
+            logging_dir=tensorboard_dir,dataloader_pin_memory=True,max_steps=40000,
             **self.config.training_args_config.to_conf(trial, training_arg_hpo)
         )
 
@@ -260,7 +260,7 @@ class Runner:
             )
         log_mem("preparing trainer")
         trainer = Trainer(model=model, callbacks=callbacks, train_dataset=self.dataset["train"], eval_dataset=self.dataset["val"],
-        args=train_args, data_collator=data_collator)
+        args=train_args, data_collator=data_collator,)
 
         return trainer
 
@@ -486,7 +486,7 @@ class Runner:
             self.free_vllm_model()
             model = self.load_model()
             self.trainer = self.prepare_trainer(model)
-            self.trainer.train()
+            #self.trainer.train()
             self.adapter_path = self.config.get_model_path(starting_time)
             self.trainer.save_model(self.adapter_path)
             for obj in self.trainer.state.log_history:
