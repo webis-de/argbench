@@ -37,9 +37,9 @@ def add_seed_arg(argparser):
     """Adds seed argument to argument parser"""
     argparser.add_argument("-s", "--seed", default=42, help="Seed to use for dataset generation")
 
-def set_seed(parsed_args):
-    random.seed(parsed_args.seed)
-    np.random.seed(parsed_args.seed)
+def set_seed(seed):
+    random.seed(seed)
+    np.random.seed(seed)
 
 def find_topic_size_to_split(df, topic_label, ratio):
 

@@ -32,16 +32,16 @@ for model in ${models[@]};
 do
   echo "$model"
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --test_subsample_rate 0.1
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --sample
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --chain_of_thoughts --test_subsample_rate 0.1
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --chain_of_thoughts --sample
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --train_subsample_amount 1 --test_subsample_rate 0.1
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --train_subsample_amount 1 --sample
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --train_subsample_amount 4 --test_subsample_rate 0.1
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --train_subsample_amount 4 --sample
 done
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
