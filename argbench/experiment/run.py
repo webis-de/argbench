@@ -1,22 +1,12 @@
 #!/usr/bin/env python3
 import gc
-import os.path
-import time
-from argparse import ArgumentParser
-from accelerate import Accelerator
-from pathlib import Path
-import sys
 
-import accelerate
-import outlines
 import optuna
-import pandas as pd
-import torch
-from datasets import Dataset
-from optuna import Trial, create_study
+import outlines
+from optuna import create_study
 from optuna.samplers import TPESampler
 from outlines import models as outline_models
-from peft import (PeftModel, prepare_model_for_kbit_training, LoraConfig, get_peft_model, )
+from peft import (PeftModel, LoraConfig, get_peft_model, )
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from transformers import *
@@ -24,15 +14,14 @@ from vllm import LLM, SamplingParams
 from vllm.distributed import destroy_model_parallel
 from vllm.lora.request import LoRARequest
 
-from argbench.experiment.config import RunConfig
-from argbench.experiment.filter_warnings import *
 from argbench.experiment.hpo_output import HPOOutput
 from argbench.experiment.leaderborad import Leaderboard
 from argbench.experiment.memory_profiling import MemoryUsageCallback
-from argbench.experiment.prepare_experiment import collect_datasets
+from argbench.experiment.prepare_experiment import *
+from argbench.experiment.segmentation_metric import *
 from argbench.experiment.testing import *
 from argbench.experiment.utils import *
-from argbench.experiment.segmentation_metric import *
+
 logger = None
 
 device = get_device()
@@ -61,8 +50,8 @@ def log_mem(message):
                     f" CPU Memory: {free_cpu:2.0f} GB free from {total_cpu:2.0f} GB")
 
 
-def clean_prediction(prediction, is_chain_of_thoughts):
-    if is_chain_of_thoughts and "Output:" in prediction:
+def clean_prediction(prediction, chain_of_thoughts):
+    if chain_of_thoughts and "Output:" in prediction:
         index = prediction.rindex("Output:")
         prediction = prediction[index+7:]
     if prediction.startswith("<|start_header_id|>assistant<|end_header_id|>"):
@@ -70,6 +59,35 @@ def clean_prediction(prediction, is_chain_of_thoughts):
     if "</think>" in prediction:
         prediction = prediction.split("</think>")[1]
     return prediction
+
+### TODO replace by apply chat template
+def formate_model_template(template):
+    def formate_template(data_point):
+             return template.format(instruction=data_point["input"])
+    return formate_template
+
+def get_tokenizer(cutoff_len, tokenizer: AutoTokenizer, train: bool):
+    def generate_and_tokenize_prompt(data_point):
+        """
+        Tokenizes data instance for feeding the model during training/testing
+
+        :param data_point: Dict with "input", "output" strings
+        :returns: tokenized prompt
+        """
+        input_prompt = tokenizer(data_point['input'], cutoff_len)
+
+
+        if train:
+            full_prompt = tokenizer(f"{data_point['input']}{data_point['output']}", cutoff_len)
+            full_prompt["labels"] = full_prompt["labels"].copy()
+            instruction_len = len(input_prompt) - 1
+            full_prompt["labels"] = [-100] * instruction_len + full_prompt["labels"][instruction_len:]
+
+            return full_prompt
+        input_prompt["labels"] = input_prompt["labels"].copy()
+        return input_prompt
+    return generate_and_tokenize_prompt
+
 
 
 class Runner:
@@ -86,7 +104,7 @@ class Runner:
         self.config = config
         self.model_config = config.model_config
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_config.path, padding_side="left",
-                                                       truncation=True, max_length = config.data_collator_config.max_length,
+                                                       truncation=True, max_length = config.cutoff_len,
                                                        trust_remote_code=True
                                                        )
 
@@ -126,7 +144,7 @@ class Runner:
         )
         self.base_model = model
 
-        if not self.config.is_prompting:
+        if not self.config.prompting:
             #model = prepare_model_for_kbit_training(model)
             model.enable_input_require_grads()
         logger.info("loaded model")
@@ -150,7 +168,7 @@ class Runner:
             #llm = LLM(model=base_model, enable_lora=True)
         else:
 
-            llm = LLM(model=self.model_config.path, seed=self.config.seed, device=device, trust_remote_code=True)
+            llm = LLM(model=self.model_config.path, seed=self.config.seed, device=device, trust_remote_code=True, max_model_len=self.config.cutoff_len)
             #llm = LLM(model=base_model)
         log_mem("after loading vllm model")
         return llm
@@ -168,7 +186,7 @@ class Runner:
     def load_sampling_params(self, test_dataset, trial=None, hpo_config=None):
 
         task_specific_vllm_config = None
-        if self.config.is_chain_of_thoughts:
+        if self.config.chain_of_thoughts:
             task_generation_config = self.config.cot_task_generation_config
         else:
             task_generation_config = self.config.shot_task_generation_config
@@ -229,65 +247,68 @@ class Runner:
                 EarlyStoppingCallback(**self.config.early_stopping_config.to_conf(trial, early_stopping_hpo))
             )
         log_mem("preparing trainer")
-        trainer = Trainer(
-            model=model,
-            callbacks=callbacks,
-            train_dataset=self.train_data,
-            eval_dataset=self.ft_test_data,
-            args=train_args,
-            data_collator=data_collator,
-        )
+        trainer = Trainer(model=model, callbacks=callbacks, train_dataset=self.dataset["train"], eval_dataset=self.dataset["val"],
+        args=train_args, data_collator=data_collator)
 
         return trainer
 
 
-    @with_timing
     def prepare_data(self):
-
-        """
-        Using configuration object collects train and test datasets
-        """
-        log_mem("preparing data")
         cutoff_len = self.config.cutoff_len
-        train = True
-
-        def generate_and_tokenize_prompt(data_point):
-            """
-            Tokenizes data instance for feeding the model during training/testing
-
-            :param data_point: Dict with "input", "output" strings
-            :returns: tokenized prompt
-            """
-            input_prompt = self.tokenize(data_point['input'], cutoff_len)
-            if train:
-                full_prompt = self.tokenize(f"{data_point['input']}{data_point['output']}", cutoff_len)
-                instruction_len = len(input_prompt) - 1
-                full_prompt["labels"] = [-100] * instruction_len + full_prompt["labels"][instruction_len:]
-                return full_prompt
-
-            return input_prompt
-
-        self.prmt_test_data = {}
-
-        if self.config.is_prompting:
-            _, test_datasets = collect_datasets(self.config)
-            for test_dataset in test_datasets:
-                hf_test_dataset = Dataset.from_pandas(test_datasets[test_dataset])
-                log_mem(f"tokenizing {test_dataset}")
-                self.prmt_test_data[test_dataset] = hf_test_dataset.map(generate_and_tokenize_prompt, num_proc=8, load_from_cache_file=True)
-
+        experiment_type = self.config.get_experiment_type()
+        prompting_technique = self.config.get_prompting_technique()
+        sample = self.config.sample
+        self.dataset = load_experiment(experiment_type,prompting_technique, sample, test_task= self.config.test_dataset, run_config=self.config)
+        template_formatter = formate_model_template(self.config.model_config.prompt_template)
+        if self.config.prompting:
+            #tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
+            for task_label in self.dataset:
+                task = task_label.replace("test_", "")
+                log_mem(f"formatting {task}")
+                self.dataset[task_label] = self.dataset[task_label].to_iterable_dataset().map(template_formatter, num_proc=8, load_from_cache_file=True)
+                log_mem(f"tokenizing {task}")
+                #self.dataset[task_label] = self.dataset[task_label].to_iterable_dataset().map(tokenizer, num_proc=8, load_from_cache_file=True)
         else:
-            train_datasets, test_datasets = collect_datasets(self.config)
-            test_dataset = test_datasets[self.test_dataset_name]
-            train_datasets = pd.concat(train_datasets.values(), axis=0).reset_index(drop=True)
-            hf_train_dataset = Dataset.from_pandas(train_datasets)
-            hf_test_dataset = Dataset.from_pandas(test_dataset)
-            self.train_data = hf_train_dataset.map(generate_and_tokenize_prompt, num_proc=8, load_from_cache_file=True)
-            self.ft_test_data = hf_test_dataset.map(generate_and_tokenize_prompt, num_proc=8, load_from_cache_file=True)
-            logger.debug(f"counting {len(self.train_data)}")
+            tokenizer = get_tokenizer(cutoff_len, self.tokenizer, True)
+            for split in self.dataset:
+                log_mem(f"formatting {split} of {self.config.test_dataset}")
+                self.dataset[split] = self.dataset[split].to_iterable_dataset().map(template_formatter, num_proc=8, load_from_cache_file=True)
+                log_mem(f"tokenizing {split} of {self.config.test_dataset}")
+                self.dataset[split] = self.dataset[split].to_iterable_dataset().map(tokenizer, num_proc=8, load_from_cache_file=True)
+        log_mem(f"Finished preprocessing ")
+
+    # @with_timing
+    # def prepare_data(self):
+    #
+    #     """
+    #     Using configuration object collects train and test datasets
+    #     """
+    #     log_mem("preparing data")
+    #     cutoff_len = self.config.cutoff_len
+    #     train = True
+    #
+    #
+    #     self.prmt_test_data = {}
+    #
+    #     if self.config.prompting:
+    #         _, test_datasets = collect_datasets(self.config)
+    #         for test_dataset in test_datasets:
+    #             hf_test_dataset = Dataset.from_pandas(test_datasets[test_dataset])
+    #             log_mem(f"tokenizing {test_dataset}")
+    #             self.prmt_test_data[test_dataset] = hf_test_dataset.map(generate_and_tokenize_prompt, num_proc=8, load_from_cache_file=True)
+    #
+    #     else:
+    #         train_datasets, test_datasets = collect_datasets(self.config)
+    #         test_dataset = test_datasets[self.test_dataset_name]
+    #         train_datasets = pd.concat(train_datasets.values(), axis=0).reset_index(drop=True)
+    #         hf_train_dataset = Dataset.from_pandas(train_datasets)
+    #         hf_test_dataset = Dataset.from_pandas(test_dataset)
+    #         self.train_data = hf_train_dataset.map(generate_and_tokenize_prompt, num_proc=8, load_from_cache_file=True)
+    #         self.ft_test_data = hf_test_dataset.map(generate_and_tokenize_prompt, num_proc=8, load_from_cache_file=True)
+    #         logger.debug(f"counting {len(self.train_data)}")
+    #
 
 
-        log_mem("prepared data")
 
     def prepare_model_for_causal_llm(self, base_model, quant_config, model_config):
         """
@@ -392,6 +413,7 @@ class Runner:
         :param train: Is instance for training
         :returns: tokenized prompt
         """
+        ### Adjust eval collate to include template formatting
         input_prompt = self.tokenize(data_point['input'], cutoff_len)
         if train:
             full_prompt = self.tokenize(f"{data_point['input']}{data_point['output']}", cutoff_len)
@@ -424,7 +446,6 @@ class Runner:
             torch.cuda.empty_cache()
             torch.distributed.destroy_process_group()
 
-
     def hpo_objective(self, trial: Trial):
         log_mem(f"loading model for hpo")
         self.model = self.prepare_model_for_training(
@@ -452,7 +473,7 @@ class Runner:
 
         sampling_params = self.load_sampling_params(self.test_dataset_name, trial, self.config.hpo_config.vllm_config)
         self.trainer.evaluate()
-        metrics = self.evaluate(self.test_dataset_name, self.ft_test_data, sampling_params, model=self.trainer.model)
+        metrics = self.evaluate(self.test_dataset_name, self.dataset, sampling_params, model=self.trainer.model)
         log_mem(f"finished evaluation")
         logger.debug(f"metrics are {metrics}")
         metric = self.task_metrics[self.test_dataset_name]
@@ -484,9 +505,19 @@ class Runner:
         """
         Execute training, hpo or evaluation
         """
+        ### Todo change string to enums for experiment type and prompting technique
+        ### add sample
 
-        if self.config.is_hpo:
+
+        if self.config.hpo:
+            ## apply formatting function
+            ## apply tokenziation function
+            ## use data colloator without tokenization
+
             # this should be changed to account for multiple datasets
+
+
+
             hpo_output = HPOOutput(self.config.hpo_config.hpo_coarse_output)
             now = datetime.now()
             starting_time = now.strftime("%m-%d-%H:%M:%S")
@@ -506,7 +537,9 @@ class Runner:
 
         starting_time =datetime.now().strftime("%m-%d-%H:%M:%S")
         set_seed(self.config.seed)
-        if not self.config.is_prompting:
+        if not self.config.prompting:
+
+
             self.free_model()
             self.free_vllm_model()
             model = self.load_model()
@@ -520,8 +553,6 @@ class Runner:
 
         self.vllm = self.prepare_model_for_generation()
 
-
-
         all_results = []
         if self.config.skill_filter:
             filter = config.skill_filter
@@ -529,13 +560,18 @@ class Runner:
             filter = "None"
 
         prompting_technique = ""
-        if self.config.is_chain_of_thoughts:
+        if self.config.chain_of_thoughts:
             prompting_technique = "cot"
-        if self.config.is_prompting:
-            for task in self.prmt_test_data:
+        if self.config.prompting:
+            ## apply formatting function
+            ## apply tokenziation function
+            ## use data colloator without tokenization
+
+            for task_label in self.dataset:
+                task = task_label.replace("test_", "")
                 sampling_params= self.load_sampling_params(task)
                 train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
-                test_data =  self.prmt_test_data[task]
+                test_data =  self.dataset[task_label]
                 metrics = self.evaluate(task, test_data, sampling_params, vllm=self.vllm)
                 log_mem(f"tested on {task}")
 
@@ -545,9 +581,12 @@ class Runner:
                     all_results.append(results)
                     self.leaderboard.add_results(results)
         else:
+            ## apply formatting function
+            ## apply tokenziation function
+            ## use data colloator without tokenization
             sampling_params= self.load_sampling_params(self.test_dataset_name)
             train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
-            metrics = self.evaluate(self.test_dataset_name, self.ft_test_data, sampling_params, vllm=self.vllm)
+            metrics = self.evaluate(self.test_dataset_name, self.dataset["test"], sampling_params, vllm=self.vllm)
             for metric in metrics:
                 results = {"test_task": self.test_dataset_name, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model,
                            "start_time": starting_time, "k": train_subsample_amount, "filter":filter, "seed": self.config.seed}
@@ -570,81 +609,42 @@ class Runner:
         dataset = test_data
         labels = test_data["output"]
         predictions = []
-
-        loader = DataLoader(
-            dataset,
-            batch_size=1,
-            shuffle=False,
-            collate_fn=eval_collate,
-            pin_memory=True,
-            num_workers=8
-        )
+        ## is the batch size here a bottleneck?
+        loader = DataLoader(dataset, batch_size=1, shuffle=False, collate_fn=eval_collate, pin_memory=True, num_workers=8)
 
 
         #trainer.model.eval()
         ## If an adapter will be fine-tuned then an output dir is there
         if vllm:
 
-            outlines_model = outline_models.VLLM(vllm)
 
-            if is_segmentation(test_task_name):
-                generator = outlines.generate.json(outlines_model, Output, whitespace_pattern="")
-            else:
-                generator = outlines.generate.text(outlines_model)
 
             if self.config.peft_configs:
                 logger.debug("++++ lora input ++++")
-                if self.adapter_path:
-                    outlines_model.load_lora(self.adapter_path)
+
+
 
         elif model:
-
             generation_config = Runner.get_generation_config_from_vllm_params(sampling_params)
-        #set_trace()
         output_splitter = self.model_config.output_splitter
 
         for data in tqdm(loader):
             text = data["input"]
             if model:
-                prompt = self.tokenizer(text=text, return_tensors="pt")
-                inputs = prompt["input_ids"].cuda()
-
-                generated = model.generate(
-                    input_ids=inputs,
-                    generation_config=generation_config,
-                    return_dict_in_generate=True
-                )
+                inputs = data["input_ids"].cuda()
+                generated = model.generate(input_ids=inputs, generation_config=generation_config, return_dict_in_generate=True)
 
                 output = self.tokenizer.batch_decode(generated.sequences)
                 output = [o.split(output_splitter)[-1] for o in output]
-                #set_trace()
-                prediction = output[0]
-                prediction = clean_prediction(prediction, self.config.is_chain_of_thoughts)
+
+                response = output[0]
+                prediction = clean_prediction(response, self.config.chain_of_thoughts)
                 predictions.append(prediction)
                 if prediction:
-                    logger.debug(f"""got the
-                                                           #################################
-                                                            repsonse:
-                                                           #################################
-                                                            f{output[0]}
-                                                           #################################
-                                                            prediction:
-                                                           #################################
-                                                           f"{prediction}
-                                                           ##################################
-                                                           input
-                                                           ##################################
-                                                            {text}
-                                                            #################################
-                                                            """)
+                    logger.debug(format_logging(response, prediction, text))
 
             if vllm:
 
-
-                # output = generator(text, sampling_params= sampling_params)
-                # if output.startswith('\"') and output.endswith('\"'):
-                #     output = output[1:-1]
-                # predictions += [output]
                 if self.config.peft_configs and self.adapter_path:
                     lora_request = LoRARequest("sql_adapter", 1,self.adapter_path)
                     outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
@@ -653,24 +653,10 @@ class Runner:
                 for output in outputs:
                     response = output.outputs[0].text
 
-                    prediction = clean_prediction(response, self.config.is_chain_of_thoughts)
+                    prediction = clean_prediction(response, self.config.chain_of_thoughts)
                     predictions += [prediction]
                     if prediction:
-                        logger.debug(f"""got the
-                                                           #################################
-                                                            repsonse:
-                                                           #################################
-                                                            f{response}
-                                                           #################################
-                                                            prediction:
-                                                           #################################
-                                                           f"{prediction}
-                                                           ##################################
-                                                           input
-                                                           ##################################
-                                                            {text}
-                                                            #################################
-                                                            """)
+                        logger.debug(format_logging(response, prediction,text))
 
         metric = self.task_metrics[test_task_name]
         if metric == "fscore-detailed":

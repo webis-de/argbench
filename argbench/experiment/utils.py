@@ -80,6 +80,8 @@ def is_segmentation(task):
 
 
 def eval_collate(batch):
+    ### Adjust eval collate to include tokenization and template formatting
+
     out_batch = {k: [] for k in batch[0]}
 
     for b in batch:
@@ -147,3 +149,19 @@ def rewrite_config(config: dict, root_path:Path, new_root_path: Path):
             pass
     return config
 
+
+def format_logging(response, prediction, text):
+    return f"""got the                                     #################################
+                                                            repsonse:
+                                                           #################################
+                                                            f{response}
+                                                           #################################
+                                                            prediction:
+                                                           #################################
+                                                           f"{prediction}
+                                                           ##################################
+                                                           input
+                                                           ##################################
+                                                            {text}
+                                                            #################################
+                                                            """

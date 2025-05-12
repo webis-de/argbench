@@ -308,7 +308,7 @@ class Runner:
         """
         Execute training, hpo or evaluation
         """
-        if self.config.is_hpo:
+        if self.config.hpo:
             self.perform_hpo()
             return
 

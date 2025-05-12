@@ -2,40 +2,18 @@ import json
 from collections import defaultdict
 from typing import Dict, Set
 import logging
+
+import datasets
 import numpy as np
+from datasets import Dataset, DatasetDict, load_from_disk, concatenate_datasets
 
 from argbench.converter.common import *
 from argbench.experiment.preprocess import *
+from argbench.experiment.config import *
 
 
-class ExperimentType(Enum):
-    IN_TASK = "in_task"
-    CROSS_TASK = "cross_task"
-
-class DatasetSplit(Enum):
-    TRAIN = "train"
-    TEST = "test"
-    VAL = "val"
-    TRAIN_AND_VAL = "train_and_val"
 
 logger = logging.getLogger()
-
-
-
-class PandasDataset:
-    """
-    Class to convert pandas DataFrame into usable Dataset
-    """
-    def __init__(self, dataframe):
-        self.dataframe = dataframe
-
-    def __len__(self):
-        return len(self.dataframe)
-
-    def __getitem__(self, idx):
-        return self.dataframe.iloc[idx].to_dict()
-
-
 
 
 def get_dataset_split(dataset, set, metadata, task_data_path):
@@ -91,114 +69,80 @@ def sample_set(output_path: Path, sample_rate: float = None, sample_size: int = 
     return df_sample, path_sample
 
 
-def split_datasets_fine_tuning(task_data_path,
-                               prompt_template,
-                               test_subsample_amount,
-                               test_subsample_rate,
-                               train_subsample_amount,
-                               train_subsample_rate,
-                               test_dataset, experiment_type, experiment_splits, is_validate=False, task_filter=None):
+def create_dataset_in_tasks(task_data_path, prompt_technique_template, experiment_splits, test_subsample_rate=None, train_subsample_rate=None):
 
     def template_formatter(row):
-        return prompt_template.format(instance_input=row["document"], definition=row["definition"])
+        return prompt_technique_template.format(instance_input=row["document"], definition=row["definition"])
 
-    if experiment_type == ExperimentType.IN_TASK:
-        experiment_split_training = {test_dataset}
-        experiment_split_test = {test_dataset}
-        logger.info(f"In-task experiment on {test_dataset}")
-    else:
-        experiment_split_test, experiment_split_training = get_experiment_split(is_validate, experiment_splits)
-        logger.info(f"Cross-task experiment")
-        logger.info(f"Cross-task experiment")
+    ### if in-task iterate over test sets and create 5 datasets
+    ## if cross-task iterate over test sets and create 5 datasets
+    ## if cross-task iterate over validation sets and create 5 datasets
+    ### if cross-task iterate over training set and create the rest datasets
+    ### save the datasets to hugging face
+    in_task_dataset = {}
 
-    if not test_dataset :
-        raise ValueError("test dataset must be set")
-
-    if test_dataset not in experiment_split_test:
-        logger.warning(f"{test_dataset} not in experiment split_test {experiment_split_test}")
-
-    if is_validate:
-        train_dataset_split = DatasetSplit.TRAIN
-        test_dataset_split = DatasetSplit.VAL
-        logger.info(f"Validation experiment")
-    else:
-        train_dataset_split = DatasetSplit.TRAIN_AND_VAL
-        test_dataset_split = DatasetSplit.TEST
-        logger.info(f"Training experiment")
-
-    test_datasets = {}
-    training_datasets = {}
-
-    if task_filter:
-        experiment_split_training = set(experiment_split_training).intersection(task_filter)
+    for task in experiment_splits["test"]:
+        print(task)
+        df_training, train_path = load_set(task, task_data_path, DatasetSplit.TRAIN, sample_rate=train_subsample_rate)
+        df_test, test_path = load_set(task, task_data_path, DatasetSplit.TEST,  sample_rate=test_subsample_rate)
+        df_validation, val_path = load_set(task, task_data_path, DatasetSplit.VAL, sample_rate=test_subsample_rate)
+        dataframes = (df_training, df_test, df_validation)
+        for df_split in dataframes:
+            for column in df_split.columns:
+                df_split[column] = df_split[column].astype(str)
 
 
-    for dataset in experiment_split_training:
-        df_training, train_path = load_set(dataset, task_data_path, train_dataset_split, sample_size=train_subsample_amount, sample_rate=train_subsample_rate)
-        for column in df_training.columns:
-            df_training[column] = df_training[column].astype(str)
-        df_training.path = train_path
+            df_split.rename(columns={"input": "document"}, inplace=True)
+            df_split["input"] = df_split.apply(template_formatter, axis=1)
+
+        df_test = df_test[["id", "input", "output"]]
         df_training = df_training[["id", "input", "output"]]
-        training_datasets[dataset] = df_training
+        df_validation = df_validation[["id", "input", "output"]]
 
-    for dataset in experiment_split_test:
-        df_test, test_path = load_set(dataset, task_data_path, test_dataset_split, sample_rate=test_subsample_rate, sample_size=test_subsample_amount)
+        hf_test = datasets.Dataset.from_pandas(df_test)
+        hf_training = datasets.Dataset.from_pandas(df_training)
+        hf_validation = datasets.Dataset.from_pandas(df_validation)
+
+        df_training.path = train_path
         df_test.path = test_path
-        df_test.rename(columns={"input": "document"}, inplace=True)
-        df_test["input"] = df_test.apply(template_formatter, axis=1)
-        df_test = df_test[["id","document", "input", "output"]]
-        test_datasets[dataset]= df_test
+        df_validation.path = val_path
 
-    return training_datasets, test_datasets
 
-def split_datasets_prompting(
-        task_data_path,
-        prompt_template,
-        test_subsample_amount,
-        test_subsample_rate,
-        train_subsample_amount,
-        train_subsample_rate,
-        test_dataset=None):
-    """
-    Read dataset file and compile all datasets into one dataframe
+        dataset =  {f"test_{task}":hf_test, f"train_{task}":hf_training, f"val_{task}": hf_validation}
+        in_task_dataset.update(dataset)
+    hf_dataset = DatasetDict(in_task_dataset)
+    return hf_dataset
 
-    :param task_datasets: List of dataset file paths for each dataset
-    :param prompt_template: Template to compile dataset variables into prompt
-    :param subsample_amount: Amount of samples to take from dataset file
-    :param subsample_rate: % of instances to take from dataset
-    :returns: Full compiled DataFrame of all datasets instances
-    """
+
+def create_dataset_prompting(task_data_path, prompting_technique_template, test_subsample_rate=None, few_shot_amount=None):
+
     def few_shot_template_formatter(row):
-        return prompt_template.format(instance_input=row["document"], definition=row["definition"], example=row["example"])
+        return prompting_technique_template.format(instance_input=row["document"], definition=row["definition"], example=row["example"])
 
     def template_formatter(row):
-        return prompt_template.format(instance_input=row["document"], definition=row["definition"])
+        return prompting_technique_template.format(instance_input=row["document"], definition=row["definition"])
 
-    test_datasets = {}
-    training_datasets = {}
+    prompting_datasets = {}
+
     tasks = get_metadata()
 
-    for dataset in tasks:
-        if test_dataset and dataset !=test_dataset:
-            continue
-
-        df_training, train_path = load_set(dataset, task_data_path, DatasetSplit.TRAIN_AND_VAL, sample_size=train_subsample_amount,
-                                               sample_rate = train_subsample_rate)
-        df_training.path = train_path
-        for column in df_training.columns:
-            df_training[column] = df_training[column].astype(str)
-        df_training = df_training[["id", "input", "output"]]
+    for task in tasks:
+        if few_shot_amount:
+            df_training, train_path = load_set(task, task_data_path, DatasetSplit.TRAIN_AND_VAL, sample_size=few_shot_amount)
+            df_training.path = train_path
+            for column in df_training.columns:
+                df_training[column] = df_training[column].astype(str)
+            df_training = df_training[["id", "input", "output"]]
 
 
 
 #        df_test['output'] = df_test['output'].apply(json.dumps)
-        df_test, test_path = load_set(dataset, task_data_path, DatasetSplit.TEST, sample_size=test_subsample_amount,
-                                          sample_rate = test_subsample_rate)
+        df_test, test_path = load_set(task, task_data_path, DatasetSplit.TEST,sample_rate = test_subsample_rate)
 
         df_test.path = test_path
 
         ###  Formatting
-        if train_subsample_amount:
+        if few_shot_amount:
             example_str = ""
             counter = 0
             for _, example in df_training.iterrows():
@@ -216,62 +160,108 @@ def split_datasets_prompting(
             df_test[column] = df_test[column].astype(str)
 
         df_test = df_test[["id","document", "input", "output"]]
-        test_datasets[dataset]= df_test
+        prompting_datasets[f"test_{task}"]= Dataset.from_pandas(df_test)
+    hf_dataset_prompting = DatasetDict(prompting_datasets)
 
-    return training_datasets, test_datasets
+    return hf_dataset_prompting
 
+    ### TODO: create datasets using huggingface api
 
-def collect_datasets(run_config):
+def formulate_argbench_dataset_path(experiment_type:ExperimentType, prompting_technique: PromptingTechnique, sample:bool, path_argbench_dataset: Path) -> Path:
+    if experiment_type == ExperimentType.PROMPTING:
+        dataset = f"argbench-{experiment_type.value}-{prompting_technique.value}"
+    else:
+        dataset = f"argbench-{experiment_type.value}"
+    if sample:
+        dataset = dataset + "-small"
+    return path_argbench_dataset / dataset
+
+def get_cot_prompt_template():
+    return "{definition}\nThink step by step and prepend your output with Output:\n{instance_input}"
+
+def get_shot_prompt_template():
+    return "{definition}\nDo not explain and do not rephrase the input.\n###Examples:\n{example}\n###\n{instance_input}"
+
+def get_zero_shot_prompt_template():
+    return "{definition}\nDo not explain and do not rephrase the input.\n{instance_input}"
+def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique: PromptingTechnique, sample: bool, run_config: RunConfig)-> DatasetDict:
     """
     Use RunConfig to create train and test datasets
 
     :param run_config: RunConfig with train_datasets and test_datasets config dicts
     :returns: Tuple of train and test datasets in pandas DataFrame
     """
-
-
-    train_config = run_config.train_datasets
-    test_config = run_config.test_dataset
+    ### TODO add the configuration to path
+    path_argbench_dataset = Path(run_config.argbench_dataset_path)
     tasks_path = Path(run_config.data_folder)
-    if run_config.is_prompting and run_config.is_chain_of_thoughts:
-        prompt_template = run_config.model_config.cot_prompt_template
-    elif run_config.is_prompting and train_config.get("subsample_amount", None):
-        prompt_template = run_config.model_config.shot_prompt_template
+
+    path_dataset = formulate_argbench_dataset_path(experiment_type, prompting_technique, sample, path_argbench_dataset)
+    # path_dataset = formulate_argbench_dataset_path(ExperimentType.PROMPTING, PromptingTechnique.ZERO_SHOT, sample=sample, path_argbench_dataset=path_argbench_dataset)
+    # path_four_shot_dataset = formulate_argbench_dataset_path(ExperimentType.PROMPTING, PromptingTechnique.FOUR_SHOT, sample=sample, path_argbench_dataset=path_argbench_dataset)
+    # path_one_shot_dataset = formulate_argbench_dataset_path(ExperimentType.PROMPTING, PromptingTechnique.ONE_SHOT, sample=sample, path_argbench_dataset=path_argbench_dataset)
+    # path_cot_dataset = formulate_argbench_dataset_path(ExperimentType.PROMPTING, PromptingTechnique.COT, sample=sample, path_argbench_dataset=path_argbench_dataset)
+    # path_in_task_dataset = formulate_argbench_dataset_path(ExperimentType.IN_TASK, PromptingTechnique.ZERO_SHOT, sample=sample, path_argbench_dataset=path_argbench_dataset)
+    if prompting_technique == PromptingTechnique.ZERO_SHOT:
+        prompt_template = get_zero_shot_prompt_template()
+    elif prompting_technique == PromptingTechnique.ONE_SHOT or prompting_technique == PromptingTechnique.FOUR_SHOT:
+        prompt_template = get_shot_prompt_template()
     else:
-        prompt_template = run_config.model_config.prompt_template
+        prompt_template = get_cot_prompt_template()
 
+    if prompting_technique == PromptingTechnique.FOUR_SHOT:
+        few_shot_count = 4
+    elif prompting_technique == PromptingTechnique.FOUR_SHOT:
+        few_shot_count = 1
+    else:
+        few_shot_count = None
 
-
-
-    logger.info("Train datasets collected:")
     with open(run_config.experiment_splits_path) as experiment_splits_file:
         experiment_splits = json.load(experiment_splits_file)
-
-    if run_config.skill_filter:
-        task_filter = get_filters_by_skill(run_config.skill_filter)
+    if experiment_type == ExperimentType.IN_TASK:
+        if sample:
+            dataset = create_dataset_in_tasks(tasks_path, prompt_template, experiment_splits, 0.1, 0.5)
+        else:
+            dataset = create_dataset_in_tasks(tasks_path, prompt_template, experiment_splits)
+    elif experiment_type == ExperimentType.PROMPTING:
+            if sample:
+                dataset = create_dataset_prompting(tasks_path, prompt_template,0.1, few_shot_count )
+            else:
+                dataset = create_dataset_prompting(tasks_path, prompt_template, test_subsample_rate=None, few_shot_amount=few_shot_count )
+    elif experiment_type == ExperimentType.LEAVE_ONE_TASK:
+        ### TODO
+        pass
     else:
-        task_filter = {}
+        ### TODO
+        pass
+    dataset.save_to_disk(path_dataset)
+    return dataset
+def load_experiment(experiment_type, prompting_technique, sample, test_task, run_config: RunConfig):
+    path_argbench_dataset = Path(run_config.argbench_dataset_path)
+    path_dataset = formulate_argbench_dataset_path(experiment_type, prompting_technique, sample, path_argbench_dataset)
 
-    test_subsample_amount = test_config.get("subsample_amount", None)
-    test_subsample_rate = test_config.get("subsample_rate", None)
-    train_subsample_amount = train_config.get("subsample_amount", None)
-    train_subsample_rate = train_config.get("subsample_rate", None)
-    test_dataset = test_config.get("name", None)
-    is_validate = run_config.is_hpo
-    if run_config.is_in_task:
-        experiment_type = ExperimentType.IN_TASK
+    val_split = f"val_{test_task}"
+    train_split =  f"train_{test_task}"
+    test_split = f"test_{test_task}"
+
+    if path_dataset.exists():
+        dataset = load_from_disk(path_dataset)
     else:
-        experiment_type = ExperimentType.CROSS_TASK
-
-    if run_config.is_prompting:
-        train_datasets, test_datasets  = split_datasets_prompting(tasks_path, prompt_template,
-            test_subsample_amount, test_subsample_rate, train_subsample_amount, train_subsample_rate, test_dataset)
+        dataset = create_argbench_dataset(experiment_type, prompting_technique, sample, run_config)
+    if experiment_type == ExperimentType.IN_TASK:
+        val_dataset =  dataset.pop(val_split)
+        train_dataset = dataset.pop(train_split)
+        test_dataset = dataset.pop(test_split)
+        dataset = DatasetDict({"train": train_dataset, "val": val_dataset, "test": test_dataset})
+        return dataset
+    elif experiment_type == ExperimentType.PROMPTING:
+        if not test_task:
+            return dataset
+        else:
+            task_dataset = dataset.pop(f"test_{test_task}")
+            return DatasetDict({f"test_{test_task}":task_dataset})
     else:
-        train_datasets, test_datasets  = split_datasets_fine_tuning(tasks_path, prompt_template,
-        test_subsample_amount, test_subsample_rate, train_subsample_amount, train_subsample_rate, test_dataset,
-                                    experiment_type, experiment_splits, is_validate, task_filter)
+        return None
 
-    return train_datasets, test_datasets
 
 
 def get_filters_by_skill(skill: str) -> Dict[str, float]:

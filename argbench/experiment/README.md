@@ -242,7 +242,7 @@ Test dataset config structure:
 
 # Hyperparameter optimization
 
-Hyperparameter optimization can be invoked using `-ih` `--is_hpo` shell paramter
+Hyperparameter optimization can be invoked using `-ih` `--hpo` shell paramter
 
 ``` shell
 $ python run.py -c configs/config_hpo.json -ih

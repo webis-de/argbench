@@ -1,6 +1,7 @@
 import json
 import os
 from dataclasses import dataclass, field
+from enum import Enum
 from pathlib import Path
 from typing import List
 from datetime import datetime
@@ -8,6 +9,23 @@ from optuna import Trial
 from peft.config import PeftConfig
 from peft.mapping import PEFT_TYPE_TO_CONFIG_MAPPING
 
+class ExperimentType(Enum):
+    IN_TASK = "in-task"
+    LEAVE_ONE_TASK = "leave-one-task"
+    PROMPTING = "prompting"
+    SKILL_TRANSFER = "skill-transfer"
+
+class DatasetSplit(Enum):
+    TRAIN = "train"
+    TEST = "test"
+    VAL = "val"
+    TRAIN_AND_VAL = "train-and-val"
+
+class PromptingTechnique(Enum):
+    COT = "chain-of-thought"
+    ZERO_SHOT = "zero-shot"
+    ONE_SHOT = "one-shot"
+    FOUR_SHOT = "four-shot"
 
 def update_conf(config_update, config_other):
     for k, v in config_other.items():
@@ -353,17 +371,19 @@ class RunConfig:
     # Base model path
     base_model: str
     # Should only evaluation be performed
-    is_prompting: bool
+    prompting: bool
     # Should HPO be performed
 
     tensorboard_logs: str
 
+    argbench_dataset_path: str
 
-    is_hpo: bool
+    hpo: bool
     # Padding token id
-    is_chain_of_thoughts : bool = False
+    chain_of_thoughts : bool = False
 
-    is_in_task: bool = False
+    in_task: bool = False
+    sample: bool = False
 
     skill_filter: str = None
 
@@ -375,6 +395,7 @@ class RunConfig:
     data_type: str = "ndjson"
 
     log_path: str = None
+
 
     quant_config: QuantConfig = None
     # Peft finetuning configs
@@ -400,14 +421,15 @@ class RunConfig:
         """
         Registers all cli parameters for RunConfig
         """
-        arg_parser.add_argument("-icot", "--is_chain_of_thoughts", action="store_true")
-        arg_parser.add_argument("-int", "--is_in_task", type=bool, help="whether to conduct a cross task or in task experiment")
+        arg_parser.add_argument("--sample", action="store_true")
+        arg_parser.add_argument("-icot", "--chain_of_thoughts", action="store_true")
+        arg_parser.add_argument("-int", "--in_task", type=bool, help="whether to conduct a cross task or in task experiment")
         arg_parser.add_argument("-sf", "--skill-filter", type=str, help="filter the tasks based on skill")
         arg_parser.add_argument("-d", "--debug", action="store_true", default=False, help="Should prompting be performed")
-        arg_parser.add_argument("-iprpt", "--is_prompting", action="store_true", default=False, help="Should prompting be performed")
+        arg_parser.add_argument("-iprpt", "--prompting", action="store_true", default=False, help="Should prompting be performed")
         arg_parser.add_argument("-lbp", "--leaderboard-path", type=str, default=False)
         arg_parser.add_argument("-ie", "--is_evaluate", action="store_true", default=False, help="Should evaluation be performed")
-        arg_parser.add_argument("-ih", "--is_hpo", action="store_true", default=False, help="Should HPO be performed")
+        arg_parser.add_argument("-ih", "--hpo", action="store_true", default=False, help="Should HPO be performed")
         arg_parser.add_argument("-s", "--seed", type=int, help="Seed to use for running experiment")
         arg_parser.add_argument("-tsr", "--train_subsample_rate", type=float, help="Fraction of instances to subsample from each dataset")
         arg_parser.add_argument("-tsa", "--train_subsample_amount", type=int, help="Amount of instances to subsamplea from each dataset")
@@ -563,19 +585,21 @@ class RunConfig:
         if not args:
             return conf_obj
         # Runner config
+        if args.sample:
+            conf_obj.sample = True
         if args.skill_filter:
             conf_obj.skill_filter = args.skill_filter
-        if args.is_in_task:
-            conf_obj.is_in_task = True
+        if args.in_task:
+            conf_obj.in_task = True
 
         if args.debug:
             conf_obj.debug = args.debug
         if args.seed:
             conf_obj.seed = args.seed
-        if args.is_chain_of_thoughts:
-            conf_obj.is_chain_of_thoughts = True
-        if args.is_prompting:
-            conf_obj.is_prompting = True
+        if args.chain_of_thoughts:
+            conf_obj.chain_of_thoughts = True
+        if args.prompting:
+            conf_obj.prompting = True
         if args.train_subsample_rate:
             conf_obj.train_datasets["subsample_rate"] = args.train_subsample_rate
         if args.train_subsample_amount:
@@ -765,7 +789,7 @@ class RunConfig:
         else:
             root_path = "/mnt/home/yajjour"
 
-        if self.is_prompting:
+        if self.prompting:
             self.log_path = f"{root_path}/task-specific-argument-mining-and-generation-data/logs/prompting-{self.base_model}-{starting_time}.log"
         else:
             test_dataset_name = self.test_dataset["name"]
@@ -794,11 +818,11 @@ class RunConfig:
         model = self.base_model
 
 
-        if self.is_in_task:
+        if self.in_task:
             experiment = "in-task"
         else:
             experiment = "cross-task"
-        if self.is_hpo:
+        if self.hpo:
             experiment = "hpo-" + experiment
 
         test_dataset_name = self.test_dataset["name"]
@@ -818,3 +842,24 @@ class RunConfig:
         starting_time = now.strftime("%m-%d-%H:%M:%S")
         experiment_name = self.get_experiment_name()
         return f"{path_tensorboard_main}/{experiment_name}-{starting_time}"
+
+    def get_experiment_type(self):
+        if self.prompting:
+            return ExperimentType.PROMPTING
+        elif self.in_task:
+            return ExperimentType.IN_TASK
+        else:
+            return ExperimentType.LEAVE_ONE_TASK
+
+    def get_prompting_technique(self):
+        if self.prompting:
+            if self.chain_of_thoughts:
+                return PromptingTechnique.COT
+            elif "subsample_amount" in self.train_datasets and self.train_datasets["subsample_amount"] == 1:
+                return PromptingTechnique.ONE_SHOT
+            elif "subsample_amount" in self.train_datasets and self.train_datasets["subsample_amount"] == 4:
+                return PromptingTechnique.FOUR_SHOT
+            else:
+                return PromptingTechnique.ZERO_SHOT
+        else:
+            raise ValueError("choose Prompting")

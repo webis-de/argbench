@@ -1,9 +1,9 @@
 {
-    "is_prompting": false,
-    "is_hpo": false,
+    "prompting": false,
+    "hpo": false,
     "seed": 4112,
-    "is_in_task": false,
-    "is_chain_of_thoughts": false,
+    "in_task": false,
+    "chain_of_thoughts": false,
     "experiment_splits_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/experiment_splits.json",
     "debug": false,
     "base_model": "mistral-7b-inst-3",
@@ -15,6 +15,7 @@
     "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
     "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
+    "argbench_dataset_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/argbench-dataset",
     "train_datasets": {},
     "test_dataset": {},
     "model_configs": [

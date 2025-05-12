@@ -35,7 +35,7 @@ python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/
 --leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --test_subsample_rate 0.1
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --is_chain_of_thoughts --test_subsample_rate 0.1
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --chain_of_thoughts --test_subsample_rate 0.1
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
 --leaderboard-path "${DATA_PATH}/runs/prompting-$model-test-results.csv" --base_model "$model" --debug --train_subsample_amount 1 --test_subsample_rate 0.1
