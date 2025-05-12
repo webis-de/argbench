@@ -1,5 +1,6 @@
 from unittest import *
 
+from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
 
 from argbench.experiment.prepare_experiment_old import *
@@ -180,5 +181,8 @@ class ExperimentSetupTest(TestCase):
                                                        trust_remote_code=True
                                                        )
         tokenizer = get_tokenizer(cutoff_len,tokenizer , True)
-        in_task_dataset["test"] = in_task_dataset["test"].to_iterable_dataset().map(template_formatter, num_proc=8, load_from_cache_file=True)
-        in_task_dataset["test"] = in_task_dataset["test"].to_iterable_dataset().map(tokenizer, num_proc=8, load_from_cache_file=True)
+        in_task_dataset["test"] = in_task_dataset["test"].to_iterable_dataset().map(template_formatter)
+        in_task_dataset["test"] = in_task_dataset["test"].map(tokenizer)
+        for record in DataLoader(in_task_dataset["test"],batch_size=1):
+            print(record)
+            break

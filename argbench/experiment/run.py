@@ -63,10 +63,22 @@ def clean_prediction(prediction, chain_of_thoughts):
 ### TODO replace by apply chat template
 def formate_model_template(template):
     def formate_template(data_point):
-             return template.format(instruction=data_point["input"])
+        data_point["input"] = template.format(instruction=data_point["input"])
+        return data_point
     return formate_template
 
+def tokenize(prompt, tokenizer, cutoff_len):
+
+    prompt = tokenizer(prompt)
+    if prompt["input_ids"][-1] != tokenizer.eos_token_id and len(prompt["input_ids"]) < cutoff_len:
+        prompt["input_ids"].append(tokenizer.eos_token_id)
+        prompt["attention_mask"].append(1)
+    return prompt
+
+
 def get_tokenizer(cutoff_len, tokenizer: AutoTokenizer, train: bool):
+
+
     def generate_and_tokenize_prompt(data_point):
         """
         Tokenizes data instance for feeding the model during training/testing
@@ -74,17 +86,17 @@ def get_tokenizer(cutoff_len, tokenizer: AutoTokenizer, train: bool):
         :param data_point: Dict with "input", "output" strings
         :returns: tokenized prompt
         """
-        input_prompt = tokenizer(data_point['input'], cutoff_len)
+        input_prompt = tokenize(data_point['input'], tokenizer, cutoff_len)
 
 
         if train:
-            full_prompt = tokenizer(f"{data_point['input']}{data_point['output']}", cutoff_len)
-            full_prompt["labels"] = full_prompt["labels"].copy()
+            full_prompt = tokenize(f"{data_point['input']}{data_point['output']}", tokenizer, cutoff_len)
+            full_prompt["labels"] = full_prompt["input_ids"].copy()
             instruction_len = len(input_prompt) - 1
             full_prompt["labels"] = [-100] * instruction_len + full_prompt["labels"][instruction_len:]
 
             return full_prompt
-        input_prompt["labels"] = input_prompt["labels"].copy()
+        input_prompt["labels"] = input_prompt["input_ids"].copy()
         return input_prompt
     return generate_and_tokenize_prompt
 
@@ -105,7 +117,7 @@ class Runner:
         self.model_config = config.model_config
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_config.path, padding_side="left",
                                                        truncation=True, max_length = config.cutoff_len,
-                                                       trust_remote_code=True
+                                                       trust_remote_code=True, padding=False
                                                        )
 
 
@@ -164,7 +176,7 @@ class Runner:
     def  prepare_model_for_generation(self):
         logger.info(f"running {self.model_config.path} on {device}")
         if self.config.peft_configs or self.config.peft_fresh_config:
-            llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed, device=device, trust_remote_code=True)
+            llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed, device=device, trust_remote_code=True, max_model_len=self.config.cutoff_len)
             #llm = LLM(model=base_model, enable_lora=True)
         else:
 
@@ -272,42 +284,10 @@ class Runner:
             tokenizer = get_tokenizer(cutoff_len, self.tokenizer, True)
             for split in self.dataset:
                 log_mem(f"formatting {split} of {self.config.test_dataset}")
-                self.dataset[split] = self.dataset[split].to_iterable_dataset().map(template_formatter, num_proc=8, load_from_cache_file=True)
+                self.dataset[split] = self.dataset[split].to_iterable_dataset().map(template_formatter)
                 log_mem(f"tokenizing {split} of {self.config.test_dataset}")
-                self.dataset[split] = self.dataset[split].to_iterable_dataset().map(tokenizer, num_proc=8, load_from_cache_file=True)
+                self.dataset[split] = self.dataset[split].map(tokenizer)
         log_mem(f"Finished preprocessing ")
-
-    # @with_timing
-    # def prepare_data(self):
-    #
-    #     """
-    #     Using configuration object collects train and test datasets
-    #     """
-    #     log_mem("preparing data")
-    #     cutoff_len = self.config.cutoff_len
-    #     train = True
-    #
-    #
-    #     self.prmt_test_data = {}
-    #
-    #     if self.config.prompting:
-    #         _, test_datasets = collect_datasets(self.config)
-    #         for test_dataset in test_datasets:
-    #             hf_test_dataset = Dataset.from_pandas(test_datasets[test_dataset])
-    #             log_mem(f"tokenizing {test_dataset}")
-    #             self.prmt_test_data[test_dataset] = hf_test_dataset.map(generate_and_tokenize_prompt, num_proc=8, load_from_cache_file=True)
-    #
-    #     else:
-    #         train_datasets, test_datasets = collect_datasets(self.config)
-    #         test_dataset = test_datasets[self.test_dataset_name]
-    #         train_datasets = pd.concat(train_datasets.values(), axis=0).reset_index(drop=True)
-    #         hf_train_dataset = Dataset.from_pandas(train_datasets)
-    #         hf_test_dataset = Dataset.from_pandas(test_dataset)
-    #         self.train_data = hf_train_dataset.map(generate_and_tokenize_prompt, num_proc=8, load_from_cache_file=True)
-    #         self.ft_test_data = hf_test_dataset.map(generate_and_tokenize_prompt, num_proc=8, load_from_cache_file=True)
-    #         logger.debug(f"counting {len(self.train_data)}")
-    #
-
 
 
     def prepare_model_for_causal_llm(self, base_model, quant_config, model_config):
@@ -381,46 +361,8 @@ class Runner:
                 param.requires_grad = True
         return model
 
-    def tokenize(self, prompt, cutoff_len, add_eos_token=True):
-        """
-        Tokenize instance for training or testing
 
-        :param prompt: Input prompt string
-        :param cutoff_len: Max length of prompt in tokens
-        :param add_eos_token: Should end of string token be added
-        :returns: Dict with tokenization result
-        """
-        result = self.tokenizer(prompt, truncation=True, max_length=cutoff_len, padding=False, return_tensors=None,
-        )
-        if (
-            result["input_ids"][-1] != self.tokenizer.eos_token_id
-            and len(result["input_ids"]) < cutoff_len
-            and add_eos_token
-        ):
-            result["input_ids"].append(self.tokenizer.eos_token_id)
-            result["attention_mask"].append(1)
 
-        result["labels"] = result["input_ids"].copy()
-
-        return result
-
-    def generate_and_tokenize_prompt(self, data_point, cutoff_len, train=True):
-        """
-        Tokenizes data instance for feeding the model during training/testing
-
-        :param data_point: Dict with "input", "output" strings
-        :param cutoff_len: Prompt max length
-        :param train: Is instance for training
-        :returns: tokenized prompt
-        """
-        ### Adjust eval collate to include template formatting
-        input_prompt = self.tokenize(data_point['input'], cutoff_len)
-        if train:
-            full_prompt = self.tokenize(f"{data_point['input']}{data_point['output']}", cutoff_len)
-            instruction_len = len(input_prompt) - 1
-            full_prompt["labels"] = [-100] * instruction_len + full_prompt["labels"][instruction_len:]
-            return full_prompt
-        return input_prompt
 
     def load_model(self):
         """Loads model checkpoint"""
