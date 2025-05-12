@@ -312,9 +312,9 @@ class ModelConfig(CommonConfig):
     label: str
     path: str
     prompt_template: str
-    shot_prompt_template: str
+
     output_splitter: str
-    cot_prompt_template : str
+
     cutoff_len: int
 
 @dataclass
