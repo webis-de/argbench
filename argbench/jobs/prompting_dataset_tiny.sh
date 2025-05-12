@@ -1,11 +1,11 @@
 #!/bin/bash -l
-#SBATCH --job-name=prmt-dataset--tnt
+#SBATCH --job-name=prmt-dataset--tiny
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=4
-#SBATCH --mem=10G
+#SBATCH --mem=20G
 #SBATCH --time=24:00:00
-#SBATCH --output argbench/output/prmt-dataset-tnt%j.out
-#SBATCH --error argbench/output/prmt-dataset--tnt%j.err
+#SBATCH --output argbench/output/prmt-dataset-tiny%j.out
+#SBATCH --error argbench/output/prmt-dataset--tiny%j.err
 #SBATCH --gpus=1
 
 module load Miniforge3
