@@ -183,12 +183,12 @@ class Runner:
         logger.info(f"running {self.model_config.path} on {device}")
         if self.config.peft_configs or self.config.peft_fresh_config:
             llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed, device=device, trust_remote_code=True,
-                      max_model_len=self.config.cutoff_len, enable_chunked_prefill=False, max_num_batched_tokens=1024,max_num_seqs=12)
+                      max_model_len=self.config.cutoff_len, enable_chunked_prefill=False, max_num_batched_tokens=1024,max_num_seqs=12, gpu_memory_utilization=0.8)
             #llm = LLM(model=base_model, enable_lora=True)
         else:
 
             llm = LLM(model=self.model_config.path, seed=self.config.seed, device=device, trust_remote_code=True,
-                      max_model_len=self.config.cutoff_len, enable_chunked_prefill=False, max_num_batched_tokens=1024,max_num_seqs=12)
+                      max_model_len=self.config.cutoff_len, enable_chunked_prefill=False, max_num_batched_tokens=1024,max_num_seqs=12, gpu_memory_utilization=0.8)
             #llm = LLM(model=base_model)
         log_mem("after loading vllm model")
         return llm
