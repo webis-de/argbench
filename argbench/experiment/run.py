@@ -136,7 +136,7 @@ class Runner:
             else:
                 self.test_dataset_name = None
 
-        self.prepare_data()
+        self.load_data()
 
     def prepare_model_for_training(self,
                       trial=None,
@@ -266,45 +266,46 @@ class Runner:
                 EarlyStoppingCallback(**self.config.early_stopping_config.to_conf(trial, early_stopping_hpo))
             )
         log_mem("preparing trainer")
-        logger.debug(len(next(iter(self.dataset["train"]))["input_ids"]))
-        trainer = Trainer(model=model, callbacks=callbacks, train_dataset=self.dataset["train"], eval_dataset=self.dataset["val"],
+        trainer = Trainer(model=model, callbacks=callbacks, train_dataset=self.iterable_dataset["train"], eval_dataset=self.iterable_dataset["val"],
         args=train_args, data_collator=data_collator,)
 
         return trainer
 
+    def load_data(self):
 
-    def prepare_data(self):
-        cutoff_len = self.config.cutoff_len
         experiment_type = self.config.get_experiment_type()
         prompting_technique = self.config.get_prompting_technique()
         sample = self.config.sample
         self.dataset = load_experiment(experiment_type,prompting_technique, sample, test_task= self.test_dataset_name, run_config=self.config)
+
+    def prepare_data(self):
+        cutoff_len = self.config.cutoff_len
         template_formatter = formate_model_template(self.config.model_config.prompt_template)
+        self.iterable_dataset = DatasetDict()
         if self.config.prompting:
             #tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
             for task_label in self.dataset:
                 task = task_label.replace("test_", "")
                 log_mem(f"formatting {task}")
-                self.dataset[task_label] = self.dataset[task_label].to_iterable_dataset(num_shards=8).map(template_formatter)
+                self.iterable_dataset[task_label] = self.dataset[task_label].to_iterable_dataset(num_shards=8).map(template_formatter)
                 log_mem(f"tokenizing {task}")
                 #self.dataset[task_label] = self.dataset[task_label].to_iterable_dataset().map(tokenizer, num_proc=8, load_from_cache_file=True)
         else:
             self.size_training_dataset = len(self.dataset["train"])
             tokenizer = get_tokenizer(cutoff_len, self.tokenizer, True)
             for split in self.dataset:
-                if self.config.hpo:
-                    num_trials = self.config.hpo_config.n_trials
-                else:
-                    num_trials = 1
 
                 if split !="test":
-                    self.dataset[split] = self.dataset[split].to_iterable_dataset(num_shards=8).map(template_formatter).map(tokenizer)
+                    self.iterable_dataset[split] = self.dataset[split].to_iterable_dataset(num_shards=8).map(template_formatter).map(tokenizer)
                 else:
                     tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
-                    log_mem(f"formatting {split} of {self.test_dataset_name}")
-                    self.dataset[split] = self.dataset[split].to_iterable_dataset(num_shards=8).map(template_formatter)
+                    if self.config.hpo:
+                        log_mem(f"formatting {split} of {self.test_dataset_name}")
+                        self.iterable_dataset["test"] = self.dataset["val"].to_iterable_dataset(num_shards=8).map(template_formatter)
+                    else:
+                        self.iterable_dataset["test"] = self.dataset["test"].to_iterable_dataset(num_shards=8).map(template_formatter)
                     log_mem(f"tokenizing {split} of {self.test_dataset_name}")
-                    self.dataset[split] = self.dataset[split].map(tokenizer)
+                    self.iterable_dataset["test"] = self.iterable_dataset["test"].map(tokenizer)
 
 
         log_mem(f"Finished preprocessing ")
@@ -415,6 +416,7 @@ class Runner:
             self.config.hpo_config.quant_config,
             self.config.hpo_config.model_config
         )
+        self.prepare_data()
         log_mem(f"loaded model for hpo")
         self.trainer = self.prepare_trainer(
             self.model,
@@ -435,7 +437,7 @@ class Runner:
 
         sampling_params = self.load_sampling_params(self.test_dataset_name, trial, self.config.hpo_config.vllm_config)
         self.trainer.evaluate()
-        metrics = self.evaluate(self.test_dataset_name, self.dataset["test"], sampling_params, model=self.trainer.model)
+        metrics = self.evaluate(self.test_dataset_name, self.iterable_dataset["test"], sampling_params, model=self.trainer.model)
         log_mem(f"finished evaluation")
         logger.debug(f"metrics are {metrics}")
         metric = self.task_metrics[self.test_dataset_name]
@@ -501,7 +503,7 @@ class Runner:
         set_seed(self.config.seed)
         if not self.config.prompting:
 
-
+            self.prepare_data()
             self.free_model()
             self.free_vllm_model()
             model = self.load_model()
@@ -528,12 +530,13 @@ class Runner:
             ## apply formatting function
             ## apply tokenziation function
             ## use data colloator without tokenization
+            self.prepare_data()
 
-            for task_label in self.dataset:
+            for task_label in self.iterable_dataset:
                 task = task_label.replace("test_", "")
                 sampling_params= self.load_sampling_params(task)
                 train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
-                test_data =  self.dataset[task_label]
+                test_data =  self.iterable_dataset[task_label]
                 metrics = self.evaluate(task, test_data, sampling_params, vllm=self.vllm)
                 log_mem(f"tested on {task}")
 
@@ -548,7 +551,7 @@ class Runner:
             ## use data colloator without tokenization
             sampling_params= self.load_sampling_params(self.test_dataset_name)
             train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
-            metrics = self.evaluate(self.test_dataset_name, self.dataset["test"], sampling_params, vllm=self.vllm)
+            metrics = self.evaluate(self.test_dataset_name, self.iterable_dataset["test"], sampling_params, vllm=self.vllm)
             for metric in metrics:
                 results = {"test_task": self.test_dataset_name, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model,
                            "start_time": starting_time, "k": train_subsample_amount, "filter":filter, "seed": self.config.seed}
