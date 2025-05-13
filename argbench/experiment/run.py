@@ -183,12 +183,12 @@ class Runner:
         logger.info(f"running {self.model_config.path} on {device}")
         if self.config.peft_configs or self.config.peft_fresh_config:
             llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed, device=device, trust_remote_code=True,
-                      max_model_len=self.config.cutoff_len, enable_chunked_prefill=False, max_num_batched_tokens=1024)
+                      max_model_len=self.config.cutoff_len, enable_chunked_prefill=False, max_num_batched_tokens=512, )
             #llm = LLM(model=base_model, enable_lora=True)
         else:
 
             llm = LLM(model=self.model_config.path, seed=self.config.seed, device=device, trust_remote_code=True,
-                      max_model_len=self.config.cutoff_len, enable_chunked_prefill=False, max_num_batched_tokens=1024)
+                      max_model_len=self.config.cutoff_len, enable_chunked_prefill=False, max_num_batched_tokens=512)
             #llm = LLM(model=base_model)
         log_mem("after loading vllm model")
         return llm
@@ -598,9 +598,9 @@ class Runner:
 
                 if self.config.peft_configs and self.adapter_path:
                     lora_request = LoRARequest("sql_adapter", 1,self.adapter_path)
-                    outputs = vllm.generate(text[:50], sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
+                    outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
                 else:
-                    outputs = vllm.generate(text[:50], sampling_params=sampling_params, use_tqdm=False)
+                    outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
                 for output in outputs:
                     response = output.outputs[0].text
                     counter +=1
