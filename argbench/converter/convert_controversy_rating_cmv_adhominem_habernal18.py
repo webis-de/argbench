@@ -86,9 +86,6 @@ def process_dataset(data, split, controversy_metadata, reasonableness_metadata):
 if __name__ == "__main__":
     # Input arguments for dataset generation
     arg_parser = ArgumentParser()
-    add_seed_arg(arg_parser)
-    args = arg_parser.parse_known_args()[0]
-    set_seed(args) # Seed random number generation
 
     data_path = datasets_path() / "cmv-adhominem" / "exported-1800-sampled-balanced-ops.json"
     controversy_path =  datasets_path() / "cmv-adhominem" / "annotated-1800-sampled-balanced-ops-controversy.json"

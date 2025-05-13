@@ -1,5 +1,5 @@
 # Does not work for s
-if [ -e "$file" ]; then
+if [ -e "/bigwork/nhwpajjy/" ]; then
   BIGWORK=/bigwork/nhwpajjy/
   else
   BIGWORK=/mnt/home/yajjour

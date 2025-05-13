@@ -289,15 +289,16 @@ class Runner:
                 log_mem(f"tokenizing {task}")
                 #self.dataset[task_label] = self.dataset[task_label].to_iterable_dataset().map(tokenizer, num_proc=8, load_from_cache_file=True)
         else:
-
             self.size_training_dataset = len(self.dataset["train"])
             tokenizer = get_tokenizer(cutoff_len, self.tokenizer, True)
             for split in self.dataset:
+                if self.config.hpo:
+                    num_trials = self.config.hpo_config.n_trials
+                else:
+                    num_trials = 1
+
                 if split !="test":
-                    log_mem(f"formatting {split} of {self.test_dataset_name}")
-                    self.dataset[split] = self.dataset[split].to_iterable_dataset(num_shards=8).map(template_formatter)
-                    log_mem(f"tokenizing {split} of {self.test_dataset_name}")
-                    self.dataset[split] = self.dataset[split].map(tokenizer)
+                    self.dataset[split] = self.dataset[split].to_iterable_dataset(num_shards=8).map(template_formatter).map(tokenizer)
                 else:
                     tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
                     log_mem(f"formatting {split} of {self.test_dataset_name}")
@@ -571,20 +572,14 @@ class Runner:
         labels = []
         predictions = []
         ## is the batch size here a bottleneck?
-        loader = DataLoader(dataset, num_workers=8, batch_size=1, shuffle=False)
+        loader = DataLoader(dataset, num_workers=8, batch_size=1, shuffle=False, persistent_workers=True)
 
 
         #trainer.model.eval()
         ## If an adapter will be fine-tuned then an output dir is there
         if vllm:
-
-
-
             if self.config.peft_configs:
                 logger.debug("++++ lora input ++++")
-
-
-
         elif model:
             generation_config = Runner.get_generation_config_from_vllm_params(sampling_params)
         output_splitter = self.model_config.output_splitter
