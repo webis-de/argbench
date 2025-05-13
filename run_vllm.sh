@@ -2,11 +2,11 @@
 #SBATCH --job-name=prmt-all-data
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=12
-#SBATCH --mem=25G
+#SBATCH --mem=10G
 #SBATCH --time=12:00:00
 #SBATCH --output argbench/output/run_vllm.out
 #SBATCH --error argbench/output/run_vllm.err
-#SBATCH --gpus=a100:2
+#SBATCH --gpus=1
 module load Miniforge3
 conda activate few-shot-priming
 
