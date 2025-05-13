@@ -244,7 +244,7 @@ class Runner:
         else:
             report_to = None
             tensorboard_dir = None
-        max_steps = self.config.training_args_config.num_train_epochs * (len(self.dataset["train"]) // self.config.training_args_config.per_device_train_batch_size)
+        max_steps = self.config.training_args_config.num_train_epochs * (len(list(self.dataset["train"])) // self.config.training_args_config.per_device_train_batch_size)
         train_args = TrainingArguments(output_dir=self.config.get_output_path(),
             report_to=report_to,
             logging_dir=tensorboard_dir,dataloader_pin_memory=True,max_steps=max_steps,
@@ -282,14 +282,14 @@ class Runner:
             for task_label in self.dataset:
                 task = task_label.replace("test_", "")
                 log_mem(f"formatting {task}")
-                self.dataset[task_label] = self.dataset[task_label].to_iterable_dataset().map(template_formatter)
+                self.dataset[task_label] = self.dataset[task_label].to_iterable_dataset(num_shards=8).map(template_formatter)
                 log_mem(f"tokenizing {task}")
                 #self.dataset[task_label] = self.dataset[task_label].to_iterable_dataset().map(tokenizer, num_proc=8, load_from_cache_file=True)
         else:
             tokenizer = get_tokenizer(cutoff_len, self.tokenizer, True)
             for split in self.dataset:
                 log_mem(f"formatting {split} of {self.test_dataset_name}")
-                self.dataset[split] = self.dataset[split].to_iterable_dataset().map(template_formatter)
+                self.dataset[split] = self.dataset[split].to_iterable_dataset(num_shards=8).map(template_formatter)
                 log_mem(f"tokenizing {split} of {self.test_dataset_name}")
                 self.dataset[split] = self.dataset[split].map(tokenizer)
         log_mem(f"Finished preprocessing ")
