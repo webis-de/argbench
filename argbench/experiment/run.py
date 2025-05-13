@@ -558,7 +558,7 @@ class Runner:
         labels = []
         predictions = []
         ## is the batch size here a bottleneck?
-        loader = DataLoader(dataset, num_workers=8, batch_size=1, shuffle=False, persistent_workers=True)
+        loader = DataLoader(dataset, num_workers=1, batch_size=1, shuffle=False, persistent_workers=True)
 
 
 
