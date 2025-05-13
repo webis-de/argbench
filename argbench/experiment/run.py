@@ -287,7 +287,7 @@ class Runner:
             for task_label in self.dataset:
                 task = task_label.replace("test_", "")
                 log_mem(f"formatting {task}")
-                self.iterable_dataset[task_label] = self.dataset[task_label].to_iterable_dataset(num_shards=8).map(template_formatter)
+                self.iterable_dataset[task_label] = self.dataset[task_label].to_iterable_dataset().map(template_formatter)
                 log_mem(f"tokenizing {task}")
                 #self.dataset[task_label] = self.dataset[task_label].to_iterable_dataset().map(tokenizer, num_proc=8, load_from_cache_file=True)
         else:
@@ -595,9 +595,9 @@ class Runner:
 
                 if self.config.peft_configs and self.adapter_path:
                     lora_request = LoRARequest("sql_adapter", 1,self.adapter_path)
-                    outputs = vllm.generate(text[:50], sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
+                    outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
                 else:
-                    outputs = vllm.generate(text[:50], sampling_params=sampling_params, use_tqdm=False)
+                    outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
                 for output in outputs:
                     response = output.outputs[0].text
                     counter +=1
