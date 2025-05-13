@@ -6,7 +6,7 @@ import outlines
 from optuna import create_study
 from optuna.samplers import TPESampler
 from outlines import models as outline_models
-from peft import (PeftModel, LoraConfig, get_peft_model, )
+from peft import (PeftModel, LoraConfig, get_peft_model, prepare_model_for_kbit_training, )
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from transformers import *
@@ -25,7 +25,7 @@ from argbench.experiment.utils import *
 logger = None
 
 device = get_device()
-
+cut_off_logged = False
 def with_timing(fn):
     def wrapper(*args, **kwargs):
         t = time.perf_counter()
@@ -161,7 +161,7 @@ class Runner:
         self.base_model = model
 
         if not self.config.prompting:
-            #model = prepare_model_for_kbit_training(model)
+            model = prepare_model_for_kbit_training(model)
             model.enable_input_require_grads()
         logger.info("loaded model")
         if self.config.peft_configs and self.config.peft_fresh_config:
@@ -254,7 +254,7 @@ class Runner:
 
         data_collator = DataCollatorForSeq2Seq(
             self.tokenizer,
-            **self.config.data_collator_config.to_conf(trial, data_collator_hpo)
+            **self.config.data_collator_config.to_conf(trial, data_collator_hpo,), max_length=self.config.cutoff_len
         )
         callbacks = []
         if self.config.debug:
@@ -265,6 +265,7 @@ class Runner:
                 EarlyStoppingCallback(**self.config.early_stopping_config.to_conf(trial, early_stopping_hpo))
             )
         log_mem("preparing trainer")
+        logger.debug(len(next(iter(self.dataset["train"]))["input_ids"]))
         trainer = Trainer(model=model, callbacks=callbacks, train_dataset=self.dataset["train"], eval_dataset=self.dataset["val"],
         args=train_args, data_collator=data_collator,)
 
