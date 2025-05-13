@@ -181,11 +181,11 @@ class Runner:
     def  prepare_model_for_generation(self):
         logger.info(f"running {self.model_config.path} on {device}")
         if self.config.peft_configs or self.config.peft_fresh_config:
-            llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed, device=device, trust_remote_code=True, max_model_len=self.config.cutoff_len)
+            llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed, device=device, trust_remote_code=True, max_model_len=self.config.cutoff_len, enable_chunked_prefill=False)
             #llm = LLM(model=base_model, enable_lora=True)
         else:
 
-            llm = LLM(model=self.model_config.path, seed=self.config.seed, device=device, trust_remote_code=True, max_model_len=self.config.cutoff_len)
+            llm = LLM(model=self.model_config.path, seed=self.config.seed, device=device, trust_remote_code=True, max_model_len=self.config.cutoff_len, enable_chunked_prefill=False)
             #llm = LLM(model=base_model)
         log_mem("after loading vllm model")
         return llm
@@ -428,7 +428,7 @@ class Runner:
         log_mem(f"started training")
 #        accelerator = Accelerator()
 #        self.model, self.trainer.optimizer = accelerator.prepare(self.model, self.trainer.optimizer)
-        #self.trainer.train()
+        self.trainer.train()
         log_mem(f"trained model")
 
 #        self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
