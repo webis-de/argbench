@@ -1,3 +1,4 @@
-from vllm import LLM
-llm = LLM(model="/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen", pipeline_parallel_size=2)
-print(llm.generate("hello"))
+from vllm import LLM, SamplingParams
+llm = LLM(model="/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen")
+sampling_params = SamplingParams(truncate_prompt_tokens=10)
+print(llm.generate("hello. i am not truncating you. you are truncating me. if we keep like this, we will truncate each other", sampling_params=sampling_params))
