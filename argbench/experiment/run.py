@@ -247,7 +247,7 @@ class Runner:
 
         max_steps = self.config.training_args_config.num_train_epochs * (self.size_training_dataset // self.config.training_args_config.per_device_train_batch_size)
         train_args = TrainingArguments(output_dir=self.config.get_output_path(),
-            report_to=report_to,
+            report_to=report_to,torch_empty_cache_steps=4,
             logging_dir=tensorboard_dir,dataloader_pin_memory=True,max_steps=max_steps,
             **self.config.training_args_config.to_conf(trial, training_arg_hpo)
         )
@@ -306,11 +306,11 @@ class Runner:
         :param model_config: Configuration parameters for model
         :returns: ModelForCausalLM initialized from config
         """
-        #quant_conf = BitsAndBytesConfig(**quant_config)
+        quant_conf = BitsAndBytesConfig(**quant_config)
         return AutoModelForCausalLM.from_pretrained(
             base_model,
             torch_dtype=torch.bfloat16,
-        #    quantization_config=quant_conf,
+            quantization_config=quant_conf,
             #device_map= "cuda:0",
             device_map= "auto",
             trust_remote_code=True
