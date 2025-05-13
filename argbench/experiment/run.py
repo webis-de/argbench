@@ -545,7 +545,7 @@ class Runner:
 
         return all_results
 
-
+    @with_timing
     def evaluate(self, test_task_name, test_data, sampling_params, model=None, vllm=None):
         """
         Performs model evaluation using the test datasets and evaluation metric from ValidationConfig. The test
