@@ -595,9 +595,9 @@ class Runner:
 
                 if self.config.peft_configs and self.adapter_path:
                     lora_request = LoRARequest("sql_adapter", 1,self.adapter_path)
-                    outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
+                    outputs = vllm.generate(text[:50], sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
                 else:
-                    outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
+                    outputs = vllm.generate(text[:50], sampling_params=sampling_params, use_tqdm=False)
                 for output in outputs:
                     response = output.outputs[0].text
                     counter +=1
