@@ -44,7 +44,7 @@ python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/
 #
 #python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
 #--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset" --debug --train_subsample_amount 4 --sample
-#done
+done
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
 export JOB_ARGUMENTS="prompting;${dataset};${model};\n"
