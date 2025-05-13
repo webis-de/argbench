@@ -67,9 +67,12 @@ def formate_model_template(template):
         return data_point
     return formate_template
 
-def tokenize(prompt, tokenizer, cutoff_len):
+def tokenize(prompt, tokenizer, cutoff_len, train):
+    if train:
+        prompt = tokenizer(prompt)
+    else:
+        return tokenizer(prompt, return_tensors="pt")
 
-    prompt = tokenizer(prompt)
     if prompt["input_ids"][-1] != tokenizer.eos_token_id and len(prompt["input_ids"]) < cutoff_len:
         prompt["input_ids"].append(tokenizer.eos_token_id)
         prompt["attention_mask"].append(1)
@@ -86,17 +89,15 @@ def get_tokenizer(cutoff_len, tokenizer: AutoTokenizer, train: bool):
         :param data_point: Dict with "input", "output" strings
         :returns: tokenized prompt
         """
-        input_prompt = tokenize(data_point['input'], tokenizer, cutoff_len)
-
-
+        input_prompt = tokenize(data_point['input'], tokenizer, cutoff_len, train)
         if train:
-            full_prompt = tokenize(f"{data_point['input']}{data_point['output']}", tokenizer, cutoff_len)
+            full_prompt = tokenize(f"{data_point['input']}{data_point['output']}", tokenizer, cutoff_len, train)
             full_prompt["labels"] = full_prompt["input_ids"].copy()
             instruction_len = len(input_prompt) - 1
             full_prompt["labels"] = [-100] * instruction_len + full_prompt["labels"][instruction_len:]
 
             return full_prompt
-        input_prompt["labels"] = input_prompt["input_ids"].copy()
+
         return input_prompt
     return generate_and_tokenize_prompt
 
@@ -288,13 +289,23 @@ class Runner:
                 log_mem(f"tokenizing {task}")
                 #self.dataset[task_label] = self.dataset[task_label].to_iterable_dataset().map(tokenizer, num_proc=8, load_from_cache_file=True)
         else:
-            tokenizer = get_tokenizer(cutoff_len, self.tokenizer, True)
+
             self.size_training_dataset = len(self.dataset["train"])
+            tokenizer = get_tokenizer(cutoff_len, self.tokenizer, True)
             for split in self.dataset:
-                log_mem(f"formatting {split} of {self.test_dataset_name}")
-                self.dataset[split] = self.dataset[split].to_iterable_dataset(num_shards=8).map(template_formatter)
-                log_mem(f"tokenizing {split} of {self.test_dataset_name}")
-                self.dataset[split] = self.dataset[split].map(tokenizer)
+                if split !="test":
+                    log_mem(f"formatting {split} of {self.test_dataset_name}")
+                    self.dataset[split] = self.dataset[split].to_iterable_dataset(num_shards=8).map(template_formatter)
+                    log_mem(f"tokenizing {split} of {self.test_dataset_name}")
+                    self.dataset[split] = self.dataset[split].map(tokenizer)
+                else:
+                    tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
+                    log_mem(f"formatting {split} of {self.test_dataset_name}")
+                    self.dataset[split] = self.dataset[split].to_iterable_dataset(num_shards=8).map(template_formatter)
+                    log_mem(f"tokenizing {split} of {self.test_dataset_name}")
+                    self.dataset[split] = self.dataset[split].map(tokenizer)
+
+
         log_mem(f"Finished preprocessing ")
 
 
@@ -414,7 +425,7 @@ class Runner:
         log_mem(f"started training")
 #        accelerator = Accelerator()
 #        self.model, self.trainer.optimizer = accelerator.prepare(self.model, self.trainer.optimizer)
-        self.trainer.train()
+        #self.trainer.train()
         log_mem(f"trained model")
 
 #        self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
@@ -560,7 +571,7 @@ class Runner:
         labels = []
         predictions = []
         ## is the batch size here a bottleneck?
-        loader = DataLoader(dataset, num_workers=8, batch_size=1, shuffle=False, collate_fn=eval_collate)
+        loader = DataLoader(dataset, num_workers=8, batch_size=1, shuffle=False)
 
 
         #trainer.model.eval()
@@ -583,7 +594,7 @@ class Runner:
             labels.extend(data["output"])
             text = data["input"]
             if model:
-                inputs = data["input_ids"].cuda()
+                inputs = data["input_ids"][0].cuda()
                 generated = model.generate(input_ids=inputs, generation_config=generation_config, return_dict_in_generate=True)
 
                 output = self.tokenizer.batch_decode(generated.sequences)
