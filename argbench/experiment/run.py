@@ -224,7 +224,7 @@ class Runner:
 
         logger.debug(f"using {task_specific_vllm_config}")
 
-        sampling_params = SamplingParams(**task_specific_vllm_config)
+        sampling_params = SamplingParams(**task_specific_vllm_config, truncate_prompt_tokens=self.config.cutoff_len)
 
         return sampling_params
 
