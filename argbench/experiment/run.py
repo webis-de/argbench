@@ -244,9 +244,10 @@ class Runner:
         else:
             report_to = None
             tensorboard_dir = None
+        max_steps = self.config.training_args_config.num_train_epochs * (len(self.dataset["train"]) // self.config.training_args_config.per_device_train_batch_size)
         train_args = TrainingArguments(output_dir=self.config.get_output_path(),
             report_to=report_to,
-            logging_dir=tensorboard_dir,dataloader_pin_memory=True,max_steps=40000,
+            logging_dir=tensorboard_dir,dataloader_pin_memory=True,max_steps=max_steps,
             **self.config.training_args_config.to_conf(trial, training_arg_hpo)
         )
 
@@ -490,7 +491,7 @@ class Runner:
             self.free_vllm_model()
             model = self.load_model()
             self.trainer = self.prepare_trainer(model)
-            #self.trainer.train()
+            self.trainer.train()
             self.adapter_path = self.config.get_model_path(starting_time)
             self.trainer.save_model(self.adapter_path)
             for obj in self.trainer.state.log_history:
