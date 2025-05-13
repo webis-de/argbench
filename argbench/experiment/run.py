@@ -557,7 +557,7 @@ class Runner:
         labels = []
         predictions = []
         ## is the batch size here a bottleneck?
-        loader = DataLoader(dataset, batch_size=1, shuffle=False, collate_fn=eval_collate)
+        loader = DataLoader(dataset, num_workers=8, batch_size=1, shuffle=False, collate_fn=eval_collate)
 
 
         #trainer.model.eval()
