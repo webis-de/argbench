@@ -3,6 +3,7 @@ import gc
 
 import optuna
 import outlines
+from bert_score.utils import padding
 from optuna import create_study
 from optuna.samplers import TPESampler
 from outlines import models as outline_models
@@ -71,7 +72,7 @@ def tokenize(prompt, tokenizer, cutoff_len, train):
     if train:
         prompt = tokenizer(prompt)
     else:
-        return tokenizer(prompt, return_tensors="pt")
+        return tokenizer(prompt, return_tensors="pt", padding=True)
 
     if prompt["input_ids"][-1] != tokenizer.eos_token_id and len(prompt["input_ids"]) < cutoff_len:
         prompt["input_ids"].append(tokenizer.eos_token_id)
