@@ -558,7 +558,11 @@ class Runner:
         labels = []
         predictions = []
         ## is the batch size here a bottleneck?
-        loader = DataLoader(dataset, num_workers=1, batch_size=1, shuffle=False, persistent_workers=True)
+        if vllm:
+            count_workers = 1
+        else:
+            count_workers = 8
+        loader = DataLoader(dataset, num_workers=count_workers, batch_size=1, shuffle=False, persistent_workers=True)
 
 
 
