@@ -382,9 +382,6 @@ class Runner:
                 param.requires_grad = True
         return model
 
-
-
-
     def load_model(self):
         """Loads model checkpoint"""
         log_mem("loading model")
@@ -426,12 +423,9 @@ class Runner:
             self.config.hpo_config.early_stopping_config
         )
         log_mem(f"started training")
-#        accelerator = Accelerator()
-#        self.model, self.trainer.optimizer = accelerator.prepare(self.model, self.trainer.optimizer)
         self.trainer.train()
         log_mem(f"trained model")
 
-#        self.trainer.save_model(self.config.training_args_config.output_dir + "/best-model")
         self.free_model()
 
 
@@ -469,18 +463,7 @@ class Runner:
         """
         Execute training, hpo or evaluation
         """
-        ### Todo change string to enums for experiment type and prompting technique
-        ### add sample
-
-
         if self.config.hpo:
-            ## apply formatting function
-            ## apply tokenziation function
-            ## use data colloator without tokenization
-
-            # this should be changed to account for multiple datasets
-
-
 
             hpo_output = HPOOutput(self.config.hpo_config.hpo_coarse_output)
             now = datetime.now()
@@ -578,7 +561,7 @@ class Runner:
         loader = DataLoader(dataset, num_workers=8, batch_size=1, shuffle=False, persistent_workers=True)
 
 
-        #trainer.model.eval()
+
         ## If an adapter will be fine-tuned then an output dir is there
         if vllm:
             if self.config.peft_configs:
@@ -586,7 +569,7 @@ class Runner:
         elif model:
             generation_config = Runner.get_generation_config_from_vllm_params(sampling_params)
         output_splitter = self.model_config.output_splitter
-
+        counter = 0
         for data in tqdm(loader):
 
             labels.extend(data["output"])
@@ -613,12 +596,12 @@ class Runner:
                     outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
                 for output in outputs:
                     response = output.outputs[0].text
-
+                    counter +=1
                     prediction = clean_prediction(response, self.config.chain_of_thoughts)
                     predictions += [prediction]
                     if prediction:
                         logger.debug(format_logging(response, prediction,text))
-
+        logger.debug(f"evaluating {counter} instances")
         metric = self.task_metrics[test_task_name]
         if metric == "fscore-detailed":
             return compute_precision_recall_fscore_support(
