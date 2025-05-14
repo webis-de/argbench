@@ -32,7 +32,7 @@
             "temperature": 0.8,
             "top_p": 1,
             "top_k": -1,
-            "max_tokens": 700,
+            "max_tokens": 200,
             "min_tokens": 50
         },
         "claim_optimization": {
