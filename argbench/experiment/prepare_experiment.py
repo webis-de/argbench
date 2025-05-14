@@ -219,7 +219,7 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
         experiment_splits = json.load(experiment_splits_file)
     if experiment_type == ExperimentType.IN_TASK:
         if sample:
-            dataset = create_dataset_in_tasks(tasks_path, prompt_template, experiment_splits, 0.1, 0.5)
+            dataset = create_dataset_in_tasks(tasks_path, prompt_template, experiment_splits, 0.25, 0.5)
         else:
             dataset = create_dataset_in_tasks(tasks_path, prompt_template, experiment_splits)
     elif experiment_type == ExperimentType.PROMPTING:
