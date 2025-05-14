@@ -90,7 +90,7 @@ class TrainingArgsConfig(CommonConfig):
 
     optim: str
 
-    evaluation_strategy: str
+    eval_strategy: str
 
     save_strategy: str
 
