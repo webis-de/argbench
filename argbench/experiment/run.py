@@ -613,7 +613,7 @@ class Runner:
                     logger.debug(format_logging(response, prediction, text))
 
             if vllm:
-                import pdb; pdb.set_trace()
+
                 if self.config.peft_configs and self.adapter_path:
                     lora_request = LoRARequest("sql_adapter", 1,self.adapter_path)
                     outputs = vllm.generate(text, sampling_params=sampling_params, lora_request=lora_request, use_tqdm=False)
