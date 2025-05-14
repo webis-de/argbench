@@ -298,13 +298,12 @@ class Runner:
         else:
             report_to = None
             tensorboard_dir = None
-
-        max_steps = self.config.training_args_config.num_train_epochs * (self.size_training_dataset // self.config.training_args_config.per_device_train_batch_size)
+        training_args = self.config.training_args_config.to_conf(trial, training_arg_hpo)
+        max_steps = self.config.training_args_config.num_train_epochs * (self.size_training_dataset // training_args["per_device_train_batch_size"])
         train_args = TrainingArguments(output_dir=self.config.get_output_path(),
             report_to=report_to,torch_empty_cache_steps=4,
             logging_dir=tensorboard_dir,dataloader_pin_memory=True,max_steps=max_steps,
-            **self.config.training_args_config.to_conf(trial, training_arg_hpo)
-        )
+            **training_args)
 
         data_collator = DataCollatorForSeq2Seq(
             self.tokenizer,
@@ -597,7 +596,7 @@ class Runner:
         output_splitter = self.model_config.output_splitter
         counter = 0
         for data in tqdm(loader):
-            text = data["input"]
+            text = data["input"][0]
             labels.extend(data["output"])
 
             if model:
