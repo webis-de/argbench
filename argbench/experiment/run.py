@@ -3,6 +3,7 @@ import gc
 
 import optuna
 import outlines
+from attr.validators import max_len
 from bert_score.utils import padding
 from optuna import create_study
 from optuna.samplers import TPESampler
@@ -70,9 +71,9 @@ def formate_model_template(template):
 
 def tokenize(prompt, tokenizer, cutoff_len, train):
     if train:
-        prompt = tokenizer(prompt)
+        prompt = tokenizer(prompt, max_length=cutoff_len)
     else:
-        return tokenizer(prompt, return_tensors="pt", padding=True)
+        return tokenizer(prompt, return_tensors="pt", padding=True, max_length=cutoff_len)
 
     if prompt["input_ids"][-1] != tokenizer.eos_token_id and len(prompt["input_ids"]) < cutoff_len:
         prompt["input_ids"].append(tokenizer.eos_token_id)
@@ -102,7 +103,11 @@ def get_tokenizer(cutoff_len, tokenizer: AutoTokenizer, train: bool):
         return input_prompt
     return generate_and_tokenize_prompt
 
-
+def get_truncated_text(tokenizer):
+    def generate_truncated(data_point):
+        data_point["truncated_text"] = tokenizer.decode(data_point["input_ids"][0], skip_special_tokens=True)
+        return data_point
+    return generate_truncated
 
 class Runner:
     """Model runner class"""
@@ -286,13 +291,16 @@ class Runner:
         template_formatter = formate_model_template(self.config.model_config.prompt_template)
         self.iterable_dataset = DatasetDict()
         if self.config.prompting:
-            #tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
+
+            tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
+            generate_truncated = get_truncated_text(self.tokenizer)
             for task_label in self.dataset:
                 task = task_label.replace("test_", "")
                 log_mem(f"formatting {task}")
                 self.iterable_dataset[task_label] = self.dataset[task_label].to_iterable_dataset().map(template_formatter)
                 log_mem(f"tokenizing {task}")
-                #self.dataset[task_label] = self.dataset[task_label].to_iterable_dataset().map(tokenizer, num_proc=8, load_from_cache_file=True)
+                self.iterable_dataset[task_label] = self.iterable_dataset[task_label].map(tokenizer).map(generate_truncated)
+
         else:
             self.size_training_dataset = len(self.dataset["train"])
             tokenizer = get_tokenizer(cutoff_len, self.tokenizer, True)
@@ -580,7 +588,10 @@ class Runner:
         for data in tqdm(loader):
 
             labels.extend(data["output"])
-            text = data["input"]
+            if vllm:
+                text = data["truncated_text"]
+            else:
+                text = data["text"]
             if model:
                 inputs = data["input_ids"][0].cuda()
                 generated = model.generate(input_ids=inputs, generation_config=generation_config, return_dict_in_generate=True)
