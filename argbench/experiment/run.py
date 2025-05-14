@@ -157,6 +157,9 @@ class Runner:
         if self.config.prompting:
 
             tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
+            tokenized_template = tokenizer({"input": self.config.model_config.prompt_template})
+            tokenized_template_len = len(tokenized_template["input_ids"][0])
+            tokenizer = get_tokenizer(cutoff_len - tokenized_template_len, self.tokenizer, False)
             generate_truncated = get_truncated_text(self.tokenizer)
             for task_label in self.dataset:
                 task = task_label.replace("test_", "")
@@ -516,7 +519,7 @@ class Runner:
                 logger.debug(obj)
             log_mem("trained")
 
-        self.vllm = self.prepare_model_for_generation()
+
 
         all_results = []
         if self.config.skill_filter:
@@ -532,7 +535,7 @@ class Runner:
             ## apply tokenziation function
             ## use data colloator without tokenization
             self.prepare_data()
-
+            self.vllm = self.prepare_model_for_generation()
             for task_label in self.iterable_dataset:
                 task = task_label.replace("test_", "")
                 sampling_params= self.load_sampling_params(task)
