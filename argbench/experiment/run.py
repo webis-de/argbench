@@ -536,7 +536,7 @@ class Runner:
             for task_label in self.iterable_dataset:
                 task = task_label.replace("test_", "")
                 sampling_params= self.load_sampling_params(task)
-                loggg
+
                 train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
                 test_data =  self.iterable_dataset[task_label]
                 metrics = self.evaluate(task, test_data, sampling_params, vllm=self.vllm)
@@ -594,7 +594,7 @@ class Runner:
         output_splitter = self.model_config.output_splitter
         counter = 0
         for data in tqdm(loader):
-            text = data["text"]
+            text = data["input"]
             labels.extend(data["output"])
 
             if model:
