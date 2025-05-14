@@ -63,13 +63,14 @@ multi_dataset_tasks = {"argument_unit_segmentation_ajjour17":
                             "argument_unit_segmentation_editorials_ajjour17",
                             "argument_unit_segmentation_webDiscourse_ajjour17"
                             ],
-                            "argument_unit_segmentation_dictionaries_ajjour17":
+                            "controversy_scoring_cmv_adhominem_habernal18":
                             [
-                                "argument_unit_segmentation_dictionaries_essays_ajjour17",
-                                "argument_unit_segmentation_dictionaries_editorials_ajjour17",
-                                "argument_unit_segmentation_dictionaries_webDiscourse_ajjour17"
+                                "controversy_scoring_cmv_adhominem_habernal18",
+                                "reasonableness_scoring_cmv_adhominem_habernal18",
+
                             ],
                        }
+
 
 if __name__ == "__main__":
     arg_parse = ArgumentParser(description="Convert tasks into ndjson format")

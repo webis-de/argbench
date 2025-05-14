@@ -71,9 +71,9 @@ def formate_model_template(template):
 
 def tokenize(prompt, tokenizer, cutoff_len, train):
     if train:
-        prompt = tokenizer(prompt, max_length=cutoff_len)
+        prompt = tokenizer(prompt, max_length=cutoff_len, truncation=True)
     else:
-        return tokenizer(prompt, return_tensors="pt", padding=True, max_length=cutoff_len)
+        return tokenizer(prompt, return_tensors="pt", padding=True, max_length=cutoff_len, truncation=True)
 
     if prompt["input_ids"][-1] != tokenizer.eos_token_id and len(prompt["input_ids"]) < cutoff_len:
         prompt["input_ids"].append(tokenizer.eos_token_id)
@@ -105,7 +105,13 @@ def get_tokenizer(cutoff_len, tokenizer: AutoTokenizer, train: bool):
 
 def get_truncated_text(tokenizer):
     def generate_truncated(data_point):
+        text = data_point["text"]
+        print(f"text before truncation {len(text)}" )
+
         data_point["truncated_text"] = tokenizer.decode(data_point["input_ids"][0], skip_special_tokens=True)
+        truncated_text = data_point["truncated_text"]
+
+        print(f"text after truncation {len(truncated_text)}" )
         return data_point
     return generate_truncated
 
