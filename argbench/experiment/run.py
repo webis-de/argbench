@@ -105,7 +105,7 @@ def get_tokenizer(cutoff_len, tokenizer: AutoTokenizer, train: bool):
 
 def get_truncated_text(tokenizer):
     def generate_truncated(data_point):
-        text = data_point["text"]
+        text = data_point["input"]
         print(f"text before truncation {len(text)}" )
 
         data_point["truncated_text"] = tokenizer.decode(data_point["input_ids"][0], skip_special_tokens=True)
