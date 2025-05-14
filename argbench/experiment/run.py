@@ -174,14 +174,14 @@ class Runner:
             for split in self.dataset:
 
                 if split !="test":
-                    self.iterable_dataset[split] = self.dataset[split].to_iterable_dataset(num_shards=8).map(template_formatter).map(tokenizer)
+                    self.iterable_dataset[split] = self.dataset[split].to_iterable_dataset().map(template_formatter).map(tokenizer)
                 else:
                     tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
                     if self.config.hpo:
                         log_mem(f"formatting {split} of {self.test_dataset_name}")
-                        self.iterable_dataset["test"] = self.dataset["val"].to_iterable_dataset(num_shards=8).map(template_formatter)
+                        self.iterable_dataset["test"] = self.dataset["val"].to_iterable_dataset().map(template_formatter)
                     else:
-                        self.iterable_dataset["test"] = self.dataset["test"].to_iterable_dataset(num_shards=8).map(template_formatter)
+                        self.iterable_dataset["test"] = self.dataset["test"].to_iterable_dataset().map(template_formatter)
                     log_mem(f"tokenizing {split} of {self.test_dataset_name}")
                     self.iterable_dataset["test"] = self.iterable_dataset["test"].map(tokenizer)
 
