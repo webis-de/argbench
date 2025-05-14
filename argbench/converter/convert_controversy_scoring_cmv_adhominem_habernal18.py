@@ -101,3 +101,4 @@ if __name__ == "__main__":
     process_dataset(train_data, "train", controversy_metadata, reasonableness_metadata)
     controversy_metadata.write_metadata()
     reasonableness_metadata.write_metadata()
+    print("finished adhominem scoring tasks")
