@@ -108,8 +108,8 @@ def get_truncated_text(tokenizer):
         text = data_point["input"]
         print(f"text before truncation {len(text)}" )
 
-        data_point["truncated_text"] = tokenizer.decode(data_point["input_ids"][0], skip_special_tokens=True)
-        truncated_text = data_point["truncated_text"]
+        data_point["input"] = tokenizer.decode(data_point["input_ids"][0], skip_special_tokens=True)
+        truncated_text = data_point["input"]
 
         print(f"text after truncation {len(truncated_text)}" )
         return data_point
@@ -149,6 +149,42 @@ class Runner:
                 self.test_dataset_name = None
 
         self.load_data()
+
+    def prepare_data(self):
+        cutoff_len = self.config.cutoff_len
+        template_formatter = formate_model_template(self.config.model_config.prompt_template)
+        self.iterable_dataset = DatasetDict()
+        if self.config.prompting:
+
+            tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
+            generate_truncated = get_truncated_text(self.tokenizer)
+            for task_label in self.dataset:
+                task = task_label.replace("test_", "")
+                log_mem(f"formatting {task}")
+                self.iterable_dataset[task_label] = self.dataset[task_label].to_iterable_dataset().map(tokenizer).map(generate_truncated)
+                log_mem(f"tokenizing {task}")
+                self.iterable_dataset[task_label] = self.iterable_dataset[task_label].map(template_formatter)
+
+        else:
+            self.size_training_dataset = len(self.dataset["train"])
+            tokenizer = get_tokenizer(cutoff_len, self.tokenizer, True)
+            for split in self.dataset:
+
+                if split !="test":
+                    self.iterable_dataset[split] = self.dataset[split].to_iterable_dataset(num_shards=8).map(template_formatter).map(tokenizer)
+                else:
+                    tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
+                    if self.config.hpo:
+                        log_mem(f"formatting {split} of {self.test_dataset_name}")
+                        self.iterable_dataset["test"] = self.dataset["val"].to_iterable_dataset(num_shards=8).map(template_formatter)
+                    else:
+                        self.iterable_dataset["test"] = self.dataset["test"].to_iterable_dataset(num_shards=8).map(template_formatter)
+                    log_mem(f"tokenizing {split} of {self.test_dataset_name}")
+                    self.iterable_dataset["test"] = self.iterable_dataset["test"].map(tokenizer)
+
+
+        log_mem(f"Finished preprocessing ")
+
 
     def prepare_model_for_training(self,
                       trial=None,
@@ -194,12 +230,12 @@ class Runner:
         logger.info(f"running {self.model_config.path} on {device}")
         if self.config.peft_configs or self.config.peft_fresh_config:
             llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed, device=device, trust_remote_code=True,
-                      max_model_len=self.config.cutoff_len, enable_chunked_prefill=False, max_num_batched_tokens=1024,max_num_seqs=12, enforce_eager=False)
+                      max_model_len=self.config.cutoff_len, enable_chunked_prefill=False, max_num_batched_tokens=1024,max_num_seqs=12, )
             #llm = LLM(model=base_model, enable_lora=True)
         else:
 
             llm = LLM(model=self.model_config.path, seed=self.config.seed, device=device, trust_remote_code=True,
-                      max_model_len=self.config.cutoff_len, enable_chunked_prefill=False, max_num_batched_tokens=1024,max_num_seqs=12, enforce_eager=False)
+                      max_model_len=self.config.cutoff_len, enable_chunked_prefill=False, max_num_batched_tokens=1024,max_num_seqs=12,)
             #llm = LLM(model=base_model)
         log_mem("after loading vllm model")
         return llm
@@ -291,41 +327,6 @@ class Runner:
         prompting_technique = self.config.get_prompting_technique()
         sample = self.config.sample
         self.dataset = load_experiment(experiment_type,prompting_technique, sample, test_task= self.test_dataset_name, run_config=self.config)
-
-    def prepare_data(self):
-        cutoff_len = self.config.cutoff_len
-        template_formatter = formate_model_template(self.config.model_config.prompt_template)
-        self.iterable_dataset = DatasetDict()
-        if self.config.prompting:
-
-            tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
-            generate_truncated = get_truncated_text(self.tokenizer)
-            for task_label in self.dataset:
-                task = task_label.replace("test_", "")
-                log_mem(f"formatting {task}")
-                self.iterable_dataset[task_label] = self.dataset[task_label].to_iterable_dataset().map(template_formatter)
-                log_mem(f"tokenizing {task}")
-                self.iterable_dataset[task_label] = self.iterable_dataset[task_label].map(tokenizer).map(generate_truncated)
-
-        else:
-            self.size_training_dataset = len(self.dataset["train"])
-            tokenizer = get_tokenizer(cutoff_len, self.tokenizer, True)
-            for split in self.dataset:
-
-                if split !="test":
-                    self.iterable_dataset[split] = self.dataset[split].to_iterable_dataset(num_shards=8).map(template_formatter).map(tokenizer)
-                else:
-                    tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
-                    if self.config.hpo:
-                        log_mem(f"formatting {split} of {self.test_dataset_name}")
-                        self.iterable_dataset["test"] = self.dataset["val"].to_iterable_dataset(num_shards=8).map(template_formatter)
-                    else:
-                        self.iterable_dataset["test"] = self.dataset["test"].to_iterable_dataset(num_shards=8).map(template_formatter)
-                    log_mem(f"tokenizing {split} of {self.test_dataset_name}")
-                    self.iterable_dataset["test"] = self.iterable_dataset["test"].map(tokenizer)
-
-
-        log_mem(f"Finished preprocessing ")
 
 
     def prepare_model_for_causal_llm(self, base_model, quant_config, model_config):
@@ -535,6 +536,7 @@ class Runner:
             for task_label in self.iterable_dataset:
                 task = task_label.replace("test_", "")
                 sampling_params= self.load_sampling_params(task)
+                loggg
                 train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
                 test_data =  self.iterable_dataset[task_label]
                 metrics = self.evaluate(task, test_data, sampling_params, vllm=self.vllm)
@@ -592,12 +594,9 @@ class Runner:
         output_splitter = self.model_config.output_splitter
         counter = 0
         for data in tqdm(loader):
-
+            text = data["text"]
             labels.extend(data["output"])
-            if vllm:
-                text = data["truncated_text"]
-            else:
-                text = data["text"]
+
             if model:
                 inputs = data["input_ids"][0].cuda()
                 generated = model.generate(input_ids=inputs, generation_config=generation_config, return_dict_in_generate=True)
