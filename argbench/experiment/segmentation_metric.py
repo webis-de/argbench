@@ -32,7 +32,7 @@ def parse(text, labels):
                 parsed_document[span_label].append(span_text)
     return parsed_document
 
-def compute_seg_match_f1_score(predictions, references, inputs, labels, label_out):
+def compute_seg_match_f1_score(predictions, references,  labels, label_out):
 
     metric = {}
 
@@ -46,7 +46,7 @@ def compute_seg_match_f1_score(predictions, references, inputs, labels, label_ou
         r = 0
         f1 = 0
         all_f1 = []
-        for i, text in enumerate(inputs):
+        for i, text in enumerate(references):
             reference = references[i]
             prediction = predictions[i]
 
