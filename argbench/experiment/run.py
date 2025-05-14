@@ -597,6 +597,7 @@ class Runner:
         counter = 0
         for data in tqdm(loader):
             text = data["input"][0]
+            import pdb; pdb.set_trace()
             labels.extend(data["output"])
 
             if model:
