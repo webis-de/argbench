@@ -172,20 +172,33 @@ class Runner:
             tokenizer = get_tokenizer(cutoff_len, self.tokenizer, True)
             for split in self.dataset:
 
-                if split =="train":
-                    self.iterable_dataset[split] = self.dataset[split].to_iterable_dataset().map(template_formatter).map(tokenizer)
-                elif split == "val":
+                if split !="test":
                     self.iterable_dataset[split] = self.dataset[split].map(template_formatter).map(tokenizer)
                 else:
                     tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
                     if self.config.hpo:
                         log_mem(f"formatting {split} of {self.test_dataset_name}")
-                        self.iterable_dataset["test"] = self.dataset["val"].to_iterable_dataset().map(template_formatter)
+                        self.iterable_dataset["test"] = self.dataset["val"].map(template_formatter).map(tokenizer)
                     else:
-                        self.iterable_dataset["test"] = self.dataset["test"].to_iterable_dataset().map(template_formatter)
+                        self.iterable_dataset["test"] = self.dataset["test"].map(template_formatter)
                     log_mem(f"tokenizing {split} of {self.test_dataset_name}")
                     self.iterable_dataset["test"] = self.iterable_dataset["test"].map(tokenizer)
 
+
+                # if split =="train":
+                #     self.iterable_dataset[split] = self.dataset[split].to_iterable_dataset().map(template_formatter).map(tokenizer)
+                # elif split == "val":
+                #     self.iterable_dataset[split] = self.dataset[split].map(template_formatter).map(tokenizer)
+                # else:
+                #     tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
+                #     if self.config.hpo:
+                #         log_mem(f"formatting {split} of {self.test_dataset_name}")
+                #         self.iterable_dataset["test"] = self.dataset["val"].to_iterable_dataset().map(template_formatter)
+                #     else:
+                #         self.iterable_dataset["test"] = self.dataset["test"].to_iterable_dataset().map(template_formatter)
+                #     log_mem(f"tokenizing {split} of {self.test_dataset_name}")
+                #     self.iterable_dataset["test"] = self.iterable_dataset["test"].map(tokenizer)
+                #
 
         log_mem(f"Finished preprocessing ")
 
@@ -433,7 +446,7 @@ class Runner:
             self.config.hpo_config.quant_config,
             self.config.hpo_config.model_config
         )
-        self.prepare_data()
+        #self.prepare_data()
         log_mem(f"loaded model for hpo")
         self.trainer = self.prepare_trainer(
             self.model,
