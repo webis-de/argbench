@@ -72,7 +72,8 @@ def tokenize(prompt, tokenizer, cutoff_len, train):
     if train:
         prompt = tokenizer(prompt, max_length=cutoff_len, truncation=True)
     else:
-        return tokenizer(prompt, return_tensors="pt", padding="max_length", max_length=cutoff_len, truncation=True)
+        import pdb; pdb.set_trace()
+        return tokenizer(prompt, return_tensors="pt", padding=True, max_length=cutoff_len, truncation=True)
 
     if prompt["input_ids"][-1] != tokenizer.eos_token_id and len(prompt["input_ids"]) < cutoff_len:
         prompt["input_ids"].append(tokenizer.eos_token_id)
@@ -176,6 +177,7 @@ class Runner:
                     self.iterable_dataset[split] = self.dataset[split].map(template_formatter).map(tokenizer)
                 else:
                     tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
+
                     if self.config.hpo:
                         log_mem(f"formatting {split} of {self.test_dataset_name}")
                         self.iterable_dataset["test"] = self.dataset["val"].map(template_formatter)
