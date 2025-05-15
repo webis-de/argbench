@@ -296,6 +296,7 @@ class Runner:
         else:
             report_to = None
             tensorboard_dir = None
+        import pdb; pdb.set_trace()
         training_args = self.config.training_args_config.to_conf(trial, training_arg_hpo)
         max_steps = self.config.training_args_config.num_train_epochs * (self.size_training_dataset // training_args["per_device_train_batch_size"])
         train_args = TrainingArguments(output_dir=self.config.get_output_path(),
@@ -547,6 +548,7 @@ class Runner:
                                "start_time": starting_time, "k": train_subsample_amount, "filter": filter, "seed": self.config.seed}
                     all_results.append(results)
                     self.leaderboard.add_results(results)
+
         else:
             ## apply formatting function
             ## apply tokenziation function
