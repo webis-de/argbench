@@ -446,7 +446,7 @@ class Runner:
             self.config.hpo_config.quant_config,
             self.config.hpo_config.model_config
         )
-        #self.prepare_data()
+        self.prepare_data()
         log_mem(f"loaded model for hpo")
         self.trainer = self.prepare_trainer(
             self.model,
@@ -497,7 +497,7 @@ class Runner:
         Execute training, hpo or evaluation
         """
         if self.config.hpo:
-
+            self.prepare_data()
             hpo_output = HPOOutput(self.config.hpo_config.hpo_coarse_output)
             now = datetime.now()
             starting_time = now.strftime("%m-%d-%H:%M:%S")
