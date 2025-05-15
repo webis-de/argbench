@@ -10,7 +10,7 @@ To evaluate your models on the whole benchmark
 
 ### Prompting
 
-1. Add your model to [experiment/configs/prompting/prompting.json](experiment/configs/prompting/prompting.json) configuration.
+1. Add your model to [argbench/experiment/configs/prompting/prompting.json](argbench/experiment/configs/prompting/prompting.json) configuration.
 Each model should include three templates: zero-shot, few-shot, and Chain-of-thought prompting.
 
 
@@ -21,7 +21,7 @@ sbatch argbench/jobs/prompting.sh mistral-7b-inst-3
 ```
 ### Leave-one-out
 
-3. For fine-tuning, add your model as described in prompting to [experiment/configs/fine-tuning/prompting.json](experiment/configs/fine-tuning/cross-task.json)
+3. For fine-tuning, add your model as described in prompting to [argbench/experiment/configs/fine-tuning/prompting.json](argbench/experiment/configs/fine-tuning/cross-task.json)
 ``` 
  sbatch argbench/jobs/cross_tasks.sh mistral-7b-inst-3
 ```
