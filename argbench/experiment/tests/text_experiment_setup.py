@@ -186,3 +186,11 @@ class ExperimentSetupTest(TestCase):
         for record in DataLoader(in_task_dataset["test"],batch_size=1):
             print(record)
             break
+
+    def test_load_argbench_leave_one_task_dataset(self):
+        config = RunConfig.from_file(["/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/hpo/cross_task_hpo.json"], None)
+        path_dataset = Path("/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/argbench-dataset")
+        test_cross_task_dataset = load_experiment(ExperimentType.CROSS_TASK, prompting_technique=PromptingTechnique.ZERO_SHOT, sample=True,
+                                          test_task="argument_rating_dagstuhl_15512_effectiveness_wachsmuth17", run_config=config)
+        val_cross_task_dataset = load_experiment(ExperimentType.CROSS_TASK, prompting_technique=PromptingTechnique.ZERO_SHOT, sample=True,
+                                                  test_task="argument_rating_dagstuhl_15512_overall_quality_wachsmuth17", run_config=config)

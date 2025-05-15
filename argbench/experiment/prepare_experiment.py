@@ -5,6 +5,7 @@ import logging
 
 import datasets
 import numpy as np
+import pandas as pd
 from datasets import Dataset, DatasetDict, load_from_disk, concatenate_datasets
 
 from argbench.converter.common import *
@@ -120,19 +121,51 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
     ### Iterate over each task in the test dataset and take its teset as a  test dataset
     ### for the task, we will run the validation on the validation tasks. For testing, we will take one random task as validation set
     ###
+    def template_formatter(row):
+        return prompt_technique_template.format(instance_input=row["document"], definition=row["definition"])
+
     for task in experiment_splits["test"]:
-        print(task)
+
 
         df_test, test_path = load_set(task, task_data_path, DatasetSplit.TEST,  sample_rate=test_subsample_rate)
 
         for column in df_test.columns:
             df_test[column] = df_test[column].astype(str)
 
+        df_test["input"] = df_test.apply(template_formatter, axis=1)
+        df_test.rename(columns={"input": "document"}, inplace=True)
+        df_test = df_test [ ["id", "input", "output"]]
+        hf_test = datasets.Dataset.from_pandas(df_test)
+        dataset = {f"test_{task}":hf_test}
+        leave_one_task_dataset.update(dataset)
 
 
 
-        hf_dataset = DatasetDict(leave_one_task_dataset)
-        return hf_dataset
+    for task in experiment_splits["validation"]:
+        df_validation, validation_path = load_set(task, task_data_path, DatasetSplit.VAL, sample_rate=test_subsample_rate)
+        for column in df_validation.columns:
+            df_validation[column] = df_validation[column].astype(str)
+        df_validation["input"] = df_validation.apply(template_formatter, axis=1)
+        df_validation.rename(columns={"input": "document"}, inplace=True)
+        df_validation = df_validation [ ["id", "input", "output"]]
+
+        hf_validation = datasets.Dataset.from_pandas(df_validation)
+        dataset = {f"val_{task}":hf_validation}
+        leave_one_task_dataset.update(dataset)
+
+
+    for task in experiment_splits["training"]:
+        df_training, training_path = load_set(task, task_data_path, DatasetSplit.VAL, sample_rate=train_subsample_rate)
+        for column in df_training.columns:
+            df_training[column] = df_training[column].astype(str)
+        df_training["input"] = df_training.apply(template_formatter, axis=1)
+        df_training.rename(columns={"input": "document"}, inplace=True)
+        df_training = df_training[["id", "input", "output"]]
+        hf_training = datasets.Dataset.from_pandas(df_training)
+        leave_one_task_dataset.update({f"train_{task}": hf_training})
+
+    hf_leave_one_task_dataset = DatasetDict(leave_one_task_dataset)
+    return hf_leave_one_task_dataset
 
 def create_dataset_prompting(task_data_path, prompting_technique_template, test_subsample_rate=None, few_shot_amount=None):
 
@@ -257,6 +290,7 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
         pass
     dataset.save_to_disk(path_dataset)
     return dataset
+
 def load_experiment(experiment_type, prompting_technique, sample, test_task, run_config: RunConfig):
     path_argbench_dataset = Path(run_config.argbench_dataset_path)
     path_dataset = formulate_argbench_dataset_path(experiment_type, prompting_technique, sample, path_argbench_dataset)
@@ -281,9 +315,26 @@ def load_experiment(experiment_type, prompting_technique, sample, test_task, run
         else:
             task_dataset = dataset.pop(f"test_{test_task}")
             return DatasetDict({f"test_{test_task}":task_dataset})
+    elif experiment_type == ExperimentType.LEAVE_ONE_TASK:
+        validation_tasks = [task.replace("val_","") for task in dataset.keys() if "val" in task]
+        if test_task in validation_tasks: ## Validation Experiment
+
+            val_task = f"val_{test_task}"
+            training_datasets = [dataset[split] for split in dataset.keys() if split != val_task]
+            val_dataset = dataset.pop(val_task)
+            train_dataset = concatenate_datasets(training_datasets)
+            dataset = DatasetDict({"train": train_dataset, "val": val_dataset, "test": val_dataset})
+        else:                             ## Test Experiment
+            val_task = "val_fallacy_detection_logic_jin22" ## Fixed this for validation
+            training_datasets = [dataset[split] for split in dataset.keys() if split != test_task and split !=val_task]
+            train_dataset = concatenate_datasets(training_datasets)
+            test_dataset = dataset.pop(test_task)
+            val_dataset = dataset.pop(val_task)
+            dataset = DatasetDict({"train": train_dataset, "val": val_dataset, "test": test_dataset})
+
+        return dataset
     else:
         return None
-
 
 
 def get_filters_by_skill(skill: str) -> Dict[str, float]:
