@@ -114,6 +114,26 @@ def create_dataset_in_tasks(task_data_path, prompt_technique_template, experimen
     return hf_dataset
 
 
+def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experiment_splits, test_subsample_rate=None, train_subsample_rate=None):
+    leave_one_task_dataset = {}
+    ### add eac validation set of each validation task as validation
+    ### Iterate over each task in the test dataset and take its teset as a  test dataset
+    ### for the task, we will run the validation on the validation tasks. For testing, we will take one random task as validation set
+    ###
+    for task in experiment_splits["test"]:
+        print(task)
+
+        df_test, test_path = load_set(task, task_data_path, DatasetSplit.TEST,  sample_rate=test_subsample_rate)
+
+        for column in df_test.columns:
+            df_test[column] = df_test[column].astype(str)
+
+
+
+
+        hf_dataset = DatasetDict(leave_one_task_dataset)
+        return hf_dataset
+
 def create_dataset_prompting(task_data_path, prompting_technique_template, test_subsample_rate=None, few_shot_amount=None):
 
     def few_shot_template_formatter(row):
@@ -228,8 +248,10 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
             else:
                 dataset = create_dataset_prompting(tasks_path, prompt_template, test_subsample_rate=None, few_shot_amount=few_shot_count )
     elif experiment_type == ExperimentType.LEAVE_ONE_TASK:
-        ### TODO
-        pass
+        if sample:
+            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits, 0.1, 0.5)
+        else:
+            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits)
     else:
         ### TODO
         pass

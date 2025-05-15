@@ -310,7 +310,6 @@ class Runner:
         else:
             report_to = None
             tensorboard_dir = None
-        import pdb; pdb.set_trace()
         training_args = self.config.training_args_config.to_conf(trial, training_arg_hpo)
         max_steps = self.config.training_args_config.num_train_epochs * (self.size_training_dataset // training_args["per_device_train_batch_size"])
         train_args = TrainingArguments(output_dir=self.config.get_output_path(),
@@ -597,7 +596,7 @@ class Runner:
             count_workers = 1
         else:
             count_workers = 8
-        loader = DataLoader(dataset, batch_size=1, shuffle=False, persistent_workers=True)
+        loader = DataLoader(dataset, batch_size=1, shuffle=False)
 
 
 
