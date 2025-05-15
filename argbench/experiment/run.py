@@ -172,8 +172,10 @@ class Runner:
             tokenizer = get_tokenizer(cutoff_len, self.tokenizer, True)
             for split in self.dataset:
 
-                if split !="test":
+                if split =="train":
                     self.iterable_dataset[split] = self.dataset[split].to_iterable_dataset().map(template_formatter).map(tokenizer)
+                elif split == "val":
+                    self.iterable_dataset[split].map(template_formatter).map(tokenizer)
                 else:
                     tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
                     if self.config.hpo:
