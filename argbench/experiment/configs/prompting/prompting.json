@@ -178,7 +178,7 @@
         "early_stopping_threshold": 0.01
     },
     "data_collator_config": {
-        "padding": true,
+        "padding": "max_length",
         "return_tensors": "pt"
     },
     "generation_config": {
