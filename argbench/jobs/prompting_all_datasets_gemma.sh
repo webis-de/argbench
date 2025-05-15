@@ -1,5 +1,5 @@
 #!/bin/bash -l
-datasets=$(cat tasks)
+datasets=$(cat argbench/jobs/tasks)
 
 for dataset in ${datasets[@]};
 do
