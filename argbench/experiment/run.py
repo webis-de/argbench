@@ -168,7 +168,7 @@ class Runner:
                 self.iterable_dataset[task_label] = self.iterable_dataset[task_label].map(template_formatter)
 
         else:
-            self.size_training_dataset = len(self.dataset["train"])
+
             tokenizer = get_tokenizer(cutoff_len, self.tokenizer, True)
             for split in self.dataset:
 
@@ -610,10 +610,11 @@ class Runner:
         counter = 0
         for data in tqdm(loader):
             text = data["input"][0]
-            #import pdb; pdb.set_trace()
+            import pdb; pdb.set_trace()
             labels.extend(data["output"])
 
             if model:
+
                 inputs = data["input_ids"][0].cuda()
                 generated = model.generate(input_ids=inputs, generation_config=generation_config, return_dict_in_generate=True)
 

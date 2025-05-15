@@ -3,7 +3,7 @@ from unittest import *
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
 
-from argbench.experiment.prepare_experiment_old import *
+#from argbench.experiment.prepare_experiment_old import *
 from argbench.experiment.prepare_experiment import *
 
 from argbench.experiment.run import formate_model_template, get_tokenizer
@@ -188,9 +188,15 @@ class ExperimentSetupTest(TestCase):
             break
 
     def test_load_argbench_leave_one_task_dataset(self):
-        config = RunConfig.from_file(["/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/hpo/cross_task_hpo.json"], None)
+        config = RunConfig.from_file(
+            ["/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/hpo/cross_task_hpo.json"],
+            None)
         path_dataset = Path("/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/argbench-dataset")
-        test_cross_task_dataset = load_experiment(ExperimentType.CROSS_TASK, prompting_technique=PromptingTechnique.ZERO_SHOT, sample=True,
+        test_cross_task_dataset = load_experiment(ExperimentType.LEAVE_ONE_TASK, prompting_technique=PromptingTechnique.ZERO_SHOT, sample=True,
                                           test_task="argument_rating_dagstuhl_15512_effectiveness_wachsmuth17", run_config=config)
-        val_cross_task_dataset = load_experiment(ExperimentType.CROSS_TASK, prompting_technique=PromptingTechnique.ZERO_SHOT, sample=True,
+        val_cross_task_dataset = load_experiment(ExperimentType.LEAVE_ONE_TASK, prompting_technique=PromptingTechnique.ZERO_SHOT, sample=True,
                                                   test_task="argument_rating_dagstuhl_15512_overall_quality_wachsmuth17", run_config=config)
+
+        self.assertAlmostEquals(len(val_cross_task_dataset["val"]), len(val_cross_task_dataset["test"]))
+
+
