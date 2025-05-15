@@ -311,10 +311,10 @@ class Runner:
             report_to = None
             tensorboard_dir = None
         training_args = self.config.training_args_config.to_conf(trial, training_arg_hpo)
-        max_steps = self.config.training_args_config.num_train_epochs * (self.size_training_dataset // training_args["per_device_train_batch_size"])
+
         train_args = TrainingArguments(output_dir=self.config.get_output_path(),
             report_to=report_to,torch_empty_cache_steps=4,
-            logging_dir=tensorboard_dir,dataloader_pin_memory=True,max_steps=max_steps,
+            logging_dir=tensorboard_dir,dataloader_pin_memory=True,
             **training_args)
 
         data_collator = DataCollatorForSeq2Seq(
