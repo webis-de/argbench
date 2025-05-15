@@ -184,7 +184,8 @@ class Runner:
                     else:
                         self.iterable_dataset["test"] = self.dataset["test"].map(template_formatter)
                     log_mem(f"tokenizing {split} of {self.test_dataset_name}")
-                    self.iterable_dataset["test"] = self.iterable_dataset["test"].map(tokenizer).set_format("pt", columns=["input_ids"], output_all_columns=True)
+                    self.iterable_dataset["test"] = self.iterable_dataset["test"].map(tokenizer)
+                    self.iterable_dataset["test"].set_format("pt", columns=["input_ids"], output_all_columns=True)
 
 
                 # if split =="train":
