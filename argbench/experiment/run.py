@@ -72,7 +72,7 @@ def tokenize(prompt, tokenizer, cutoff_len, train):
     if train:
         prompt = tokenizer(prompt, max_length=cutoff_len, truncation=True)
     else:
-        import pdb; pdb.set_trace()
+
         return tokenizer(prompt, return_tensors="pt", padding=True, max_length=cutoff_len, truncation=True)
 
     if prompt["input_ids"][-1] != tokenizer.eos_token_id and len(prompt["input_ids"]) < cutoff_len:
@@ -184,7 +184,7 @@ class Runner:
                     else:
                         self.iterable_dataset["test"] = self.dataset["test"].map(template_formatter)
                     log_mem(f"tokenizing {split} of {self.test_dataset_name}")
-                    self.iterable_dataset["test"] = self.iterable_dataset["test"].map(tokenizer)
+                    self.iterable_dataset["test"] = self.iterable_dataset["test"].map(tokenizer).set_format("pt", columns=["input_ids"], output_all_columns=True)
 
 
                 # if split =="train":
@@ -447,7 +447,7 @@ class Runner:
             self.config.hpo_config.quant_config,
             self.config.hpo_config.model_config
         )
-        self.prepare_data()
+        #self.prepare_data()
         log_mem(f"loaded model for hpo")
         self.trainer = self.prepare_trainer(
             self.model,
