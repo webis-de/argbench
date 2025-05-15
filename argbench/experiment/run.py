@@ -23,7 +23,6 @@ from argbench.experiment.prepare_experiment import *
 from argbench.experiment.segmentation_metric import *
 from argbench.experiment.testing import *
 from argbench.experiment.utils import *
-from torchdata.nodes import IterableWrapper
 logger = None
 
 device = get_device()
