@@ -23,7 +23,7 @@ from argbench.experiment.prepare_experiment import *
 from argbench.experiment.segmentation_metric import *
 from argbench.experiment.testing import *
 from argbench.experiment.utils import *
-
+from torchdata.nodes import IterableWrapper
 logger = None
 
 device = get_device()
@@ -317,7 +317,7 @@ class Runner:
                 EarlyStoppingCallback(**self.config.early_stopping_config.to_conf(trial, early_stopping_hpo))
             )
         log_mem("preparing trainer")
-        trainer = Trainer(model=model, callbacks=callbacks, train_dataset=self.iterable_dataset["train"], eval_dataset=self.iterable_dataset["val"],
+        trainer = Trainer(model=model, callbacks=callbacks, train_dataset=IterableWrapper(self.iterable_dataset["train"]), eval_dataset=IterableWrapper(self.iterable_dataset["val"]),
         args=train_args, data_collator=data_collator,)
 
         return trainer
