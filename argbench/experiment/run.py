@@ -582,7 +582,7 @@ class Runner:
             count_workers = 1
         else:
             count_workers = 8
-        loader = DataLoader(dataset, batch_size=1, shuffle=False)
+        loader = DataLoader(dataset, batch_size=1, shuffle=False, persistent_workers=True)
 
 
 
