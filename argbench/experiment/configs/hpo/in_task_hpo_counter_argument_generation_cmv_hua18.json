@@ -7,7 +7,7 @@
     "seed": 4112,
     "debug": false,
     "base_model": "mistral-7b-inst-3",
-    "cutoff_len": 100,
+    "cutoff_len": 500,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "models_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models",
     "data_type": "ndjson",
@@ -175,7 +175,7 @@
     },
     "training_args_config": {
         "per_device_train_batch_size": 128,
-        "num_train_epochs": 5,
+        "num_train_epochs": 10,
         "learning_rate": 0.0003,
         "optim": "adamw_bnb_8bit",
         "eval_strategy": "steps",
