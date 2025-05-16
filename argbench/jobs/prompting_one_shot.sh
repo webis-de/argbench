@@ -38,7 +38,7 @@ do
 #--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --chain_of_thoughts
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --train_subsample_amount 1 --sample
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --train_subsample_amount 1 --sample --max_length 2048
 
 #python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
 #--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --train_subsample_amount 4

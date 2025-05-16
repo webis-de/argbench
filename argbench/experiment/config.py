@@ -705,7 +705,7 @@ class RunConfig:
 
         # Generation arguments
         if args.max_length:
-            conf_obj.generation_config.max_length = args.max_length
+            conf_obj.cutoff_len= args.max_length
         if args.max_new_tokens:
             conf_obj.generation_config.max_new_tokens = args.max_new_tokens
         if args.min_length:

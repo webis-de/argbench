@@ -34,10 +34,7 @@ def load_set(dataset, task_data_path, split, sample_rate:float = None, sample_si
         path_sample = path
     logger.debug(f"path:{path}")
     logger.debug(f"sample path:{path_sample}")
-    if os.path.exists(path_sample):
-        return  pd.read_json(path_sample, lines=True), path_sample
-    else:
-        return sample_set(path, sample_rate, sample_size)
+    return sample_set(path, sample_rate, sample_size)
 
 def formulate_sample_path(output_path: Path, sample_rate: float = None, sample_size: int= None):
     base, file_name = os.path.split(output_path)
@@ -178,7 +175,7 @@ def create_dataset_prompting(task_data_path, prompting_technique_template, test_
 
     for task in tasks:
         if few_shot_amount:
-            df_training, train_path = load_set(task, task_data_path, DatasetSplit.TRAIN_AND_VAL, sample_size=few_shot_amount)
+            df_training, train_path = load_set(task, task_data_path, DatasetSplit.TRAIN, sample_size=few_shot_amount)
             df_training.path = train_path
             for column in df_training.columns:
                 df_training[column] = df_training[column].astype(str)
