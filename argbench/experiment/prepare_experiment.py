@@ -257,7 +257,7 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
 
     if prompting_technique == PromptingTechnique.FOUR_SHOT:
         few_shot_count = 4
-    elif prompting_technique == PromptingTechnique.FOUR_SHOT:
+    elif prompting_technique == PromptingTechnique.ONE_SHOT:
         few_shot_count = 1
     else:
         few_shot_count = None
