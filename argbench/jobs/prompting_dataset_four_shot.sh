@@ -1,9 +1,9 @@
 #!/bin/bash -l
 #SBATCH --job-name=prmt-dataset-4shot
 #SBATCH --nodes=1 
-#SBATCH --cpus-per-task=12
-#SBATCH --mem=10G
-#SBATCH --time=48:00:00
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=30G
+#SBATCH --time=72:00:00
 #SBATCH --output argbench/output/prmt-dataset-4shot-%j.out
 #SBATCH --error argbench/output/prmt-dataset-4shot-%j.err
 #SBATCH --gpus=1
@@ -44,7 +44,7 @@ echo "using the model $model"
 #--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset" --train_subsample_amount 1
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset" --train_subsample_amount 4
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-complete-results.csv" --base_model "$model" --test_dataset_name "$dataset" --train_subsample_amount 4
 done
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
