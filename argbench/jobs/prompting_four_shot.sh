@@ -1,8 +1,8 @@
 #!/bin/bash -l
 #SBATCH --job-name=prmt-4-shot
 #SBATCH --nodes=1 
-#SBATCH --cpus-per-task=12
-#SBATCH --mem=15G
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=30G
 #SBATCH --time=48:00:00
 #SBATCH --output argbench/output/prmt-4-shot-%j.out
 #SBATCH --error argbench/output/prmt-4-shot-%j.err
@@ -40,7 +40,7 @@ do
 #--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --train_subsample_amount 1
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --train_subsample_amount 4 --sample --max_length 1000 
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --train_subsample_amount 4 --sample --max_length 2000 
 done
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
