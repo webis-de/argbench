@@ -31,7 +31,7 @@ def load_set(dataset, task_data_path, split, sample_rate:float = None, sample_si
     if sample_rate or sample_size:
         path_sample = formulate_sample_path(path, sample_rate, sample_size)
     else:
-        path_sample = path
+        return pd.read_json(path, lines=True), path
     logger.debug(f"path:{path}")
     logger.debug(f"sample path:{path_sample}")
     return sample_set(path, sample_rate, sample_size)
