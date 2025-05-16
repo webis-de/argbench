@@ -1,9 +1,9 @@
 #!/bin/bash -l
 #SBATCH --job-name=prmt-all-data
 #SBATCH --nodes=1 
-#SBATCH --cpus-per-task=12
-#SBATCH --mem=10G
-#SBATCH --time=48:00:00
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=32G
+#SBATCH --time=96:00:00
 #SBATCH --output argbench/output/prmt-all-data-%j.out
 #SBATCH --error argbench/output/prmt-all-data-%j.err
 #SBATCH --gpus=1
