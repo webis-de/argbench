@@ -358,6 +358,7 @@ class Runner:
             base_model,
             torch_dtype=torch.bfloat16,
             quantization_config=quant_conf,
+            bnb_4bit_compute_dtype=torch.bfloat16,
             #device_map= "cuda:0",
             device_map= "auto",
             trust_remote_code=True
