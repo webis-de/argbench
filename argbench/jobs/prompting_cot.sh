@@ -3,11 +3,10 @@
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=10G
-#SBATCH --time=96:00:00
-#SBATCH --partition=ainlp
+#SBATCH --time=48:00:00
 #SBATCH --output argbench/output/prmt-cot-%j.out
 #SBATCH --error argbench/output/prmt-cot-%j.err
-#SBATCH --gpus=a100:1
+#SBATCH --gpus=1
 module load Miniforge3
 conda activate task-specific
 
