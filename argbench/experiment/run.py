@@ -353,7 +353,7 @@ class Runner:
         :param model_config: Configuration parameters for model
         :returns: ModelForCausalLM initialized from config
         """
-        quant_conf = BitsAndBytesConfig(**quant_config, bnb_4bit_compute_dtype=torch.bfloat16)
+        quant_conf = BitsAndBytesConfig(**quant_config, bnb_4bit_compute_dtype=torch.bfloat16, bnb_4bit_quant_type="nf4")
         return AutoModelForCausalLM.from_pretrained(
             base_model,
             torch_dtype=torch.bfloat16,
