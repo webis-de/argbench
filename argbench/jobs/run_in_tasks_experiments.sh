@@ -1,8 +1,8 @@
 #!/bin/bash -l
 #SBATCH --job-name=in-task-hpo
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=12
-#SBATCH --mem=10G
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=30G
 #SBATCH --time=48:00:00
 #SBATCH --output argbench/output/in-task-hpo-%j.out
 #SBATCH --error argbench/output/in-task-hpo-%j.err
@@ -28,7 +28,7 @@ for dataset in ${datasets[@]};
 do
 echo $dataset
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/in_task_hpo_${dataset:1:-1}.json" \
---base_model "$model"  --debug --sample
+--base_model "$model"  --debug
 
 done
 

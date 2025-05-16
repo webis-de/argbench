@@ -1,4 +1,5 @@
 {
+    "sample": false,
     "prompting": false,
     "hpo": true,
     "in_task": true,
