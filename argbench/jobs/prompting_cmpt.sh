@@ -1,13 +1,12 @@
 #!/bin/bash -l
-#SBATCH --job-name=prmt-all-data
+#SBATCH --job-name=prmt-cmpt
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=32G
-#SBATCH --time=96:00:00
-#SBATCH --partition=ainlp
-#SBATCH --output argbench/output/prmt-all-data-%j.out
-#SBATCH --error argbench/output/prmt-all-data-%j.err
-#SBATCH --gpus=a100:1
+#SBATCH --time=48:00:00
+#SBATCH --output argbench/output/prmt-cmpt-%j.out
+#SBATCH --error argbench/output/prmt-cmpt-%j.err
+#SBATCH --gpus=1
 module load Miniforge3
 conda activate task-specific
 
@@ -32,7 +31,7 @@ for model in ${models[@]};
 do
   echo "$model"
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --sample
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model"
 
 #python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
 #--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --chain_of_thoughts
@@ -45,5 +44,5 @@ python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/
 done
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
-export JOB_ARGUMENTS="prompting;all-datasets;${model};\n"
+export JOB_ARGUMENTS="prmt-cmpt;all-datasets;${model};\n"
 echo "$SLURM_JOB_ID,$SLURM_JOB_NAME,$TIME,$JOB_ARGUMENTS" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"

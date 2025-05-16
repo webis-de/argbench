@@ -1,8 +1,8 @@
 #!/bin/bash -l
 #SBATCH --job-name=prmt-cot
 #SBATCH --nodes=1 
-#SBATCH --cpus-per-task=12
-#SBATCH --mem=10G
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=32G
 #SBATCH --time=96:00:00
 #SBATCH --partition=ainlp
 #SBATCH --output argbench/output/prmt-cot-%j.out
