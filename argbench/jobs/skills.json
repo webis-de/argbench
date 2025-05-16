@@ -1,0 +1,69 @@
+{
+  "generation": [
+    "argument_generation_argu_saha23",
+    "argument_summarization_open_debate_evidence_roush23",
+    "aspect_detection_ukp_corpus_schiller21",
+    "conclusion_generation_belief_generation_alshomary21",
+    "counter_argument_generation_candela_hua19",
+    "counter_argument_generation_cmv_hua18",
+    "warrant_generation_arc_chakarbarty21",
+    "warrant_generation_ideological_debate_chakarbarty21",
+    "warrant_generation_microtext_1_chakarbarty21",
+    "warrant_generation_art_chakarbarty21"
+  ],
+  "quality-assessment": [
+    "argument_ranking_claim_revisions_skitalinskaya23",
+    "argument_ranking_ibm_evidence_quality_gleize19",
+    "argument_ranking_ibm_rank_30k_gretz20",
+    "argument_rating_dagstuhl_15512_overall_quality_wachsmuth17",
+    "argument_rating_dagstuhl_15512_effectiveness_wachsmuth17",
+    "argument_rating_dagstuhl_15512_local_acceptability_wachsmuth17",
+    "argument_rating_dagstuhl_15512_appropriateness_wachsmuth17",
+    "argument_rating_dagstuhl_15512_arrangement_wachsmuth17",
+    "argument_rating_dagstuhl_15512_clarity_wachsmuth17",
+    "argument_rating_dagstuhl_15512_cogency_wachsmuth17",
+    "argument_rating_dagstuhl_15512_global_acceptability_wachsmuth17",
+    "argument_rating_dagstuhl_15512_global_relevance_wachsmuth17",
+    "argument_rating_dagstuhl_15512_global_sufficiency_wachsmuth17",
+    "argument_rating_dagstuhl_15512_reasonableness_wachsmuth17",
+    "argument_rating_dagstuhl_15512_local_relevance_wachsmuth17",
+    "argument_rating_dagstuhl_15512_credibility_wachsmuth17",
+    "argument_rating_dagstuhl_15512_emotional_appeal_wachsmuth17",
+    "argument_rating_dagstuhl_15512_sufficiency_wachsmuth17",
+    "argument_rating_cogency_gaq_ng20",
+    "argument_rating_effectiveness_gaq_ng20",
+    "argument_rating_reasonableness_gaq_ng20",
+    "claim_optimization_claim_revisions_skitalinskaya23",
+    "suboptimal_claim_detection_claim_revisions_skitalinskaya23",
+    "reasonableness_scoring_cmv_adhominem_habernal18",
+    "controversy_scoring_cmv_adhominem_habernal18"
+  ],
+  "mining": [
+    "argument_relation_identification_erulemaking_park18",
+    "argument_relation_identification_essays_stab17",
+    "argument_relation_identification_microtexts_1_peldzus15",
+    "argument_relation_identification_microtexts_2_skeppstedt18",
+    "argument_relation_identification_political_debates_menini18",
+    "argument_unit_classification_editorials_alkhatib16",
+    "argument_unit_classification_erulemaking_park16",
+    "argument_unit_classification_essays_stab17",
+    "premise_extraction_ibm_evidence_sentence_eindor20",
+    "argument_unit_segmentation_editorials_ajjour17",
+    "argument_unit_segmentation_essays_ajjour17",
+    "argument_unit_segmentation_webDiscourse_ajjour17"
+  ],
+  "perspective-assessment": [
+    "argument_similarity_ukp_aspect_reimers19",
+    "frame_identification_webis_argument_framing_19_ajjour19",
+    "key_point_matching_argkp_barhaim21",
+    "stance_classification_ibmsc_barhaim17",
+    "stance_classification_ukp_sentential_stab18"
+  ],
+  "reasoning": [
+    "fallacy_detection_cmv_adhominem_habernal18",
+    "fallacy_detection_elecdeb60t020_goffredo23",
+    "fallacy_detection_logic_jin22",
+    "scheme_classification_argu_saha23",
+    "warrant_identification_semeval_2018_task_12_habernal18"
+  ]
+}

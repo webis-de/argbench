@@ -30,11 +30,11 @@ to your modely on one dataset you can run
 
 **Prompting**
 ```
-sbatch argbench/jobs/prompting_dataset.sh mistral-7b-inst-3 stance_classification_ibmsc_barhaim17
+sbatch argbench/jobs/prompting_dataset.sh mistral-7b-inst-3 warrant_identification_semeval_2018_task_12_habernal18
 ```
 **Leave-one-out**
 ```
-sbatch argbench/jobs/cross_tasks.sh mistral-7b-inst-3 stance_classification_ibmsc_barhaim17
+sbatch argbench/jobs/cross_tasks.sh mistral-7b-inst-3 warrant_identification_semeval_2018_task_12_habernal18
 ```
 
 All jobs create results for the model will be appended to the leader board located in the leaderboard path 
