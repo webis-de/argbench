@@ -6,4 +6,5 @@ dataset=$1
 for model in ${models[@]};
 do
 sbatch argbench/jobs/run_in_tasks_experiments.sh "$model" "$dataset"
+sleep 5
 done
