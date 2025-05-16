@@ -1,8 +1,8 @@
 #!/bin/bash -l
 #SBATCH --job-name=prmt-4-shot
 #SBATCH --nodes=1 
-#SBATCH --cpus-per-task=12
-#SBATCH --mem=10G
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=30G
 #SBATCH --time=48:00:00
 #SBATCH --output argbench/output/prmt-4-shot-%j.out
 #SBATCH --error argbench/output/prmt-4-shot-%j.err
