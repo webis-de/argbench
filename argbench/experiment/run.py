@@ -577,7 +577,7 @@ class Runner:
                 log_mem(f"tested on {self.test_dataset_name}")
                 self.leaderboard.add_results(results)
 
-        self.leaderboard.save_file()
+
 
         return all_results
 
