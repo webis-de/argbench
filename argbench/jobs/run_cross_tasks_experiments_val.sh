@@ -11,7 +11,6 @@ module load Miniforge3
 conda activate task-specific
 
 model=$1
-dataset=$2
 echo $model
 
 
@@ -20,11 +19,11 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 
 cd "$CODE_PATH"
 
-echo $dataset
-python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/cross_task_hpo_${dataset:1:-1}.json" \
+
+python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/cross_task_hpo_stance_classification_ukp_sentential_stab18.json" \
 --base_model "$model"  --debug
 
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
-export JOB_ARGUMENTS="hpo;${datasets}.5;cross-task;${model};\n"
+export JOB_ARGUMENTS="hpo;stance_classification_ukp_sentential_stab18.5;cross-task;${model};\n"
 echo "$SLURM_JOB_ID,$SLURM_JOB_NAME,$TIME,$JOB_ARGUMENTS" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
