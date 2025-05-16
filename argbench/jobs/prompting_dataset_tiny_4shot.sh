@@ -1,11 +1,11 @@
 #!/bin/bash -l
-#SBATCH --job-name=prmt-dataset-tiny
+#SBATCH --job-name=prmt-dataset-tiny-4shot
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=20G
 #SBATCH --time=24:00:00
-#SBATCH --output argbench/output/prmt-dataset-tiny%j.out
-#SBATCH --error argbench/output/prmt-dataset-tiny%j.err
+#SBATCH --output argbench/output/prmt-dataset-tiny-4shot%j.out
+#SBATCH --error argbench/output/prmt-dataset-tiny-4shot%j.err
 #SBATCH --gpus=1
 
 module load Miniforge3
@@ -34,7 +34,7 @@ for model in ${models[@]};
 do
 echo "using the model $model"
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset" --debug --sample
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset" --debug --sample --train_subsample_amount 4 --max_length 2048
 
 #python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
 #--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset" --debug --chain_of_thoughts --sample
