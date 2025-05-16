@@ -7,6 +7,7 @@ datasets=$(jq  --arg s "$skill" '.[$s][]' argbench/jobs/skills.json)
 
 for dataset in ${datasets[@]};
 do
+  dataset=${dataset:1:-1}
 echo "$model,$dataset,zero-shot" > "argbench/jobs/jobs-started.txt"
 sbatch argbench/jobs/prompting_dataset.sh "$dataset" "$model" >> "argbench/jobs/jobs-started.txt"
 sleep 30
