@@ -9,7 +9,6 @@ class HPOOutput:
     """
     def __init__(self, output_path):
         self.output_path = output_path
-        self.read_file()
 
     def read_file(self):
         if os.path.exists(self.output_path):
@@ -28,6 +27,7 @@ class HPOOutput:
         time: the time when the experiment finished
         :return:
         """
+        self.read_file()
 
         df_record = pd.DataFrame([results])
 
