@@ -3,7 +3,7 @@
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=32G
-#SBATCH --time=96:00:00
+#SBATCH --time=73:00:00
 #SBATCH --output argbench/output/prmt-cmpt-%j.out
 #SBATCH --error argbench/output/prmt-cmpt-%j.err
 #SBATCH --gpus=1
