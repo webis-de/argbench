@@ -19,18 +19,11 @@ export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 
 cd "$CODE_PATH"
-if [ -z "$dataset" ]; then
-  datasets=$(jq '.test[]'  "${CODE_PATH}/argbench/experiment/configs/experiment_splits.json")
-else
-  datasets=("\"$dataset\"")
-fi
-for dataset in ${datasets[@]};
-do
+
 echo $dataset
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/cross_task_hpo_${dataset:1:-1}.json" \
 --base_model "$model"  --debug
 
-done
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
 export JOB_ARGUMENTS="hpo;${datasets}.5;cross-task;${model};\n"
