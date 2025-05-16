@@ -1,11 +1,11 @@
 #!/bin/bash -l
-#SBATCH --job-name=prmt-dataset
+#SBATCH --job-name=prmt-dataset-cot
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=10G
 #SBATCH --time=48:00:00
-#SBATCH --output argbench/output/prmt-dataset-%j.out
-#SBATCH --error argbench/output/prmt-dataset-%j.err
+#SBATCH --output argbench/output/prmt-dataset-cot-%j.out
+#SBATCH --error argbench/output/prmt-dataset-cot-%j.err
 #SBATCH --gpus=1
 
 
@@ -34,11 +34,11 @@ cd "$CODE_PATH"
 for model in ${models[@]};
 do
 echo "using the model $model"
-python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset"
-
 #python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
-#--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset" --debug --chain_of_thoughts --sample
+#--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset" --debug --sample
+
+python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset" --chain_of_thoughts
 
 #python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
 #--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset" --debug --train_subsample_amount 1 --sample
@@ -48,5 +48,5 @@ python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/
 done
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
-export JOB_ARGUMENTS="prompting;${dataset};${model};\n"
+export JOB_ARGUMENTS="prompting-cot;${dataset};${model};\n"
 echo "$SLURM_JOB_ID,$SLURM_JOB_NAME,$TIME,$JOB_ARGUMENTS" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
