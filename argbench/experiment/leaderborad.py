@@ -19,7 +19,7 @@ class Leaderboard:
         self.added_results = []
         self.skills_columns = ["filter", "model", "start_time", "k", "seed", "mining_fscore", "perspective-assessment_fscore", "quality-assessment_fscore", "reasoning_fscore",
                                 "generation_bertscore","generation_bleu", "generation_generation_score"]
-        self.read_file()
+
     def read_file(self):
         if os.path.exists(self.output_path):
             self.df_results = pd.read_csv(self.output_path, sep="\t")
@@ -109,8 +109,9 @@ class Leaderboard:
         now = datetime.now()
         df_record = pd.DataFrame([results])
         self.added_results.append(results)
+        self.read_file()
         self.df_results = pd.concat([self.df_results, df_record])
-
+        self.save_file()
     def pivot(self,df_new_records):
 
 
@@ -124,7 +125,7 @@ class Leaderboard:
     def save_file(self):
         df_new_records = self.get_aggregated_results()
 
-        self.df_results = pd.concat([self.df_results, df_new_records])
+        #self.df_results = pd.concat([self.df_results, df_new_records])
         self.df_results.to_csv(self.output_path, sep="\t", index=False,  float_format ="%.2f")
 
         pivoted_results = self.pivot(df_new_records)
