@@ -562,6 +562,7 @@ class Runner:
                                "start_time": starting_time, "k": train_subsample_amount, "filter": filter, "seed": self.config.seed}
                     all_results.append(results)
                     self.leaderboard.add_results(results)
+                log_mem(f"tested on {self.test_dataset_name}")
 
         else:
             ## apply formatting function
@@ -569,7 +570,8 @@ class Runner:
             ## use data colloator without tokenization
             sampling_params= self.load_sampling_params(self.test_dataset_name)
             train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
-            metrics = self.evaluate(self.test_dataset_name, self.iterable_dataset["test"], sampling_params, vllm=self.vllm)
+            self.trainer.evaluate()
+            metrics = self.evaluate(self.test_dataset_name, self.iterable_dataset["test"], sampling_params, model=self.trainer.model)
             for metric in metrics:
                 results = {"test_task": self.test_dataset_name, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model,
                            "start_time": starting_time, "k": train_subsample_amount, "filter":filter, "seed": self.config.seed}
@@ -577,7 +579,7 @@ class Runner:
                 log_mem(f"tested on {self.test_dataset_name}")
                 self.leaderboard.add_results(results)
 
-
+            logger.debug(f" fine tuning metrics {metrics}")
 
         return all_results
 
