@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=6
 #SBATCH --mem=32G
-#SBATCH --time=96:00:00
+#SBATCH --time=72:00:00
 #SBATCH --output argbench/output/cross-task-%j.out
 #SBATCH --error argbench/output/cross-task-%j.err
 #SBATCH --gpus=a100:1
