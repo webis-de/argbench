@@ -1,7 +1,7 @@
 #!/bin/bash -l
 #SBATCH --job-name=prmt-all-data
 #SBATCH --nodes=1 
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=6
 #SBATCH --mem=32G
 #SBATCH --time=96:00:00
 #SBATCH --partition=ainlp
