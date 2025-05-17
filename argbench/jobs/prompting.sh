@@ -1,9 +1,9 @@
 #!/bin/bash -l
 #SBATCH --job-name=prmt-all-data
 #SBATCH --nodes=1 
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=6
 #SBATCH --mem=32G
-#SBATCH --time=96:00:00
+#SBATCH --time=72:00:00
 #SBATCH --output argbench/output/prmt-all-data-%j.out
 #SBATCH --error argbench/output/prmt-all-data-%j.err
 #SBATCH --gpus=1
@@ -31,7 +31,7 @@ for model in ${models[@]};
 do
   echo "$model"
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --sample
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model"  --sample
 
 #python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
 #--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --chain_of_thoughts

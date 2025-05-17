@@ -1,7 +1,7 @@
 #!/bin/bash -l
 #SBATCH --job-name=prmt-1-shot
 #SBATCH --nodes=1 
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=6
 #SBATCH --mem=32G
 #SBATCH --time=48:00:00
 #SBATCH --output argbench/output/prmt-1-shot-%j.out
@@ -37,7 +37,7 @@ do
 #--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --chain_of_thoughts
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --train_subsample_amount 1 --sample --max_length 2000 
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --train_subsample_amount 1 --sample --max_length 2000 
 
 #python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
 #--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --train_subsample_amount 4

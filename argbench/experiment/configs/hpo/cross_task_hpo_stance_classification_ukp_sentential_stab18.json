@@ -124,7 +124,7 @@
         }
     ],
     "hpo_config": {
-        "n_trials": 2,
+        "n_trials": 3,
         "study_name": "stance-barhaim17",
         "storage": "sqlite:///db.sqlite3",
         "hpo_fine_grained_output": "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/hpo/hpo-results/",
@@ -173,7 +173,7 @@
     },
     "training_args_config": {
         "per_device_train_batch_size": 128,
-        "num_train_epochs": 2,
+        "num_train_epochs": 10,
         "learning_rate": 0.0003,
         "optim": "adamw_bnb_8bit",
         "eval_strategy": "steps",

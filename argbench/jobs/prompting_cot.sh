@@ -2,7 +2,7 @@
 #SBATCH --job-name=prmt-cot
 #SBATCH --nodes=1 
 #SBATCH --time=48:00:00
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=6
 #SBATCH --mem=32G
 #SBATCH --output argbench/output/prmt-cot-%j.out
 #SBATCH --error argbench/output/prmt-cot-%j.err
@@ -34,7 +34,7 @@ do
 #--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --chain_of_thoughts --sample
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --chain_of_thoughts --sample
 
 #python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
 #--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --train_subsample_amount 1
