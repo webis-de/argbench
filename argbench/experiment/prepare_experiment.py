@@ -276,7 +276,7 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
                 dataset = create_dataset_prompting(tasks_path, prompt_template, test_subsample_rate=None, few_shot_amount=few_shot_count )
     elif experiment_type == ExperimentType.LEAVE_ONE_TASK:
         if sample:
-            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits, 0.1, 0.5)
+            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits, 0.1, 0.1)
         else:
             dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits)
     else:
