@@ -6,7 +6,7 @@
 #SBATCH --time=72:00:00
 #SBATCH --output argbench/output/cross-task-hpo-%j.out
 #SBATCH --error argbench/output/cross-task-hpo-%j.err
-#SBATCH --gpus=a100:1
+#SBATCH --gpus=1
 module load Miniforge3
 conda activate task-specific
 
