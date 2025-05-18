@@ -134,7 +134,7 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
 
     for task in experiment_splits["validation"]:
         print(task)
-        df_validation, validation_path = load_set(task, task_data_path, DatasetSplit.VAL, sample_rate=test_subsample_rate)
+        df_validation, validation_path = load_set(task, task_data_path, DatasetSplit.VAL, sample_rate=0.1) ## This should be made 1 for final
         for column in df_validation.columns:
             df_validation[column] = df_validation[column].astype(str)
         df_validation.rename(columns={"input": "document"}, inplace=True)
@@ -278,7 +278,7 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
         if sample:
             dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits, 0.1, 0.1)
         else:
-            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits)
+            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits, train_subsample_rate=0.1)
     else:
         ### TODO
         pass
