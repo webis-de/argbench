@@ -7,16 +7,10 @@
     "experiment_splits_path": "/mnt/home/yajjour/task-specific-argument-mining-and-generation/argbench/experiment/configs/experiment_splits.json",
     "seed": 4112,
     "debug": false,
+    "cutoff_len": 1000,
     "base_model": "mistral-7b-inst-3",
-<<<<<<< HEAD
-    "cutoff_len": 2000,
     "data_folder": "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/tasks",
     "models_folder": "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/fine-tuned-models",
-=======
-    "cutoff_len": 1000,
-    "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
-    "models_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models",
->>>>>>> 2d86ab6e3340457f112eeb7d4baa3cfbd04b3418
     "data_type": "ndjson",
     "leaderboard_path": "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/runs/stance-classification-barhaim17.csv",
     "task_metrics_path": "/mnt/home/yajjour/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
