@@ -148,7 +148,12 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
 
 
     for task in experiment_splits["training"]:
-        df_training, training_path = load_set(task, task_data_path, DatasetSplit.VAL, sample_rate=train_subsample_rate)
+        if not train_subsample_rate:
+            df_training, training_path = load_set(task, task_data_path, DatasetSplit.TRAIN)
+            if len(df_training) > 1000:
+                df_training = df_training.sample(1000)
+        else:
+            df_training, training_path = load_set(task, task_data_path, DatasetSplit.TRAIN, sample_rate=train_subsample_rate)
         for column in df_training.columns:
             df_training[column] = df_training[column].astype(str)
         df_training.rename(columns={"input": "document"}, inplace=True)
@@ -276,9 +281,9 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
                 dataset = create_dataset_prompting(tasks_path, prompt_template, test_subsample_rate=None, few_shot_amount=few_shot_count )
     elif experiment_type == ExperimentType.LEAVE_ONE_TASK:
         if sample:
-            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits, 0.1, 0.1)
+            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits, 0.1)
         else:
-            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits, train_subsample_rate=0.1)
+            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits)
     else:
         ### TODO
         pass
