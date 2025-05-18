@@ -24,8 +24,8 @@
     "mistral-nemo":
     {
       "argument_unit_segmentation_webDiscourse_ajjour17": {
-        "train_batch_size": 13,
-        "learning_rate": 0.0000854
+        "train_batch_size": 0,
+        "learning_rate": 0
 
       },
 
@@ -40,8 +40,8 @@
 
       },
       "fallacy_detection_cmv_adhominem_habernal18": {
-        "train_batch_size":13,
-        "learning_rate":0.0000698
+        "train_batch_size":0,
+        "learning_rate":0
       },
       "counter_argument_generation_cmv_hua18": {
         "train_batch_size":0,

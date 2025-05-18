@@ -13,6 +13,7 @@ conda activate task-specific
 model=$1
 echo $model
 dataset=$2
+echo $dataset
 
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
@@ -20,11 +21,11 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 cd "$CODE_PATH"
 
 
-python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/cross_task_hpo_${dataset}.json" \
---base_model "$model"  --debug
+python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/instruction-fine-tuning/cross_task_${dataset}.json" \
+--base_model "$model"  --leaderboard-path "${DATA_PATH}/runs/cross-task-$model-results.csv"
 
 
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
-export JOB_ARGUMENTS="hpo;${dataset}.5;cross-task;${model};\n"
+export JOB_ARGUMENTS=";${dataset}.5;cross-task;${model};\n"
 echo "$SLURM_JOB_ID,$SLURM_JOB_NAME,$TIME,$JOB_ARGUMENTS" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
