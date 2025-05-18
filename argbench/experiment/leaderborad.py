@@ -126,7 +126,7 @@ class Leaderboard:
         #df_new_records = self.get_aggregated_results()
 
         #self.df_results = pd.concat([self.df_results, df_new_records])
-        self.df_results.to_csv(self.output_path, sep="\t", index=False,  float_format ="%.2f")
+        self.df_results.to_csv(self.output_path, sep="\t", index=False,  float_format ="%.4f")
 
         #pivoted_results = self.pivot(df_new_records)
         #self.df_skills_results = pd.concat([self.df_skills_results, pivoted_results])
