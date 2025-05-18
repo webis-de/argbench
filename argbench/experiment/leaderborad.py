@@ -123,13 +123,13 @@ class Leaderboard:
         return df_skills_results
 
     def save_file(self):
-        df_new_records = self.get_aggregated_results()
+        #df_new_records = self.get_aggregated_results()
 
         #self.df_results = pd.concat([self.df_results, df_new_records])
         self.df_results.to_csv(self.output_path, sep="\t", index=False,  float_format ="%.2f")
 
-        pivoted_results = self.pivot(df_new_records)
-        self.df_skills_results = pd.concat([self.df_skills_results, pivoted_results])
+        #pivoted_results = self.pivot(df_new_records)
+        #self.df_skills_results = pd.concat([self.df_skills_results, pivoted_results])
 
 
-        self.df_skills_results.to_csv(self.output_skills_path, sep="\t", index=False, columns=self.skills_columns,  float_format ="%.2f")
+        #self.df_skills_results.to_csv(self.output_skills_path, sep="\t", index=False, columns=self.skills_columns,  float_format ="%.2f")
