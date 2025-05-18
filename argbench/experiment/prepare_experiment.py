@@ -148,7 +148,12 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
 
 
     for task in experiment_splits["training"]:
-        df_training, training_path = load_set(task, task_data_path, DatasetSplit.VAL, sample_rate=train_subsample_rate)
+        if not train_subsample_rate:
+            df_training, training_path = load_set(task, task_data_path, DatasetSplit.TRAIN)
+            if len(df_training) > 1000:
+                df_training = df_training.sample(1000)
+        else:
+            df_training, training_path = load_set(task, task_data_path, DatasetSplit.TRAIN, sample_rate=train_subsample_rate)
         for column in df_training.columns:
             df_training[column] = df_training[column].astype(str)
         df_training.rename(columns={"input": "document"}, inplace=True)
