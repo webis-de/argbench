@@ -133,4 +133,3 @@ class Leaderboard:
 
 
         self.df_skills_results.to_csv(self.output_skills_path, sep="\t", index=False, columns=self.skills_columns,  float_format ="%.2f")
-        self.added_results = []
