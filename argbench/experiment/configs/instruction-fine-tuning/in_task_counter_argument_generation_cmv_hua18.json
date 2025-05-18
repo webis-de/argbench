@@ -1,7 +1,7 @@
 {
     "sample": true,
     "prompting": false,
-    "hpo": true,
+    "hpo": false,
     "in_task": true,
     "chain_of_thoughts": false,
     "experiment_splits_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/experiment_splits.json",
