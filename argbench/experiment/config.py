@@ -343,7 +343,7 @@ class RunConfig:
     output_dir: str
     cutoff_len: int
     # Model Task-specific configuration config path
-
+    best_hyper_parameters_path: str
     generation_config_path: str
 
     debug: bool
