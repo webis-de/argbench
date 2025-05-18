@@ -17,8 +17,8 @@
       "learning_rate": 0.0000405
     },
     "counter_argument_generation_cmv_hua18": {
-      "train_batch_size": 0,
-      "learning_rate": 0
+      "train_batch_size": 5,
+      "learning_rate": 0.0000551
     }
   },
     "mistral-nemo":
@@ -44,8 +44,8 @@
         "learning_rate":0.0000698
       },
       "counter_argument_generation_cmv_hua18": {
-        "train_batch_size":0,
-        "learning_rate":0
+        "train_batch_size":12,
+        "learning_rate":0.0000591
       }
   },
   "mistral-small":
@@ -67,12 +67,12 @@
 
     },
     "fallacy_detection_cmv_adhominem_habernal18": {
-      "train_batch_size":0,
-      "learning_rate":0
+      "train_batch_size":15,
+      "learning_rate":0.0000426
     },
     "counter_argument_generation_cmv_hua18": {
-      "train_batch_size":0,
-      "learning_rate":0
+      "train_batch_size":12,
+      "learning_rate":0.0000271
     }
   },
   "deepseek-r1-distill-7b":
@@ -98,8 +98,8 @@
       "learning_rate":0.0000232
     },
     "counter_argument_generation_cmv_hua18": {
-      "train_batch_size":0,
-      "learning_rate":0
+      "train_batch_size":6,
+      "learning_rate":0.0000697
     }
   }
 }
