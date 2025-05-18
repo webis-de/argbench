@@ -6,7 +6,7 @@
 #SBATCH --time=48:00:00
 #SBATCH --output argbench/output/in-task-%j.out
 #SBATCH --error argbench/output/in-task-%j.err
-#SBATCH --gpus=1
+#SBATCH --gpus=a100:1
 module load Miniforge3
 conda activate task-specific
 
@@ -21,7 +21,7 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 
 cd "$CODE_PATH"
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/instruction-fine-tuning/in_task_${dataset}.json" \
---base_model "$model"  --debug --train_learning_rate 0.000079 --train_batch_size 9
+--base_model "$model"  --debug --leaderboard-path "${DATA_PATH}/runs/in-task-$model-results.csv"
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
 export JOB_ARGUMENTS="test;${datasets}.5;in-task;${model};\n"

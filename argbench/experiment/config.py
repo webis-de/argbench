@@ -343,7 +343,7 @@ class RunConfig:
     output_dir: str
     cutoff_len: int
     # Model Task-specific configuration config path
-
+    best_hyper_parameters_path: str
     generation_config_path: str
 
     debug: bool
@@ -542,7 +542,6 @@ class RunConfig:
             for task in task_specific_generation_configs["chain-of-thought"]:
                 conf_obj.cot_task_generation_config[task] = VLLMGenerationConfig(**task_specific_generation_configs["chain-of-thought"][task])
 
-
         if config.get("peft_configs"):
             peft_configs = []
             for conf in conf_obj.peft_configs:
@@ -636,6 +635,24 @@ class RunConfig:
                     is_trainable=not args.is_evaluate
                 ))
             conf_obj.peft_configs = peft_configs
+
+        best_hyper_parameters: {}
+        if not conf_obj.hpo and not conf_obj.prompting and config.get("best_hyper_parameters_path"):
+            with open(config.get("best_hyper_parameters_path")) as hps_stream:
+                best_hyper_parameters = json.load(hps_stream)
+                if conf_obj.base_model in best_hyper_parameters:
+                    model_hyper_parameters = best_hyper_parameters[conf_obj.base_model]
+                    test_dataset = conf_obj.test_dataset["name"]
+                    if test_dataset in model_hyper_parameters:
+                        task_hyper_parameters = model_hyper_parameters[test_dataset]
+                        conf_obj.training_args_config.per_device_train_batch_size = task_hyper_parameters["train_batch_size"]
+                        conf_obj.training_args_config.learning_rate = task_hyper_parameters["learning_rate"]
+                        print(f"loading best params for  {test_dataset} and {conf_obj.base_model}")
+                        print(f"setting learning rate {conf_obj.training_args_config.learning_rate} and batch size {conf_obj.training_args_config.per_device_train_batch_size}")
+                    else:
+                        print(f"Error no params found for {test_dataset} and {conf_obj.base_model}")
+                else:
+                    print(f"Error no params found for {conf_obj.base_model}")
 
         # Training arguments
         if args.train_batch_size:
