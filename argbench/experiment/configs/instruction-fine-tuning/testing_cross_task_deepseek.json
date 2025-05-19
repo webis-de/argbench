@@ -127,7 +127,7 @@
         }
     ],
     "peft_configs": [{
-        "model_id": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output/deepseek-r1-distill-1.5b-hpo-in-task-argument_rating_dagstuhl_15512_effectiveness_wachsmuth17-rate-0.5-05-13-13:12:29/checkpoint-5/adapter",
+        "model_id": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/adapters/deepseek",
         "adapter_name": "adapter",
         "adapter_type": "LORA",
         "config": {
