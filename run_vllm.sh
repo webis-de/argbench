@@ -1,8 +1,8 @@
 #!/bin/bash -l
 #SBATCH --job-name=prmt-all-data
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=12
-#SBATCH --mem=10G
+#SBATCH --cpus-per-task=6
+#SBATCH --mem=30G
 #SBATCH --time=12:00:00
 #SBATCH --output argbench/output/run_vllm.out
 #SBATCH --error argbench/output/run_vllm.err
