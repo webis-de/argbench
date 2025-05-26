@@ -1,11 +1,11 @@
 #!/bin/bash -l
-#SBATCH --job-name=prmt-cmpt
+#SBATCH --job-name=prmt-1-shot
 #SBATCH --nodes=1 
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=6
 #SBATCH --mem=32G
-#SBATCH --time=73:00:00
-#SBATCH --output argbench/output/prmt-cmpt-%j.out
-#SBATCH --error argbench/output/prmt-cmpt-%j.err
+#SBATCH --time=48:00:00
+#SBATCH --output argbench/output/prmt-all-1-shot-%j.out
+#SBATCH --error argbench/output/prmt-all-1-shot-%j.err
 #SBATCH --gpus=1
 module load Miniforge3
 conda activate task-specific
@@ -30,19 +30,19 @@ fi
 for model in ${models[@]};
 do
   echo "$model"
-python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model"
+#python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
+#--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model"
 
 #python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
 #--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --chain_of_thoughts
-#
-#python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
-#--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --train_subsample_amount 1
-#
+
+python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
+--leaderboard-path "${DATA_PATH}/runs/prompting-1-shot-$model-results.csv" --base_model "$model" --debug --train_subsample_amount 1 --sample --max_length 2048
+
 #python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
 #--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --debug --train_subsample_amount 4
 done
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
-export JOB_ARGUMENTS="prmt-cmpt;all-datasets;${model};\n"
+export JOB_ARGUMENTS="prmt-1-shot;all-datasets;${model};\n"
 echo "$SLURM_JOB_ID,$SLURM_JOB_NAME,$TIME,$JOB_ARGUMENTS" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"

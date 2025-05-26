@@ -1,5 +1,5 @@
 from vllm import LLM, SamplingParams
-llm = LLM(model="/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-1.5B")
+llm = LLM(model="/bigwork/nhwpajjy/pre-trained-models/Llama-3.3-70B-Instruct", tensor_parallel_size=4)
 sampling_params= {
     "temperature": 0.8,
     "top_p": 1,

@@ -13,7 +13,7 @@ conda activate task-specific
 model=$1
 dataset=$2
 echo $model
-echo $dataset
+
 
 
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
