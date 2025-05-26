@@ -64,3 +64,47 @@ you should add a training, test, and validation set.
 sbatch argbench/jobs/preprocess_all_datasets.sh
 ```
 
+### Jobs
+
+1. You can prompt all datasets with a prompting technique by one of the scripts
+
+```
+sbatch argbench/jobs/prompting_all_{1_shot,4_shot,cot}.sh mistral-7b-inst-3
+```
+
+2. You can prompt one dataset with a prompting technique by one of the scripts
+```
+sbatch argbench/jobs/prompting_datsaet_{1_shot,4_shot,cot}.sh fallacy_detection_cmv_adhominem_habernal18 mistral-7b-inst-3
+```
+
+3. To optimize hyper-prameters for a specific task or cross-task , you can run 
+
+```
+sbatch argbench/jobs/run_in_tasks_hpo.sh mistral-7b-inst-3 fallacy_detection_cmv_adhominem_habernal18
+sbatch argbench/jobs/run_cross_tasks_hpo.sh mistral-7b-inst-3
+```
+4. To run the final in-task or cross- experiments you can run 
+```
+sbatch argbench/jobs/run_in_tasks_experiments.sh mistral-7b-inst-3 fallacy_detection_cmv_adhominem_habernal18
+sbatch argbench/jobs/run_cross_tasks_experiments.sh mistral-7b-inst-3 fallacy_detection_cmv_adhominem_habernal18
+```
+
+5. To test a checkpoint on a specific dataset you can run 
+```
+sbatch argbench/jobs/run_cross_tasks_experiments.sh mistral-7b-inst-3 
+```
+ 
+6. To run all prompting experiments for a specific skill
+```
+sbatch argbench/jobs/run_prompting_skill_model.sh mining  mistral-7b-inst-3
+```
+7. To run all prompting experiments for a specific skill
+```
+./run_prompting_skill_model.sh mining  mistral-7b-inst-3
+```
+8. To run all in-task experiment son all models
+```
+./run_in_tasks_experiments_all_models.sh
+```
+
+
