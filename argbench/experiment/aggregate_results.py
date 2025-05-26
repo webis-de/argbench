@@ -31,18 +31,23 @@ with open(args.metadata) as file:
     print(f"found {num_tasks} tasks")
     df["skill"] = df["test_task"].apply(lambda x :metadata[x]["skill"])
     df.sort_values(by="skill", inplace = True)
+    scores = 0
     for skill, df_skill in df.groupby("skill"):
         print(skill)
         if skill == "generation":
             df_blue_records = df_skill[df_skill["metric"]=="bleu"]
             blue_score_agg =df_blue_records["score"].mean()
+            scores += blue_score_agg
             print(f"bleu {blue_score_agg:.2f}")
             df_bertscore_records = df_skill[df_skill["metric"]=="bertscore"]
             blue_score_agg =df_bertscore_records["score"].mean()
             bertscore = (df_bertscore_records["score"].mean())
             print(f"bertscore {bertscore:.2f}")
-
+            scores += bertscore
         else:
             df_fscore_records = df_skill[df_skill["metric"]=="fscore"]
             fscore_agg =df_fscore_records["score"].mean()
             print(f"fscore {fscore_agg:.2f}")
+            scores += fscore_agg
+    all = scores / 6
+    print(f"all {all}")
