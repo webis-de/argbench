@@ -125,7 +125,7 @@
         }
     ],
     "hpo_config": {
-        "n_trials": 10,
+        "n_trials": 5,
         "study_name": "stance-barhaim17",
         "storage": "sqlite:///db.sqlite3",
         "hpo_fine_grained_output": "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/hpo/hpo-results/",
