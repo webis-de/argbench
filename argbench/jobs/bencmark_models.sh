@@ -6,7 +6,7 @@
 #SBATCH --time=24:00:00
 #SBATCH --output argbench/output/benchmarking_models.out
 #SBATCH --error argbench/output/benchmarking_models.err
-#SBATCH --gpus=1
+#SBATCH --gpus=a100:2
 
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 
