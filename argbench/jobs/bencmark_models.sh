@@ -1,8 +1,8 @@
 #!/bin/bash -l
 #SBATCH --job-name=open_debate_evidence
 #SBATCH --nodes=1 
-#SBATCH --cpus-per-task=8
-#SBATCH --mem=18G
+#SBATCH --cpus-per-task=6
+#SBATCH --mem=12G
 #SBATCH --time=24:00:00
 #SBATCH --output argbench/output/open_debate_evidence_output.out
 #SBATCH --error argbench/output/open_debate_evidence_error.err
