@@ -154,8 +154,10 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
         dataset = {f"val_{task}":hf_validation}
         leave_one_task_dataset.update(dataset)
 
-
-    for task in experiment_splits["training"]:
+    all_tasks = experiment_splits["training"]
+    all_tasks.extend(experiment_splits["validation"])
+    all_tasks.extend(experiment_splits["test"])
+    for task in all_tasks:
         df_training, training_path = load_set(task, task_data_path, DatasetSplit.TRAIN)
         if len(df_training) > 1000:
             df_training = df_training.sample(1000)
@@ -327,13 +329,14 @@ def load_experiment(experiment_type, prompting_technique, sample, test_task, run
         if test_task in validation_tasks: ## Validation Experiment
 
             val_split = f"val_{test_task}"
-            training_datasets = [dataset[split] for split in dataset.keys() if split.startswith("train")]
+            training_datasets = [dataset[split] for split in dataset.keys() if split.startswith("train") and test_task not in split]
             val_dataset = dataset.pop(val_split)
             train_dataset = concatenate_datasets(training_datasets)
             dataset = DatasetDict({"train": train_dataset, "val": val_dataset, "test": val_dataset})
         else:                             ## Test Experiment
             val_split = "val_stance_classification_ukp_sentential_stab18" ## Fixed this for validation
-            training_datasets = [dataset[split] for split in dataset.keys() if split.startswith("train")]
+            train_splits = [split for split in dataset.keys() if split.startswith("train") and test_task not in split]
+            training_datasets = [dataset[split] for split in train_splits]
             train_dataset = concatenate_datasets(training_datasets)
             test_dataset = dataset.pop(test_split)
             val_dataset = dataset.pop(val_split)
