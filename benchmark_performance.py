@@ -71,9 +71,12 @@ def benchmark_tokens(llm, min_tokens, max_tokens, step, model):
 
 all_df_cutoffs = []
 all_df_tokens = []
-for model in tqdm(["DeepSeek-R1-Distill-Qwen-1.5B", "DeepSeek-R1-Distill-Qwen-7B", "Mistral-7B-Instruct-v0.3", "Mistral-Nemo-Instruct-2407", "Mistral-Small-Instruct-2409"]):
+for model in tqdm(["Llama-3.3-70B-Instruct", "DeepSeek-R1-Distill-Qwen-1.5B", "DeepSeek-R1-Distill-Qwen-7B", "Mistral-7B-Instruct-v0.3", "Mistral-Nemo-Instruct-2407", "Mistral-Small-Instruct-2409"]):
     path = f"/bigwork/nhwpajjy/pre-trained-models/{model}"
-    llm = LLM(model=path)
+    if model == "Llama-3.3-70B-Instruct":
+        llm = LLM(model=path, tensor_parallel_size=2)
+    else:
+        llm = LLM(model=path)
     tokenizer = AutoTokenizer.from_pretrained(path, padding_side="left")
     tokenizer.pad_token_id = 0
     df_tokens = benchmark_tokens(llm, 50, 4000, 2000, model)
