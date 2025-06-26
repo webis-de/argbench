@@ -327,13 +327,13 @@ def load_experiment(experiment_type, prompting_technique, sample, test_task, run
         if test_task in validation_tasks: ## Validation Experiment
 
             val_split = f"val_{test_task}"
-            training_datasets = [dataset[split] for split in dataset.keys() if split != val_split]
+            training_datasets = [dataset[split] for split in dataset.keys() if split.startswith("train")]
             val_dataset = dataset.pop(val_split)
             train_dataset = concatenate_datasets(training_datasets)
             dataset = DatasetDict({"train": train_dataset, "val": val_dataset, "test": val_dataset})
         else:                             ## Test Experiment
             val_split = "val_stance_classification_ukp_sentential_stab18" ## Fixed this for validation
-            training_datasets = [dataset[split] for split in dataset.keys() if split != test_task and split !=val_split]
+            training_datasets = [dataset[split] for split in dataset.keys() if split.startswith("train")]
             train_dataset = concatenate_datasets(training_datasets)
             test_dataset = dataset.pop(test_split)
             val_dataset = dataset.pop(val_split)
