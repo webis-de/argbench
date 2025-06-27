@@ -90,12 +90,12 @@ for model in tqdm(["Llama-3.3-70B-Instruct", "DeepSeek-R1-Distill-Qwen-1.5B", "D
 
 df_cutoffs = pd.concat(all_df_cutoffs)
 df_cutoffs.to_csv("cutoffs.csv")
-plot = sns.lineplot(df_cutoffs, x="cutoffs", y="time", hue="model")
-fig = plot.get_figure()
+plot1 = sns.lineplot(df_cutoffs, x="cutoffs", y="time", hue="model")
+fig = plot1.get_figure()
 fig.savefig("/bigwork/nhwpajjy/benchmarking-models/cutoffs.png")
 
 df_tokens = pd.concat(all_df_tokens)
 df_tokens.to_csv("tokens.csv")
-plot = sns.lineplot(df_tokens, x="tokens", y="time", hue="model")
-fig = plot.get_figure()
+plot2 = sns.lineplot(df_tokens, x="tokens", y="time", hue="model")
+fig = plot2.get_figure()
 fig.savefig("/bigwork/nhwpajjy/benchmarking-models/tokens.png")
