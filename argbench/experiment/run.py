@@ -331,8 +331,9 @@ class Runner:
                 EarlyStoppingCallback(**self.config.early_stopping_config.to_conf(trial, early_stopping_hpo))
             )
         log_mem("preparing trainer")
+
         trainer = Trainer(model=model, callbacks=callbacks, train_dataset=self.iterable_dataset["train"].with_format("torch"), eval_dataset=self.iterable_dataset["val"].with_format("torch"),
-        args=train_args, data_collator=data_collator,)
+        args=train_args, data_collator=data_collator,pipeline_parallelism=4)
 
         return trainer
 

@@ -26,7 +26,8 @@ class Leaderboard:
             if "filter" not in self.df_results:
                 self.df_results["filter"] = "None"
         else:
-            self.df_results = pd.DataFrame(columns=["model",  "test_task",  "metric", "score", "start_time", "k", "filter", "seed", "val_loss", "train_loss"])
+            self.df_results = pd.DataFrame(columns=["model",  "test_task",  "metric", "score", "start_time", "k", "filter", "seed",
+                                                    "val_loss", "train_loss"])
         self.output_skills_path = self.output_path.replace(".csv", "-skills.csv")
         if os.path.exists(self.output_skills_path):
             self.df_skills_results = pd.read_csv(self.output_skills_path, sep="\t")
