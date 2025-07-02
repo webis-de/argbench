@@ -338,7 +338,7 @@ class Runner:
 
         trainer = Trainer(model=model, callbacks=callbacks, train_dataset=self.iterable_dataset["train"].with_format("torch"),
                           eval_dataset=self.iterable_dataset["val"].with_format("torch"),
-        args=train_args, data_collator=data_collator, device=n-1)
+        args=train_args, data_collator=data_collator
 
         return trainer
 
