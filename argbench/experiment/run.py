@@ -396,6 +396,9 @@ class Runner:
             **self.config.peft_configs[0].to_conf()
         )
 
+        n = torch.cuda.device_count()
+        device = torch.device(f"cuda:{n}")
+        model.to(device)
         return model
 
     def prepare_new_peft_model(self, model):
