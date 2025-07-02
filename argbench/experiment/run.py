@@ -331,7 +331,8 @@ class Runner:
                 EarlyStoppingCallback(**self.config.early_stopping_config.to_conf(trial, early_stopping_hpo))
             )
         log_mem("preparing trainer")
-
+        n = torch.cuda.device_count()
+        torch.cuda_set_device(n-1)
         trainer = Trainer(model=model, callbacks=callbacks, train_dataset=self.iterable_dataset["train"].with_format("torch"), eval_dataset=self.iterable_dataset["val"].with_format("torch"),
         args=train_args, data_collator=data_collator)
 
@@ -396,9 +397,6 @@ class Runner:
             **self.config.peft_configs[0].to_conf()
         )
 
-        n = torch.cuda.device_count()
-        device = torch.device(f"cuda:{n-1}")
-        model.to(device)
         return model
 
     def prepare_new_peft_model(self, model):
