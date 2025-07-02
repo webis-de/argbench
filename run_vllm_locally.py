@@ -1,5 +1,5 @@
 from vllm import LLM, SamplingParams
-llm = LLM(model="/mnt/home/yajjour/pre-trained-models/Llama-3.3-70b-Instruct", tensor_parallel_size=4)
+llm = LLM(model="/mnt/home/yajjour/pre-trained-models/Llama-3.3-70B-Instruct", tensor_parallel_size=4)
 sampling_params= {
     "temperature": 0.8,
     "top_p": 1,
