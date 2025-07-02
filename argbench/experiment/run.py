@@ -333,6 +333,9 @@ class Runner:
         log_mem("preparing trainer")
         n = torch.cuda.device_count()
         torch.cuda.set_device(n-1)
+
+        os.environ["CUDA_VISIBLE_DEVICES"] = f"{n-1}"
+
         trainer = Trainer(model=model, callbacks=callbacks, train_dataset=self.iterable_dataset["train"].with_format("torch"),
                           eval_dataset=self.iterable_dataset["val"].with_format("torch"),
         args=train_args, data_collator=data_collator, device=n-1)
