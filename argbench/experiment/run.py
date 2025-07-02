@@ -15,7 +15,7 @@ from transformers import *
 from vllm import LLM, SamplingParams
 from vllm.distributed import destroy_model_parallel
 from vllm.lora.request import LoRARequest
-
+from accelerate import prepare_pippy
 from argbench.experiment.hpo_output import HPOOutput
 from argbench.experiment.leaderborad import Leaderboard
 from argbench.experiment.memory_profiling import MemoryUsageCallback
@@ -225,18 +225,20 @@ class Runner:
             self.config.quant_config.to_conf(trial, quant_hpo),
             self.config.model_config.to_conf(trial, llama_causal_hpo)
         )
+
+        pippy_model = prepare_pippy(model, split_points="auto")
         self.base_model = model
 
         if not self.config.prompting:
-            model = prepare_model_for_kbit_training(model)
-            model.enable_input_require_grads()
+            pippy_model = prepare_model_for_kbit_training(pippy_model)
+            pippy_model.enable_input_require_grads()
         logger.info("loaded model")
         if self.config.peft_configs and self.config.peft_fresh_config:
             raise RuntimeError("Cannot instantiate both fresh and trained models")
         if self.config.peft_configs:
-            model = self.prepare_peft_model(model)
+            model = self.prepare_peft_model(pippy_model)
         if self.config.peft_fresh_config:
-            model = self.prepare_new_peft_model(model)
+            model = self.prepare_new_peft_model(pippy_model)
 
 
         self.peft_model = model
