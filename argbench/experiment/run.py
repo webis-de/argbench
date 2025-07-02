@@ -397,7 +397,7 @@ class Runner:
         )
 
         n = torch.cuda.device_count()
-        device = torch.device(f"cuda:{n}")
+        device = torch.device(f"cuda:{n-1}")
         model.to(device)
         return model
 
