@@ -571,10 +571,13 @@ class Runner:
             sampling_params= self.load_sampling_params(self.test_dataset_name)
             train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
             self.trainer.evaluate()
+            val_loss = self.trainer.state.log_history[-1]['val_loss']
+            train_loss = self.trainer.state.log_history[-1]['train_loss']
             metrics = self.evaluate(self.test_dataset_name, self.iterable_dataset["test"], sampling_params, model=self.trainer.model)
             for metric in metrics:
-                results = {"test_task": self.test_dataset_name, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model,
-                           "start_time": starting_time, "k": train_subsample_amount, "filter":filter, "seed": self.config.seed}
+                results = {"test_task": self.test_dataset_name, "metric" : metric, "score": metrics[metric],
+                           "model" : self.config.base_model,  "start_time": starting_time, "k": train_subsample_amount,
+                           "filter":filter, "seed": self.config.seed, "val_loss": val_loss, "train_loss": train_loss}
                 all_results.append(results)
                 log_mem(f"tested on {self.test_dataset_name}")
                 self.leaderboard.add_results(results)
