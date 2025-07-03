@@ -238,7 +238,7 @@ class Runner:
         if self.config.peft_fresh_config:
             model = self.prepare_new_peft_model(model)
 
-
+        
         self.peft_model = model
         log_mem(f"created model for training")
 
