@@ -331,10 +331,6 @@ class Runner:
                 EarlyStoppingCallback(**self.config.early_stopping_config.to_conf(trial, early_stopping_hpo))
             )
         log_mem("preparing trainer")
-        n = torch.cuda.device_count()
-        torch.cuda.set_device(n-1)
-
-        os.environ["CUDA_VISIBLE_DEVICES"] = f"{n-1}"
 
         trainer = Trainer(model=model, callbacks=callbacks, train_dataset=self.iterable_dataset["train"].with_format("torch"),
                           eval_dataset=self.iterable_dataset["val"].with_format("torch"),
