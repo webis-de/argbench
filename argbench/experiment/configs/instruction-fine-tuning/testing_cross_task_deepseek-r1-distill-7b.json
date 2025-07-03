@@ -81,8 +81,13 @@
             "cutoff_len": 8192
         },
         {
+<<<<<<< HEAD
             "label": "llama-3.1-70b-instruct",
             "path": "/mnt/home/yajjour/pre-trained-models/Llama-3.1-70B-Instruct",
+=======
+            "label": "llama-3.3-70b-instruct",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Llama-3.3-70B-Instruct",
+>>>>>>> 51eafe8a1504c2f01edf8718c40456dec7d0d624
             "output_splitter": "<|start_header_id|>assistant<|end_header_id|>",
             "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>{instruction}\n<|eot_id|>",
             "cutoff_len": 128000

@@ -26,7 +26,8 @@ class Leaderboard:
             if "filter" not in self.df_results:
                 self.df_results["filter"] = "None"
         else:
-            self.df_results = pd.DataFrame(columns=["model",  "test_task",  "metric", "score", "start_time", "k", "filter", "seed"])
+            self.df_results = pd.DataFrame(columns=["model",  "test_task",  "metric", "score", "start_time", "k", "filter", "seed",
+                                                    "val_loss", "train_loss"])
         self.output_skills_path = self.output_path.replace(".csv", "-skills.csv")
         if os.path.exists(self.output_skills_path):
             self.df_skills_results = pd.read_csv(self.output_skills_path, sep="\t")
@@ -73,7 +74,8 @@ class Leaderboard:
         for skill in skill_records:
             score = skill_results[skill] / skill_counts[skill]
             metric =  "fscore"
-            skill_records[skill] = {"model": model, "start_time": start_time, "k": k, "score": score, "metric": metric, "test_task": skill, "filter" : filter, "seed": seed}
+            skill_records[skill] = {"model": model, "start_time": start_time, "k": k, "score": score, "metric": metric,
+                                    "test_task": skill, "filter" : filter, "seed": seed}
             df_record = pd.DataFrame([skill_records[skill]])
             all_records.append(df_record)
 
