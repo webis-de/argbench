@@ -248,10 +248,17 @@ class Runner:
         logger.info(f"running {self.model_config.path} on {device}")
         if self.config.peft_configs or self.config.peft_fresh_config:
             llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed, device=device, trust_remote_code=True)
-            #llm = LLM(model=base_model, enable_lora=True)
         else:
+            if self.config.base_model == "llama-3.3-70b-instruct":
+                logger.info("running on 3 GPUS")
+                llm = LLM(model=self.model_config.path, tensor_parallel_size=3, enable_lora=True, seed=self.config.seed, device=device, trust_remote_code=True)
+            elif self.config.base_model == "deepseek-r1-distill-32b":
+                logger.info("running on 2 GPUS")
+                llm = LLM(model=self.model_config.path, tensor_parallel_size=2, seed=self.config.seed, device=device, trust_remote_code=True)
+            else:
+                logger.info("running on 1 GPUS")
+                llm = LLM(model=self.model_config.path, seed=self.config.seed, device=device, trust_remote_code=True)
 
-            llm = LLM(model=self.model_config.path, seed=self.config.seed, device=device, trust_remote_code=True)
             #llm = LLM(model=base_model)
         log_mem("after loading vllm model")
         return llm
