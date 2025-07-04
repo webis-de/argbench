@@ -4,7 +4,6 @@
 #SBATCH --cpus-per-task=6
 #SBATCH --mem=32G
 #SBATCH --time=72:00:00
-#SBATCH --partition=ainlp
 #SBATCH --output argbench/output/prmt-all-data-%j.out
 #SBATCH --error argbench/output/prmt-all-data-%j.err
 #SBATCH --gpus=3
