@@ -98,6 +98,7 @@ class Genres(Enum):
     WEB_FORUMS = "web-forums"
     WEB = "web"
     STORIES = "stories"
+    LEGAL = "legal"
 
 
 class Skills(Enum):
