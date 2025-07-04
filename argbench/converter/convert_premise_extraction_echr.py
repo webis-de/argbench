@@ -2,19 +2,20 @@
 import random
 import math
 
-from argbench.experiment.aggregate_results import metadata
+import nltk
+
 from common import Genres, Output, Skills, read_tabular, datasets_path,  Metadata, add_seed_arg, set_seed, \
     split_test_val_train
 from argparse import ArgumentParser
+
 import uuid
 import json
+
 DATASET_NAME = "premise_extraction_echr_pouydal_2020"
-DATASET_FILE_TRAIN = "premise_extraction_echr_train_pouydal_2020.json"
-DATASET_FILE_TEST = "premise_extraction_echr_test_pouydal_2020.json"
-DATASET_FILE_VAL = "premise_extraction_echr_val_pouydal_2020.json"
+DATASET_FILE_TEMPLATE = "premise_extraction_echr_{split}_pouydal_2020.json"
 
 
-def extract_clause(argument,clauses,case_text,clause_id_to_extract):
+def extract_clause(clauses, case_text, clause_id_to_extract):
     for clause in clauses:
         if clause['_id']==clause_id_to_extract:
             clause_start=clause['start']
@@ -25,11 +26,11 @@ def extract_clause(argument,clauses,case_text,clause_id_to_extract):
     raise ValueError(f"{clause_id_to_extract} not found!")
 
 
-def extract_premises(argument,clauses,case_text):
+def extract_premises(argument, clauses, case_text):
     premises= []
 
     for clause_id in argument['premises']:
-        clause=extract_clause(argument,clauses,case_text,clause_id)
+        clause=extract_clause(clauses, case_text, clause_id)
         premises.append(clause)
     return premises
 
@@ -39,32 +40,36 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
 
     output.append_definition("""Given the following document, Judge if the following sentence is a premise or not.
      A Premise is a reason for justifying or refuting a claim.""")
-    for case_id, case in enumerate(corpus):
+    counter = 0
+    for case_id, case in enumerate(dataset):
         case_text = case['text']
         arguments = case['arguments']
+        clauses = case["clauses"]
         all_premises = []
         for argument in arguments:
             premises = extract_premises(argument, clauses, case_text)
             all_premises.extend(premises)
+        sentences = nltk.sent_tokenize(case_text)
+
 
         for sentence in sentences:
             prompt = f"Document: {case_text}\nSentence: {sentence}"
             for premise in all_premises:
-                if premise in sentence:
+                if premise in sentence.strip():
                     response = "Premise"
                 else:
                     response = "No-Premise"
-            output.append_instance(id, prompt, [response])
+            output.append_instance(counter, prompt, [response])
+            counter += 1
     output.append_genre(Genres.WIKIPEDIA)
     output.append_subarea(Skills.MINING)
+    dataset_file = DATASET_FILE_TEMPLATE.format(split=split_name)
+    metadata.add_dataset(dataset_file, split_name)
     output.write_output(dataset_file)
 
 
 if __name__ == "__main__":
-    argument_parser = ArgumentParser(description="Convert argument mining dataset")
-    add_seed_arg(argument_parser)
-    args = argument_parser.parse_known_args()[0]
-    set_seed(args)
+
 
     dataset_path = str(datasets_path()
                        / "echr_corpus"
