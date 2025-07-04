@@ -686,14 +686,14 @@ class Runner:
             raise RuntimeError(f"No such metric: {metric}")
 
 if __name__ == "__main__":
-    try:
-        if os.path.exists("/mnt/home/yajjour"):
-            adjust_config("/bigwork/nhwpajjy","/mnt/home/yajjour")
-        if os.path.exists("/bigwork/nhwpajjy"):
-            adjust_config("/mnt/home/yajjour", "/bigwork/nhwpajjy")
-    except json.decoder.JSONDecodeError as error:
-        print(error.msg)
-        print (sys.exc_info())
+    # try:
+    #     #if os.path.exists("/mnt/home/yajjour"):
+    #         #adjust_config("/bigwork/nhwpajjy","/mnt/home/yajjour")
+    #     #if os.path.exists("/bigwork/nhwpajjy"):
+    #         #adjust_config("/mnt/home/yajjour", "/bigwork/nhwpajjy")
+    # except json.decoder.JSONDecodeError as error:
+    #     print(error.msg)
+    #     print (sys.exc_info())
 
     #turn_off_warnings()
 
