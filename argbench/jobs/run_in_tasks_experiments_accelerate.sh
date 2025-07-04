@@ -8,7 +8,7 @@
 #SBATCH --error argbench/output/in-task-hpo-%j.err
 #SBATCH --gpus=a100:2
 module load Miniforge3
-conda activate task-specific
+conda activate task-specific-new
 
 model=$1
 dataset=$2
