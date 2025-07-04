@@ -8,7 +8,7 @@ from datetime import datetime
 from optuna import Trial
 from peft.config import PeftConfig
 from peft.mapping import PEFT_TYPE_TO_CONFIG_MAPPING
-
+#from utils import  rewrite_config
 class ExperimentType(Enum):
     IN_TASK = "in-task"
     LEAVE_ONE_TASK = "leave-one-task"
@@ -26,6 +26,28 @@ class PromptingTechnique(Enum):
     ZERO_SHOT = "zero-shot"
     ONE_SHOT = "one-shot"
     FOUR_SHOT = "four-shot"
+
+def rewrite_config(config: dict, root_path:Path, new_root_path: Path):
+    """
+    Rewrite the paths in a dictionary so that you substitute /bigwork/nhwpajjy with the new root path
+    :param config: the dictionary containing the configuration
+    :param new_root_path: the new root path path
+    :return:
+    """
+
+    for key in config:
+        if isinstance(config[key],str):
+            config[key] = config[key].replace(root_path, new_root_path)
+        elif isinstance(config[key],dict):
+            rewrite_config(config[key], root_path, new_root_path)
+        elif isinstance(config[key],list):
+            for obj in config[key]:
+                if isinstance(obj, dict):
+                    rewrite_config(obj, root_path, new_root_path)
+        else:
+            pass
+    return config
+
 
 def update_conf(config_update, config_other):
     for k, v in config_other.items():
@@ -531,6 +553,9 @@ class RunConfig:
                 with open(args.config[0] , "r") as f:
                     conf_file = json.load(f)
                     update_conf(config, conf_file)
+        if os.path.exists("/mnt/home/yajjour"):
+            config = rewrite_config(config, "/bigwork/nhwpajjy", "/mnt/home/yajjour")
+
         conf_obj =  cls(**config)
         conf_obj.shot_task_generation_config = {}
 
