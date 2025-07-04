@@ -250,8 +250,8 @@ class Runner:
             llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed, device=device, trust_remote_code=True)
         else:
             if self.config.base_model == "llama-3.3-70b-instruct":
-                logger.info("running on 3 GPUS")
-                llm = LLM(model=self.model_config.path, tensor_parallel_size=3, enable_lora=True, seed=self.config.seed, device=device, trust_remote_code=True)
+                logger.info("running on 4 GPUS")
+                llm = LLM(model=self.model_config.path, tensor_parallel_size=4, enable_lora=True, seed=self.config.seed, device=device, trust_remote_code=True)
             elif self.config.base_model == "deepseek-r1-distill-32b":
                 logger.info("running on 2 GPUS")
                 llm = LLM(model=self.model_config.path, tensor_parallel_size=2, seed=self.config.seed, device=device, trust_remote_code=True)
