@@ -103,6 +103,12 @@
             "prompt_template": "<|begin of sentence|><|User|>{instruction}<|end of sentence|><|Assistant|>\n",
             "output_splitter": "<|Assistant|>",
             "cutoff_len": 128000
+        },{
+            "label": "deepseek-r1-distill-32b",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-32B",
+            "prompt_template": "<|begin of sentence|><|User|>{instruction}<|end of sentence|><|Assistant|>\n",
+            "output_splitter": "<|Assistant|>",
+            "cutoff_len": 128000
         },
         {
             "label": "qwen3-1.7b",
