@@ -42,14 +42,8 @@
             "cutoff_len": 8192
         },
         {
-            "label": "gemma-2-27b-it",
-            "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-2-27b-it",
-            "prompt_template": "<start_of_turn>user{instruction}<end_of_turn><start_of_turn>model",
-            "output_splitter": "<start_of_turn>model",
-            "cutoff_len": 8192
-        },{
-            "label": "gemma-2-27b-it-8bit",
-            "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-2-27b-it-8bit",
+            "label": "gemma-3-27b-it",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-3-27b-it",
             "prompt_template": "<start_of_turn>user{instruction}<end_of_turn><start_of_turn>model",
             "output_splitter": "<start_of_turn>model",
             "cutoff_len": 8192
@@ -57,6 +51,13 @@
         {
             "label": "mistral-nemo",
             "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-Nemo-Instruct-2407",
+            "prompt_template": "[INST]{instruction}\n[/INST]",
+            "output_splitter": "[/INST]",
+            "cutoff_len": 128000
+        },
+        {
+            "label": "mixtral-8x7b",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Mixtral-8x7B-Instruct-v0.1",
             "prompt_template": "[INST]{instruction}\n[/INST]",
             "output_splitter": "[/INST]",
             "cutoff_len": 128000
