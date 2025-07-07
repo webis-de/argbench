@@ -249,10 +249,10 @@ class Runner:
         if self.config.peft_configs or self.config.peft_fresh_config:
             llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed, device=device, trust_remote_code=True)
         else:
-            if self.config.base_model == "llama-3.3-70b-instruct":
+            if self.config.base_model == "llama-3.3-70b-instruct" :
                 logger.info("running on 4 GPUS")
                 llm = LLM(model=self.model_config.path, tensor_parallel_size=4, enable_lora=True, seed=self.config.seed, device=device, trust_remote_code=True)
-            elif self.config.base_model == "deepseek-r1-distill-32b" or self.config.base_model == "qwen3-32b":
+            elif self.config.base_model == "deepseek-r1-distill-32b" or self.config.base_model == "qwen3-32b" or self.config.base_model == "gemma-3-27b-it" or self.config.base_model == "mixtral-8x7b":
                 logger.info("running on 2 GPUS")
                 llm = LLM(model=self.model_config.path, tensor_parallel_size=2, seed=self.config.seed, device=device, trust_remote_code=True)
             else:
