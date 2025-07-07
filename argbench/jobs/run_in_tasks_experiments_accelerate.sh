@@ -27,7 +27,7 @@ fi
 for dataset in ${datasets[@]};
 do
 echo $dataset
-accelerate launch -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/in_task_hpo_${dataset:1:-1}.json" \
+accelerate launch --config_file /mnt/home/yajjour/.cache/huggingface/accelerate/default_config.yaml -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/in_task_hpo_${dataset:1:-1}.json" \
 --base_model "$model"  --debug
 
 done
