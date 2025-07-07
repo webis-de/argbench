@@ -107,29 +107,29 @@
         {
             "label": "deepseek-r1-distill-1.5b",
             "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-1.5B",
-            "prompt_template": "<|begin of sentence|><|User|>{instruction}<|end of sentence|><|Assistant|>\n",
+            "prompt_template": "<|begin of sentence|><|User|>{instruction}<|end of sentence|><|Assistant|></think>\n",
             "output_splitter": "<|Assistant|>",
             "cutoff_len": 128000
         },
         {
             "label": "deepseek-r1-distill-7b",
             "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-7B",
-            "prompt_template": "<|begin of sentence|><|User|>{instruction}<|end of sentence|><|Assistant|>\n",
-            "output_splitter": "<|Assistant|>",
+            "prompt_template": "<|begin of sentence|><|User|>{instruction}<|end of sentence|><|Assistant|></think>\n",
+            "output_splitter": "<|Assistant|></think>",
             "cutoff_len": 128000
         },
         {
             "label": "deepseek-r1-distill-32b",
             "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-32B",
-            "prompt_template": "<|begin of sentence|><|User|>{instruction}<|end of sentence|><|Assistant|>\n",
-            "output_splitter": "<|Assistant|>",
+            "prompt_template": "<|begin of sentence|><|User|>{instruction}<|end of sentence|><|Assistant|></think>\n",
+            "output_splitter": "<|Assistant|></think>",
             "cutoff_len": 128000
         },
         {
             "label": "deepseek-r1-distill-32b-8bit",
             "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-32B-MLX-8Bit",
-            "prompt_template": "<|begin of sentence|><|User|>{instruction}<|end of sentence|><|Assistant|>\n",
-            "output_splitter": "<|Assistant|>",
+            "prompt_template": "<|begin of sentence|><|User|>{instruction}<|end of sentence|><|Assistant|></think>\n",
+            "output_splitter": "<|Assistant|></think>",
             "cutoff_len": 128000
         },
         {
