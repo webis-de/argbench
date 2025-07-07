@@ -21,7 +21,7 @@ def extract_clause(clauses, case_text, clause_id_to_extract):
             clause_start=clause['start']
             clause_end=clause['end']
             clause=case_text[clause_start:clause_end]
-            return clause
+            return clause, clause_start, clause_end
 
     raise ValueError(f"{clause_id_to_extract} not found!")
 
@@ -30,8 +30,8 @@ def extract_premises(argument, clauses, case_text):
     premises= []
 
     for clause_id in argument['premises']:
-        clause=extract_clause(clauses, case_text, clause_id)
-        premises.append(clause)
+        clause, clause_start, clause_end = extract_clause(clauses, case_text, clause_id)
+        premises.append((clause, clause_start, clause_end))
     return premises
 
 
@@ -41,26 +41,38 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
     output.append_definition("""Given the following document, Judge if the following sentence is a premise or not.
      A Premise is a reason for justifying or refuting a claim.""")
     counter = 0
+    premises_count = 0
+
     for case_id, case in enumerate(dataset):
         case_text = case['text']
         arguments = case['arguments']
         clauses = case["clauses"]
         all_premises = []
+
         for argument in arguments:
             premises = extract_premises(argument, clauses, case_text)
             all_premises.extend(premises)
-        sentences = nltk.sent_tokenize(case_text)
 
+        sentences = nltk.sent_tokenize(case_text)
+        sentence_start = 0
 
         for sentence in sentences:
+            sentence_end = sentence_start + len(sentence)
+
             prompt = f"Document: {case_text}\nSentence: {sentence}"
-            for premise in all_premises:
-                if premise in sentence.strip():
+            for premise, premise_start, premise_end in all_premises:
+                if sentence_start <= premise_start < sentence_end and sentence_start < premise_end <= sentence_end:
                     response = "Premise"
+                    print(premise)
+                    print(f"found premise ! in {sentence}")
+                    premises_count = premises_count + 1
+                    break
                 else:
                     response = "No-Premise"
+            sentence_start = sentence_end
             output.append_instance(counter, prompt, [response])
             counter += 1
+    print(f"premises_count={premises_count}")
     output.append_genre(Genres.WIKIPEDIA)
     output.append_subarea(Skills.MINING)
     dataset_file = DATASET_FILE_TEMPLATE.format(split=split_name)
