@@ -200,3 +200,14 @@ class ExperimentSetupTest(TestCase):
         self.assertAlmostEquals(len(val_cross_task_dataset["val"]), len(val_cross_task_dataset["test"]))
 
 
+    def test_load_argbench_skill_transfer_dataset(self):
+        config = RunConfig.from_file(
+            ["/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/hpo/skill_transfer_hpo.json"],
+            None)
+        path_dataset = Path("/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/argbench-dataset")
+        test_mining_dataset = load_experiment(ExperimentType.SKILL_TRANSFER, prompting_technique=PromptingTechnique.ZERO_SHOT, sample=True,
+                                                  test_task="argument_rating_dagstuhl_15512_effectiveness_wachsmuth17", run_config=config, skill="mining")
+        self.assertTrue("train_counter_argument_generation_cmv_hua18" not in test_mining_dataset)
+        test_mining_dataset = load_experiment(ExperimentType.SKILL_TRANSFER, prompting_technique=PromptingTechnique.ZERO_SHOT, sample=True,
+                                              test_task="argument_rating_dagstuhl_15512_effectiveness_wachsmuth17", run_config=config, skill="generation")
+        self.assertTrue("train_counter_argument_generation_cmv_hua18" in test_mining_dataset)

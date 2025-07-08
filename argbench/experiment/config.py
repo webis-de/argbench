@@ -891,7 +891,10 @@ class RunConfig:
         elif self.in_task:
             return ExperimentType.IN_TASK
         else:
-            return ExperimentType.LEAVE_ONE_TASK
+            if self.skill_filter:
+                return ExperimentType.SKILL_TRANSFER
+            else:
+                return ExperimentType.LEAVE_ONE_TASK
 
     def get_prompting_technique(self):
         if "subsample_amount" in self.train_datasets and self.train_datasets["subsample_amount"] == 1:
