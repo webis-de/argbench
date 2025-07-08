@@ -289,7 +289,7 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
                 dataset = create_dataset_prompting(tasks_path, prompt_template,0.1, few_shot_count )
             else:
                 dataset = create_dataset_prompting(tasks_path, prompt_template, test_subsample_rate=None, few_shot_amount=few_shot_count )
-    elif experiment_type == ExperimentType.LEAVE_ONE_TASK:
+    elif experiment_type == ExperimentType.LEAVE_ONE_TASK or experiment_type == ExperimentType.SKILL_TRANSFER:
         if sample:
             dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits, 0.1, train_subsample_rate=0.25)
         else:
@@ -300,7 +300,7 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
     dataset.save_to_disk(path_dataset)
     return dataset
 
-def load_experiment(experiment_type, prompting_technique, sample, test_task, run_config: RunConfig):
+def load_experiment(experiment_type, prompting_technique, sample, test_task, run_config: RunConfig, skill=None):
     path_argbench_dataset = Path(run_config.argbench_dataset_path)
     path_dataset = formulate_argbench_dataset_path(experiment_type, prompting_technique, sample, path_argbench_dataset)
 
@@ -324,35 +324,38 @@ def load_experiment(experiment_type, prompting_technique, sample, test_task, run
         else:
             task_dataset = dataset.pop(f"test_{test_task}")
             return DatasetDict({f"test_{test_task}":task_dataset})
-    elif experiment_type == ExperimentType.LEAVE_ONE_TASK:
+    elif experiment_type == ExperimentType.LEAVE_ONE_TASK or experiment_type == ExperimentType.SKILL_TRANSFER:
+
+        splits = [split for split in dataset.keys() if split.startswith("train") and test_task not in split ]
+        if experiment_type == experiment_type.SKILL_TRANSFER:
+            skill_tasks = get_filters_by_skill(skill)
+            splits = [split for split in splits if split.repalce("train_", "") in skill_tasks]
+        training_datasets = [dataset[split] for split in splits]
+        train_dataset = concatenate_datasets(training_datasets)
+
         validation_tasks = [task.replace("val_","") for task in dataset.keys() if "val" in task]
         if test_task in validation_tasks: ## Validation Experiment
-
             val_split = f"val_{test_task}"
-            training_datasets = [dataset[split] for split in dataset.keys() if split.startswith("train") and test_task not in split]
             val_dataset = dataset.pop(val_split)
-            train_dataset = concatenate_datasets(training_datasets)
             dataset = DatasetDict({"train": train_dataset, "val": val_dataset, "test": val_dataset})
         else:                             ## Test Experiment
             val_split = "val_stance_classification_ukp_sentential_stab18" ## Fixed this for validation
-            train_splits = [split for split in dataset.keys() if split.startswith("train") and test_task not in split]
-            training_datasets = [dataset[split] for split in train_splits]
-            train_dataset = concatenate_datasets(training_datasets)
             test_dataset = dataset.pop(test_split)
             val_dataset = dataset.pop(val_split)
             dataset = DatasetDict({"train": train_dataset, "val": val_dataset, "test": test_dataset})
-
         return dataset
-    else:
-        return None
+    return None
+
+
+
 
 
 def get_filters_by_skill(skill: str) -> Dict[str, float]:
-    filter = {}
+    filter = set()
     metadata = get_metadata()
     for task in metadata:
         if metadata[task]["skill"] == skill:
-            filter[task] = 1
+            filter.add(task)
     return filter
 
 
