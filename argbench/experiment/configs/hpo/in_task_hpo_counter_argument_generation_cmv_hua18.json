@@ -70,6 +70,13 @@
             "cutoff_len": 128000
         },
         {
+            "label": "mixtral-8x7b",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/Mixtral-8x7B-Instruct-v0.1",
+            "prompt_template": "[INST]{instruction}\n[/INST]",
+            "output_splitter": "[/INST]",
+            "cutoff_len": 128000
+        },
+        {
             "label": "tiny-llama-1.1b-chat-v1",
             "path": "/bigwork/nhwpajjy/pre-trained-models/TinyLlama-1.1B-Chat-v1.0",
 
