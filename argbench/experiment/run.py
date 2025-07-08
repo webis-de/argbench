@@ -227,6 +227,8 @@ class Runner:
         )
         self.base_model = model
 
+        logger.info(f"preparing model for kbit training")
+
         if not self.config.prompting:
             model = prepare_model_for_kbit_training(model)
             model.enable_input_require_grads()
