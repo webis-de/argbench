@@ -152,9 +152,9 @@
             "per_device_train_batch_size": {
                 "name": "batch_size",
                 "type": "int",
-                "low": 4,
+                "low": 1,
                 "step": 1,
-                "high": 16
+                "high": 1
             }
         }
     },
