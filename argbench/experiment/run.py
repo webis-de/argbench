@@ -350,7 +350,8 @@ class Runner:
         experiment_type = self.config.get_experiment_type()
         prompting_technique = self.config.get_prompting_technique()
         sample = self.config.sample
-        self.dataset = load_experiment(experiment_type,prompting_technique, sample, test_task= self.test_dataset_name, run_config=self.config)
+
+        self.dataset = load_experiment(experiment_type,prompting_technique, sample, test_task= self.test_dataset_name, run_config=self.config, skill=self.config.skill_filter)
 
 
     def prepare_model_for_causal_llm(self, base_model, quant_config, model_config):
