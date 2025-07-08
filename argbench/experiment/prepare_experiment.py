@@ -329,7 +329,10 @@ def load_experiment(experiment_type, prompting_technique, sample, test_task, run
         splits = [split for split in dataset.keys() if split.startswith("train") and test_task not in split ]
         if experiment_type == experiment_type.SKILL_TRANSFER:
             skill_tasks = get_filters_by_skill(skill)
-            splits = [split for split in splits if split.repalce("train_", "") in skill_tasks]
+            splits = [split for split in splits if split.replace("train_", "") in skill_tasks]
+            for skill in skill_tasks:
+                if "train_" + skill not in splits:
+                    print(skill)
         training_datasets = [dataset[split] for split in splits]
         train_dataset = concatenate_datasets(training_datasets)
 
@@ -338,8 +341,11 @@ def load_experiment(experiment_type, prompting_technique, sample, test_task, run
             val_split = f"val_{test_task}"
             val_dataset = dataset.pop(val_split)
             dataset = DatasetDict({"train": train_dataset, "val": val_dataset, "test": val_dataset})
-        else:                             ## Test Experiment
-            val_split = "val_stance_classification_ukp_sentential_stab18" ## Fixed this for validation
+        else:                            ## Test Experiment
+            if test_task == "argument_similarity_ukp_aspect_reimers19":
+                val_split = "val_fallacy_detection_logic_jin22"
+            else:
+                val_split = "val_stance_classification_ukp_sentential_stab18" ## Fixed this for validation
             test_dataset = dataset.pop(test_split)
             val_dataset = dataset.pop(val_split)
             dataset = DatasetDict({"train": train_dataset, "val": val_dataset, "test": test_dataset})
