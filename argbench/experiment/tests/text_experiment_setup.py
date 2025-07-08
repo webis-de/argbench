@@ -208,6 +208,14 @@ class ExperimentSetupTest(TestCase):
         test_mining_dataset = load_experiment(ExperimentType.SKILL_TRANSFER, prompting_technique=PromptingTechnique.ZERO_SHOT, sample=True,
                                                   test_task="argument_rating_dagstuhl_15512_effectiveness_wachsmuth17", run_config=config, skill="mining")
 
-        test_mining_dataset = load_experiment(ExperimentType.SKILL_TRANSFER, prompting_technique=PromptingTechnique.ZERO_SHOT, sample=True,
+        test_generation_dataset = load_experiment(ExperimentType.SKILL_TRANSFER, prompting_technique=PromptingTechnique.ZERO_SHOT, sample=True,
                                               test_task="argument_rating_dagstuhl_15512_effectiveness_wachsmuth17", run_config=config, skill="generation")
 
+        test_reasoning_dataset = load_experiment(ExperimentType.SKILL_TRANSFER, prompting_technique=PromptingTechnique.ZERO_SHOT, sample=True,
+                                              test_task="argument_rating_dagstuhl_15512_effectiveness_wachsmuth17", run_config=config, skill="reasoning")
+
+        test_quality_dataset = load_experiment(ExperimentType.SKILL_TRANSFER, prompting_technique=PromptingTechnique.ZERO_SHOT, sample=True,
+                                                 test_task="argument_rating_dagstuhl_15512_effectiveness_wachsmuth17", run_config=config, skill="quality-assessment")
+
+        test_perspective_dataset = load_experiment(ExperimentType.SKILL_TRANSFER, prompting_technique=PromptingTechnique.ZERO_SHOT, sample=True,
+                                               test_task="argument_rating_dagstuhl_15512_effectiveness_wachsmuth17", run_config=config, skill="perspective-assessment")
