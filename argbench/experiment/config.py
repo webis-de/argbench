@@ -553,7 +553,7 @@ class RunConfig:
                 with open(args.config[0] , "r") as f:
                     conf_file = json.load(f)
                     update_conf(config, conf_file)
-        if os.path.exists("/mnt/home/yajjour"):
+        if os.path.exists("/mnt/kisski"):
             config = rewrite_config(config, "/bigwork/nhwpajjy", "/mnt/home/yajjour")
 
         conf_obj =  cls(**config)
@@ -863,7 +863,10 @@ class RunConfig:
         if self.in_task:
             experiment = "in-task"
         else:
-            experiment = "cross-task"
+            if self.skill_filter:
+                experiment = f"skill-transfer-{self.skill_filter}"
+            else:
+                experiment = "cross-task"
         if self.hpo:
             experiment = "hpo-" + experiment
 
