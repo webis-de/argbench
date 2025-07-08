@@ -2,7 +2,7 @@
 #SBATCH --job-name=in-task-hpo
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=2
-#SBATCH --mem=300G
+#SBATCH --mem=100G
 #SBATCH --time=72:00:00
 #SBATCH --output argbench/output/in-task-hpo-%j.out
 #SBATCH --error argbench/output/in-task-hpo-%j.err

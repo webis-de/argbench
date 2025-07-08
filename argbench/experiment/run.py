@@ -230,7 +230,7 @@ class Runner:
         logger.info(f"preparing model for kbit training")
 
         if not self.config.prompting:
-            model = prepare_model_for_kbit_training(model)
+            #model = prepare_model_for_kbit_training(model)
             model.enable_input_require_grads()
         logger.info("loaded model")
         if self.config.peft_configs and self.config.peft_fresh_config:
