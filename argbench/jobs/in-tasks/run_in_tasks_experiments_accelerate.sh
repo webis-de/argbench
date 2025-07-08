@@ -1,8 +1,8 @@
 #!/bin/bash -l
 #SBATCH --job-name=in-task-hpo
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=6
-#SBATCH --mem=24G
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=160G
 #SBATCH --time=72:00:00
 #SBATCH --output argbench/output/in-task-hpo-%j.out
 #SBATCH --error argbench/output/in-task-hpo-%j.err
