@@ -6,18 +6,31 @@ parser.add_argument("--file", type=str)
 parser.add_argument("--metadata", type=str)
 parser.add_argument("--k", type=int)
 parser.add_argument("--cot", action='store_true')
+parser.add_argument("--missing-tasks", action='store_true')
 
 args= parser.parse_args()
 df = pd.read_csv(args.file, sep="\t")
-df.drop_duplicates(["test_task","k","model","score"],inplace=True)
+#df.drop_duplicates(["test_task","k","model","score"],inplace=True)
 with open(args.metadata) as file:
+
     metadata = json.load(file)
+
     df = df[df["test_task"]!="generation"]
     df = df[df["test_task"]!="quality-assessment"]
     df = df[df["test_task"]!="reasoning"]
     df = df[df["test_task"]!="reasonableness_scoring_cmv_habernal18"]
     df = df[df["test_task"]!="perspective-assessment"]
     df = df[df["test_task"]!="mining"]
+    times = sorted(df["start_time"].values)
+    last_time = times[-1]
+    print(f"\n** aggregating run on {last_time}**\n")
+    df = df[df["start_time"]==last_time]
+    processed_tasks = set(df["test_task"].tolist())
+    expected_tasks = metadata.keys()
+    missing_tasks = expected_tasks - processed_tasks
+    print("** Missing Tasks **\n")
+    print(list(missing_tasks).sort())
+    print("\n**               **\n")
     if args.k:
         df = df[df["k"] == args.k]
     elif args.cot:
@@ -29,25 +42,30 @@ with open(args.metadata) as file:
     print(f"found tasks {len(df)}")
     num_tasks = df["test_task"].nunique()
     print(f"found {num_tasks} tasks")
+    print("\n-------------\n")
     df["skill"] = df["test_task"].apply(lambda x :metadata[x]["skill"])
-    df.sort_values(by="skill", inplace = True)
+    skills = ["mining", "perspective-assessment", "quality-assessment", "reasoning", "generation"]
     scores = 0
-    for skill, df_skill in df.groupby("skill"):
-        print(skill)
+    df["skill-index"] = df["skill"].apply(lambda x: skills.index(x) )
+    df.sort_values(by="skill-index", inplace=True)
+    for skill, df_skill in df.groupby("skill", sort=False):
+
+
         if skill == "generation":
             df_blue_records = df_skill[df_skill["metric"]=="bleu"]
             blue_score_agg =df_blue_records["score"].mean()
             scores += blue_score_agg
-            print(f"bleu {blue_score_agg:.2f}")
+            print(f"{skill:<30} bleu {blue_score_agg:>14.2f}")
             df_bertscore_records = df_skill[df_skill["metric"]=="bertscore"]
             blue_score_agg =df_bertscore_records["score"].mean()
             bertscore = (df_bertscore_records["score"].mean())
-            print(f"bertscore {bertscore:.2f}")
+            print(f"{skill:<30} bertscore {bertscore:>9.2f}\n----------\n")
             scores += bertscore
         else:
             df_fscore_records = df_skill[df_skill["metric"]=="fscore"]
             fscore_agg =df_fscore_records["score"].mean()
-            print(f"fscore {fscore_agg:.2f}")
+            print(f"{skill:<30} fscore {fscore_agg:>12.2f}\n-------------\n")
             scores += fscore_agg
     all = scores / 6
-    print(f"all {all}")
+    all_skill = "all"
+    print(f"{all_skill:<30} macro {all:>13.2f}\n-------------\n")
