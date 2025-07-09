@@ -455,7 +455,7 @@ class Runner:
 
     def dump_predictions(self):
         if self.config.prediction_path:
-            with open(self.config.prediction_path) as file:
+            with open(self.config.prediction_path, "w") as file:
                 file.writelines(self.prediction_samples)
 
     def hpo_objective(self, trial: Trial):
