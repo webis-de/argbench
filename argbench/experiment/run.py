@@ -671,7 +671,7 @@ class Runner:
         random_indices = [random.randint(0,len(predictions)) for _ in range(10)]
         sampled_predictions = [predictions[index] for index in random_indices]
         sampled_labels = [labels[index] for index in random_indices]
-        sampled_predictions = zip(sampled_predictions, sampled_labels, [self.base_model for _ in range(10)], [test_task_name for _ in range(10)])
+        sampled_predictions = zip(sampled_predictions, sampled_labels, [self.config.base_model for _ in range(10)], [test_task_name for _ in range(10)])
         sampled_predictions = [x[0]+"\t"+x[1]+"\t"+x[2]+"\t"+x[3] for x in sampled_predictions]
         self.prediction_samples.extend(sampled_predictions)
 
