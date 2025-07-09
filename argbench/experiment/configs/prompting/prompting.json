@@ -19,7 +19,7 @@
     "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
     "tensorboard_logs": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tensorboard",
     "argbench_dataset_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/argbench-dataset",
-
+    "prediction_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/prompting-predictions.tsv",
     "train_datasets": {
     },
     "test_dataset": {

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import gc
-
+import random
+import numpy as np
 import optuna
 import outlines
 from attr.validators import max_len
@@ -147,6 +148,7 @@ class Runner:
                 self.test_dataset_name = None
 
         self.load_data()
+        self.prediction_samples = []
 
     def prepare_data(self):
         cutoff_len = self.config.cutoff_len
@@ -451,6 +453,11 @@ class Runner:
             torch.cuda.empty_cache()
             torch.distributed.destroy_process_group()
 
+    def dump_predictions(self):
+        if self.config.prediction_path:
+            with open(self.config.prediction_path) as file:
+                file.writelines(self.prediction_samples)
+
     def hpo_objective(self, trial: Trial):
         log_mem(f"loading model for hpo")
         self.model = self.prepare_model_for_training(
@@ -596,6 +603,7 @@ class Runner:
 
             logger.debug(f" fine tuning metrics {metrics}")
 
+        self.dump_predictions()
         return all_results
 
     @with_timing
@@ -605,6 +613,7 @@ class Runner:
         dataset is the name of the test task and task_data is the test data points
         """
         #set_trace()
+
         log_mem(f"testing {test_task_name}")
         dataset = test_data
         labels = []
@@ -658,6 +667,14 @@ class Runner:
                     predictions += [prediction]
                     if prediction:
                         logger.debug(format_logging(response, prediction,text))
+
+        random_indices = [random.randint(0,len(predictions)) for _ in range(10)]
+        sampled_predictions = [predictions[index] for index in random_indices]
+        sampled_labels = [labels[index] for index in random_indices]
+        sampled_predictions = zip(sampled_predictions, sampled_labels, [self.base_model for _ in range(10)], [test_task_name for _ in range(10)])
+        sampled_predictions = [x[0]+"\t"+x[1]+"\t"+x[2]+"\t"+x[3] for x in sampled_predictions]
+        self.prediction_samples.extend(sampled_predictions)
+
         logger.debug(f"evaluating {counter} instances")
         metric = self.task_metrics[test_task_name]
         if metric == "fscore-detailed":

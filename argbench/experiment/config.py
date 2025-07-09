@@ -403,7 +403,7 @@ class RunConfig:
     hpo: bool
     # Padding token id
     chain_of_thoughts : bool = False
-
+    prediction_path: str = None
     in_task: bool = False
     sample: bool = False
 
@@ -532,6 +532,7 @@ class RunConfig:
         arg_parser.add_argument("-dq", "--double_quant", action="store_true", help="Enable double quantization for BitsAndBytes 4-bit")
         arg_parser.add_argument("-bm", "--base_model", type=str, help="base model")
         arg_parser.add_argument("-esp", "--experiment_splits_path", type=str)
+        arg_parser.add_argument("-pp", "--prediction_path", type=str)
 
     @classmethod
     def from_file(cls, paths: List[Path], args=None):
@@ -609,6 +610,8 @@ class RunConfig:
         if not args:
             return conf_obj
         # Runner config
+        if args.prediction_path:
+            conf_obj.prediction_path = args.prediction_path
         if args.sample:
             conf_obj.sample = True
         if args.skill_filter:
