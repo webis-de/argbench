@@ -11,8 +11,8 @@ from argparse import ArgumentParser
 import uuid
 import json
 
-DATASET_NAME = "premise_extraction_echr_pouydal_2020"
-DATASET_FILE_TEMPLATE = "premise_extraction_echr_{split}_pouydal_2020.json"
+DATASET_NAME = "conclusion_extraction_echr_pouydal_2020"
+DATASET_FILE_TEMPLATE = "conclusion_extraction_echr_{split}_pouydal_2020.json"
 
 
 def extract_clause(clauses, case_text, clause_id_to_extract):
@@ -26,32 +26,31 @@ def extract_clause(clauses, case_text, clause_id_to_extract):
     raise ValueError(f"{clause_id_to_extract} not found!")
 
 
-def extract_premises(argument, clauses, case_text):
-    premises= []
+def extract_conclusions(argument, clauses, case_text):
 
-    for clause_id in argument['premises']:
-        clause, clause_start, clause_end = extract_clause(clauses, case_text, clause_id)
-        premises.append((clause, clause_start, clause_end))
-    return premises
+    clause, clause_start, clause_end = extract_clause(clauses, case_text, argument['conclusion'])
+
+    return clause, clause_start, clause_end
 
 
 def process_split(DATASET_NAME, dataset, split_name, metadata):
     output = Output(DATASET_NAME)
 
-    output.append_definition("""Given the following document, Judge if the following sentence is a premise or not.
-     A Premise is a reason for justifying or refuting a claim.""")
+    output.append_definition("""Given the following document, Judge if the following sentence is a conclusion or not.
+     A conclusion is a controversial statement and the central component of an argument""")
     counter = 0
-    premises_count = 0
+    conclusion_counts = 0
     sentence_segmenter = nltk.tokenize.PunktSentenceTokenizer()
     for case_id, case in enumerate(dataset):
+
         case_text = case['text']
         arguments = case['arguments']
         clauses = case["clauses"]
-        all_premises = []
+        all_conclusions = []
 
         for argument in arguments:
-            premises = extract_premises(argument, clauses, case_text)
-            all_premises.extend(premises)
+            conclusion = extract_conclusions(argument, clauses, case_text)
+            all_conclusions.append(conclusion)
 
         sentences = sentence_segmenter.span_tokenize(case_text)
 
@@ -59,18 +58,18 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
             sentence = case_text[sentence_start:sentence_end]
 
             prompt = f"Document: {case_text}\nSentence: {sentence}"
-            for premise, premise_start, premise_end in all_premises:
-                if sentence_start <= premise_start < sentence_end or sentence_start < premise_end <= sentence_end:
-                    response = "Premise"
-                    print(f"premise: {premise}\n")
+            for conclusion, conclusion_start, conclusion_end in all_conclusions:
+                if sentence_start <= conclusion_start < sentence_end or sentence_start < conclusion_end <= sentence_end:
+                    response = "Conclusion"
+                    print(f"conclusion: {conclusion}\n")
                     print(f"found in sentence: {sentence}\n")
-                    premises_count = premises_count + 1
+                    conclusion_counts = conclusion_counts + 1
                 else:
-                    response = "No-Premise"
+                    response = "No-Conclusion"
 
             output.append_instance(counter, prompt, [response])
             counter += 1
-    print(f"premises_count={premises_count}")
+    print(f"conclusion_count={conclusion_counts}")
     output.append_genre(Genres.WIKIPEDIA)
     output.append_subarea(Skills.MINING)
     dataset_file = DATASET_FILE_TEMPLATE.format(split=split_name)
