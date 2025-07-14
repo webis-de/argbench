@@ -641,13 +641,13 @@ class Runner:
                     predictions += [prediction]
                     if prediction:
                         logger.debug(format_logging(response, prediction,text))
-
-        random_indices = [random.randint(0,len(predictions)) for _ in range(10)]
-        sampled_predictions = [predictions[index] for index in random_indices]
-        sampled_labels = [labels[index] for index in random_indices]
-        sampled_predictions = zip(sampled_predictions, sampled_labels, [self.config.base_model for _ in range(10)], [test_task_name for _ in range(10)])
-        sampled_predictions = [x[0]+"\t"+x[1]+"\t"+x[2]+"\t"+x[3]+"\n" for x in sampled_predictions]
-        self.prediction_samples.extend(sampled_predictions)
+        if predictions:
+            random_indices = [random.randint(0,len(predictions)-1) for _ in range(10)]
+            sampled_predictions = [predictions[index] for index in random_indices]
+            sampled_labels = [labels[index] for index in random_indices]
+            sampled_predictions = zip(sampled_predictions, sampled_labels, [self.config.base_model for _ in range(10)], [test_task_name for _ in range(10)])
+            sampled_predictions = [x[0]+"\t"+x[1]+"\t"+x[2]+"\t"+x[3]+"\n" for x in sampled_predictions]
+            self.prediction_samples.extend(sampled_predictions)
 
         logger.debug(f"evaluating {counter} instances")
         metric = self.task_metrics[test_task_name]
