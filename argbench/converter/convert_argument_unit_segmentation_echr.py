@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 import random
 import math
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
 import nltk
 import re
+
+from nltk.tokenize.punkt import PunktTrainer, PunktSentenceTokenizer
+
 from argbench.converter.common import Genres, Output, Skills, read_tabular, datasets_path,  Metadata, add_seed_arg, set_seed, \
     split_test_val_train
 from argparse import ArgumentParser
@@ -31,73 +34,91 @@ def extract_conclusions(argument, clauses, case_text):
 
     clause, clause_start, clause_end = extract_clause(clauses, case_text, argument['conclusion'])
 
-    return clause, clause_start, clause_end
+    return clause, clause_start, clause_end, argument['conclusion']
 
 def extract_premises(argument, clauses, case_text):
     premises= []
 
     for clause_id in argument['premises']:
         clause, clause_start, clause_end = extract_clause(clauses, case_text, clause_id)
-        premises.append((clause, clause_start, clause_end))
+        premises.append((clause, clause_start, clause_end, clause_id))
     return premises
 
 def clean_text(text):
     return re.sub("(\n|\r|\s)+", " ", text)
 
-def extract_candidate_argument_units(case:Dict) -> List[str]:
-    sentence_segmenter = nltk.tokenize.PunktSentenceTokenizer()
-    case_text = case['text']
+def extract_argumentative_clauses(case):
     arguments = case['arguments']
     clauses = case["clauses"]
+    case_text = case['text']
+
     all_argumentative_clauses = []
-    all_candidates = []
+
     for argument in arguments:
         conclusion = extract_conclusions(argument, clauses, case_text)
         all_argumentative_clauses.append(conclusion)
         premises = extract_premises(argument, clauses, case_text)
         all_argumentative_clauses.extend(premises)
+    return all_argumentative_clauses
+
+def extract_candidate_argument_units(case:Dict, trainer) -> List[Tuple[str, str, str]]:
+    sentence_segmenter = PunktSentenceTokenizer(trainer.get_params())
+    sentence_segmenter._params.abbrev_types.add("Art.")
+    sentence_segmenter._params.abbrev_types.add("para.")
+    case_text = case['text']
+    print("*case*\n")
+    print(case_text)
+    all_argumentative_clauses = extract_argumentative_clauses(case)
+
+
+    all_candidates = []
 
     sentences = sentence_segmenter.span_tokenize(case_text)
 
     for sentence_start, sentence_end in sentences:
+        sentence = case_text[sentence_start:sentence_end]
+        #print(f"{sentence}\n")
         argument_unit_found = False
-        for argument_clause, clause_start, clause_end in all_argumentative_clauses:
+        for argument_clause, clause_start, clause_end, clause_id in all_argumentative_clauses:
             if sentence_start == clause_start and sentence_end == clause_end:
                 print(f"first case: {argument_clause}")
-                all_candidates.append(("Argumentative", argument_clause))
+                all_candidates.append(("Argumentative", argument_clause, clause_id))
                 argument_unit_found = True
                 break
             elif sentence_start <= clause_start < sentence_end:
                 if sentence_start < clause_start:
                     prefix = case_text[sentence_start:clause_start]
-                    print(f"second case: prefix {prefix}")
-                    all_candidates.append(("Non-argumentative", prefix))
+                    #print(f"second case: prefix {prefix}")
+                    all_candidates.append(("Non-argumentative", prefix, None))
                 if clause_end <= sentence_end:
-                    all_candidates.append(("Argumentative", argument_clause))
+                    all_candidates.append(("Argumentative", argument_clause, clause_id))
                     print(f"second case: {argument_clause}")
                     if clause_end < sentence_end:
                         suffix = case_text[clause_end:sentence_end]
-                        all_candidates.append(("Non-argumentative", suffix))
-                        print(f"second case: suffix{argument_clause}")
+                        all_candidates.append(("Non-argumentative", suffix, None))
+                        #print(f"second case: suffix{argument_clause}")
                     argument_unit_found = True
                 else:
                     print(f"second case: {case_text[clause_start:sentence_end]}")
-                    all_candidates.append(("Argumentative", case_text[clause_start:sentence_end]))
+                    all_candidates.append(("Argumentative", case_text[clause_start:sentence_end], clause_id))
+                    argument_unit_found = True
             elif sentence_start < clause_end <= sentence_end:
                 argument_clause = case_text[sentence_start:clause_end]
-                all_candidates.append(("Argumentative", argument_clause))
+                all_candidates.append(("Argumentative", argument_clause, clause_id))
                 argument_unit_found = True
                 if clause_end < sentence_end:
                     suffix = case_text[clause_end:sentence_end]
-                    all_candidates.append(("Non-argumentative", suffix))
-                    print(f"third case: suffix {suffix}")
+                    all_candidates.append(("Non-argumentative", suffix, None))
+                    #print(f"third case: suffix {suffix}")
                 print(f"third case: prefix {argument_clause}")
-
+            elif clause_start < sentence_start and clause_end > sentence_end:
+                all_candidates.append(("Argumentative", sentence, clause_id))
+                argument_unit_found = True
         if not argument_unit_found:
-            all_candidates.append(("Non-argumentative", case_text[sentence_start:sentence_end]))
+            all_candidates.append(("Non-argumentative", case_text[sentence_start:sentence_end], None))
     return all_candidates
 
-def process_split(DATASET_NAME, dataset, split_name, metadata):
+def process_split(DATASET_NAME, dataset, split_name, metadata, trainer):
     output = Output(DATASET_NAME)
 
     output.append_definition("""Given the following document, split all of the document into argumentative units and non-argumentative units.
@@ -109,8 +130,8 @@ Do not add a new formating or enumeration also do not rephrase the argument unit
 
     for case_id, case in enumerate(dataset):
         case_text = case['text']
-        all_candidates = extract_candidate_argument_units(case)
-        case_output = "".join([f"{label}: {clean_text(candidate_clause)}\n" for label, candidate_clause in all_candidates])
+        all_candidates = extract_candidate_argument_units(case, trainer)
+        case_output = "".join([f"{label}: {clean_text(candidate_clause)}\n" for label, candidate_clause, _ in all_candidates])
         output.append_instance(str(case_id), clean_text(case_text), [case_output])
 
 
@@ -121,7 +142,26 @@ Do not add a new formating or enumeration also do not rephrase the argument unit
     output.write_output(dataset_file)
 
 
+def get_trainer():
+    trainer = PunktTrainer()
+    corpus = """
+        Insofar as the applicant complains that the prohibition to meet relatives and other persons amounted to degrading treatment contrary to Article 3 (Art. 3) of the Convention, the Commission finds no separate issue under this provision. 
+        It follows that this part of the application is manifestly ill-founded within the meaning of Article 27 para. 2 (Art. 27-2) of the Convention.
+        On 9 March 1992 the authorities seised the applicant's passport with reference to Section 7 para. (d) of the Bulgarian Passport Act (for all references to Bulgarian law see below, Relevant domestic law).
+        Prosecutor General's request to the National Assembly of 1 July 1992. As to the reasons for imposing detention on remand, it relied on the extent of public exposure of the committed crime, the personality of the performer and the need to secure the applicant's appearance before court, as well as on Sections 50, 177, 180, 196 para. 2 and 207, and Sections 146 to 148 and 152 para. 1 of the Code of Criminal Procedure.
+        The hearing took place on 12 January 1995.  The Government were represented by their Agent, Mrs. G. Beleva, and by Mrs. J. Miteva.
+        He is represented before the Commission by Mr. L. W. Weh, a lawyer practising in Bregenz.
+        4.  I voted for non-violation of Article 8 (art. 8) because I do not see a necessary link between the breach of the requirements of Article 5 para. 1 (art. 5-1) and the interference in the private and family life of Mrs Murray (and her family). I am satisfied with the approach of the Court in regard to Article 8 (art. 8), and, in particular, with its conclusion that the interference was in accordance with the law and that the contested measures pursued a legitimate aim and were necessary in a democratic society (paragraphs 88 to 94 of the judgment).
+        """
+    trainer.train(corpus, finalize=False, verbose=True)
+
+    abbreviations = "Art., para., Mrs., Mr., 4."
+    trainer.train(abbreviations, finalize=False, verbose=True)
+    return trainer
+
 if __name__ == "__main__":
+
+
 
 
     dataset_path = str(datasets_path()
@@ -131,9 +171,10 @@ if __name__ == "__main__":
     with open(dataset_path) as json_file:
         corpus = json.load(json_file)
         test, val, train = split_test_val_train(corpus)
-        process_split(DATASET_NAME, test, "test", metadata)
-        process_split(DATASET_NAME, train, "train", metadata)
-        process_split(DATASET_NAME, val, "val", metadata)
+        trainer = get_trainer()
+        process_split(DATASET_NAME, test, "test", metadata, trainer)
+        process_split(DATASET_NAME, train, "train", metadata, trainer)
+        process_split(DATASET_NAME, val, "val", metadata, trainer)
 
 
     metadata.add_genre(Genres.LEGAL)
