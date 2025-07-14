@@ -343,10 +343,6 @@ class VLLMGenerationConfig(CommonConfig):
 class RunConfig:
     """Config for instruction finetuning run"""
 
-
-
-    quantization: bool
-
     test_dataset: dict
 
     # Experiment results path
@@ -428,7 +424,7 @@ class RunConfig:
     shot_task_generation_config = {}
     cot_task_generation_config = {}
     model: str = "mistral-7b-inst-3"
-
+    quantization: bool = False
 
 
     @staticmethod
