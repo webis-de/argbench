@@ -226,15 +226,7 @@ class ValidationConfig(CommonConfig):
 
     fscore_beta: int = 1.0
 
-@dataclass
-class QuantConfig(CommonConfig):
-    """Configuration object for BitsAndBytesConfig"""
 
-    load_in_8bit: bool = False
-
-    load_in_4bit: bool = False
-
-    bnb_4bit_use_double_quant: bool = False
 
 @dataclass
 class ModelGenerationConfig(CommonConfig):
@@ -320,7 +312,7 @@ class HPOConfig(CommonConfig):
     val_metric: str = None
 
     model_config: dict = field(default_factory=dict)
-    quant_config: dict = field(default_factory=dict)
+
     # Training configs
     training_args_config: dict = field(default_factory=dict)
     early_stopping_config: dict = field(default_factory=dict)
@@ -353,6 +345,7 @@ class RunConfig:
 
 
 
+    quantization: bool
 
     test_dataset: dict
 
@@ -419,7 +412,7 @@ class RunConfig:
     log_path: str = None
 
 
-    quant_config: QuantConfig = None
+
     # Peft finetuning configs
     peft_configs: List[PeftPretrainedConfig] = None
     peft_fresh_config: PeftAdapterConfig = None
@@ -443,6 +436,7 @@ class RunConfig:
         """
         Registers all cli parameters for RunConfig
         """
+        arg_parser.add_argument("--quantization", action="store_true")
         arg_parser.add_argument("--sample", action="store_true")
         arg_parser.add_argument("-icot", "--chain_of_thoughts", action="store_true")
         arg_parser.add_argument("-int", "--in_task", type=bool, help="whether to conduct a cross task or in task experiment")
@@ -522,14 +516,6 @@ class RunConfig:
         arg_parser.add_argument("-rp", "--repetition_penalty", type=float, help="Repetition penalty parameter")
         arg_parser.add_argument("-lp", "--length_penalty", type=float, help="Length penalty parameter")
         # Quantization config
-        arg_parser.add_argument("-i8", "--load_in_8bit", action="store_true", help="Load model in 8-bit precision")
-        arg_parser.add_argument("-i4", "--load_in_4bit", action="store_true", help="Load model in 4-bit precision")
-        arg_parser.add_argument("-i8t", "--llm_int8_threshold", type=float, help="LLM Int8 threshold for quantization")
-        arg_parser.add_argument("-i8s", "--llm_int8_skip_modules", action="append", help="List of modules to skip when using LLM Int8 quantization")
-        arg_parser.add_argument("-f32o", "--enable_fp32_cpu_offload", action="store_true", help="Enable FP32 CPU offloading for LLM Int8")
-        arg_parser.add_argument("-f16w", "--has_fp16_weight", action="store_true", help="Set if the model has FP16 weights for LLM Int8")
-        arg_parser.add_argument("-4qt", "--bnb_4bit_quant_type", choices=["fp4", "nf4"], help="BitsAndBytes 4-bit quantization type")
-        arg_parser.add_argument("-dq", "--double_quant", action="store_true", help="Enable double quantization for BitsAndBytes 4-bit")
         arg_parser.add_argument("-bm", "--base_model", type=str, help="base model")
         arg_parser.add_argument("-esp", "--experiment_splits_path", type=str)
         arg_parser.add_argument("-pp", "--prediction_path", type=str)
@@ -590,8 +576,6 @@ class RunConfig:
             conf_obj.early_stopping_config = EarlyStoppingConfig(**conf_obj.early_stopping_config)
         if config.get("peft_fresh_config"):
             conf_obj.peft_fresh_config = PeftAdapterConfig(**conf_obj.peft_fresh_config)
-        if config.get("quant_config"):
-            conf_obj.quant_config = QuantConfig(**conf_obj.quant_config)
         if config.get("hpo_config"):
             #set_trace()
             conf_obj.hpo_config = HPOConfig(**conf_obj.hpo_config)
@@ -642,6 +626,9 @@ class RunConfig:
         if args.base_model:
             conf_obj.base_model = args.base_model
         ## This should be executed after choosing the model
+        if args.quantization:
+            conf_obj.quantization = True
+
         for conf in conf_obj.model_configs:
 
             if conf.label == conf_obj.base_model:
@@ -792,23 +779,7 @@ class RunConfig:
         if args.length_penalty:
             conf_obj.generation_config.length_penalty = args.length_penalty
 
-        # Quantization config
-        if args.load_in_8bit:
-            conf_obj.quant_config.load_in_8bit = args.load_in_8bit
-        if args.load_in_4bit:
-            conf_obj.quant_config.load_in_4bit = args.load_in_4bit
-        if args.llm_int8_threshold:
-            conf_obj.quant_config.llm_int8_threshold = args.llm_int8_threshold
-        if args.llm_int8_skip_modules:
-            conf_obj.quant_config.llm_int8_skip_modules = args.llm_int8_skip_modules
-        if args.enable_fp32_cpu_offload:
-            conf_obj.quant_config.enable_fp32_cpu_offload = args.enable_fp32_cpu_offload
-        if args.has_fp16_weight:
-            conf_obj.quant_config.has_fp16_weight = args.has_fp16_weight
-        if args.bnb_4bit_quant_type:
-            conf_obj.quant_config.bnb_4bit_quant_type = args.bnb_4bit_quant_type
-        if args.double_quant:
-            conf_obj.quant_config.double_quant = args.double_quant
+
         if args.leaderboard_path:
             conf_obj.leaderboard_path = args.leaderboard_path
         if args.experiment_splits_path:
