@@ -6,7 +6,7 @@
 #SBATCH --time=72:00:00
 #SBATCH --output argbench/output/in-task-hpo-%j.out
 #SBATCH --error argbench/output/in-task-hpo-%j.err
-#SBATCH --gpus=h100:4
+#SBATCH --gpus=h100:2
 module load Miniforge3
 conda activate task-specific-new
 
@@ -27,7 +27,9 @@ fi
 for dataset in ${datasets[@]};
 do
 echo $dataset
-accelerate launch -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/in_task_hpo_${dataset:1:-1}.json" \
+
+accelerate launch --config_file "${CODE_PATH}/argbench/experiment/configs/accelerate/config_2_gpus_2_stage.yaml" \
+ -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/in_task_hpo_${dataset:1:-1}.json" \
 --base_model "$model"  --debug --sample --train_optim "adamw_torch"
 
 done
