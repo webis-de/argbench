@@ -77,7 +77,7 @@
             "cutoff_len": 128000
         },
         {
-                "label": "mistral-small-8bit",
+            "label": "mistral-small-8bit",
             "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-Small-Instruct-2409-8bit",
             "prompt_template": "[INST]{instruction}[/INST]",
             "output_splitter": "[/INST]",
