@@ -28,7 +28,7 @@ for dataset in ${datasets[@]};
 do
 echo $dataset
 
-accelerate launch --config_file "${CODE_PATH}/argbench/experiment/configs/accelerate/config_2_gpus_4_stage.yaml" \
+accelerate launch --config_file "${CODE_PATH}/argbench/experiment/configs/accelerate/config_4_gpus_2_stage.yaml" \
  -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/in_task_hpo_${dataset:1:-1}.json" \
 --base_model "$model"  --debug --sample --train_optim "adamw_torch"
 
