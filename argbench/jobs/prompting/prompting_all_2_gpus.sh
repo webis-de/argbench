@@ -8,7 +8,7 @@
 #SBATCH --error argbench/output/prmt-all-data-%j.err
 #SBATCH --gpus=2
 module load Miniforge3
-conda activate task-specific-new
+conda activate new-env
 
 model=$1
 
