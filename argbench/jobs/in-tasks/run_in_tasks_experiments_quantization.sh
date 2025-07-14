@@ -30,7 +30,7 @@ do
 echo $dataset
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/in_task_hpo_${dataset:1:-1}.json" \
---base_model "$model"  --debug
+--base_model "$model"  --debug --quantization
 
 done
 
