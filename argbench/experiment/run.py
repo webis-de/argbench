@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
 import gc
-import random
-import numpy as np
 import optuna
-import outlines
-from attr.validators import max_len
-from bert_score.utils import padding
+
 from optuna import create_study
 from optuna.samplers import TPESampler
-from outlines import models as outline_models
 from peft import (PeftModel, LoraConfig, get_peft_model, prepare_model_for_kbit_training, )
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -205,34 +200,25 @@ class Runner:
 
         log_mem(f"Finished preprocessing ")
 
-
-    def prepare_model_for_training(self,
-                      trial=None,
-                      quant_hpo=None,
-                      llama_causal_hpo=None):
+    def prepare_model_for_training(self, quantization=False):
         """
         Prepare a model using configuration or HPO trial
 
         :param trial: Optuna trial object
-        :param quant_hpo: Quantization hyperparameters
-        :param llama_causal_hpo: Model hyperparameters
-        :param peft_hpo: PEFT model hyperparameters
-        :param new_peft_hpo: New peft hyperparameters
+        :param quantization: Bool
+
         :returns: Model to be trained
         """
         logger.info(f"preparing model {self.model_config.path} on {device}")
 
-        model = self.prepare_model_for_causal_llm(
-            self.model_config.path,
-            self.config.quant_config.to_conf(trial, quant_hpo),
-            self.config.model_config.to_conf(trial, llama_causal_hpo)
-        )
+        model = self.prepare_model_for_causal_llm(self.model_config.path, quantization)
         self.base_model = model
 
         logger.info(f"preparing model for kbit training")
 
         if not self.config.prompting:
-            #model = prepare_model_for_kbit_training(model)
+            if quantization:
+                model = prepare_model_for_kbit_training(model)
             model.enable_input_require_grads()
         logger.info("loaded model")
         if self.config.peft_configs and self.config.peft_fresh_config:
@@ -305,12 +291,7 @@ class Runner:
 
         return sampling_params
 
-    def prepare_trainer(self,
-                        model,
-                        trial=None,
-                        training_arg_hpo=None,
-                        data_collator_hpo=None,
-                        early_stopping_hpo=None):
+    def prepare_trainer(self, model, trial=None, training_arg_hpo=None, data_collator_hpo=None, early_stopping_hpo=None):
         """
         Tokenizes train and test datasets and returns initialized Trainer instance
 
@@ -346,7 +327,7 @@ class Runner:
         trainer = Trainer(model=model, callbacks=callbacks, train_dataset=self.iterable_dataset["train"].with_format("torch"),
                           eval_dataset=self.iterable_dataset["val"].with_format("torch"),
         args=train_args, data_collator=data_collator)
-        self.iterable_dataset["train"]
+
         return trainer
 
     def load_data(self):
@@ -357,25 +338,22 @@ class Runner:
 
         self.dataset = load_experiment(experiment_type,prompting_technique, sample, test_task= self.test_dataset_name, run_config=self.config, skill=self.config.skill_filter)
 
-
-    def prepare_model_for_causal_llm(self, base_model, quant_config, model_config):
+    def prepare_model_for_causal_llm(self, base_model, quantization):
         """
         Initializes ModelForCausalLM model and its quantization
 
         :param base_model: huggingface model path or name
-        :param quant_config: Quantization config
-        :param model_config: Configuration parameters for model
+        :param quantization: whether to train the model in a quantized manner
         :returns: ModelForCausalLM initialized from config
         """
-        #quant_conf = BitsAndBytesConfig(**quant_config, bnb_4bit_compute_dtype=torch.bfloat16)
-        return AutoModelForCausalLM.from_pretrained(
-            base_model,
-            torch_dtype=torch.bfloat16,
-        #    quantization_config=quant_conf,
-            #device_map= "cuda:0",
-        #   device_map= "auto",
-            trust_remote_code=True
-        )
+        params = {"trust_remote_code":True, "pretrained_model_name_or_path":base_model}
+        if quantization:
+            params["quant_conf"] = BitsAndBytesConfig()
+            params["device_map"]= "auto"
+        else:
+            params["quant_conf"] = None
+
+        return AutoModelForCausalLM.from_pretrained(**params)
 
     def prepare_peft_model(self, model):
         """
@@ -432,7 +410,7 @@ class Runner:
     def load_model(self):
         """Loads model checkpoint"""
         log_mem("loading model")
-        model = self.prepare_model_for_training()
+        model = self.prepare_model_for_training(self.config.quantization)
 
         return model
 
@@ -460,11 +438,7 @@ class Runner:
 
     def hpo_objective(self, trial: Trial):
         log_mem(f"loading model for hpo")
-        self.model = self.prepare_model_for_training(
-            trial,
-            self.config.hpo_config.quant_config,
-            self.config.hpo_config.model_config
-        )
+        self.model = self.load_model()
         #self.prepare_data()
         log_mem(f"loaded model for hpo")
         self.trainer = self.prepare_trainer(
