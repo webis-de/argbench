@@ -4,6 +4,7 @@ from argbench.converter.convert_argument_unit_segmentation_echr import *
 
 class TestEchrPreprocessing(unittest.TestCase):
     def test_preprocessing_echr(self):
+        trainer = get_trainer()
         dataset_path = str(datasets_path()
                            / "echr_corpus"
                            / "ECHR_Corpus.json")
@@ -20,10 +21,24 @@ class TestEchrPreprocessing(unittest.TestCase):
                     shortest_length = len(case_text)
                     shortest_case = case
                     shortest_case_id = case_id
+            argument_units = extract_argumentative_clauses(shortest_case)
+            argument_unit_ids = [argument_unit[3] for argument_unit in argument_units ]
+            units = extract_candidate_argument_units(shortest_case, trainer)
+            unit_ids = [unit[2] for unit in units ]
+            for argument_unit_id in argument_unit_ids:
+                self.assertIn(argument_unit_id, unit_ids)
 
-            candidate_argument_units = extract_candidate_argument_units(shortest_case)
+            for argument_unit in argument_units:
+                for unit in units:
+#                    print(f"{argument_unit[3]}, {unit[2]}")
+                    if argument_unit[3] == unit[2]:
+                        #print("**match**\n")
+                        #print(f"unit: {unit[1]}\n")
+                        #print(f"argument unit: {argument_unit[0]}\n")
+                        self.assertIn(unit[1], argument_unit[0])
 
             self.assertTrue(shortest_case["text"])
 #            self.assertIn(candidate_argument_units, ("Argumentative", "The Government submit that the Austrian reservation to Article 5 (Art. 5) of the Convention prevents the Commission from examining the case."))
+            print("**output**\n")
 
-            print(" ".join(argument_unit[1] for argument_unit in candidate_argument_units))
+            print("\n".join(f"{unit[2]}: {unit[1]}" for unit in units))
