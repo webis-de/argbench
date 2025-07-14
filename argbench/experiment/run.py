@@ -348,10 +348,10 @@ class Runner:
         """
         params = {"trust_remote_code":True, "pretrained_model_name_or_path":base_model}
         if quantization:
-            params["quant_conf"] = BitsAndBytesConfig()
+            params["quantization_config"] = BitsAndBytesConfig()
             params["device_map"]= "auto"
         else:
-            params["quant_conf"] = None
+            params["quantization_config"] = None
 
         return AutoModelForCausalLM.from_pretrained(**params)
 
