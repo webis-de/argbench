@@ -434,6 +434,7 @@ class RunConfig:
         """
         arg_parser.add_argument("--quantization", action="store_true")
         arg_parser.add_argument("--sample", action="store_true")
+
         arg_parser.add_argument("-icot", "--chain_of_thoughts", action="store_true")
         arg_parser.add_argument("-int", "--in_task", type=bool, help="whether to conduct a cross task or in task experiment")
         arg_parser.add_argument("-sf", "--skill_filter", type=str, help="filter the tasks based on skill")
