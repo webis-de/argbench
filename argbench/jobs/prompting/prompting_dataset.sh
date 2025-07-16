@@ -1,5 +1,5 @@
 #!/bin/bash
-print $1 $2 $3
+echo "$1 $2 $3"
 sbatch <<EOT
 #!/bin/bash -l
 #SBATCH --job-name=prmt-dataset
