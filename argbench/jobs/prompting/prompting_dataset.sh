@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "$1 $2 $3"
+echo "${@:2}"
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 
