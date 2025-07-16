@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "$1 $2 $3 $4"
+echo "$1 $2 $3"
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 
@@ -25,6 +25,6 @@ conda activate task-specific
 
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-complete-results.csv" --base_model "$model" --test_dataset_name "$dataset" --debug "$prompting_strategy"
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-complete-results.csv" --base_model "$model" --test_dataset_name "$dataset" --debug "${@:4}"
 
 EOT
