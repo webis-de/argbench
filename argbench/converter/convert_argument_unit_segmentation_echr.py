@@ -11,6 +11,10 @@ from nltk.tokenize.punkt import PunktTrainer, PunktSentenceTokenizer
 from argbench.converter.common import Genres, Output, Skills, read_tabular, datasets_path,  Metadata, add_seed_arg, set_seed, \
     split_test_val_train
 from argparse import ArgumentParser
+from spacy.pipeline import Sentencizer
+from spacy.lang.en import English
+import stanza
+
 
 import uuid
 import json
@@ -61,19 +65,60 @@ def extract_argumentative_clauses(case):
         all_argumentative_clauses.extend(premises)
     return all_argumentative_clauses
 
-def extract_candidate_argument_units(case:Dict, trainer) -> List[Tuple[str, str, str]]:
+def get_nltk_sentence_segmenter():
+
+    trainer = get_trainer()
     sentence_segmenter = PunktSentenceTokenizer(trainer.get_params())
-    sentence_segmenter._params.abbrev_types.add("Art.")
-    sentence_segmenter._params.abbrev_types.add("para.")
+    def segment_sentences_nlk(case_text : str):
+        sentences = sentence_segmenter.span_tokenize(case_text)
+        return sentences
+    return segment_sentences_nlk
+
+def get_stanza_sentence_segmenter():
+    nlp = stanza.Pipeline(lang='en', processors='tokenize')
+
+    def segment_sentences_stanza(case_text: str):
+        doc = nlp(case_text)
+        sentence_indices = []
+
+        for sent in doc.sents:
+            sentence_indices.append((sent.start_char, sent.end_char+1))
+
+        return sentence_indices
+
+    return segment_sentences_stanza
+
+def get_spacy_sentence_segmenter():
+    config = {"punct_chars": None}
+
+    nlp = English()
+    nlp.add_pipe("sentencizer", config=config)
+
+    def segment_sentences_spacy(case_text: str):
+        doc = nlp(case_text)
+        sentence_indices = []
+
+        for sent in doc.sents:
+            sentence_indices.append((sent.start_char, sent.end_char+1))
+        return sentence_indices
+
+    return segment_sentences_spacy
+
+def extract_candidate_argument_units(case:Dict, trainer, segmenter) -> List[Tuple[str, str, str]]:
     case_text = case['text']
-    print("*case*\n")
-    print(case_text)
     all_argumentative_clauses = extract_argumentative_clauses(case)
 
+    nltk_segmenter = get_nltk_sentence_segmenter()
+    spacy_segmenter = get_spacy_sentence_segmenter()
+    stanza_segmenter = get_stanza_sentence_segmenter()
 
     all_candidates = []
-
-    sentences = sentence_segmenter.span_tokenize(case_text)
+    if segmenter == "spacy":
+        sentences = spacy_segmenter(case_text)
+    elif segmenter == "stanza":
+        sentences = stanza_segmenter(case_text)
+    else:
+        sentences = nltk_segmenter(case_text)
 
     for sentence_start, sentence_end in sentences:
         sentence = case_text[sentence_start:sentence_end]
@@ -118,7 +163,7 @@ def extract_candidate_argument_units(case:Dict, trainer) -> List[Tuple[str, str,
             all_candidates.append(("Non-argumentative", case_text[sentence_start:sentence_end], None))
     return all_candidates
 
-def process_split(DATASET_NAME, dataset, split_name, metadata, trainer):
+def process_split(DATASET_NAME, dataset, split_name, metadata, trainer, segmenter="nltk"):
     output = Output(DATASET_NAME)
 
     output.append_definition("""Given the following document, split all of the document into argumentative units and non-argumentative units.
@@ -130,7 +175,7 @@ Do not add a new formating or enumeration also do not rephrase the argument unit
 
     for case_id, case in enumerate(dataset):
         case_text = case['text']
-        all_candidates = extract_candidate_argument_units(case, trainer)
+        all_candidates = extract_candidate_argument_units(case, trainer, segmenter)
         case_output = "".join([f"{label}: {clean_text(candidate_clause)}\n" for label, candidate_clause, _ in all_candidates])
         output.append_instance(str(case_id), clean_text(case_text), [case_output])
 
@@ -172,9 +217,9 @@ if __name__ == "__main__":
         corpus = json.load(json_file)
         test, val, train = split_test_val_train(corpus)
         trainer = get_trainer()
-        process_split(DATASET_NAME, test, "test", metadata, trainer)
-        process_split(DATASET_NAME, train, "train", metadata, trainer)
-        process_split(DATASET_NAME, val, "val", metadata, trainer)
+        process_split(DATASET_NAME, test, "test", metadata, trainer, False)
+        process_split(DATASET_NAME, train, "train", metadata, trainer, False)
+        process_split(DATASET_NAME, val, "val", metadata, trainer, False)
 
 
     metadata.add_genre(Genres.LEGAL)
