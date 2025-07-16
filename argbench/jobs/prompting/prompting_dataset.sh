@@ -1,3 +1,5 @@
+#!/bin/bash
+sbatch <<EOT
 #!/bin/bash -l
 #SBATCH --job-name=prmt-dataset
 #SBATCH --nodes=1 
@@ -6,7 +8,7 @@
 #SBATCH --time=72:00:00
 #SBATCH --output argbench/output/prmt-dataset-%j.out
 #SBATCH --error argbench/output/prmt-dataset-%j.err
-#SBATCH --gpus=1
+#SBATCH --gpus=$3
 
 
 module load Miniforge3
@@ -50,3 +52,9 @@ done
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
 export JOB_ARGUMENTS="prompting;${dataset};${model};\n"
 echo "$SLURM_JOB_ID,$SLURM_JOB_NAME,$TIME,$JOB_ARGUMENTS" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
+<<<<<<< HEAD
+=======
+
+exit 0
+EOT
+>>>>>>> 3da6bf0c05e12b68ac25d2dfb2d59d66f3434e32
