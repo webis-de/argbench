@@ -25,6 +25,6 @@ conda activate task-specific
 
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-complete-results.csv" "${@:2}"
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-complete-results.csv" ${@:2}
 
 EOT
