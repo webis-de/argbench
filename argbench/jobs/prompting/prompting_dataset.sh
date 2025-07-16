@@ -1,6 +1,12 @@
 #!/bin/bash
 echo "$1 $2 $3"
+export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
+export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
+
 sbatch <<EOT
+model=$2
+dataset=$1
+
 #!/bin/bash -l
 #SBATCH --job-name=prmt-dataset
 #SBATCH --nodes=1 
@@ -15,30 +21,8 @@ sbatch <<EOT
 module load Miniforge3
 conda activate task-specific
 
-model=$2
-dataset=$1
 
-echo "working on $dataset"
-
-export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
-export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
-
-if [ -z "$model" ]; then
-
-
-models=("gemma-2-9b-it" "gemma-2-27b-it" "mistral-7b-inst-3" "mistral-small" "deepseek-r1-distill-7b" "deepseek-r1-distill-32b")
-else
-
-models=($model)
-fi
-
-cd "$CODE_PATH"
-
-for model in ${models[@]};
-do
-echo "using the model $model"
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
 --leaderboard-path "${DATA_PATH}/runs/prompting-$model-complete-results.csv" --base_model "$model" --test_dataset_name "$dataset"
-done
 
 EOT
