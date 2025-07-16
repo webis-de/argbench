@@ -53,8 +53,13 @@ def clean_prediction(prediction, chain_of_thoughts):
         prediction = prediction[index+7:]
     if prediction.startswith("<|start_header_id|>assistant<|end_header_id|>"):
         prediction = prediction.replacereplace("<|start_header_id|>assistant<|end_header_id|>", "")
+    prediction = re.sub("<think>.*</think>", "", prediction)
+    if prediction.count("<think>") > 1:
+        index = prediction.rindex("<think>")
+        prediction = prediction[index+7:]
     if "</think>" in prediction:
         prediction = prediction.split("</think>")[1]
+
     return prediction
 
 ### TODO replace by apply chat template
