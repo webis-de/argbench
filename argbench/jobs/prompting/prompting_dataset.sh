@@ -40,7 +40,4 @@ python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/
 --leaderboard-path "${DATA_PATH}/runs/prompting-$model-complete-results.csv" --base_model "$model" --test_dataset_name "$dataset"
 done
 
-export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
-export JOB_ARGUMENTS="prompting;${dataset};${model};\n"
-echo "$SLURM_JOB_ID,$SLURM_JOB_NAME,$TIME,$JOB_ARGUMENTS" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 EOT
