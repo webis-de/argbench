@@ -6,7 +6,6 @@ export model=$2
 export dataset=$1
 
 sbatch <<EOT
-
 #!/bin/bash -l
 #SBATCH --job-name=prmt-dataset
 #SBATCH --nodes=1 
