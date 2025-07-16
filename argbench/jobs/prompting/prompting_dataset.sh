@@ -6,7 +6,7 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 
 export dataset=$1
 export model=$2
-export gpu_count=$3
+export gpu_count=$1
 export prompting_strategy=$4
 sbatch <<EOT
 #!/bin/bash -l
@@ -25,6 +25,6 @@ conda activate task-specific
 
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-complete-results.csv" --base_model "$model" --test_dataset_name "$dataset" --debug "${@:4}"
+--leaderboard-path "${DATA_PATH}/runs/prompting-$model-complete-results.csv" ${@:2}
 
 EOT
