@@ -640,7 +640,7 @@ class Runner:
                     prediction = clean_prediction(response, self.config.chain_of_thoughts)
                     predictions += [prediction]
                     if prediction:
-                        logger.debug(format_logging(response, prediction,text))
+                        logger.debug(format_logging(response, prediction, text))
         if predictions:
             random_indices = [random.randint(0,len(predictions)-1) for _ in range(10)]
             sampled_predictions = [re.sub("\n+"," ",predictions[index]) for index in random_indices]
