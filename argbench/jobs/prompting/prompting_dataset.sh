@@ -24,7 +24,7 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 
 if [ -z "$model" ]; then
 
-#models=$(jq '.model_configs[].label' "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json")
+
 models=("gemma-2-9b-it" "gemma-2-27b-it" "mistral-7b-inst-3" "mistral-small" "deepseek-r1-distill-7b" "deepseek-r1-distill-32b")
 else
 
@@ -38,15 +38,6 @@ do
 echo "using the model $model"
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
 --leaderboard-path "${DATA_PATH}/runs/prompting-$model-complete-results.csv" --base_model "$model" --test_dataset_name "$dataset"
-
-#python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
-#--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset" --debug --chain_of_thoughts --sample
-
-#python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
-#--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset" --debug --train_subsample_amount 1 --sample
-#
-#python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
-#--leaderboard-path "${DATA_PATH}/runs/prompting-$model-results.csv" --base_model "$model" --test_dataset_name "$dataset" --debug --train_subsample_amount 4 --sample
 done
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
