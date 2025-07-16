@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import gc
 import optuna
-
+import re
 from optuna import create_study
 from optuna.samplers import TPESampler
 from peft import (PeftModel, LoraConfig, get_peft_model, prepare_model_for_kbit_training, )
@@ -433,7 +433,7 @@ class Runner:
 
     def dump_predictions(self):
         if self.config.prediction_path:
-            with open(self.config.prediction_path, "w") as file:
+            with open(self.config.prediction_path, "a+") as file:
                 file.writelines(self.prediction_samples)
 
     def hpo_objective(self, trial: Trial):
@@ -643,7 +643,7 @@ class Runner:
                         logger.debug(format_logging(response, prediction,text))
         if predictions:
             random_indices = [random.randint(0,len(predictions)-1) for _ in range(10)]
-            sampled_predictions = [predictions[index] for index in random_indices]
+            sampled_predictions = [re.sub("\n+"," ",predictions[index]) for index in random_indices]
             sampled_labels = [labels[index] for index in random_indices]
             sampled_predictions = zip(sampled_predictions, sampled_labels, [self.config.base_model for _ in range(10)], [test_task_name for _ in range(10)])
             sampled_predictions = [x[0]+"\t"+x[1]+"\t"+x[2]+"\t"+x[3]+"\n" for x in sampled_predictions]

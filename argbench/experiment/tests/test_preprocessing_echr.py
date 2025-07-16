@@ -42,3 +42,43 @@ class TestEchrPreprocessing(unittest.TestCase):
             print("**output**\n")
 
             print("\n".join(f"{unit[2]}: {unit[1]}" for unit in units))
+
+
+class TestSentenceSegmentation(unittest.TestCase):
+    def test_sentence_segmentation(self):
+        nltk_segmenter = get_nltk_sentence_segmenter()
+        spacy_segmenter = get_spacy_sentence_segmenter()
+
+        dataset_path = str(datasets_path()
+                           / "echr_corpus"
+                           / "ECHR_Corpus.json")
+        with open(dataset_path) as json_file:
+            corpus = json.load(json_file)
+            test, val, train = split_test_val_train(corpus)
+            all_data = test + val + train
+            shortest_length = 1000000000
+            shortest_case =None
+            shortest_case_id = None
+            for case_id, case in enumerate(all_data):
+                case_text = case["text"]
+                if len(case_text) <shortest_length:
+                    shortest_length = len(case_text)
+                    shortest_case = case
+                    shortest_case_id = case_id
+
+
+
+            nltk_sentences = nltk_segmenter(case_text)
+            stancy_sentences = spacy_segmenter(case_text)
+            print("nltk\n")
+            print("\n****\n")
+            for sentence in nltk_sentences:
+                print(case_text[sentence[0]:sentence[1]])
+                print("\n")
+            print("\n****\n")
+            print("spacy\n")
+            for sentence in stancy_sentences:
+                print(case_text[sentence[0]:sentence[1]])
+                print("\n")
+
+
