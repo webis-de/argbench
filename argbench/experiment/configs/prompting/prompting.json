@@ -28,19 +28,13 @@
     },
     "model_configs": [
         {
-            "label": "gemma-2-2b-it",
-            "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-2-2b-it",
+            "label": "gemma-3-4b-it",
+            "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-3-4b-it",
             "prompt_template": "<start_of_turn>user{instruction}<end_of_turn><start_of_turn>model",
             "output_splitter": "<start_of_turn>model",
             "cutoff_len": 8192
         },
-        {
-            "label": "gemma-2-9b-it",
-            "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-2-9b-it",
-            "prompt_template": "<start_of_turn>user{instruction}<end_of_turn><start_of_turn>model",
-            "output_splitter": "<start_of_turn>model",
-            "cutoff_len": 8192
-        },
+
         {
             "label": "gemma-3-27b-it",
             "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-3-27b-it",

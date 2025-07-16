@@ -359,6 +359,7 @@ class RunConfig:
 
     debug: bool
 
+
     # task-specific
 
     # Seed to use
@@ -392,6 +393,8 @@ class RunConfig:
     hpo: bool
     # Padding token id
     chain_of_thoughts : bool = False
+
+
     prediction_path: str = None
     in_task: bool = False
     sample: bool = False
@@ -434,7 +437,9 @@ class RunConfig:
         """
         arg_parser.add_argument("--quantization", action="store_true")
         arg_parser.add_argument("--sample", action="store_true")
-
+        arg_parser.add_argument("--0-shot", action="store_true")
+        arg_parser.add_argument("--1-shot", action="store_true")
+        arg_parser.add_argument("--4-shot", action="store_true")
         arg_parser.add_argument("-icot", "--chain_of_thoughts", action="store_true")
         arg_parser.add_argument("-", "--chain_of_thoughts", action="store_true")
         arg_parser.add_argument("-int", "--in_task", type=bool, help="whether to conduct a cross task or in task experiment")
