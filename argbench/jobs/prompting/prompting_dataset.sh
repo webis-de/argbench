@@ -8,7 +8,7 @@ sbatch <<EOT
 #SBATCH --time=72:00:00
 #SBATCH --output argbench/output/prmt-dataset-%j.out
 #SBATCH --error argbench/output/prmt-dataset-%j.err
-#SBATCH --gpus=$3
+#SBATCH --gpus="$3"
 
 
 module load Miniforge3
