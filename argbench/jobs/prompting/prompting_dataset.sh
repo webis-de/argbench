@@ -2,10 +2,10 @@
 echo "$1 $2 $3"
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
+export model=$2
+export dataset=$1
 
 sbatch <<EOT
-model=$2
-dataset=$1
 
 #!/bin/bash -l
 #SBATCH --job-name=prmt-dataset
