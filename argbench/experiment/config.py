@@ -506,7 +506,7 @@ class RunConfig:
         arg_parser.add_argument("-pa", "--penalty_alpha", type=float, help="Alpha parameter for penalty function")
         arg_parser.add_argument("-uc", "--use_cache", action="store_true", help="Use cache during generation")
         arg_parser.add_argument("-temp", "--temperature", type=float, help="Temperature parameter for sampling method")
-        arg_parser.add_argument("-k", "--top_k", type=int, help="Top-k sampling parameter")
+        arg_parser.add_argument("-tk", "--top_k", type=int, help="Top-k sampling parameter")
         arg_parser.add_argument("-p", "--top_p", type=float, help="Top-p (nucleus) sampling parameter")
         arg_parser.add_argument("-mp", "--min_p", type=float, help="Minimum p value for typical (Tyers) sampling")
         arg_parser.add_argument("-tp", "--typical_p", type=float, help="Typical p (Tyers) sampling parameter")
