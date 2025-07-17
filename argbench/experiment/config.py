@@ -435,9 +435,6 @@ class RunConfig:
         """
         arg_parser.add_argument("--quantization", action="store_true")
         arg_parser.add_argument("--sample", action="store_true")
-        arg_parser.add_argument("--0-shot", action="store_true")
-        arg_parser.add_argument("--1-shot", action="store_true")
-        arg_parser.add_argument("--4-shot", action="store_true")
         arg_parser.add_argument("-icot", "--chain_of_thoughts", action="store_true")
 
         arg_parser.add_argument("-int", "--in_task", type=bool, help="whether to conduct a cross task or in task experiment")
@@ -447,7 +444,7 @@ class RunConfig:
         arg_parser.add_argument("-ie", "--is_evaluate", action="store_true", default=False, help="Should evaluation be performed")
         arg_parser.add_argument("-ih", "--hpo", action="store_true", default=False, help="Should HPO be performed")
         arg_parser.add_argument("-s", "--seed", type=int, help="Seed to use for running experiment")
-        arg_parser.add_argument("-tsr", "--train_subsample_rate", type=float, help="Fraction of instances to subsample from each dataset")
+        arg_parser.add_argument("-k", "--train_subsample_rate", type=float, help="Fraction of instances to subsample from each dataset")
         arg_parser.add_argument("-tsa", "--train_subsample_amount", type=int, help="Amount of instances to subsamplea from each dataset")
         arg_parser.add_argument("-l", "--is_leave_one_out", action="store_true", help="Should leave one out training be performed")
         arg_parser.add_argument("-vsr", "--test_subsample_rate", type=float, help="Fraction of instances to subsample from each dataset for testing")
@@ -506,7 +503,7 @@ class RunConfig:
         arg_parser.add_argument("-pa", "--penalty_alpha", type=float, help="Alpha parameter for penalty function")
         arg_parser.add_argument("-uc", "--use_cache", action="store_true", help="Use cache during generation")
         arg_parser.add_argument("-temp", "--temperature", type=float, help="Temperature parameter for sampling method")
-        arg_parser.add_argument("-k", "--top_k", type=int, help="Top-k sampling parameter")
+        arg_parser.add_argument("-tk", "--top_k", type=int, help="Top-k sampling parameter")
         arg_parser.add_argument("-p", "--top_p", type=float, help="Top-p (nucleus) sampling parameter")
         arg_parser.add_argument("-mp", "--min_p", type=float, help="Minimum p value for typical (Tyers) sampling")
         arg_parser.add_argument("-tp", "--typical_p", type=float, help="Typical p (Tyers) sampling parameter")
