@@ -5,7 +5,7 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 export gpu_count=$1
 sbatch <<EOT
 #!/bin/bash -l
-#SBATCH --job-name=prmt-dataset
+#SBATCH --job-name=prmt
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=30G
