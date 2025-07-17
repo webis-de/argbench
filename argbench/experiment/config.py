@@ -345,8 +345,6 @@ class RunConfig:
 
     test_dataset: dict
 
-    # Experiment results path
-    leaderboard_path: str
 
     # Dataset metrics a dictionary that contains for each task which metric will be used
     task_metrics_path: str
@@ -446,7 +444,6 @@ class RunConfig:
         arg_parser.add_argument("-sf", "--skill_filter", type=str, help="filter the tasks based on skill")
         arg_parser.add_argument("-d", "--debug", action="store_true", default=False, help="Should prompting be performed")
         arg_parser.add_argument("-iprpt", "--prompting", action="store_true", default=False, help="Should prompting be performed")
-        arg_parser.add_argument("-lbp", "--leaderboard-path", type=str, default=False)
         arg_parser.add_argument("-ie", "--is_evaluate", action="store_true", default=False, help="Should evaluation be performed")
         arg_parser.add_argument("-ih", "--hpo", action="store_true", default=False, help="Should HPO be performed")
         arg_parser.add_argument("-s", "--seed", type=int, help="Seed to use for running experiment")
@@ -783,8 +780,6 @@ class RunConfig:
             conf_obj.generation_config.length_penalty = args.length_penalty
 
 
-        if args.leaderboard_path:
-            conf_obj.leaderboard_path = args.leaderboard_path
         if args.experiment_splits_path:
             conf_obj.experiment_splits_path = args.expreiment_splits_path
 
@@ -885,3 +880,21 @@ class RunConfig:
             return PromptingTechnique.COT
         else:
             return PromptingTechnique.ZERO_SHOT
+
+    def get_leaderboard_path(self):
+        if os.path.exists("/bigwork/nhwpajjy/"):
+            path = "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs"
+        else:
+            path = "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs"
+
+        if self.prompting:
+            path = f"{path}/prompting-{self.base_model}-results.csv"
+        elif self.in_task:
+            path = f"{path}/in-task-{self.base_model}-results.csv"
+        else:
+            if self.skill_filter:
+                path = f"{path}/skill-transfer-{self.base_model}-results.csv"
+            else:
+                path = f"{path}/cross-task-{self.base_model}-results.csv"
+
+        return path
