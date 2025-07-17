@@ -24,7 +24,7 @@ for model in mistral-7b-inst-3 gemma-2-9b-it mistral-small llama-3-8b-instruct d
 do
 
   python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/instruction-fine-tuning/fine_tuning.json" \
-  --leaderboard-path "${DATA_PATH}/runs/fine-tuning-$model-results.csv" \
+   \
   --base_model "$model" --test_dataset_name "$dataset"
 done
 

@@ -138,7 +138,7 @@ class Runner:
 
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
         self.task_metrics = get_evaluation_metrics_map()
-        self.leaderboard = Leaderboard(config.leaderboard_path)
+        self.leaderboard = Leaderboard(config.get_leaderboard_path())
         if "name" in self.config.test_dataset:
             self.test_dataset_name = self.config.test_dataset["name"]
         else:

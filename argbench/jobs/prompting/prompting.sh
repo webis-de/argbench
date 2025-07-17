@@ -2,12 +2,7 @@
 echo "${@:2}"
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
-
-
-export dataset=$1
-export model=$2
 export gpu_count=$1
-export prompting_strategy=$4
 sbatch <<EOT
 #!/bin/bash -l
 #SBATCH --job-name=prmt-dataset
@@ -15,8 +10,8 @@ sbatch <<EOT
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=30G
 #SBATCH --time=72:00:00
-#SBATCH --output argbench/output/prmt-dataset-%j.out
-#SBATCH --error argbench/output/prmt-dataset-%j.err
+#SBATCH --output argbench/output/prmt-%j.out
+#SBATCH --error argbench/output/prmt-%j.err
 #SBATCH --gpus="$gpu_count"
 
 
@@ -25,6 +20,6 @@ conda activate task-specific
 
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
---leaderboard-path "${DATA_PATH}/runs/prompting-$model-complete-results.csv" ${@:2}
+ ${@:2}
 
 EOT

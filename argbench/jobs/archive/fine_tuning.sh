@@ -22,7 +22,7 @@ cd "$CODE_PATH"
 
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/instruction-fine-tuning/fine_tuning.json" \
---leaderboard-path "${DATA_PATH}/runs/fine-tuning-$model-results.csv" \
+ \
 --base_model "$model" --test_dataset_name "$dataset"
 python -c "print(1*2)"
 

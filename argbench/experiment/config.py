@@ -345,8 +345,6 @@ class RunConfig:
 
     test_dataset: dict
 
-    # Experiment results path
-    leaderboard_path: str
 
     # Dataset metrics a dictionary that contains for each task which metric will be used
     task_metrics_path: str
@@ -437,20 +435,16 @@ class RunConfig:
         """
         arg_parser.add_argument("--quantization", action="store_true")
         arg_parser.add_argument("--sample", action="store_true")
-        arg_parser.add_argument("--0-shot", action="store_true")
-        arg_parser.add_argument("--1-shot", action="store_true")
-        arg_parser.add_argument("--4-shot", action="store_true")
         arg_parser.add_argument("-icot", "--chain_of_thoughts", action="store_true")
 
         arg_parser.add_argument("-int", "--in_task", type=bool, help="whether to conduct a cross task or in task experiment")
         arg_parser.add_argument("-sf", "--skill_filter", type=str, help="filter the tasks based on skill")
         arg_parser.add_argument("-d", "--debug", action="store_true", default=False, help="Should prompting be performed")
         arg_parser.add_argument("-iprpt", "--prompting", action="store_true", default=False, help="Should prompting be performed")
-        arg_parser.add_argument("-lbp", "--leaderboard-path", type=str, default=False)
         arg_parser.add_argument("-ie", "--is_evaluate", action="store_true", default=False, help="Should evaluation be performed")
         arg_parser.add_argument("-ih", "--hpo", action="store_true", default=False, help="Should HPO be performed")
         arg_parser.add_argument("-s", "--seed", type=int, help="Seed to use for running experiment")
-        arg_parser.add_argument("-tsr", "--train_subsample_rate", type=float, help="Fraction of instances to subsample from each dataset")
+        arg_parser.add_argument("-k", "--train_subsample_rate", type=float, help="Fraction of instances to subsample from each dataset")
         arg_parser.add_argument("-tsa", "--train_subsample_amount", type=int, help="Amount of instances to subsamplea from each dataset")
         arg_parser.add_argument("-l", "--is_leave_one_out", action="store_true", help="Should leave one out training be performed")
         arg_parser.add_argument("-vsr", "--test_subsample_rate", type=float, help="Fraction of instances to subsample from each dataset for testing")
@@ -509,7 +503,7 @@ class RunConfig:
         arg_parser.add_argument("-pa", "--penalty_alpha", type=float, help="Alpha parameter for penalty function")
         arg_parser.add_argument("-uc", "--use_cache", action="store_true", help="Use cache during generation")
         arg_parser.add_argument("-temp", "--temperature", type=float, help="Temperature parameter for sampling method")
-        arg_parser.add_argument("-k", "--top_k", type=int, help="Top-k sampling parameter")
+        arg_parser.add_argument("-tk", "--top_k", type=int, help="Top-k sampling parameter")
         arg_parser.add_argument("-p", "--top_p", type=float, help="Top-p (nucleus) sampling parameter")
         arg_parser.add_argument("-mp", "--min_p", type=float, help="Minimum p value for typical (Tyers) sampling")
         arg_parser.add_argument("-tp", "--typical_p", type=float, help="Typical p (Tyers) sampling parameter")
@@ -783,8 +777,6 @@ class RunConfig:
             conf_obj.generation_config.length_penalty = args.length_penalty
 
 
-        if args.leaderboard_path:
-            conf_obj.leaderboard_path = args.leaderboard_path
         if args.experiment_splits_path:
             conf_obj.experiment_splits_path = args.expreiment_splits_path
 
@@ -885,3 +877,21 @@ class RunConfig:
             return PromptingTechnique.COT
         else:
             return PromptingTechnique.ZERO_SHOT
+
+    def get_leaderboard_path(self):
+        if os.path.exists("/bigwork/nhwpajjy/"):
+            path = "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs"
+        else:
+            path = "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs"
+
+        if self.prompting:
+            path = f"{path}/prompting-{self.base_model}-results.csv"
+        elif self.in_task:
+            path = f"{path}/in-task-{self.base_model}-results.csv"
+        else:
+            if self.skill_filter:
+                path = f"{path}/skill-transfer-{self.base_model}-results.csv"
+            else:
+                path = f"{path}/cross-task-{self.base_model}-results.csv"
+
+        return path

@@ -20,5 +20,5 @@ do
   cd "$CODE_PATH"
 
   python -m argbench.experiment.run -c "$CODE_PATH/argbench/experiment/configs/prompting/prompting.json" \
-  --train_subsample_amount "$k" --leaderboard-path "$DATA_PATH/runs/prompting-llama3-instruct-results-k.csv"
+  --train_subsample_amount "$k"
 done
