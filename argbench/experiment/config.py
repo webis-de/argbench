@@ -424,7 +424,6 @@ class RunConfig:
     vllm_config: VLLMGenerationConfig = None
     shot_task_generation_config = {}
     cot_task_generation_config = {}
-    model: str = "mistral-7b-inst-3"
     quantization: bool = False
 
 
