@@ -894,9 +894,9 @@ class RunConfig:
     def get_study_path(self):
 
         if os.path.exists("/bigwork/nhwpajjy/"):
-            path = "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo-results/optuna-studies.db"
+            path = "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo/hpo-results/optuna-studies.db"
         else:
-            path = "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/hpo-results/optuna-studies.db"
+            path = "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/hpo/hpo-results/optuna-studies.db"
 
         return path
 
