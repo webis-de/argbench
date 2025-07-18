@@ -370,7 +370,7 @@ class Runner:
         """
         params = {"trust_remote_code":True, "pretrained_model_name_or_path":base_model}
         if quantization:
-            params["quantization_config"] = BitsAndBytesConfig()
+            params["quantization_config"] = BitsAndBytesConfig(load_in_8bit=True)
             params["device_map"]= "auto"
         else:
             params["quantization_config"] = None

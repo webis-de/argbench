@@ -20,7 +20,7 @@ sbatch <<EOT
 #SBATCH --gpus=h100:1
 
 module load Miniforge3
-conda activate task-specific-new
+conda activate new-env
 
 python -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:4}
 EOT
@@ -38,7 +38,7 @@ sbatch <<EOT
 #SBATCH --gpus=h100:${gpu_count}
 
 module load Miniforge3
-conda activate task-specific-new
+conda activate new-env
 
 accelerate launch --config_file "${CONFIG_PATH}/accelerate/config_${gpu_count}_gpus_2_stage.yaml" \\
 -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:4}
