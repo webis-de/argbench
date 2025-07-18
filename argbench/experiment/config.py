@@ -434,9 +434,7 @@ class RunConfig:
         """
         arg_parser.add_argument("--quantization", action="store_true")
         arg_parser.add_argument("--sample", action="store_true")
-        arg_parser.add_argument("--0-shot", action="store_true")
-        arg_parser.add_argument("--1-shot", action="store_true")
-        arg_parser.add_argument("--4-shot", action="store_true")
+
         arg_parser.add_argument("-cot", "--cot", action="store_true")
 
         arg_parser.add_argument("-int", "--in_task", type=bool, help="whether to conduct a cross task or in task experiment")
