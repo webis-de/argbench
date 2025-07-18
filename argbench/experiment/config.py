@@ -604,7 +604,7 @@ class RunConfig:
             conf_obj.debug = args.debug
         if args.seed:
             conf_obj.seed = args.seed
-        if args.chain_of_thoughts:
+        if args.cot:
             conf_obj.chain_of_thoughts = True
         if args.prompting:
             conf_obj.prompting = True
