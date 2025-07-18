@@ -22,7 +22,7 @@ cd "$CODE_PATH"
 
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/instruction-fine-tuning/testing_cross_task_${model}.json" \
---base_model "$model"  --debug --test_dataset_name $dataset
+--base_model "$model"  --debug --dataset $dataset
 
 
 

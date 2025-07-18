@@ -118,10 +118,10 @@ $ python run.py -c configs/config_debates_key_point_barhaim21.json --load_model 
 
 ### Test set settings
 
-Test dataset name can be specified with `--test_dataset_name` flag while dataset files to match inside dataset folder can be set using `--test_dataset_match` flag. If full evaluation of test datasets is not needed, it can be subsampled using `--test_subsample_amount` to subsample only `amount_sample` samples, or `--test_subsample_rate` to subsample a fraction `ratio_subsample` of datapoints.
+Test dataset name can be specified with `--dataset` flag while dataset files to match inside dataset folder can be set using `--test_dataset_match` flag. If full evaluation of test datasets is not needed, it can be subsampled using `--test_subsample_amount` to subsample only `amount_sample` samples, or `--test_subsample_rate` to subsample a fraction `ratio_subsample` of datapoints.
 
 ``` shell
-$ python run.py -c configs/config_file.json --test_dataset_name dataset_name --test_dataset_match match_file_string --test_subsample_amount amount_subsample --test_subsample_rate ratio_subsample
+$ python run.py -c configs/config_file.json --dataset dataset_name --test_dataset_match match_file_string --test_subsample_amount amount_subsample --test_subsample_rate ratio_subsample
 ```
 
 #### Example
@@ -129,7 +129,7 @@ $ python run.py -c configs/config_file.json --test_dataset_name dataset_name --t
 Use same config but with different test set with 50 datapoints:
 
 ``` shell
-$ python run.py -c configs/config_debates_key_point_barhaim21.json --test_dataset_name argument_unit_classificaiton_wikipedia_articles_lexisnexis_eindor20 --test_dataset_match argument_unit_classificaiton_wikipedia_articles_lexisnexis_eindor20 --test_subsample_amount 50
+$ python run.py -c configs/config_debates_key_point_barhaim21.json --dataset argument_unit_classificaiton_wikipedia_articles_lexisnexis_eindor20 --test_dataset_match argument_unit_classificaiton_wikipedia_articles_lexisnexis_eindor20 --test_subsample_amount 50
 ```
 
 ### Train set settings

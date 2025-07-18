@@ -20,7 +20,7 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 cd "$CODE_PATH"
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/skill_transfer_hpo.json" \
---base_model "$model"  --debug --sample --test_dataset_name "fallacy_detection_logic_jin22" --skill_filter "perspective-assessment"
+--base_model "$model"  --debug --sample --dataset "fallacy_detection_logic_jin22" --skill_filter "perspective-assessment"
 
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"

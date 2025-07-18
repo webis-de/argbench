@@ -28,7 +28,7 @@ for dataset in ${datasets[@]};
 do
 echo $dataset
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/in_task_hpo_${dataset:1:-1}.json" \
---base_model "$model" --test_dataset_name "${dataset:1:-1}" --debug --sample
+--base_model "$model" --dataset "${dataset:1:-1}" --debug --sample
 
 done
 

@@ -25,7 +25,7 @@ do
 
   python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/instruction-fine-tuning/fine_tuning.json" \
    \
-  --base_model "$model" --test_dataset_name "$dataset"
+  --base_model "$model" --dataset "$dataset"
 done
 
 
