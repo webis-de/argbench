@@ -1,8 +1,11 @@
 #!/bin/bash
-echo "${@:2}"
+echo "${@:4}"
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
+export CONFIG_PATH="$BIGWORK/task-specific-argument-mining-and-generation/argbench/experiment/configs/"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 export gpu_count=$1
+export experiment=$2
+export jobname=$3
 sbatch <<EOT
 #!/bin/bash -l
 #SBATCH --job-name=prmt
@@ -19,7 +22,6 @@ module load Miniforge3
 conda activate task-specific
 
 
-python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/prompting/prompting.json" \
- ${@:2}
+python -m  argbench.experiment.run -c "${CONFIG_PATH}/%{experiment}.json" ${@:4}
 
 EOT
