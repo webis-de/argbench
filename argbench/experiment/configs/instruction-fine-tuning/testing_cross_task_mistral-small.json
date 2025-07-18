@@ -7,7 +7,7 @@
     "experiment_splits_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/experiment_splits.json",
     "seed": 4112,
     "debug": true,
-    "base_model": "mistral-small",
+    "model": "mistral-small",
     "cutoff_len": 1000,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "models_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models",

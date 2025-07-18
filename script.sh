@@ -3,6 +3,6 @@ for dataset in ${datasets[@]};
 do
 echo $dataset
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/in_task_hpo.json" \
---base_model "$model" --dataset "$dataset"
+--model "$model" --dataset "$dataset"
 
 done

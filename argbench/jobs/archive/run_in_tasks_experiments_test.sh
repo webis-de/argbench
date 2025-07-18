@@ -21,7 +21,7 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 
 cd "$CODE_PATH"
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/instruction-fine-tuning/in_task_${dataset}.json" \
---base_model "$model"  --debug
+--model "$model"  --debug
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
 export JOB_ARGUMENTS="test;${datasets}.5;in-task;${model};\n"

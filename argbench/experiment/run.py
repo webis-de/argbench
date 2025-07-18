@@ -244,10 +244,10 @@ class Runner:
         if self.config.peft_configs or self.config.peft_fresh_config:
             llm = LLM(model=self.model_config.path, enable_lora=True, seed=self.config.seed, device=device, trust_remote_code=True)
         else:
-            if self.config.base_model == "llama-3.3-70b-instruct" :
+            if self.config.model == "llama-3.3-70b-instruct" :
                 logger.info("running on 4 GPUS")
                 llm = LLM(model=self.model_config.path, tensor_parallel_size=4, enable_lora=True, seed=self.config.seed, device=device, trust_remote_code=True)
-            elif self.config.base_model == "deepseek-r1-distill-32b" or self.config.base_model == "qwen3-32b" or self.config.base_model == "gemma-3-27b-it" or self.config.base_model == "mixtral-8x7b":
+            elif self.config.model == "deepseek-r1-distill-32b" or self.config.model == "qwen3-32b" or self.config.model == "gemma-3-27b-it" or self.config.model == "mixtral-8x7b":
                 logger.info("running on 2 GPUS")
                 llm = LLM(model=self.model_config.path, tensor_parallel_size=2, seed=self.config.seed, device=device, trust_remote_code=True)
             else:
@@ -556,7 +556,7 @@ class Runner:
                 log_mem(f"tested on {task}")
 
                 for metric in metrics:
-                    results = {"test_task": task, "metric" : metric, "score": metrics[metric],  "model" : self.config.base_model+prompting_technique,
+                    results = {"test_task": task, "metric" : metric, "score": metrics[metric],  "model" : self.config.model + prompting_technique,
                                "start_time": starting_time, "k": train_subsample_amount, "filter": filter, "seed": self.config.seed}
                     all_results.append(results)
                     self.leaderboard.add_results(results)
@@ -574,7 +574,7 @@ class Runner:
             metrics = self.evaluate(self.test_dataset_name, self.iterable_dataset["test"], sampling_params, model=self.trainer.model)
             for metric in metrics:
                 results = {"test_task": self.test_dataset_name, "metric" : metric, "score": metrics[metric],
-                           "model" : self.config.base_model,  "start_time": starting_time, "k": train_subsample_amount,
+                           "model" : self.config.model,  "start_time": starting_time, "k": train_subsample_amount,
                            "filter":filter, "seed": self.config.seed, "val_loss": val_loss, "train_loss": train_loss}
                 all_results.append(results)
                 log_mem(f"tested on {self.test_dataset_name}")
@@ -650,7 +650,7 @@ class Runner:
             random_indices = [random.randint(0,len(predictions)-1) for _ in range(10)]
             sampled_predictions = [re.sub("\n+"," ",predictions[index]) for index in random_indices]
             sampled_labels = [labels[index] for index in random_indices]
-            sampled_predictions = zip(sampled_predictions, sampled_labels, [self.config.base_model for _ in range(10)], [test_task_name for _ in range(10)])
+            sampled_predictions = zip(sampled_predictions, sampled_labels, [self.config.model for _ in range(10)], [test_task_name for _ in range(10)])
             sampled_predictions = [x[0]+"\t"+x[1]+"\t"+x[2]+"\t"+x[3]+"\n" for x in sampled_predictions]
             self.prediction_samples.extend(sampled_predictions)
 

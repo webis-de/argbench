@@ -21,7 +21,7 @@ cd "$CODE_PATH"
 
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/cross_task_hpo_stance_classification_ukp_sentential_stab18.json" \
---base_model "$model"  --debug --sample
+--model "$model"  --debug --sample
 
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"

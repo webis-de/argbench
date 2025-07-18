@@ -379,7 +379,7 @@ class RunConfig:
     # Data folder
     data_folder: str
     # Base model path
-    base_model: str
+    model: str
     # Should only evaluation be performed
     prompting: bool
     # Should HPO be performed
@@ -516,7 +516,7 @@ class RunConfig:
         arg_parser.add_argument("-rp", "--repetition_penalty", type=float, help="Repetition penalty parameter")
         arg_parser.add_argument("-lp", "--length_penalty", type=float, help="Length penalty parameter")
         # Quantization config
-        arg_parser.add_argument("-bm", "--base_model", type=str, help="base model")
+        arg_parser.add_argument("-bm", "--model", type=str, help="base model")
         arg_parser.add_argument("-esp", "--experiment_splits_path", type=str)
         arg_parser.add_argument("-pp", "--prediction_path", type=str)
 
@@ -586,7 +586,7 @@ class RunConfig:
             for conf in conf_obj.model_configs:
                 model_config = ModelConfig(**conf)
                 model_configs.append(model_config)
-                if model_config.label == conf_obj.base_model:
+                if model_config.label == conf_obj.model:
                     conf_obj.model_config = model_config
             conf_obj.model_configs = model_configs
 
@@ -623,15 +623,15 @@ class RunConfig:
             conf_obj.test_dataset["subsample_amount"] = args.test_subsample_amount
         if args.dataset:
             conf_obj.test_dataset["name"] = args.dataset
-        if args.base_model:
-            conf_obj.base_model = args.base_model
+        if args.model:
+            conf_obj.model = args.model
         ## This should be executed after choosing the model
         if args.quantization:
             conf_obj.quantization = True
 
         for conf in conf_obj.model_configs:
 
-            if conf.label == conf_obj.base_model:
+            if conf.label == conf_obj.model:
                 conf_obj.model_config = conf
 
 
@@ -655,19 +655,19 @@ class RunConfig:
         if not conf_obj.hpo and not conf_obj.prompting and config.get("best_hyper_parameters_path"):
             with open(config.get("best_hyper_parameters_path")) as hps_stream:
                 best_hyper_parameters = json.load(hps_stream)
-                if conf_obj.base_model in best_hyper_parameters:
-                    model_hyper_parameters = best_hyper_parameters[conf_obj.base_model]
+                if conf_obj.model in best_hyper_parameters:
+                    model_hyper_parameters = best_hyper_parameters[conf_obj.model]
                     test_dataset = conf_obj.test_dataset["name"]
                     if test_dataset in model_hyper_parameters:
                         task_hyper_parameters = model_hyper_parameters[test_dataset]
                         conf_obj.training_args_config.per_device_train_batch_size = task_hyper_parameters["train_batch_size"]
                         conf_obj.training_args_config.learning_rate = task_hyper_parameters["learning_rate"]
-                        print(f"loading best params for  {test_dataset} and {conf_obj.base_model}")
+                        print(f"loading best params for  {test_dataset} and {conf_obj.model}")
                         print(f"setting learning rate {conf_obj.training_args_config.learning_rate} and batch size {conf_obj.training_args_config.per_device_train_batch_size}")
                     else:
-                        print(f"Error no params found for {test_dataset} and {conf_obj.base_model}")
+                        print(f"Error no params found for {test_dataset} and {conf_obj.model}")
                 else:
-                    print(f"Error no params found for {conf_obj.base_model}")
+                    print(f"Error no params found for {conf_obj.model}")
 
         # Training arguments
         if args.train_batch_size:
@@ -804,10 +804,10 @@ class RunConfig:
             root_path = "/mnt/home/yajjour"
 
         if self.prompting:
-            self.log_path = f"{root_path}/task-specific-argument-mining-and-generation-data/logs/prompting-{self.base_model}-{starting_time}.log"
+            self.log_path = f"{root_path}/task-specific-argument-mining-and-generation-data/logs/prompting-{self.model}-{starting_time}.log"
         else:
             test_dataset_name = self.test_dataset["name"]
-            self.log_path = f"{root_path}/task-specific-argument-mining-and-generation-data/logs/fine-tuning-{test_dataset_name}-{self.base_model}-{starting_time}.log"
+            self.log_path = f"{root_path}/task-specific-argument-mining-and-generation-data/logs/fine-tuning-{test_dataset_name}-{self.model}-{starting_time}.log"
         return self.log_path
     def get_output_path(self):
         now = datetime.now()
@@ -817,19 +817,19 @@ class RunConfig:
 
 
     def get_pad_token_id(self):
-        if self.base_model == "qwen-7b":
+        if self.model == "qwen-7b":
             return None
         else:
             return self.pad_token_id
 
     def get_unk_token_id(self):
-        if self.base_model == "qwen-7b":
+        if self.model == "qwen-7b":
             return None
         else:
             return "<unk>"
 
     def get_experiment_name(self):
-        model = self.base_model
+        model = self.model
 
 
         if self.in_task:
@@ -888,13 +888,13 @@ class RunConfig:
             path = "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/runs"
 
         if self.prompting:
-            path = f"{path}/prompting-{self.base_model}-results.csv"
+            path = f"{path}/prompting-{self.model}-results.csv"
         elif self.in_task:
-            path = f"{path}/in-task-{self.base_model}-results.csv"
+            path = f"{path}/in-task-{self.model}-results.csv"
         else:
             if self.skill_filter:
-                path = f"{path}/skill-transfer-{self.base_model}-results.csv"
+                path = f"{path}/skill-transfer-{self.model}-results.csv"
             else:
-                path = f"{path}/cross-task-{self.base_model}-results.csv"
+                path = f"{path}/cross-task-{self.model}-results.csv"
 
         return path
