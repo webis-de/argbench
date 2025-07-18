@@ -46,6 +46,18 @@ def log_mem(message):
         logger.info(f"*** GPU Memory {message}: {free_gpu:2.0f} GB free from {total_gpu:2.0f} GB  |  "
                     f" CPU Memory: {free_cpu:2.0f} GB free from {total_cpu:2.0f} GB")
 
+def log_model_type(model):
+    reported_modules = set()
+
+    for name, param in model.named_parameters():
+        if not param.requires_grad:
+            continue
+        module_path = ".".join(name.split(".")[:-1]) if "." in name else ""
+
+        if module_path not in reported_modules:
+            logger.debug(f"Module: {module_path if module_path else 'Top-level'}, Representative Parameter: {name}, Precision (dtype): {param.dtype}")
+            reported_modules.add(module_path)
+
 
 def clean_prediction(prediction, chain_of_thoughts):
     if chain_of_thoughts and "Output:" in prediction:
@@ -217,6 +229,8 @@ class Runner:
         logger.info(f"preparing model {self.model_config.path} on {device}")
 
         model = self.prepare_model_for_causal_llm(self.model_config.path, quantization)
+        logger.debug(f"logging model {self.config.model} precision")
+        log_model_type(model)
         self.base_model = model
 
 
@@ -233,6 +247,8 @@ class Runner:
             model = self.prepare_peft_model(model)
         if self.config.peft_fresh_config:
             model = self.prepare_new_peft_model(model)
+        logger.debug(f"logging peft model {self.config.model} precision")
+        log_model_type(model)
 
         
         self.peft_model = model
@@ -354,7 +370,7 @@ class Runner:
         """
         params = {"trust_remote_code":True, "pretrained_model_name_or_path":base_model}
         if quantization:
-            params["quantization_config"] = BitsAndBytesConfig(load_in_8bit=True)
+            params["quantization_config"] = BitsAndBytesConfig()
             params["device_map"]= "auto"
         else:
             params["quantization_config"] = None
