@@ -38,7 +38,7 @@ sbatch <<EOT
 #SBATCH --gpus=${gpu_count}
 
 module load Miniforge3
-conda activate task-specific
+conda activate task-specific-new
 
 accelerate launch --config_file "${CONFIG_PATH}/accelerate/config_${gpu_count}_gpus_2_stage.yaml" \\
 -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:4}
