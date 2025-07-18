@@ -12,7 +12,7 @@ Before running configuration you should change paths to data and models:
 
 ``` json-with-comments
 {
-    "base_model": "baffo32/decapoda-research-llama-7B-hf", // path to base model to finetune
+    "model": "baffo32/decapoda-research-llama-7B-hf", // path to base model to finetune
     "data_folder": "/home/dima/Data/data/", // path to data folder
     "run_output_path": "out_ajjour20.json", // path to write output to
     "peft_configs": [
