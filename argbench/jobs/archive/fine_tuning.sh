@@ -23,7 +23,7 @@ cd "$CODE_PATH"
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/instruction-fine-tuning/fine_tuning.json" \
  \
---base_model "$model" --test_dataset_name "$dataset"
+--base_model "$model" --dataset "$dataset"
 python -c "print(1*2)"
 
 export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"

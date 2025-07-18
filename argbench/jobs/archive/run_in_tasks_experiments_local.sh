@@ -17,7 +17,7 @@ do
 echo $dataset
 
 python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/hpo/in_task_hpo.json" \
---base_model "$model" --test_dataset_name "${dataset:1:-1}"
+--base_model "$model" --dataset "${dataset:1:-1}"
 
 done
 

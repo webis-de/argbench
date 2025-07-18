@@ -453,7 +453,7 @@ class RunConfig:
         arg_parser.add_argument("-vsr", "--test_subsample_rate", type=float, help="Fraction of instances to subsample from each dataset for testing")
         arg_parser.add_argument("-vsa", "--test_subsample_amount", type=int, help="Amount of instances to subsamplea from each dataset for testing")
         arg_parser.add_argument("-tdm", "--test_dataset_match", type=str, help="Matching pattern for test dataset files to include")
-        arg_parser.add_argument("-tdn", "--test_dataset_name", type=str, help="Name of the test dataset to use")
+        arg_parser.add_argument("-tdn", "--dataset", type=str, help="Name of the test dataset to use")
         arg_parser.add_argument("-rc", "--resume_checkpoint", help="Resume training from checkpoint")
         arg_parser.add_argument("-la", "--load_adapter", action="append", help="Adapter to load")
         arg_parser.add_argument("-an", "--adapter_name", action="append", help="Adapter name that is being loaded")
@@ -621,8 +621,8 @@ class RunConfig:
             conf_obj.test_dataset["subsample_rate"] = args.test_subsample_rate
         if args.test_subsample_amount:
             conf_obj.test_dataset["subsample_amount"] = args.test_subsample_amount
-        if args.test_dataset_name:
-            conf_obj.test_dataset["name"] = args.test_dataset_name
+        if args.dataset:
+            conf_obj.test_dataset["name"] = args.dataset
         if args.base_model:
             conf_obj.base_model = args.base_model
         ## This should be executed after choosing the model
@@ -885,7 +885,7 @@ class RunConfig:
         if os.path.exists("/bigwork/nhwpajjy/"):
             path = "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs"
         else:
-            path = "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs"
+            path = "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/runs"
 
         if self.prompting:
             path = f"{path}/prompting-{self.base_model}-results.csv"
