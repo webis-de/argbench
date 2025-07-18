@@ -482,7 +482,7 @@ class Runner:
             optuna.storages.journal.JournalFileBackend(hpo_path),  # NFS path for distributed optimization
         )
         study = create_study(
-            storage="sqlite:///"+self.config.get_study_path(),
+            storage=self.config.hpo_config.storage,
             study_name=self.config.get_experiment_name(),
             direction=self.config.hpo_config.direction,
             sampler=TPESampler(),

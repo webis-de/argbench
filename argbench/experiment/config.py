@@ -304,13 +304,13 @@ class HPOConfig(CommonConfig):
 
     storage: str
 
-    study_name: str
+
 
     direction: str
     hpo_fine_grained_output: str
     hpo_coarse_output: str
     val_metric: str = None
-
+    study_name: str = None
     model_config: dict = field(default_factory=dict)
 
     # Training configs
