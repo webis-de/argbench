@@ -461,7 +461,7 @@ class RunConfig:
         arg_parser.add_argument("-tbs", "--train_batch_size", type=int, help="Training batch size")
         arg_parser.add_argument("-te", "--train_epochs", type=int, help="Number of training epochs")
         arg_parser.add_argument("-tlr", "--train_learning_rate", type=float, help="Learning rate")
-        arg_parser.add_argument("-to", "--train_optim", type=str, help="Optimizer")
+        arg_parser.add_argument("-to", "--optim", type=str, help="Optimizer")
         arg_parser.add_argument("-tes", "--train_evaluation_strategy", type=str, help="Evaluation strategy")
         arg_parser.add_argument("-tss", "--train_save_strategy", type=str, help="Save strategy")
         arg_parser.add_argument("-tev", "--train_eval_steps", type=int, help="Eval steps")
@@ -673,8 +673,8 @@ class RunConfig:
             conf_obj.training_args_config.num_train_epochs = args.train_epochs
         if args.train_learning_rate:
             conf_obj.training_args_config.learning_rate = args.train_learning_rate
-        if args.train_optim:
-            conf_obj.training_args_config.optim = args.train_optim
+        if args.optim:
+            conf_obj.training_args_config.optim = args.optim
         if args.train_evaluation_strategy:
             conf_obj.training_args_config.evaluation_strategy = args.train_evaluation_strategy
         if args.train_save_strategy:
