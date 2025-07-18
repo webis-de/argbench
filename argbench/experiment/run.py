@@ -219,10 +219,11 @@ class Runner:
         model = self.prepare_model_for_causal_llm(self.model_config.path, quantization)
         self.base_model = model
 
-        logger.info(f"preparing model for kbit training")
+
 
         if not self.config.prompting:
             if quantization:
+                logger.info(f"preparing model for kbit training")
                 model = prepare_model_for_kbit_training(model)
             model.enable_input_require_grads()
         logger.info("loaded model")

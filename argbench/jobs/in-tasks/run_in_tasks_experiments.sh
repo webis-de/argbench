@@ -17,7 +17,7 @@ sbatch <<EOT
 #SBATCH --time=72:00:00
 #SBATCH --output argbench/output/"$jobname"-%j.out
 #SBATCH --error argbench/output/"$jobname"-%j.err
-#SBATCH --gpus=1
+#SBATCH --gpus=h100:1
 
 module load Miniforge3
 conda activate task-specific-new
@@ -35,7 +35,7 @@ sbatch <<EOT
 #SBATCH --time=72:00:00
 #SBATCH --output argbench/output/"$jobname"-%j.out
 #SBATCH --error argbench/output/"$jobname"-%j.err
-#SBATCH --gpus=${gpu_count}
+#SBATCH --gpus=h100:${gpu_count}
 
 module load Miniforge3
 conda activate task-specific-new
