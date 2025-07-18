@@ -838,17 +838,12 @@ class RunConfig:
                 experiment = "cross-task"
         if self.hpo:
             experiment = "hpo-" + experiment
-
+        if self.quantization:
+            experiment = "hpo-" + experiment + "-quantization"
         test_dataset_name = self.test_dataset["name"]
         exp = f"{model}-{experiment}-{test_dataset_name}"
-        if "subsample_rate" in self.test_dataset:
-            test_subsample_rate = self.test_dataset["subsample_rate"]
-            return exp + f"-rate-{test_subsample_rate}"
-        elif "subsample_amount" in self.test_dataset:
-            test_subsample_amount = self.test_dataset["subsample_amount"]
-            return exp + f"-amount-{test_subsample_amount}"
-        else:
-            return exp
+
+        return exp
 
     def get_tensorboard_log_dir(self):
         path_tensorboard_main = self.tensorboard_logs
@@ -895,3 +890,13 @@ class RunConfig:
                 path = f"{path}/cross-task-{self.model}-results.csv"
 
         return path
+
+    def get_study_path(self):
+
+        if os.path.exists("/bigwork/nhwpajjy/"):
+            path = "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo-results/optuna-studies.db"
+        else:
+            path = "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/hpo-results/optuna-studies.db"
+
+        return path
+
