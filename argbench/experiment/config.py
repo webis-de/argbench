@@ -348,7 +348,7 @@ class RunConfig:
 
     # Dataset metrics a dictionary that contains for each task which metric will be used
     task_metrics_path: str
-
+    model_configs_path: str
     output_dir: str
     cutoff_len: int
     # Model Task-specific configuration config path
@@ -368,7 +368,7 @@ class RunConfig:
     train_datasets: dict
     # Test datasets
 
-    model_configs: List[ModelConfig]
+
 
     experiment_splits_path: str
 
@@ -407,7 +407,7 @@ class RunConfig:
     data_type: str = "ndjson"
 
     log_path: str = None
-
+    model_configs: List[ModelConfig] = field(default_factory=list)
 
 
     # Peft finetuning configs
@@ -527,6 +527,7 @@ class RunConfig:
         :returns: Initialized RunConfig
         """
         config = {}
+
         for path in paths:
 
             with open(path, "r") as f:
@@ -578,14 +579,19 @@ class RunConfig:
             conf_obj.hpo_config = HPOConfig(**conf_obj.hpo_config)
         if config.get("vllm_config"):
             conf_obj.vllm_config = VLLMGenerationConfig(**conf_obj.vllm_config)
-        if config.get("model_configs"):
-            model_configs = []
-            for conf in conf_obj.model_configs:
-                model_config = ModelConfig(**conf)
-                model_configs.append(model_config)
-                if model_config.label == conf_obj.model:
-                    conf_obj.model_config = model_config
-            conf_obj.model_configs = model_configs
+
+        model_config_path = config.get("model_configs_path")
+
+        with open(model_config_path) as file:
+            config = json.load(file)
+            if config.get("model_configs"):
+                model_configs = []
+                for conf in config.get("model_configs"):
+                    model_config = ModelConfig(**conf)
+                    model_configs.append(model_config)
+                    if model_config.label == conf_obj.model:
+                        conf_obj.model_config = model_config
+                conf_obj.model_configs = model_configs
 
 
         if not args:
