@@ -586,7 +586,7 @@ class RunConfig:
             config = json.load(file)
             if config.get("model_configs"):
                 model_configs = []
-                for conf in conf_obj.model_configs:
+                for conf in config.get("model_configs"):
                     model_config = ModelConfig(**conf)
                     model_configs.append(model_config)
                     if model_config.label == conf_obj.model:
