@@ -31,7 +31,7 @@ sbatch <<EOT
 #SBATCH --job-name="$jobname"
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=400G
+#SBATCH --mem=200G
 #SBATCH --time=72:00:00
 #SBATCH --output argbench/output/"$jobname"-%j.out
 #SBATCH --error argbench/output/"$jobname"-%j.err
