@@ -8,13 +8,13 @@ export experiment=$2
 export jobname=$3
 sbatch <<EOT
 #!/bin/bash -l
-#SBATCH --job-name=prmt
+#SBATCH --job-name="$jobname"
 #SBATCH --nodes=1 
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=30G
 #SBATCH --time=72:00:00
-#SBATCH --output argbench/output/prmt-%j.out
-#SBATCH --error argbench/output/prmt-%j.err
+#SBATCH --output argbench/output/"$jobname"-%j.out
+#SBATCH --error argbench/output/"$jobname"-%j.err
 #SBATCH --gpus="$gpu_count"
 
 
