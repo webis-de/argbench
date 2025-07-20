@@ -368,7 +368,7 @@ class RunConfig:
     train_datasets: dict
     # Test datasets
 
-    model_configs: List[ModelConfig]
+
 
     experiment_splits_path: str
 
@@ -407,7 +407,7 @@ class RunConfig:
     data_type: str = "ndjson"
 
     log_path: str = None
-
+    model_configs: List[ModelConfig] = field(default_factory=list)
 
 
     # Peft finetuning configs
