@@ -22,6 +22,6 @@ module load Miniforge3
 conda activate task-specific
 
 
-python -m  argbench.experiment.run -c "${CONFIG_PATH}/{$experiment}.json" ${@:4}
+python -m  argbench.experiment.run -c "${CONFIG_PATH}/${experiment}.json" ${@:4}
 
 EOT
