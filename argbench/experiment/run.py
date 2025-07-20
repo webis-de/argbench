@@ -638,16 +638,17 @@ class Runner:
             if model:
 
                 inputs = data["input_ids"][0].cuda()
-                generated = model.generate(input_ids=inputs, generation_config=generation_config, return_dict_in_generate=True)
+                with torch.no_grad():
+                    generated = model.generate(input_ids=inputs, generation_config=generation_config, return_dict_in_generate=True)
 
-                output = self.tokenizer.batch_decode(generated.sequences)
-                output = [o.split(output_splitter)[-1] for o in output]
+                    output = self.tokenizer.batch_decode(generated.sequences)
+                    output = [o.split(output_splitter)[-1] for o in output]
 
-                response = output[0]
-                prediction = clean_prediction(response, self.config.chain_of_thoughts)
-                predictions.append(prediction)
-                if prediction:
-                    logger.debug(format_logging(response, prediction, text))
+                    response = output[0]
+                    prediction = clean_prediction(response, self.config.chain_of_thoughts)
+                    predictions.append(prediction)
+                    if prediction:
+                        logger.debug(format_logging(response, prediction, text))
 
             if vllm:
 
