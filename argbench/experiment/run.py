@@ -629,6 +629,7 @@ class Runner:
                 logger.debug("++++ lora input ++++")
         elif model:
             generation_config = Runner.get_generation_config_from_vllm_params(sampling_params)
+            model.eval()
         output_splitter = self.model_config.output_splitter
         counter = 0
         for data in tqdm(loader):
@@ -638,16 +639,17 @@ class Runner:
             if model:
 
                 inputs = data["input_ids"][0].cuda()
-                generated = model.generate(input_ids=inputs, generation_config=generation_config, return_dict_in_generate=True)
+                with torch.no_grad():
+                    generated = model.generate(input_ids=inputs, generation_config=generation_config, return_dict_in_generate=True)
 
-                output = self.tokenizer.batch_decode(generated.sequences)
-                output = [o.split(output_splitter)[-1] for o in output]
+                    output = self.tokenizer.batch_decode(generated.sequences)
+                    output = [o.split(output_splitter)[-1] for o in output]
 
-                response = output[0]
-                prediction = clean_prediction(response, self.config.chain_of_thoughts)
-                predictions.append(prediction)
-                if prediction:
-                    logger.debug(format_logging(response, prediction, text))
+                    response = output[0]
+                    prediction = clean_prediction(response, self.config.chain_of_thoughts)
+                    predictions.append(prediction)
+                    if prediction:
+                        logger.debug(format_logging(response, prediction, text))
 
             if vllm:
 
