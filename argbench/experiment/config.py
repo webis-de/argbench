@@ -581,9 +581,13 @@ class RunConfig:
             conf_obj.vllm_config = VLLMGenerationConfig(**conf_obj.vllm_config)
 
         model_config_path = config.get("model_configs_path")
+        if os.path.exists("/mnt/kisski"):
+            config = rewrite_config(config, "/bigwork/nhwpajjy", "/mnt/home/yajjour")
 
         with open(model_config_path) as file:
             config = json.load(file)
+            if os.path.exists("/mnt/kisski"):
+                config = rewrite_config(config, "/bigwork/nhwpajjy", "/mnt/home/yajjour")
             if config.get("model_configs"):
                 model_configs = []
                 for conf in config.get("model_configs"):
