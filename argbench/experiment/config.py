@@ -348,7 +348,7 @@ class RunConfig:
 
     # Dataset metrics a dictionary that contains for each task which metric will be used
     task_metrics_path: str
-
+    model_configs_path: str
     output_dir: str
     cutoff_len: int
     # Model Task-specific configuration config path
