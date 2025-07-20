@@ -374,8 +374,8 @@ class Runner:
             params["device_map"]= "auto"
         else:
             params["quantization_config"] = None
-            params["device_map"]= "auto"
-        return AutoModelForCausalLM.from_pretrained(**params)
+            #params["device_map"]= "auto"
+        return AutoModelForCausalLM.from_pretrained(**params, torch_dtype=torch.bfloat16)
 
     def prepare_peft_model(self, model):
         """
