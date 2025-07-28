@@ -8,7 +8,7 @@
     "seed": 4112,
     "debug": false,
     "model": "mistral-7b-inst-3",
-    "cutoff_len": 10,
+    "cutoff_len": 1000,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "models_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models",
     "data_type": "ndjson",
@@ -25,7 +25,7 @@
         "subsample_rate": 0.5
     },
     "hpo_config": {
-        "n_trials": 1,
+        "n_trials": 10,
         "storage": "sqlite:////bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo/in-task-generation.sqlite3",
         "hpo_fine_grained_output": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo/hpo-results/",
         "hpo_coarse_output": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo-results.csv",
@@ -43,7 +43,7 @@
                 "type": "int",
                 "low": 1,
                 "step": 1,
-                "high": 1
+                "high": 10
             }
         }
     },
