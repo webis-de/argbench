@@ -36,15 +36,16 @@ def with_timing(fn):
 
 def log_mem(message):
     if device =="cuda":
-        t = torch.cuda.mem_get_info()
-        free_gpu, total_gpu = (t[0]/(1024**3),t[1]/(1024**3))
-        used_cpu = (psutil.virtual_memory()[3]/1024**3)
-        perc_memory = psutil.virtual_memory()[2]/100
-        free_cpu_perc = 1 - perc_memory
-        total_cpu = (1/perc_memory)*used_cpu
-        free_cpu = total_cpu * free_cpu_perc
-        logger.info(f"*** GPU Memory {message}: {free_gpu:2.0f} GB free from {total_gpu:2.0f} GB  |  "
-                    f" CPU Memory: {free_cpu:2.0f} GB free from {total_cpu:2.0f} GB")
+        for i in range(torch.cuda.device_count()):
+            t = torch.cuda.mem_get_info(i)
+            free_gpu, total_gpu = (t[0]/(1024**3),t[1]/(1024**3))
+            used_cpu = (psutil.virtual_memory()[3]/1024**3)
+            perc_memory = psutil.virtual_memory()[2]/100
+            free_cpu_perc = 1 - perc_memory
+            total_cpu = (1/perc_memory)*used_cpu
+            free_cpu = total_cpu * free_cpu_perc
+            logger.info(f"*** GPU Memory Device {i} {message}: {free_gpu:2.0f} GB free from {total_gpu:2.0f} GB  |  "
+                        f" CPU Memory: {free_cpu:2.0f} GB free from {total_cpu:2.0f} GB")
 
 def log_model_type(model):
     reported_modules = set()
