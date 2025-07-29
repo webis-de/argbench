@@ -40,7 +40,7 @@ sbatch <<EOT
 module load Miniforge3
 conda activate new-env
 
-accelerate launch --config_file "${CONFIG_PATH}/accelerate/config_${gpu_count}_gpus_2_stage.yaml" \\
+accelerate launch --config_file "${CONFIG_PATH}/accelerate/config_${gpu_count}_gpus_3_stage.yaml" \\
 -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:4}
 EOT
 fi;
