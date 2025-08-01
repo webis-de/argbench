@@ -2,6 +2,8 @@
 import gc
 import optuna
 import re
+
+from bert_score.utils import padding
 from optuna import create_study
 from optuna.samplers import TPESampler
 from peft import (PeftModel, LoraConfig, get_peft_model, prepare_model_for_kbit_training, )
@@ -84,7 +86,7 @@ def formate_model_template(template):
 
 def tokenize(prompt, tokenizer, cutoff_len, train):
     if train:
-        prompt = tokenizer(prompt, max_length=cutoff_len, truncation=True)
+        prompt = tokenizer(prompt, max_length=cutoff_len, truncation=True, padding="max_length")
     else:
 
         return tokenizer(prompt, return_tensors="pt", padding=True, max_length=cutoff_len, truncation=True)
@@ -199,6 +201,7 @@ class Runner:
                     log_mem(f"tokenizing {split} of {self.test_dataset_name}")
                     self.iterable_dataset["test"] = self.iterable_dataset["test"].map(tokenizer)
                     self.iterable_dataset["test"].set_format("pt", columns=["input_ids"], output_all_columns=True)
+
 
 
                 # if split =="train":
