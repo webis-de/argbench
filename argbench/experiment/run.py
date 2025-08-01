@@ -94,7 +94,7 @@ def tokenize(prompt, tokenizer, cutoff_len, train):
     if prompt["input_ids"][-1] != tokenizer.eos_token_id and len(prompt["input_ids"]) < cutoff_len:
         prompt["input_ids"].append(tokenizer.eos_token_id)
         prompt["attention_mask"].append(1)
-    logger( f"count of tokens in prompt {len(prompt['input_ids'])}")
+    logger.debug( f"count of tokens in prompt {len(prompt['input_ids'])}")
     return prompt
 
 
