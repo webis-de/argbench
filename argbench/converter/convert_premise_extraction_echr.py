@@ -4,6 +4,8 @@ import math
 
 import nltk
 
+from argbench.converter.archive.convert_argument_unit_segmentation_echr import get_stanza_sentence_segmenter
+from argbench.converter.convert_argument_unit_segmentation_echr import clean_text
 from common import Genres, Output, Skills, read_tabular, datasets_path,  Metadata, add_seed_arg, set_seed, \
     split_test_val_train
 from argparse import ArgumentParser
@@ -42,7 +44,8 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
      A Premise is a reason for justifying or refuting a claim.""")
     counter = 0
     premises_count = 0
-    sentence_segmenter = nltk.tokenize.PunktSentenceTokenizer()
+    doc_half_window = 5
+    sentence_segmenter = get_stanza_sentence_segmenter()
     for case_id, case in enumerate(dataset):
         case_text = case['text']
         arguments = case['arguments']
@@ -53,12 +56,23 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
             premises = extract_premises(argument, clauses, case_text)
             all_premises.extend(premises)
 
-        sentences = sentence_segmenter.span_tokenize(case_text)
+        sentences = sentence_segmenter(case_text)
 
-        for sentence_start, sentence_end in sentences:
+        for i, (sentence_start, sentence_end) in enumerate(sentences):
             sentence = case_text[sentence_start:sentence_end]
+            if i >= doc_half_window:
+                start_doc_window = i - doc_half_window
+            else:
+                start_doc_window = 0
+            start_sentence = sentences[start_doc_window]
+            if i < len(sentences) - doc_half_window:
+                end_doc_window = i + doc_half_window
+            else:
+                end_doc_window = len(sentences) - 1
+            end_sentence = sentences[end_doc_window]
+            doc = case_text[start_sentence[0]:end_sentence[1]]
 
-            prompt = f"Document: {case_text}\nSentence: {sentence}"
+            prompt = f"Document: {clean_text(doc)}\nSentence: {clean_text(sentence)}"
             for premise, premise_start, premise_end in all_premises:
                 if sentence_start <= premise_start < sentence_end or sentence_start < premise_end <= sentence_end:
                     response = "Premise"

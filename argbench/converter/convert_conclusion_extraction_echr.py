@@ -4,6 +4,7 @@ import math
 
 import nltk
 
+from argbench.converter.archive.convert_argument_unit_segmentation_echr import get_stanza_sentence_segmenter
 from common import Genres, Output, Skills, read_tabular, datasets_path,  Metadata, add_seed_arg, set_seed, \
     split_test_val_train
 from argparse import ArgumentParser
@@ -40,7 +41,8 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
      A conclusion is a controversial statement and the central component of an argument""")
     counter = 0
     conclusion_counts = 0
-    sentence_segmenter = nltk.tokenize.PunktSentenceTokenizer()
+    sentence_segmenter = get_stanza_sentence_segmenter()
+    doc_half_window = 5
     for case_id, case in enumerate(dataset):
 
         case_text = case['text']
@@ -52,12 +54,22 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
             conclusion = extract_conclusions(argument, clauses, case_text)
             all_conclusions.append(conclusion)
 
-        sentences = sentence_segmenter.span_tokenize(case_text)
+        sentences = sentence_segmenter(case_text)
 
-        for sentence_start, sentence_end in sentences:
+        for i, (sentence_start, sentence_end) in enumerate(sentences):
             sentence = case_text[sentence_start:sentence_end]
-
-            prompt = f"Document: {case_text}\nSentence: {sentence}"
+            if i >= doc_half_window:
+                start_doc_window = i - doc_half_window
+            else:
+                start_doc_window = 0
+            start_sentence = sentences[start_doc_window]
+            if i < len(sentences) - doc_half_window:
+                end_doc_window = i + doc_half_window
+            else:
+                end_doc_window = len(sentences) - 1
+            end_sentence = sentences[end_doc_window]
+            doc = case_text[start_sentence[0]:end_sentence[1]]
+            prompt = f"Document: {clean_text(doc)}\nSentence: {clean_text(sentence)}"
             for conclusion, conclusion_start, conclusion_end in all_conclusions:
                 if sentence_start <= conclusion_start < sentence_end or sentence_start < conclusion_end <= sentence_end:
                     response = "Conclusion"
@@ -75,7 +87,7 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
     dataset_file = DATASET_FILE_TEMPLATE.format(split=split_name)
     metadata.add_dataset(dataset_file, split_name)
     output.write_output(dataset_file)
-
+    metadata.add_evaluation_metric("fscore")
 
 if __name__ == "__main__":
 
