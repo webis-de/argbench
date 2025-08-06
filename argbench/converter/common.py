@@ -1,15 +1,20 @@
-import random
-import pandas as pd
 import json
+import math
 import os
-import numpy as np
+import random
+import re
+import sys
+from enum import Enum
+from pathlib import Path
 from random import sample
 from typing import List
-from enum import Enum
+
+import numpy as np
+import pandas as pd
+import stanza
 from yaml import load, Loader
-from pathlib import Path
-import sys
-import math
+
+
 def read_tabular(path, separator=",", **kwargs):
     """Reads tabular csv file"""
     dataset = pd.read_csv(path, sep=separator, **kwargs)
