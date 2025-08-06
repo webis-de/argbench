@@ -65,17 +65,17 @@ class TestF1Segment(TestCase):
         self.assertAlmostEquals(0.67, metrics["fscore"],2)
 
     def test_real_text(self):
-        with open("segmentation_prediction.txt") as file_p:
+        with open("test_case_1/segmentation_prediction.txt") as file_p:
             prediction = "".join(file_p.readlines())
-        with open("segmentation_ground_truth.txt") as file_gt:
+        with open("test_case_1/segmentation_ground_truth.txt") as file_gt:
             ground_truth = "".join(file_gt.readlines())
         f1 = compute_seg_match_f1_score([prediction], [ground_truth],  ["Non-argumentative", "Argumentative"], ["Non-argumentative"])
         self.assertTrue(f1)
 
     def test_real_text(self):
-        with open("segmentation_prediction.txt") as file_p:
+        with open("test_case_1/segmentation_prediction.txt") as file_p:
             prediction = "".join(file_p.readlines())
-        with open("segmentation_prediction.txt") as file_gt:
+        with open("test_case_1/segmentation_prediction.txt") as file_gt:
             ground_truth = "".join(file_gt.readlines())
         f1 = compute_seg_match_f1_score([prediction], [ground_truth],  ["Non-argumentative", "Argumentative"], ["Non-argumentative"])
         self.assertTrue(f1)
