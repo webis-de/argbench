@@ -91,11 +91,12 @@ if __name__ == "__main__":
     else:
         if args.task:
             tasks = [args.task]
-    print(tasks)
+    print(f"tasks ro look for {tasks}")
+    print(f"tasks path {path}")
     for item in os.listdir(path):
-
+        print(f"iterating over {item}")
         if tasks and item not in tasks:
-            print(item)
+
             continue
         task_path = path / item
         print(f"working on {task_path}")
