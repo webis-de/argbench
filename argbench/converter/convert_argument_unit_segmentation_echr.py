@@ -5,7 +5,7 @@ import re
 from collections import OrderedDict
 from typing import List, Dict, Tuple
 from nltk.tokenize.punkt import PunktTrainer
-from argbench.converter.common import Genres, Output, Skills, datasets_path, Metadata, split_test_val_train
+from common import Genres, Output, Skills, datasets_path, Metadata, split_test_val_train
 
 DATASET_NAME = "argument_unit_segmentation_echr_pouydal_2020"
 DATASET_FILE_TEMPLATE = "argument_unit_segmentation_echr_{split}_pouydal_2020.json"
