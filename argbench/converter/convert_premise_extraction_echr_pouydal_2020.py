@@ -3,9 +3,9 @@ import random
 import math
 
 import nltk
+import stanza
 
-from argbench.converter.archive.convert_argument_unit_segmentation_echr import get_stanza_sentence_segmenter
-from argbench.converter.convert_argument_unit_segmentation_echr import clean_text
+
 from common import Genres, Output, Skills, read_tabular, datasets_path,  Metadata, add_seed_arg, set_seed, \
     split_test_val_train
 from argparse import ArgumentParser
@@ -15,6 +15,22 @@ import json
 
 DATASET_NAME = "premise_extraction_echr_pouydal_2020"
 DATASET_FILE_TEMPLATE = "premise_extraction_echr_{split}_pouydal_2020.json"
+
+
+def get_stanza_sentence_segmenter():
+    nlp = stanza.Pipeline(lang='en', processors='tokenize')
+
+    def segment_sentences_stanza(case_text: str):
+        doc = nlp(case_text)
+        sentence_indices = []
+
+        for sent in doc.sentences:
+
+            sentence_indices.append((sent.tokens[0].start_char, sent.tokens[-1].end_char))
+
+        return sentence_indices
+
+    return segment_sentences_stanza
 
 
 def extract_clause(clauses, case_text, clause_id_to_extract):
