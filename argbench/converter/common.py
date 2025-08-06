@@ -282,3 +282,23 @@ class Metadata:
         with open(self.metadata_path, "w") as f:
             json.dump(self.dataset_data, f, indent=2)
 
+
+def clean_text(text):
+    return re.sub("(\n|\r|\s)+", " ", text)
+
+
+def get_stanza_sentence_segmenter():
+    nlp = stanza.Pipeline(lang='en', processors='tokenize')
+
+    def segment_sentences_stanza(case_text: str):
+        doc = nlp(case_text)
+        sentence_indices = []
+
+        for sent in doc.sentences:
+
+            sentence_indices.append((sent.tokens[0].start_char, sent.tokens[-1].end_char))
+
+        return sentence_indices
+
+    return segment_sentences_stanza
+
