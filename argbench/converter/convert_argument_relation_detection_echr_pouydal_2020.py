@@ -5,25 +5,11 @@ from collections import OrderedDict, defaultdict
 from typing import List, Dict, Tuple, Set
 from nltk.tokenize.punkt import PunktTrainer, PunktSentenceTokenizer
 
-from argbench.converter.archive.convert_argument_unit_segmentation_echr import get_stanza_sentence_segmenter
-from argbench.converter.common import Genres, Output, Skills, datasets_path, Metadata, split_test_val_train
-import stanza
 
+from common import Genres, Output, Skills, datasets_path, Metadata, split_test_val_train, get_stanza_sentence_segmenter, clean_text
 
-def get_stanza_sentence_segmenter():
-    nlp = stanza.Pipeline(lang='en', processors='tokenize')
+import re
 
-    def segment_sentences_stanza(case_text: str):
-        doc = nlp(case_text)
-        sentence_indices = []
-
-        for sent in doc.sentences:
-
-            sentence_indices.append((sent.tokens[0].start_char, sent.tokens[-1].end_char))
-
-        return sentence_indices
-
-    return segment_sentences_stanza
 
 
 DATASET_NAME = "argument_relation_detection_echr_pouydal_2020"

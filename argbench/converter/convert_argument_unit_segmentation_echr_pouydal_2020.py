@@ -5,7 +5,7 @@ import re
 from collections import OrderedDict
 from typing import List, Dict, Tuple
 from nltk.tokenize.punkt import PunktTrainer
-from common import Genres, Output, Skills, datasets_path, Metadata, split_test_val_train
+from common import Genres, Output, Skills, datasets_path, Metadata, split_test_val_train, clean_text
 
 DATASET_NAME = "argument_unit_segmentation_echr_pouydal_2020"
 DATASET_FILE_TEMPLATE = "argument_unit_segmentation_echr_{split}_pouydal_2020.json"
@@ -34,8 +34,7 @@ def extract_premises(argument, clauses, case_text):
         premises.append((clause, clause_start, clause_end, clause_id))
     return premises
 
-def clean_text(text):
-    return re.sub("(\n|\r|\s)+", " ", text)
+
 
 def extract_argumentative_clauses(case):
     arguments = case['arguments']
