@@ -4,9 +4,10 @@ import pandas as pd
 cogency_description = "An argument is cogent if it has acceptable premises that are relevant to its conclusion and that are sufficient to draw the conclusion."
 effectiveness_description = "An argument is effective if it persuades the target audience of (or corroborates agreement with) the author’s stance on the issue."
 reasonableness_description = "An argument is reasonable if it contributes to the issue’s resolution in a sufficient way that is acceptable to the target audience."
+overall_description = "How good an argument is holistically."
 
-dataset_name_template = "argument_rating_{dimension}_gaq_ng20"
-dataset_file_name_template =  "argument_rating_{dimension}_gaq_{split}_ng20.json"
+dataset_name = "argument_rating_gaq_ng20"
+dataset_file_name_template =  "argument_rating_gaq_{split}_ng20.json"
 
 def number_to_label(number):
     if number < 2:
@@ -33,20 +34,23 @@ def convert_dataset(data_path):
     dataset["reasonableness_mean"] = dataset["reasonableness_mean"].astype("float")
     return dataset
 
-def format_dataset(dataset, dimension_definition, dimension,  metadata, split):
-
-
-    dataset_name = dataset_name_template.format(dimension=dimension)
-    dataset_file_name = dataset_file_name_template.format(dimension=dimension, split=split)
+def format_dataset(dataset, dimension_definitions,  metadata, split):
     task_output = Output(dataset_name)
-    task_output.append_definition(dimension_definition)
+    task_defintion = """Judge the quality of the following argument according to the given quality aspect. Possible outputs:
+    "Very Low, Low, Medium, High, Very High, Cannot Judge."""
+    dataset_file_name = dataset_file_name_template.format( split=split)
+    task_output.append_definition(task_defintion)
 
     for row in dataset.iterrows():
         row = row[1]
-        score = number_to_label(row[f"{dimension}_mean"])
-        prompt = f"Title: {row['title']}\nText: {row['text']}"
-        id = row["id"]
-        task_output.append_instance(id, prompt, [score])
+        for dimension in dimension_definitions:
+            dimension_definition = dimension_definitions[dimension]
+            print(row[f"{dimension}_mean"])
+            print(dimension)
+            score = number_to_label(float(row[f"{dimension}_mean"]))
+            prompt = f"Title: {row['title']}\nArgument: {row['text']}\n Quality Aspect: {dimension}\n Quality Aspect Definition: {dimension_definition}"
+            id = row["id"]
+            task_output.append_instance(id, prompt, [score])
 
     task_output.write_output(dataset_file_name)
     task_output.append_genre(Genres.WEB)
@@ -59,7 +63,7 @@ if __name__ == "__main__":
     arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
-    set_seed(args) # Seed random number generation
+
 
     data_path = datasets_path() / "gaq" / "all" # path to data
 
@@ -68,18 +72,11 @@ if __name__ == "__main__":
 
     # Class for collecting dataset file data
     # Dataset name specifies folder where dataset will be written
-    task_defnitions = {
-        "cogency": f"""Judge the quality of the following argument according to quality aspect: cogency.  
-                                     "Quality aspect description: {cogency_description} Possible outputs: 
-                                     "Very Low, Low, Medium, High, Very High, Cannot Judge."""
-                   ,
-        "effectiveness": f"""Judge the quality the following argument according to quality aspect: effectiveness. 
-                                           Quality aspect description: {effectiveness_description} Possible outputs: 
-                                           Very Low, Low, Medium, High, Very High, Cannot Judge.""",
-
-        "reasonableness" : f"""Judge the quality of the following argument according to quality aspect: reasonableness. 
-                                            Quality aspect description: {reasonableness_description} Possible outputs: 
-                                            Very Low, Low, Medium, High, Very High, Cannot Judge."""
+    dimension_defnitions = {
+        "cogency": cogency_description,
+        "effectiveness": effectiveness_description,
+        "reasonableness" :reasonableness_description,
+        "overall": overall_description
     }
     df_debate_crowd = convert_dataset(data_path / "debate_forums_crowd.csv")
     df_debate_experts = convert_dataset(data_path / "debate_forums_experts.csv")
@@ -95,14 +92,13 @@ if __name__ == "__main__":
     df_val = df_training.sample(frac=0.25)
     df_training = df_training[~df_training["id"].isin(df_val["id"])]
 
-    for dimension in task_defnitions:
-        dataset_name = dataset_name_template.format(dimension=dimension)
-        metadata = Metadata(dataset_name)
-        metadata.add_genre(Genres.WEB)
-        metadata.add_skill(Skills.QUALITY_ASSESSMENT)
-        task_definition = task_defnitions[dimension]
-        format_dataset(df_training, task_definition, dimension, metadata, "train")
-        format_dataset(df_val, task_definition, dimension, metadata, "val")
-        format_dataset(df_test, task_definition, dimension, metadata, "test")
-        metadata.add_evaluation_metric("fscore")
-        metadata.write_metadata()
+
+    metadata = Metadata(dataset_name)
+    metadata.add_genre(Genres.WEB)
+    metadata.add_skill(Skills.QUALITY_ASSESSMENT)
+
+    format_dataset(df_training, dimension_defnitions,  metadata, "train")
+    format_dataset(df_val, dimension_defnitions,  metadata, "val")
+    format_dataset(df_test, dimension_defnitions, metadata, "test")
+    metadata.add_evaluation_metric("fscore")
+    metadata.write_metadata()
