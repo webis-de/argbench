@@ -19,7 +19,7 @@ sbatch <<EOT
 
 
 module load Miniforge3
-conda activate task-specific
+conda activate new-env
 
 start=\$(date +%s)
 
