@@ -23,7 +23,6 @@ conda activate task-specific
 
 start=$(date +%s)
 python -m  argbench.experiment.run -c "${CONFIG_PATH}/${experiment}.json" ${@:4}
-<<<<<<< HEAD
 
 end=$(date +%s)
 export TIME="$(($end-$start))"
