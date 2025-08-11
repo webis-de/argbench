@@ -40,7 +40,7 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
     output = Output(DATASET_NAME)
 
     output.append_definition("""Given the following document, Judge if the following sentence is a conclusion or not.
-     A conclusion is a controversial statement and the central component of an argument""")
+     A conclusion is a controversial statement and the central component of an argument. Answer only with conclusion and No-conclusion.""")
     counter = 0
     conclusion_counts = 0
     sentence_segmenter = get_stanza_sentence_segmenter()

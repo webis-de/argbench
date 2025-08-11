@@ -90,7 +90,7 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
     output = Output(DATASET_NAME)
 
     output.append_definition(""" Given the following document and two sentences, your task is to judge whether they are part of the same argument. 
-     An argument consists of a conclusion and a supporting premise. Output whether the two sentences are related or not-related.  
+     An argument consists of a conclusion and a supporting premise. Output only whether the two sentences are related or not-related.  
     """)
     segmenter = get_stanza_sentence_segmenter()
     for case_id, case in enumerate(dataset):
