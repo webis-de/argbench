@@ -21,10 +21,10 @@ sbatch <<EOT
 module load Miniforge3
 conda activate task-specific
 
-start=$(date +%s)
+start=\$(date +%s)
 
 python -m  argbench.experiment.run -c "${CONFIG_PATH}/${experiment}.json" ${@:4}
-end=$(date +%s)
-export TIME="$(($end-$start))"
+end=\$(date +%s)
+export TIME=\$((end-start))
 echo "$TIME,$jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 EOT
