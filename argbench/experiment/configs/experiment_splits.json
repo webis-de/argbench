@@ -10,10 +10,7 @@
         "argument_generation_argu_saha23",
         "argument_ranking_claim_revisions_skitalinskaya23",
         "argument_ranking_ibm_evidence_quality_gleize19",
-        "argument_ranking_ibm_rank_30k_gretz20",
-        "argument_rating_cogency_gaq_ng20",
-        "argument_rating_effectiveness_gaq_ng20",
-        "argument_rating_reasonableness_gaq_ng20",
+        "argument_rating_gaq_ng20",
         "argument_relation_identification_erulemaking_park18",
         "argument_relation_identification_essays_stab17",
         "argument_relation_identification_microtexts_1_peldzus15",
@@ -46,6 +43,7 @@
         "warrant_generation_art_chakarbarty21",
         "argument_relation_identification_microtexts_2_skeppstedt18",
         "stance_classification_ukp_sentential_stab18",
-        "fallacy_detection_logic_jin22"
+        "fallacy_detection_logic_jin22",
+        "argument_ranking_ibm_rank_30k_gretz20"
     ]
 }
