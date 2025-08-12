@@ -87,15 +87,15 @@
     {
       "label": "qwen3-1.7b",
       "path": "/bigwork/nhwpajjy/pre-trained-models/Qwen3-1.7B",
-      "prompt_template": "<|im_start|>user\n{instruction}<|im_end|>\n<|im_start|>assistant\n\n<think>\n\n</think>\n\n",
-      "output_splitter": "/think>",
+      "prompt_template": "<|im_start|>user\n{instruction}<|im_end|>\n<|im_start|>assistant",
+      "output_splitter": "assistant",
       "cutoff_len": 32000
     },
     {
       "label": "qwen3-4b",
       "path": "/bigwork/nhwpajjy/pre-trained-models/Qwen3-4B",
-      "prompt_template": "<|im_start|>user\n{instruction}<|im_end|>\n<|im_start|>assistant\n\n<think>\n\n</think>\n\n",
-      "output_splitter": "/think>",
+      "prompt_template": "<|im_start|>user\n{instruction}<|im_end|>\n<|im_start|>assistant",
+      "output_splitter": "assistant",
       "cutoff_len": 32000
     },
     {

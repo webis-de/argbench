@@ -67,7 +67,7 @@ def clean_prediction(prediction, chain_of_thoughts):
         index = prediction.rindex("Output:")
         prediction = prediction[index+7:]
     if prediction.startswith("<|start_header_id|>assistant<|end_header_id|>"):
-        prediction = prediction.replacereplace("<|start_header_id|>assistant<|end_header_id|>", "")
+        prediction = prediction.replace("<|start_header_id|>assistant<|end_header_id|>", "")
     prediction = re.sub("<think>.*</think>", "", prediction)
     if prediction.count("<think>") > 1:
         index = prediction.rindex("<think>")
@@ -626,7 +626,7 @@ class Runner:
             count_workers = 8
         loader = DataLoader(dataset, batch_size=1, shuffle=False)
 
-        prompting_technique = str(self.config.get_prompting_technique())
+        prompting_technique = str(self.config.get_prompting_technique().value)
 
         ## If an adapter will be fine-tuned then an output dir is there
         if vllm:
@@ -674,7 +674,7 @@ class Runner:
             random_indices = [random.randint(0,len(predictions)-1) for _ in range(10)]
             sampled_predictions = [re.sub("\n+"," ",predictions[index]) for index in random_indices]
             sampled_labels = [re.sub("\n+"," ",labels[index]) for index in random_indices]
-            sampled_predictions = zip(sampled_predictions, sampled_labels, [self.config.model+prompting_technique for _ in range(10)], [test_task_name for _ in range(10)])
+            sampled_predictions = zip(sampled_predictions, sampled_labels, [self.config.model+"-"+prompting_technique for _ in range(10)], [test_task_name for _ in range(10)])
             sampled_predictions = [x[0]+"\t"+x[1]+"\t"+x[2]+"\t"+x[3]+"\n" for x in sampled_predictions]
             self.prediction_samples.extend(sampled_predictions)
 
