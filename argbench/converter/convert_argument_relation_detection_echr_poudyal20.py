@@ -110,7 +110,6 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
     dataset_file = DATASET_FILE_TEMPLATE.format(split=split_name)
     output.append_genre(Genres.LEGAL)
     output.append_subarea(Skills.MINING)
-    metadata.add_evaluation_metric("fscore")
     metadata.add_dataset(dataset_file, split_name)
     output.write_output(dataset_file)
 
@@ -174,3 +173,7 @@ if __name__ == "__main__":
         process_split(DATASET_NAME, test, "test", metadata)
         process_split(DATASET_NAME, train, "train", metadata)
         process_split(DATASET_NAME, val, "val", metadata)
+    metadata.add_genre(Genres.LEGAL)
+    metadata.add_skill(Skills.MINING)
+    metadata.add_evaluation_metric("fscore")
+    metadata.write_metadata()
