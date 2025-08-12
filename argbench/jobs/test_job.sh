@@ -1,7 +1,7 @@
 #!/bin/bash
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 
-sbatch <<EOT
+sbatch << EOF
 #!/bin/bash -l
 #SBATCH --job-name=test-job
 #SBATCH --nodes=1
@@ -24,4 +24,4 @@ echo "end"
 echo "$end"
 export TIME=\$((end-start))
 echo "$TIME,jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
-EOT
+EOF

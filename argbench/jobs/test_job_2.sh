@@ -7,7 +7,7 @@
 #SBATCH --output argbench/output/test-job-%j.out
 #SBATCH --error argbench/output/test-job-%j.err
 #SBATCH --partition tnt
-
+export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 module load Miniforge3
 conda activate task-specific
 echo "working"
