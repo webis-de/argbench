@@ -10,7 +10,7 @@ sbatch <<EOT
 #SBATCH --time=72:00:00
 #SBATCH --output argbench/output/test-job-%j.out
 #SBATCH --error argbench/output/test-job-%j.err
-
+#SBATCH --partition tnt
 
 module load Miniforge3
 conda activate task-specific
