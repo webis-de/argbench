@@ -23,6 +23,6 @@ end=$(date +%s)
 echo "end"
 echo "$end"
 export TIME=$((end-start))
-echo $TIME
+echo $Time
 echo "$TIME,jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 EOF
