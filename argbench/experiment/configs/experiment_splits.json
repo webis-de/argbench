@@ -37,7 +37,11 @@
         "warrant_generation_arc_chakarbarty21",
         "warrant_generation_ideological_debate_chakarbarty21",
         "warrant_generation_microtext_1_chakarbarty21",
-        "warrant_identification_semeval_2018_task_12_habernal18"
+        "warrant_identification_semeval_2018_task_12_habernal18",
+        "argument_unit_segmentation_echr_poudyal20",
+        "conclusion_extraction_echr_poudyal20",
+        "premise_extraction_echr_poudyal20",
+        "argument_relation_detection_echr_poudyal20"
     ],
     "validation": [
         "warrant_generation_art_chakarbarty21",
