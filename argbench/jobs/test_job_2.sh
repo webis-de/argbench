@@ -1,4 +1,4 @@
-/bin/bash -l
+#!/bin/bash -l
 #SBATCH --job-name=test-job
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
