@@ -14,7 +14,7 @@ sbatch <<EOT
 
 
 module load Miniforge3
-conda activate new-env
+conda activate task-specific
 echo "working"
 start=\$(date +%s)
 python -c "[_ for i in range(10000000)]"
