@@ -16,7 +16,7 @@ module load Miniforge3
 conda activate task-specific
 echo "working"
 start=\$(date +%s)
-python -c "[_ for i in range(10000000)]"
+python -c "[i for i in range(10000000)]"
 end=\$(date +%s)
 export TIME=\$((end-start))
 echo "$TIME,"jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
