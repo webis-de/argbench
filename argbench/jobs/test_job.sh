@@ -11,6 +11,7 @@ sbatch <<EOT
 #SBATCH --output argbench/output/test-job-%j.out
 #SBATCH --error argbench/output/test-job-%j.err
 #SBATCH --gpus=1
+#SBATcH --partition=ainlp
 
 
 module load Miniforge3
