@@ -626,7 +626,7 @@ class Runner:
             count_workers = 8
         loader = DataLoader(dataset, batch_size=1, shuffle=False)
 
-        prompting_technique = self.config.get_prompting_technique()
+        prompting_technique = str(self.config.get_prompting_technique())
 
         ## If an adapter will be fine-tuned then an output dir is there
         if vllm:
