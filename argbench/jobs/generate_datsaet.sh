@@ -1,6 +1,6 @@
 # set the right bigwork to either kisski or luis
-#  export BIGWORK=/bigwork/nhwpajjy/
-export BIGWORK=/mnt/home/yajjour
+export BIGWORK=/bigwork/nhwpajjy/
+#export BIGWORK=/mnt/home/yajjour
 echo "here is bigwork $BIGWORK"
 
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"

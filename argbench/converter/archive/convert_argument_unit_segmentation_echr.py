@@ -19,8 +19,8 @@ import stanza
 import uuid
 import json
 
-DATASET_NAME = "argument_unit_segmentation_echr_pouydal_2020"
-DATASET_FILE_TEMPLATE = "argument_unit_segmentation_echr_{split}_pouydal_2020.json"
+DATASET_NAME = "argument_unit_segmentation_echr_pouydal20"
+DATASET_FILE_TEMPLATE = "argument_unit_segmentation_echr_{split}_pouydal20.json"
 
 
 def extract_clause(clauses, case_text, clause_id_to_extract):
