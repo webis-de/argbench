@@ -12,8 +12,8 @@ import re
 
 
 
-DATASET_NAME = "argument_relation_detection_echr_pouydal20"
-DATASET_FILE_TEMPLATE = "argument_relation_detection_echr_{split}_pouydal20.json"
+DATASET_NAME = "argument_relation_detection_echr_poudyal20"
+DATASET_FILE_TEMPLATE = "argument_relation_detection_echr_{split}_poudyal20.json"
 
 def get_nltk_sentence_segmenter():
     sentence_segmenter = PunktSentenceTokenizer()

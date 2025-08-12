@@ -12,8 +12,8 @@ from argparse import ArgumentParser
 import uuid
 import json
 
-DATASET_NAME = "conclusion_extraction_echr_pouydal20"
-DATASET_FILE_TEMPLATE = "conclusion_extraction_echr_{split}_pouydal20.json"
+DATASET_NAME = "conclusion_extraction_echr_poudyal20"
+DATASET_FILE_TEMPLATE = "conclusion_extraction_echr_{split}_poudyal20.json"
 
 
 

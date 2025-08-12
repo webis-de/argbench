@@ -7,8 +7,8 @@ from typing import List, Dict, Tuple
 from nltk.tokenize.punkt import PunktTrainer
 from common import Genres, Output, Skills, datasets_path, Metadata, split_test_val_train, clean_text
 
-DATASET_NAME = "argument_unit_segmentation_echr_pouydal20"
-DATASET_FILE_TEMPLATE = "argument_unit_segmentation_echr_{split}_pouydal20.json"
+DATASET_NAME = "argument_unit_segmentation_echr_poudyal20"
+DATASET_FILE_TEMPLATE = "argument_unit_segmentation_echr_{split}_poudyal20.json"
 
 
 def extract_clause(clauses, case_text, clause_id_to_extract):
