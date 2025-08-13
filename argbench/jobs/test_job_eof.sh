@@ -19,6 +19,9 @@ python -c "[print(i) for i in range(1000000000)]"
 end=\$(date +%s)
 
 export Time=\$((end-start))
-Time=\$(echo "scale=2; \$Time / 60" | bc)
+
+Time=\$(awk -v t="\$Time" 'BEGIN { printf "%.2f", t / 3600 }')
 echo "\$Time,jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
+
+
 EOF

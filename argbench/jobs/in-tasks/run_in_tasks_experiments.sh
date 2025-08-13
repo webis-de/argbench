@@ -50,8 +50,9 @@ accelerate launch --config_file "${CONFIG_PATH}/accelerate/config_${gpu_count}_g
 -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:4}
 end=\$(date +%s)
 export Time=\$((end-start))
-Time_HOURS=\$(echo "scale=2; \$Time / 3600" | bc)
-Time_Minutes=\$(echo "scale=2; \$Time / 60" | bc)
+TIME_HOURS=\$(awk -v t="\$Time" 'BEGIN { printf "%.2f", t / 3600 }')
+Time_Minutes=\$(awk -v t="\$Time" 'BEGIN { printf "%.2f", t / 60 }')
+
 echo "\$Time_HOURS,\$Time_Minutes,jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 
 EOF
