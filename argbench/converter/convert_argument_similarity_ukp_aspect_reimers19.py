@@ -16,7 +16,9 @@ SIMILARITY_MAPPING = {
 def process_split(dataset, split, metadata):
     dataset_file = dataset_file_template.format(split=split)
     output = Output(DATASET_NAME)
-    output.append_definition("Judge if the argument pairs are similar (on the same topic and cover similar aspects) or dissimilar (e.g., cover different topics or different aspects). Possible outputs: High similarity if two arguments are very similar, Some Similarity if two arguments are somewhat similar, No Similarity if two arguments are not similar, Different Topics if two arguments belong to different topics.")
+    output.append_definition("""Judge if the argument pairs are similar (on the same topic and cover similar aspects) or dissimilar (e.g., cover different topics or different aspects). Possible outputs: High similarity if two arguments are very similar,
+     Some Similarity if two arguments are somewhat similar, No Similarity if two arguments are not similar,
+      Different Topics if two arguments belong to different topics. Only output High Similarity, Some Similarity, No Similarity, Different Topics.""")
 
     for row in dataset.iterrows():
         row = row[1]

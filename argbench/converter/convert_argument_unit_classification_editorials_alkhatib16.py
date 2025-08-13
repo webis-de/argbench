@@ -104,7 +104,7 @@ search, studies, empirical data analyses, or similar.
 concrete example, an instance, a specific event, or similar.
     Other: The unit does not or hardly adds to the argumentative discourse or it does not match any of
 the above classes.
-      Only output with one of these classes.
+      Only output one of these classes.
      """
     train_output = Output(dataset_name)
     test_output = Output(dataset_name)
