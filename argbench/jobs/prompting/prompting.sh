@@ -22,7 +22,7 @@ module load Miniforge3
 conda activate new-env
 
 start=\$(date +%s)
-start_date =
+
 
 python -m  argbench.experiment.run -c "${CONFIG_PATH}/${experiment}.json" ${@:4}
 
