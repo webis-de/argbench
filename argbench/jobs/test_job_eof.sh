@@ -18,7 +18,7 @@ echo "working"
 start=\$(date +%s)
 echo "start"
 echo "\$start"
-python -c "[print(i) for i in range(10000000)]"
+python -c "[print(i) for i in range(1000000000)]"
 end=\$(date +%s)
 echo "end"
 echo "\$end"
