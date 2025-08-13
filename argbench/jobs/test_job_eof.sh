@@ -22,7 +22,7 @@ python -c "[print(i) for i in range(10000000)]"
 end=\$(date +%s)
 echo "end"
 echo "\$end"
-export Time=\$((end-start))
+export Time=\$((end-start)/3600)
 echo "\$Time"
 echo "\$Time,jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 EOF
