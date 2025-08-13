@@ -24,7 +24,7 @@ echo "end"
 echo "\$end"
 
 export Time=\$((end-start))
-Time=$(echo "scale=2; \$Time / 3600" | bc)
+Time=\$(echo "scale=2; \$Time / 3600" | bc)
 echo "\$Time"
 echo "\$Time,jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 EOF
