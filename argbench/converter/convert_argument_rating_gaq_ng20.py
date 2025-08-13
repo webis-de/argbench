@@ -37,7 +37,7 @@ def convert_dataset(data_path):
 def format_dataset(dataset, dimension_definitions,  metadata, split):
     task_output = Output(dataset_name)
     task_defintion = """Judge the quality of the following argument according to the given quality aspect. Possible outputs:
-    "Very Low, Low, Medium, High, Very High, Cannot Judge."""
+    Very Low, Low, Medium, High, Very High, or Cannot Judge. Only output Very Low, Low, Medium, High, Very High, or Cannot Judge."""
     dataset_file_name = dataset_file_name_template.format( split=split)
     task_output.append_definition(task_defintion)
 

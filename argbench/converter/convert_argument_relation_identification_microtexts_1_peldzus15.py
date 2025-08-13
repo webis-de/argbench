@@ -98,8 +98,8 @@ DATASET_FILE = "argument_relation_identification_microtexts_1_{split}_peldzus15.
 def write_split(files, split):
     output = Output(DATASET_NAME)
 
-    output.append_definition("""Given the following essay and the appended source and target argument units that appear in the essay.\n
-    Output Support if the source argument unit supports the target argument unit, or output Attack if the source attacks the target.\n""")
+    output.append_definition("""Given the following essay and the appended source and target argument units that appear in the essay.
+    Output Support if the source argument unit supports the target argument unit, or output Attack if the source attacks the target. Only output Support or Attack.""")
 
     for file_name in files:
         print(file_name)

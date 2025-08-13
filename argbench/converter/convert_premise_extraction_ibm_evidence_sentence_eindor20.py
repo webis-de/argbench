@@ -21,7 +21,7 @@ def process_split(dataset, dataset_file):
     output.append_definition("""Judge if evidence can be used to support or attack the motion.
                               Possible outputs: Accept if evidence can be an argument to support
                               or attack the motion or Reject if the evidence can not be used to attack or support the motion.
-                              """)
+                              Only output Accept or Reject.""")
 
 
 

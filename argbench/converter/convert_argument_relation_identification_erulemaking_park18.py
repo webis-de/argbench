@@ -44,7 +44,7 @@ def create_output(dataset_name):
     output.append_definition(
         """Given the following document and the appended two argument units that appear in the essay.\n
         Output Reason if the source argument unit is a reason for the target argument unit\n
-        or output Evidence if the source argument unit is an evidence for the target argument unit."""
+        or output Evidence if the source argument unit is an evidence for the target argument unit. Output only Reason or Evidence."""
     )
     output.append_genre(Genres.WEB_FORUMS)
     output.append_subarea(Skills.MINING)
