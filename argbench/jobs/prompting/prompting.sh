@@ -6,7 +6,7 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 export gpu_count=$1
 export experiment=$2
 export jobname=$3
-sbatch <<EOT
+sbatch <<EOF
 #!/bin/bash -l
 #SBATCH --job-name="$jobname"
 #SBATCH --nodes=1
@@ -22,9 +22,15 @@ module load Miniforge3
 conda activate new-env
 
 start=\$(date +%s)
+start_date =
 
 python -m  argbench.experiment.run -c "${CONFIG_PATH}/${experiment}.json" ${@:4}
+
+
 end=\$(date +%s)
-export TIME=\$((end-start))
-echo "$TIME,$jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
-EOT
+
+export Time=\$((end-start))
+Time_HOURS=\$(echo "scale=2; \$Time / 3600" | bc)
+Time_Minutes=\$(echo "scale=2; \$Time / 60" | bc)
+echo "\$Time_HOURS,\$Time_Minutes,jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
+EOF
