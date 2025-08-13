@@ -23,10 +23,8 @@ end=\$(date +%s)
 echo "end"
 echo "\$end"
 
-TIME_SECONDS=\$((end-start))
-
-TIME_HOURS=$(echo "scale=2; \$TIME_SECONDS / 3600" | bc)
-
-echo "\$TIME_HOURS"
-echo "\$TIME_HOURS,jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
+export Time=\$((end-start))
+Time=$(echo "scale=2; \$Time / 3600" | bc)
+echo "\$Time"
+echo "\$Time,jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 EOF
