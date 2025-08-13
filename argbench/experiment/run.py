@@ -167,7 +167,7 @@ class Runner:
         self.prediction_samples = []
 
     def turn_off_thinking_qwen(self):
-        if "qwen" in self.config.model and self.config.get_prompting_technique() == PromptingTechnique.ZERO_SHOT:
+        if "qwen" in self.config.model and self.config.get_prompting_technique() != PromptingTechnique.COT:
             self.config.model_config.prompt_template += "\n\n<think>\n\n</think>\n\n"
             self.config.model_config.output_splitter = "</think>"
 
