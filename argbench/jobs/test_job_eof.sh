@@ -14,17 +14,11 @@ sbatch << EOF
 
 module load Miniforge3
 conda activate task-specific
-echo "working"
 start=\$(date +%s)
-echo "start"
-echo "\$start"
 python -c "[print(i) for i in range(1000000000)]"
 end=\$(date +%s)
-echo "end"
-echo "\$end"
 
 export Time=\$((end-start))
 Time=\$(echo "scale=2; \$Time / 3600" | bc)
-echo "\$Time"
 echo "\$Time,jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 EOF
