@@ -824,13 +824,13 @@ class RunConfig:
 
 
     def get_pad_token_id(self):
-        if self.model == "qwen-7b":
+        if "qwen" in self.model:
             return None
         else:
             return self.pad_token_id
 
     def get_unk_token_id(self):
-        if self.model == "qwen-7b":
+        if "qwen" in self.model :
             return None
         else:
             return "<unk>"

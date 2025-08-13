@@ -147,7 +147,7 @@ class Runner:
                                                        trust_remote_code=True, padding=False
                                                        )
 
-
+        self.turn_off_thinking_qwen()
         self.tokenizer.pad_token_id = config.get_pad_token_id()
         self.tokenizer.unk_token = config.get_unk_token_id()
 
@@ -162,8 +162,14 @@ class Runner:
             else:
                 self.test_dataset_name = None
 
+
         self.load_data()
         self.prediction_samples = []
+
+    def turn_off_thinking_qwen(self):
+        if "qwen" in self.config.model and self.config.get_prompting_technique() == PromptingTechnique.ZERO_SHOT:
+            self.config.model_config.prompt_template += "\n\n<think>\n\n</think>\n\n"
+            self.config.model_config.output_splitter = "</think>"
 
     def prepare_data(self):
         cutoff_len = self.config.cutoff_len
