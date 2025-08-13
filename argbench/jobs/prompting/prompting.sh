@@ -22,12 +22,15 @@ module load Miniforge3
 conda activate new-env
 
 start=\$(date +%s)
-
+start_date =
 
 python -m  argbench.experiment.run -c "${CONFIG_PATH}/${experiment}.json" ${@:4}
+
+
 end=\$(date +%s)
 
 export Time=\$((end-start))
-Time=\$(echo "scale=2; \$Time / 60" | bc)
-echo "\$Time,jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
+Time_HOURS=\$(echo "scale=2; \$Time / 3600" | bc)
+Time_Minutes=\$(echo "scale=2; \$Time / 60" | bc)
+echo "\$Time_HOURS,\$Time_Minutes,jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 EOF
