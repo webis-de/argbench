@@ -13,7 +13,7 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 
 
 module load Miniforge3
-conda activate task-specific
+conda activate new-env
 
 for f in "${CODE_PATH}"/argbench/converter/convert*.py;  do
 python $f ;
