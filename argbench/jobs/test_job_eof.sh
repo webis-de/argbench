@@ -25,8 +25,6 @@ echo "\$end"
 
 TIME_SECONDS=\$((end-start))
 
-# Use 'bc' to perform floating-point division and get the time in hours
-# 'scale=2' sets the precision to 2 decimal places
 TIME_HOURS=$(echo "scale=2; \$TIME_SECONDS / 3600" | bc)
 
 echo "\$TIME_HOURS"
