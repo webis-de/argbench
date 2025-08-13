@@ -28,6 +28,6 @@ python -m  argbench.experiment.run -c "${CONFIG_PATH}/${experiment}.json" ${@:4}
 end=\$(date +%s)
 
 export Time=\$((end-start))
-Time=\$(echo "scale=2; \$Time / 3600" | bc)
+Time=\$(echo "scale=2; \$Time / 60" | bc)
 echo "\$Time,jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 EOF
