@@ -148,8 +148,8 @@ class Runner:
                                                        )
 
         self.turn_off_thinking_qwen()
-#        self.tokenizer.pad_token_id = config.get_pad_token_id()
-#        self.tokenizer.unk_token = config.get_unk_token_id()
+        self.tokenizer.pad_token_id = config.get_pad_token_id()
+        self.tokenizer.unk_token = config.get_unk_token_id()
 
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
         self.task_metrics = get_evaluation_metrics_map()

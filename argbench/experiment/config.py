@@ -824,15 +824,15 @@ class RunConfig:
 
 
     def get_pad_token_id(self):
-        if "qwen" in self.model:
-            return None
-        else:
+        # if "qwen" in self.model:
+        #     return None
+        # else:
             return self.pad_token_id
 
     def get_unk_token_id(self):
-        if "qwen" in self.model :
-            return None
-        else:
+        # if "qwen" in self.model :
+        #     return None
+        # else:
             return "<unk>"
 
     def get_experiment_name(self):
