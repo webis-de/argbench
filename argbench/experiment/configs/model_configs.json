@@ -1,5 +1,6 @@
 {
   "model_configs": [
+
     {
       "label": "gemma-3-4b-it",
       "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-3-4b-it",
@@ -101,8 +102,23 @@
     {
       "label": "qwen3-32b",
       "path": "/bigwork/nhwpajjy/pre-trained-models/Qwen3-32B",
-      "prompt_template": "<|im_start|>user\n{instruction}<|im_end|>\n<|im_start|>assistant\n\n<think>\n\n</think>\n\n",
-      "output_splitter": "/think>",
+      "prompt_template": "<|im_start|>user\n{instruction}<|im_end|>\n<|im_start|>assistant",
+      "output_splitter": "assistant",
+      "cutoff_len": 128000
+    },
+    {
+      "label": "phi-3.5-moe-7.6b",
+      "path": "/bigwork/nhwpajjy/pre-trained-models/Phi-mini-MoE-instruct",
+      "prompt_template": "<|system|><|end|>\n<|user|>\n{instruction}<|end|><|assistant|>",
+      "output_splitter": "<|assistant|>",
+      "cutoff_len": 4000
+    },
+    {
+      "label": "phi-3.5-moe-16x3.8b",
+      "path": "/bigwork/nhwpajjy/pre-trained-models/Phi-MoE-instruct",
+
+      "prompt_template": "<|system|><|end|>\n<|user|>\n{instruction}<|end|><|assistant|>",
+      "output_splitter": "<|assistant|>",
       "cutoff_len": 128000
     }
   ]
