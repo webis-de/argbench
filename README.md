@@ -8,6 +8,21 @@ after training it on the remaining tasks.
 
 To evaluate your models on the whole benchmark
 
+
+| Model | Architecture | Learning | Attention | Context Length | Tokenizer | Extra |
+| --- | --- | --- | --- | --- | --- | --- |
+| Qwen-3-4b | MOE, Sigwlu, RMS Norm, QK-Norm | Pre-training, reasoning | GQA, Dual Chunk Attention | 128k | BBPE | https://arxiv.org/pdf/2505.09388 |
+| qwen3-1.7b |  |  |  | 32k |  |  |
+| llama-3-8b-instruct | SWIGLU | DPO, SFT | GQA, PagedAttention | 128k | BPE | https://arxiv.org/pdf/2407.21783 |
+| deepseek-r1-32b |  |  |  | 128k |  |  |
+| deepseek-r1-distill-1.5b |  |  | GQA, Dual Chunk Attention | 32k |  |  |
+| mistral-7b |  |  | GQA, sliding window | 32k |  | https://arxiv.org/pdf/2310.06825 |
+| deepseek-r1-distill-7b | RMS Norm, MOE | instruction fine-tuned + reinforcmenet learning | GQA, Dual Chunk Attention | 128k | BPE | https://arxiv.org/pdf/2407.10671
+https://qwenlm.github.io/blog/qwen2.5/ |
+| Gemma-3-4b-it | RMSNorm, QK-norm | iinstruction fine-tuned + refinrocement learning using warp | GQA, sliding window self-attention to , global self attention | 128K | Sentencepiece, preserved Whte space, byte-level encoding | Multilingual,
+https://arxiv.org/pdf/2503.19786 |
+
+
 ### Prompting
 
 1. Add your model to [argbench/experiment/configs/prompting/prompting.json](argbench/experiment/configs/prompting/prompting.json) configuration.
@@ -106,5 +121,6 @@ sbatch argbench/jobs/run_prompting_skill_model.sh mining  mistral-7b-inst-3
 ```
 ./run_in_tasks_experiments_all_models.sh
 ```
+
 
 
