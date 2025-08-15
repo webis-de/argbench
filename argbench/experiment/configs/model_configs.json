@@ -54,7 +54,7 @@
       "label": "llama-3.1-8b-instruct",
       "path": "/bigwork/nhwpajjy/pre-trained-models/Llama-3.1-8B-Instruct",
       "output_splitter": "assistant",
-      "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>{instruction}\n<|eot_id|>assistant",
+      "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|><|eot_id|><|start_header_id|>user<|end_header_id|>{instruction}\n<|eot_id|>",
       "cutoff_len": 128000
     },
     {
