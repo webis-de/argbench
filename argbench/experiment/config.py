@@ -424,7 +424,7 @@ class RunConfig:
     shot_task_generation_config = {}
     cot_task_generation_config = {}
     quantization: bool = False
-    job_name: str = None
+    job_name: str = "no-jobname"
 
     @staticmethod
     def register_cli(arg_parser):

@@ -23,7 +23,7 @@ conda activate new-env
 start=\$(date +%s)
 
 start_date=\$(date +%Y-%m-%d:%H:%m)
-python -m  argbench.experiment.run -c "${CONFIG_PATH}/${experiment}.json" ${@:4}
+python -m  argbench.experiment.run --job_name "$jobname" -c "${CONFIG_PATH}/${experiment}.json" ${@:4}
 
 
 end=\$(date +%s)
