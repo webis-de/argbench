@@ -15,7 +15,7 @@ class HPOOutput:
             self.df_results = pd.read_csv(self.output_path, sep="\t")
         else:
             self.df_results = pd.DataFrame(columns=["model", "experiment", "test_task",  "metric", "score", "start_time",
-                                                    "learning_rate", "batch_size", "val_loss", "train_loss"])
+                                                    "learning_rate", "batch_size", "val_loss", "train_loss", "job_name"])
 
     def add_results(self, results):
         """

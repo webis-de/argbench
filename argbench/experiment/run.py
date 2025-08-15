@@ -523,6 +523,7 @@ class Runner:
         """
         Execute training, hpo or evaluation
         """
+        job_name = self.config.job_name
         if self.config.hpo:
             self.prepare_data()
             hpo_output = HPOOutput(self.config.hpo_config.hpo_coarse_output)
@@ -532,7 +533,7 @@ class Runner:
             experiment_name = self.config.get_experiment_name()
             results = {"test_task": self.test_dataset_name, "metric" : self.config.hpo_config.val_metric, "score": best_value,
                        "experiment": experiment_name,  "model" : self.model_config.label  , "start_time": starting_time,
-                       "learning_rate":best_params["learning_rate"], "batch_size":best_params["batch_size"]}
+                       "learning_rate":best_params["learning_rate"], "batch_size":best_params["batch_size"], "job_name": job_name}
 
             hpo_output.add_results(results)
 
@@ -542,7 +543,7 @@ class Runner:
             hpo_output.save_file()
             return
 
-        starting_time =datetime.now().strftime("%m-%d-%H:%M:%S")
+        self.starting_time =datetime.now().strftime("%m-%d-%H:%M:%S")
         set_seed(self.config.seed)
         if not self.config.prompting:
 
@@ -552,7 +553,7 @@ class Runner:
             model = self.load_model()
             self.trainer = self.prepare_trainer(model)
             self.trainer.train()
-            self.adapter_path = self.config.get_model_path(starting_time)
+            self.adapter_path = self.config.get_model_path(self.starting_time)
             self.trainer.save_model(self.adapter_path)
             for obj in self.trainer.state.log_history:
                 logger.debug(obj)
@@ -586,7 +587,7 @@ class Runner:
 
                 for metric in metrics:
                     results = {"test_task": task, "metric" : metric, "score": metrics[metric],  "model" : self.config.model + prompting_technique,
-                               "start_time": starting_time, "k": train_subsample_amount, "filter": filter, "seed": self.config.seed}
+                               "start_time": self.starting_time, "k": train_subsample_amount, "filter": filter, "seed": self.config.seed, "job_name": job_name}
                     all_results.append(results)
                     self.leaderboard.add_results(results)
                 log_mem(f"tested on {self.test_dataset_name}")
@@ -603,8 +604,8 @@ class Runner:
             metrics = self.evaluate(self.test_dataset_name, self.iterable_dataset["test"], sampling_params, model=self.trainer.model)
             for metric in metrics:
                 results = {"test_task": self.test_dataset_name, "metric" : metric, "score": metrics[metric],
-                           "model" : self.config.model,  "start_time": starting_time, "k": train_subsample_amount,
-                           "filter":filter, "seed": self.config.seed, "val_loss": val_loss, "train_loss": train_loss}
+                           "model" : self.config.model,  "start_time": self.starting_time, "k": train_subsample_amount,
+                           "filter":filter, "seed": self.config.seed, "val_loss": val_loss, "train_loss": train_loss, "job_name":job_name}
                 all_results.append(results)
                 log_mem(f"tested on {self.test_dataset_name}")
                 self.leaderboard.add_results(results)
@@ -685,8 +686,8 @@ class Runner:
             sampled_predictions = [re.sub("\n+"," ",predictions[index]) for index in random_indices]
             sampled_responses = [re.sub("\n+"," ",responses[index]) for index in random_indices]
             sampled_labels = [re.sub("\n+"," ",labels[index]) for index in random_indices]
-            sampled_predictions = zip(sampled_predictions, sampled_labels, [self.config.model+"-"+prompting_technique for _ in range(10)], [test_task_name for _ in range(10)], sampled_responses)
-            sampled_predictions = [x[0]+"\t"+x[1]+"\t"+x[2]+"\t"+x[3]+"\t"+x[4]+"\n" for x in sampled_predictions]
+            sampled_predictions = zip(sampled_responses, sampled_predictions, sampled_labels, [self.config.model+"-"+prompting_technique for _ in range(10)], [test_task_name for _ in range(10)])
+            sampled_predictions = [x[0]+"\t"+x[1]+"\t"+x[2]+"\t"+x[3]+"\t"+x[4]+"\t"+self.starting_time+"\t"+self.config.job_name+ "\n" for x in sampled_predictions]
             self.prediction_samples.extend(sampled_predictions)
 
         logger.debug(f"evaluating {counter} instances")
