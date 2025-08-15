@@ -659,6 +659,7 @@ class Runner:
                     output = [o.split(output_splitter)[-1] for o in output]
 
                     response = output[0]
+                    responses.append(response)
                     prediction = clean_prediction(response, self.config.chain_of_thoughts)
                     predictions.append(prediction)
                     if prediction:
