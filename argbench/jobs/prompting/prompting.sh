@@ -17,8 +17,6 @@ sbatch <<EOF
 #SBATCH --error argbench/output/"$jobname"-%j.err
 #SBATCH --gpus="$gpu_count"
 
-export NCCL_DEBUG=TRACE
-export NCCL_DEBUG_FILE="$CODE_PATH/argbench/jobs/nccl.log"
 module load Miniforge3
 conda activate new-env
 
