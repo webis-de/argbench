@@ -435,7 +435,7 @@ class RunConfig:
         arg_parser.add_argument("--sample", action="store_true")
 
         arg_parser.add_argument("-cot", "--cot", action="store_true")
-        arg_parser.add_argument("--job-id", type=str)
+        arg_parser.add_argument("--job_name", type=str)
         arg_parser.add_argument("-int", "--in_task", type=bool, help="whether to conduct a cross task or in task experiment")
         arg_parser.add_argument("-sf", "--skill_filter", type=str, help="filter the tasks based on skill")
         arg_parser.add_argument("-d", "--debug", action="store_true", default=False, help="Should prompting be performed")
