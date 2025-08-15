@@ -632,7 +632,7 @@ class RunConfig:
         if args.model:
             conf_obj.model = args.model
         if args.job_name:
-            conf_obj = args.job_name
+            conf_obj.job_name = args.job_name
         ## This should be executed after choosing the model
         if args.quantization:
             conf_obj.quantization = True
