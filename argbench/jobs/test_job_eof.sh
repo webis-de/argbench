@@ -17,11 +17,11 @@ conda activate task-specific
 start=\$(date +%s)
 python -c "[print(i) for i in range(1000000000)]"
 end=\$(date +%s)
-start_date=date +%Y-%m-%d:%H:%m
+start_date=\$(date +%Y-%m-%d:%H:%m)
 export Time=\$((end-start))
 
 Time=\$(awk -v t="\$Time" 'BEGIN { printf "%.2f", t / 3600 }')
-echo "\$Time,jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
+echo "\$start_date,\$Time,jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 
 
 EOF

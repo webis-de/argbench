@@ -62,6 +62,7 @@ def log_model_type(model):
             reported_modules.add(module_path)
 
 
+
 def clean_prediction(prediction, chain_of_thoughts):
     if chain_of_thoughts and "Output:" in prediction:
         index = prediction.rindex("Output:")
@@ -625,6 +626,7 @@ class Runner:
         dataset = test_data
         labels = []
         predictions = []
+        responses = []
         ## is the batch size here a bottleneck?
         if vllm:
             count_workers = 1
@@ -657,6 +659,7 @@ class Runner:
                     output = [o.split(output_splitter)[-1] for o in output]
 
                     response = output[0]
+                    responses.append(response)
                     prediction = clean_prediction(response, self.config.chain_of_thoughts)
                     predictions.append(prediction)
                     if prediction:
@@ -671,6 +674,7 @@ class Runner:
                     outputs = vllm.generate(text, sampling_params=sampling_params, use_tqdm=False)
                 for output in outputs:
                     response = output.outputs[0].text
+                    responses.append(response)
                     counter +=1
                     prediction = clean_prediction(response, self.config.chain_of_thoughts)
                     predictions += [prediction]
@@ -679,9 +683,10 @@ class Runner:
         if predictions:
             random_indices = [random.randint(0,len(predictions)-1) for _ in range(10)]
             sampled_predictions = [re.sub("\n+"," ",predictions[index]) for index in random_indices]
+            sampled_responses = [re.sub("\n+"," ",responses[index]) for index in random_indices]
             sampled_labels = [re.sub("\n+"," ",labels[index]) for index in random_indices]
-            sampled_predictions = zip(sampled_predictions, sampled_labels, [self.config.model+"-"+prompting_technique for _ in range(10)], [test_task_name for _ in range(10)])
-            sampled_predictions = [x[0]+"\t"+x[1]+"\t"+x[2]+"\t"+x[3]+"\n" for x in sampled_predictions]
+            sampled_predictions = zip(sampled_predictions, sampled_labels, [self.config.model+"-"+prompting_technique for _ in range(10)], [test_task_name for _ in range(10)], sampled_responses)
+            sampled_predictions = [x[0]+"\t"+x[1]+"\t"+x[2]+"\t"+x[3]+"\t"+x[4]+"\n" for x in sampled_predictions]
             self.prediction_samples.extend(sampled_predictions)
 
         logger.debug(f"evaluating {counter} instances")
