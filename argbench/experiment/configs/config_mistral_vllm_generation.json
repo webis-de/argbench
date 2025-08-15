@@ -46,7 +46,7 @@
             "temperature": 0,
             "top_p": 1,
             "top_k": 1,
-            "max_tokens": 8,
+            "max_tokens": 15,
             "min_tokens": 1
         }
     },
