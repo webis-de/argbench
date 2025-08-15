@@ -21,7 +21,7 @@ start_date=\$(date +%Y-%m-%d:%H:%m)
 export Time=\$((end-start))
 
 Time=\$(awk -v t="\$Time" 'BEGIN { printf "%.2f", t / 3600 }')
-echo "\$start_date,\$Time,jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
+echo "\$start_date,\$Time,\$jobname, %j" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 
 
 EOF
