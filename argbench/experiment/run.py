@@ -69,6 +69,8 @@ def clean_prediction(prediction, chain_of_thoughts):
         prediction = prediction[index+7:]
     if prediction.startswith("<|start_header_id|>assistant<|end_header_id|>"):
         prediction = prediction.replace("<|start_header_id|>assistant<|end_header_id|>", "")
+    if prediction.startswith("assistant"):
+        prediction = prediction.replace("assistant", "")
     prediction = re.sub("<think>.*</think>", "", prediction)
     if prediction.count("<think>") > 1:
         index = prediction.rindex("<think>")
@@ -657,6 +659,7 @@ class Runner:
                     generated = model.generate(input_ids=inputs, generation_config=generation_config, return_dict_in_generate=True)
 
                     output = self.tokenizer.batch_decode(generated.sequences)
+
                     output = [o.split(output_splitter)[-1] for o in output]
 
                     response = output[0]
