@@ -69,6 +69,8 @@ def clean_prediction(prediction, chain_of_thoughts):
         prediction = prediction[index+7:]
     if prediction.startswith("<|start_header_id|>assistant<|end_header_id|>"):
         prediction = prediction.replace("<|start_header_id|>assistant<|end_header_id|>", "")
+    if prediction.startswith("assistant"):
+        prediction = prediction.replace("assistant", "")
     prediction = re.sub("<think>.*</think>", "", prediction)
     if prediction.count("<think>") > 1:
         index = prediction.rindex("<think>")
@@ -627,7 +629,6 @@ class Runner:
         dataset = test_data
         labels = []
         predictions = []
-        outputs = []
         responses = []
         ## is the batch size here a bottleneck?
         if vllm:
@@ -658,7 +659,7 @@ class Runner:
                     generated = model.generate(input_ids=inputs, generation_config=generation_config, return_dict_in_generate=True)
 
                     output = self.tokenizer.batch_decode(generated.sequences)
-                    outputs.append(output)
+
                     output = [o.split(output_splitter)[-1] for o in output]
 
                     response = output[0]
@@ -687,9 +688,8 @@ class Runner:
             random_indices = [random.randint(0,len(predictions)-1) for _ in range(10)]
             sampled_predictions = [re.sub("\n+"," ",predictions[index]) for index in random_indices]
             sampled_responses = [re.sub("\n+"," ",responses[index]) for index in random_indices]
-            sampled_outputs = [re.sub("\n+"," ",outputs[index]) for index in random_indices]
             sampled_labels = [re.sub("\n+"," ",labels[index]) for index in random_indices]
-            sampled_predictions = zip(sampled_outputs, sampled_responses, sampled_predictions, sampled_labels, [self.config.model+"-"+prompting_technique for _ in range(10)], [test_task_name for _ in range(10)])
+            sampled_predictions = zip(sampled_responses, sampled_predictions, sampled_labels, [self.config.model+"-"+prompting_technique for _ in range(10)], [test_task_name for _ in range(10)])
             sampled_predictions = [x[0]+"\t"+x[1]+"\t"+x[2]+"\t"+x[3]+"\t"+x[4]+"\t"+self.starting_time+"\t"+self.config.job_name+ "\n" for x in sampled_predictions]
             self.prediction_samples.extend(sampled_predictions)
 
