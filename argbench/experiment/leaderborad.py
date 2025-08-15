@@ -27,7 +27,7 @@ class Leaderboard:
                 self.df_results["filter"] = "None"
         else:
             self.df_results = pd.DataFrame(columns=["model",  "test_task",  "metric", "score", "start_time", "k", "filter", "seed",
-                                                    "val_loss", "train_loss"])
+                                                    "val_loss", "train_loss", "job_name"])
         self.output_skills_path = self.output_path.replace(".csv", "-skills.csv")
         if os.path.exists(self.output_skills_path):
             self.df_skills_results = pd.read_csv(self.output_skills_path, sep="\t")
@@ -70,12 +70,13 @@ class Leaderboard:
             k = self.added_results[0]["k"]
             filter = self.added_results[0]["filter"]
             seed = self.added_results[0]["seed"]
+            job_name = self.added_results[0]["job_name"]
         all_records = []
         for skill in skill_records:
             score = skill_results[skill] / skill_counts[skill]
             metric =  "fscore"
             skill_records[skill] = {"model": model, "start_time": start_time, "k": k, "score": score, "metric": metric,
-                                    "test_task": skill, "filter" : filter, "seed": seed}
+                                    "test_task": skill, "filter" : filter, "seed": seed, "job_name": job_name}
             df_record = pd.DataFrame([skill_records[skill]])
             all_records.append(df_record)
 
@@ -85,11 +86,11 @@ class Leaderboard:
             aggregated_generation_results = generation_score_results/generation_task_count
 
             bleu_record = pd.DataFrame([{"model": model, "start_time": start_time, "k": k, "score": aggregated_bleu_results,
-                                         "metric": "bleu", "test_task": "generation", "filter" : filter, "seed": seed}])
+                                         "metric": "bleu", "test_task": "generation", "filter" : filter, "seed": seed, "job_name": job_name}])
             bertscore_record =  pd.DataFrame([{"model": model, "start_time": start_time, "k": k, "score": aggregtged_bertscore_results,
-                                               "metric": "bertscore", "test_task": "generation", "filter" : filter, "seed": seed}])
+                                               "metric": "bertscore", "test_task": "generation", "filter" : filter, "seed": seed, "job_name": job_name}])
             generation_score_record =  pd.DataFrame([{"model": model, "start_time": start_time, "k": k, "score": aggregated_generation_results,
-                                                      "metric": "generation-score", "test_task": "generation", "filter" : filter, "seed": seed}])
+                                                      "metric": "generation-score", "test_task": "generation", "filter" : filter, "seed": seed, "job_name": job_name}])
             all_records.extend([bertscore_record, bleu_record, generation_score_record])
 
         df_new_records = pd.concat(all_records)
