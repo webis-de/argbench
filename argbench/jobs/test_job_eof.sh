@@ -17,7 +17,7 @@ conda activate task-specific
 start=\$(date +%s)
 python -c "[print(i) for i in range(1000000000)]"
 end=\$(date +%s)
-
+start_date=date +%Y-%m-%d:%H:%m
 export Time=\$((end-start))
 
 Time=\$(awk -v t="\$Time" 'BEGIN { printf "%.2f", t / 3600 }')
