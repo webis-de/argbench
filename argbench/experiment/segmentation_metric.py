@@ -30,8 +30,10 @@ def parse(text, labels):
             if span and ":" in span:
                 span_label = span.split(":")[0].strip().lower()
                 span_text = span.split(":")[1].strip()
+                regex_start_punc = "^[" + re.escape(string.punctuation) + "]+"
                 regex_end_punc = "[" + re.escape(string.punctuation) + "]+$"
                 clean_span_text= re.sub(regex_end_punc, "", span_text)
+                clean_span_text= re.sub(regex_start_punc, "", clean_span_text)
                 parsed_document[span_label].append(clean_span_text)
     return parsed_document
 
