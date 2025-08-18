@@ -716,13 +716,13 @@ class Runner:
         elif metric == "meteor":
             return compute_meteor_score(predictions, labels)
         elif metric == "argument-fscore":
-            return compute_seg_match_f1_score(predictions, labels,  ["Argumentative", "Non-argumentative"], ["Non-argumentative"])
+            return compute_seg_match_f1_score(predictions, labels,  ["argumentative", "non-argumentative"], ["non-argumentative"])
         elif metric == "aspect-fscore":
             return compute_seg_match_f1_score(predictions, labels,
-                            ["Aspect", "Not-aspect"], ["Not-aspect"])
+                            ["aspect", "not-aspect"], ["not-aspect"])
         elif metric == "fallacy-fscore":
             return compute_seg_match_f1_score(predictions, labels,
-                                              ["Ad Hominem", "Appeal to Emotion", "Appeal to Authority", "Slippery Slope", "False Cause", "Slogans", "No-fallacy"], ["No-fallacy"])
+                                              ["ad hominem", "appeal to emotion", "appeal to authority", "slippery slope", "false Cause", "slogans", "no-fallacy"], ["no-fallacy"])
         elif metric == "kendalltau":
             return compute_kendall_tau(predictions, labels)
         elif "dict" in metric:
