@@ -29,7 +29,7 @@ for data_point in DataLoader(generation_dataset,batch_size=1):
 def benchmark_cutoffs(llm, tokenizer, min_tokens, max_tokens, step, model):
     print(f"benchmarking {model}")
     for cutoff_len in range(min_tokens, max_tokens, step):
-        tokenized = tokenizer(longest_data_point["input"], max_length=cutoff_len, truncation=True, padding=True, return_tensors="pt")
+        tokenized = tokenizer(longest_data_point["input"], max_length=cutoff_len, truncation=True, padding="max_length", return_tensors="pt")
         concatenated = tokenizer.decode(tokenized["input_ids"][0], skip_special_tokens=True)
         all_truncated[cutoff_len]= concatenated
     all_time = []
