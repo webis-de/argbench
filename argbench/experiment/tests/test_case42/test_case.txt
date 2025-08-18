@@ -1,0 +1,50 @@
+predictions
+
+argumentative: Social education is important, alongside academics.
+Non-argumentative: The real world is not segregated, nor are universities.
+argumentative: Unless there are individual circumstances I wouldn't be sending my children to a single sex school.
+Non-argumentative: I'll be putting this view into practise when my daughter is old enough.
+
+
+ {
+'argumentative':
+ ['Social education is important, alongside academics.',
+  "Unless there are individual circumstances I wouldn't be sending my children to a single sex school."
+ ],
+'Non-argumentative': [
+  'The real world is not segregated, nor are universities.',
+  "I'll be putting this view into practise when my daughter is old enough."]
+}
+
+
+references
+ {
+'Argumentative': ['Social education is important, alongside academics. The real world is not segregated, nor are universities.'
+, 'there are individual circumstances', "I wouldn' t be sending my children to a single sex school."],
+'Non-argumentative': ['Unless'
+, "I'll be putting this view into practise when my daughter is old enough."]}
+
+
+predictions {
+'argumentative':
+['As a student, i think schools should definately support prayer in schools.',
+ 'As far as a moment of silence during homeroom, I say why not?',
+  'A moment of silence doesnt require students or teachers to pray; Prayer isnt even mentioned in the words, so why make a big deal of it?'
+],
+'Non-argumentative':
+['No amount of teachers and staff can keep students from throwing up a prayer before class or a test or before they eat lunch.',
+ "Children who don' t want to pray don' t have to, and those who do can have their concentration to do so.",
+  I fully understand nonbelievers or nonreligious people who dont pray, but their moment of silence can be used for relaxation or even sleep if they want.']})
+
+ references
+
+ {'Argumentative':
+ ['As a student, i think schools should definately support prayer in schools.',
+  "Children who don' t want to pray don' t have to, and those who do can have their concentration to do so.",
+   'A moment of silence doesnt require students or teachers to pray; Prayer isnt even mentioned in the words, so why make a big deal of it?.',
+    'I fully understand nonbelievers or nonreligious people who dont pray,', 'their moment of silence can be used for relaxation or even sleep if they want.'
+ ],
+
+'Non-argumentative':
+ ['No amount of teachers and staff can keep students from throwing up a prayer before class or a test or before they eat lunch. As far as a moment of silence during homeroom, I say why not?.',
+  'but']}))
