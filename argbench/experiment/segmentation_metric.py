@@ -1,5 +1,6 @@
 import json
 import logging
+import string
 from collections import defaultdict
 
 import numpy as np
@@ -16,6 +17,7 @@ def formulate_regex(labels):
     return f"(?:(?:{labels}):\s?[^\n]+\n+)*(?:(?:{labels}):\s?[^\n]+)"
 
 def parse(text, labels):
+
     logger.debug(f"segmenting the document {text}")
     regular_expression = formulate_regex(labels)
     match  = re.search(regular_expression, text)
@@ -26,10 +28,11 @@ def parse(text, labels):
         for span in spans:
             logger.debug(f"the sentence to be segmented {span}")
             if span and ":" in span:
-                span_label = span.split(":")[0].strip()
+                span_label = span.split(":")[0].strip().lower()
                 span_text = span.split(":")[1].strip()
-
-                parsed_document[span_label].append(span_text)
+                regex_end_punc = "[" + re.escape(string.punctuation) + "]+$"
+                clean_span_text= re.sub(regex_end_punc, "", span_text)
+                parsed_document[span_label].append(clean_span_text)
     return parsed_document
 
 def compute_seg_match_f1_score(predictions, references,  labels, label_out):
@@ -37,6 +40,7 @@ def compute_seg_match_f1_score(predictions, references,  labels, label_out):
     metric = {}
 
     for label in labels:
+        label = label.lower()
         if label in label_out:
             continue
         tp = 0
@@ -47,8 +51,8 @@ def compute_seg_match_f1_score(predictions, references,  labels, label_out):
         f1 = 0
         all_f1 = []
         for i, text in enumerate(references):
-            reference = references[i]
-            prediction = predictions[i]
+            reference = references[i].lower()
+            prediction = predictions[i].lower()
 
             reference_spans = parse(reference, labels)
             prediction_spans = parse(prediction, labels)

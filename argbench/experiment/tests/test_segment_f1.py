@@ -1,3 +1,4 @@
+import os
 from unittest import *
 from argbench.experiment.testing import *
 from argbench.experiment.segmentation_metric import *
@@ -65,20 +66,24 @@ class TestF1Segment(TestCase):
         self.assertAlmostEquals(0.67, metrics["fscore"],2)
 
     def test_real_text(self):
+
         with open("test_case_1/segmentation_prediction.txt") as file_p:
             prediction = "".join(file_p.readlines())
         with open("test_case_1/segmentation_ground_truth.txt") as file_gt:
             ground_truth = "".join(file_gt.readlines())
-        f1 = compute_seg_match_f1_score([prediction], [ground_truth],  ["Non-argumentative", "Argumentative"], ["Non-argumentative"])
+        f1 = compute_seg_match_f1_score([prediction], [ground_truth],  ["non-argumentative", "argumentative"], ["non-argumentative"])
         self.assertTrue(f1)
 
-    def test_real_text(self):
-        with open("test_case_1/segmentation_prediction.txt") as file_p:
+    def test_real_text_web_discourse(self):
+        THIS_DIR = os.path.dirname(os.path.abspath(__file__)) + "/test_case_web_discourse"
+        with open(THIS_DIR + "/segmentation_prediction.txt") as file_p:
             prediction = "".join(file_p.readlines())
-        with open("test_case_1/segmentation_prediction.txt") as file_gt:
+        with open(THIS_DIR + "/segmentation_ground_truth.txt") as file_gt:
             ground_truth = "".join(file_gt.readlines())
-        f1 = compute_seg_match_f1_score([prediction], [ground_truth],  ["Non-argumentative", "Argumentative"], ["Non-argumentative"])
-        self.assertTrue(f1)
+        f1 = compute_seg_match_f1_score([prediction], [ground_truth],  ["non-argumentative", "argumentative"], ["non-argumentative"])
+        print(f1)
+        self.assertAlmostEquals(f1["argumentative-precision"], 2/3)
+        self.assertAlmostEquals(f1["argumentative-recall"], 2/5)
 
 class TestF1Sentence(TestCase):
     def test_f1_score_sent(self):
