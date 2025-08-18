@@ -77,6 +77,9 @@ def compute_seg_match_f1_score(predictions, references,  labels, label_out):
             f1 = 0
         else:
             f1 = 2*p*r/(p+r)
+
+        logger.debug(f"true positives {tp}, false positives fp {fp} false negatives {fn}")
+        logger.debug(f"{label}-f1 {f1}")
         all_f1.append(f1)
         metric[f"{label}-precision"] = p
         metric[f"{label}-recall"] = r
