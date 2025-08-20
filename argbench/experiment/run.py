@@ -92,7 +92,7 @@ def tokenize(prompt, tokenizer, cutoff_len, train):
         prompt = tokenizer(prompt, padding="max_length", max_length=cutoff_len, truncation=True)
     else:
 
-        return tokenizer(prompt, padding="max_length", max_length=cutoff_len, truncation=True, return_tensors="pt")
+        return tokenizer(prompt, padding=True, max_length=cutoff_len, truncation=True, return_tensors="pt")
 
     if prompt["input_ids"][-1] != tokenizer.eos_token_id and len(prompt["input_ids"]) < cutoff_len:
         prompt["input_ids"].append(tokenizer.eos_token_id)
