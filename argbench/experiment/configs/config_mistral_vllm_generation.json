@@ -46,7 +46,7 @@
         "default": {
             "temperature": 0,
             "top_p": 1,
-            "top_k": 50,
+            "top_k": 1,
             "min_tokens": 15,
             "max_tokens": 50
 
@@ -98,7 +98,7 @@
         "default": {
             "temperature": 0,
             "top_p": 1,
-            "top_k": 50,
+            "top_k": 1,
             "min_tokens": 25,
             "max_tokens": 100
         }
