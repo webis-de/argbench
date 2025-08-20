@@ -16,7 +16,7 @@ sbatch <<EOF
 #SBATCH --output argbench/output/"$jobname"-%j.out
 #SBATCH --error argbench/output/"$jobname"-%j.err
 #SBATCH --gpus="$gpu_count"
-
+#SBATCH --exclude=gpu001.kisski
 module load Miniforge3
 conda activate new-env
 
