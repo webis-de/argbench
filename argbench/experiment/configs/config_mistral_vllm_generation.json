@@ -39,7 +39,7 @@
         "claim_optimization": {
             "temperature": 0,
             "top_p": 1,
-            "top_k": -1,
+            "top_k": 50,
             "min_tokens": 25,
             "max_tokens": 1024
         },
