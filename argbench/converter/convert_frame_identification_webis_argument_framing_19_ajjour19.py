@@ -29,7 +29,8 @@ def process_split(df, data_file):
         random.shuffle(response_candidates)
         frame_string = ";".join(response_candidates)
         prompt = f"Premise: {row['premise']}\nConclusion: {row['conclusion']}\nCandidate frames: " + frame_string
-
+        if len(prompt) > 2000:
+            print(prompt)
         id = str(uuid.uuid4())
         output.append_instance(id, prompt, [response])
 
@@ -44,7 +45,6 @@ if __name__ == "__main__":
     arg_parser = ArgumentParser(description="Program to convert ajjour unit segmentation dataset into appropriate form")
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
-    set_seed(args)
 
     dataset_path = str(datasets_path()
                     / "webis-argument-framing-19"

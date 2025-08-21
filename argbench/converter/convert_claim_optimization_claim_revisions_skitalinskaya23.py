@@ -25,6 +25,8 @@ def process_split(dataset, metadata, split):
         claim_id = claim["claim_id"]
         thesis = claim["thesis"]
         instance_input = f"Thesis: {thesis}\nClaim: {unrevised_text}"
+        if len(instance_input) > 1500:
+            print(instance_input)
         output.append_instance(claim_id, instance_input, [revised_text])
 
     metadata.add_dataset(dataset_file, split)
@@ -38,7 +40,6 @@ if __name__ == "__main__":
     arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
-    set_seed(args)
 
     data_path = datasets_path() / "claim-revisions" / "acl23_revised.csv"
 
