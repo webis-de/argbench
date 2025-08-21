@@ -94,7 +94,7 @@ if __name__ == "__main__":
             data["AVG Output Len"].append(avg_outputs_len)
             data["MIN Output Len"].append(min_outputs_len)
             data["MAX Output Len"].append(max_outputs_len)
-            data[" Definition Len"].append(description_len)
+            data["Definition Len"].append(description_len)
             data["MAX Definition + Instance"].append(max_def_inst)
             data["MAX ALL"].append(max_all)
         df = pd.DataFrame(data)

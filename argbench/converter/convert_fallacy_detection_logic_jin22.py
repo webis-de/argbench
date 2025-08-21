@@ -43,6 +43,8 @@ def process_data(dataset, data_name, data_split, metadata):
     for row in dataset.iterrows():
         row = row[1]
         id = str(uuid4())
+        if len(row['source_article']) > 500:
+            print(row['source_article'])
         prompt = f"Sentence: {row['source_article']}"
         if "logical_fallacies" in row:
             fallacies = row["logical_fallacies"]
@@ -78,7 +80,7 @@ if __name__ == "__main__":
     arg_parser = ArgumentParser(description="What dataset will be processed?")
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
-    set_seed(args) # Seed random number generation
+#    set_seed(args) # Seed random number generation
     data_path = datasets_path() / "logic" # path to data
     all_training_datasets = ["climate_train.csv", "edu_train.csv"]
     all_val_datasets = ["climate_dev.csv", "edu_dev.csv"]
