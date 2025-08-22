@@ -88,7 +88,7 @@ def extract_candidate_argument_units(case:Dict) -> List[Tuple[str, str, str]]:
         all_candidates.append(("Argumentative", argument_clause, argument_unit_counter ))
         current_text += argument_clause
         last_argument_unit_index = clause_end
-        if len(current_text) >4000:
+        if len(current_text) >1000:
             chunks.append({"text":current_text, "candidates": all_candidates})
             current_text = ""
             all_candidates = []

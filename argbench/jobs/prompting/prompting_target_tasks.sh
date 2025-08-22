@@ -21,10 +21,9 @@ while getopts "m:t:" opt; do
   esac
 done
 
-shift $((OPTIND-1))
 
 if [ -z "$task" ]; then
-  mapfile -t tasks < argbench/jobs/task_sample.txt
+  mapfile -t tasks < argbench/data/target_tasks.txt
 else
   tasks=("$task")
 fi

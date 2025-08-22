@@ -1,21 +1,37 @@
 from collections import defaultdict
 
-from common import tasks_path
+from argbench.converter.common import tasks_path
 from statistics import mean
 import math
 from transformers import LlamaTokenizer, LlamaTokenizerFast, AutoTokenizer
 from argparse import ArgumentParser
 import json
 import pandas as pd
+import os
+from argparse import ArgumentParser
 
 
+parser = ArgumentParser()
+parser.add_argument("--tasks-to-shorten",action="store_true")
+parser.add_argument("--output",type=str)
+args = parser.parse_args()
+if args.output:
+    output = args.output
+else:
+    output = "benchmark-count.csv"
 if __name__ == "__main__":
-
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    tasks_to_shorten_file = os.path.join(base_dir, "../data/tasks_to_shorten.txt")
     tokenizer = AutoTokenizer.from_pretrained("/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-1.5B", unk_token="<unk>")
         # LlamaTokenizerFast
     with open(tasks_path() / "metadata.json", "r") as f:
             metadata = json.load(f)
-
+    tasks_to_shorten =  []
+    if args.tasks_to_shorten:
+        with open(tasks_to_shorten_file) as file:
+            tasks_to_shorten = file.readlines()
+            tasks_to_shorten = [task.strip() for task in tasks_to_shorten]
+            print(tasks_to_shorten)
     data = {
         "Data File": [],
         "Definition Len": [],
@@ -32,7 +48,8 @@ if __name__ == "__main__":
     }
     counter = 0
     for dataset in metadata:
-
+        if tasks_to_shorten and dataset not in tasks_to_shorten:
+            continue
         for file in metadata[dataset]["file_list"]:
             instances = []
             outputs = []
@@ -115,4 +132,5 @@ if __name__ == "__main__":
         else:
             dataset_records[column]= df.groupby("Dataset").agg({column: "mean"})[column].values.tolist()
     df = pd.concat([df, pd.DataFrame(dataset_records)])
-    df.to_csv("/bigwork/nhwpajjy/benchmark-count.csv", index=False, float_format ="%.2f")
+    df["dataset"]=df["Data File"].apply(lambda x: "val" not in x and "test" not in x and "train" not in x )
+    df.to_csv(output, index=False, float_format ="%.2f")

@@ -58,7 +58,7 @@ def generate_argument_relation_candidates(window: List[Tuple[int,int]], argument
 
 
 def generate_case_output(case, segmenter) -> List:
-    doc_half_window = 5
+    doc_half_window = 2
     case_text = case['text']
     arguments = extract_arguments(case)
 
@@ -103,7 +103,7 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
             au_2_beining, au_2_end = argument_relation_candidate[1]
             case_text = case['text']
 
-            doc = f"Document: {clean_text(document)} \nSentence 1: {clean_text(case_text[au_1_begining:au_1_end]).strip()} \nSentence 2: {clean_text(case_text[au_2_beining:au_2_end]).strip()}"
+            doc = f"Sentence 1: {clean_text(case_text[au_1_begining:au_1_end]).strip()}\nSentence 2: {clean_text(case_text[au_2_beining:au_2_end]).strip()}\nDocument: {clean_text(document)}"
 
 
             output.append_instance(i, doc, [argument_relation_candidate[2]])

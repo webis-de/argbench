@@ -10,7 +10,7 @@ Every dataset should have a record in a `metadata.json` file to provide easy acc
 
 ## Checking prompt size
 
-Output datasets prompt size can be checked using [prompt_size_counter.py](./prompt_size_counter.py) script. 
+Output datasets prompt size can be checked using [prompt_size_counter.py](../analysis/prompt_size_counter.py) script. 
 
 Check character size:
 
@@ -32,7 +32,7 @@ To test if instance amount of output file is the same as what was reported in th
 $ pytest test_dataset_canonical_size.py
 ```
 
-Canonical file sizes can be set in [dataset_canonical_size.json](./dataset_canonical_size.json) config file.
+Canonical file sizes can be set in [dataset_canonical_size.json](archive/dataset_canonical_size.json) config file.
 
 ``` json-with-comments
 {

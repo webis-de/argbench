@@ -46,7 +46,7 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
      A Premise is a reason for justifying or refuting a claim. Answer only with Premise or No-Premise.""")
     counter = 0
     premises_count = 0
-    doc_half_window = 5
+    doc_half_window = 2
     sentence_segmenter = get_stanza_sentence_segmenter()
     for case_id, case in enumerate(dataset):
         case_text = case['text']
@@ -74,7 +74,7 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
             end_sentence = sentences[end_doc_window]
             doc = case_text[start_sentence[0]:end_sentence[1]]
 
-            prompt = f"Document: {clean_text(doc)}\nSentence: {clean_text(sentence)}"
+            prompt = f"Sentence: {clean_text(sentence)}\nDocument: {clean_text(doc)}"
             for premise, premise_start, premise_end in all_premises:
                 if sentence_start <= premise_start < sentence_end or sentence_start < premise_end <= sentence_end:
                     response = "Premise"

@@ -44,7 +44,7 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
     counter = 0
     conclusion_counts = 0
     sentence_segmenter = get_stanza_sentence_segmenter()
-    doc_half_window = 5
+    doc_half_window = 2
     for case_id, case in enumerate(dataset):
 
         case_text = case['text']
@@ -71,7 +71,7 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
                 end_doc_window = len(sentences) - 1
             end_sentence = sentences[end_doc_window]
             doc = case_text[start_sentence[0]:end_sentence[1]]
-            prompt = f"Document: {clean_text(doc)}\nSentence: {clean_text(sentence)}"
+            prompt = f"Sentence: {clean_text(sentence)}\nDocument: {clean_text(doc)}"
             for conclusion, conclusion_start, conclusion_end in all_conclusions:
                 if sentence_start <= conclusion_start < sentence_end or sentence_start < conclusion_end <= sentence_end:
                     response = "Conclusion"
