@@ -3,6 +3,8 @@ from lxml import etree
 from common import Output, Metadata, add_seed_arg, set_seed, Genres, Skills, datasets_path
 from argparse import ArgumentParser
 import pandas as pd
+
+window_half_size = 7
 def parse_xmi_file(xmi_path):
     """Parse a single XMI file and extract required information."""
     tree = etree.parse(xmi_path)
@@ -39,9 +41,20 @@ def process_xmi_files(xmi_directory, output, split_map, split):
             if split_map[file].lower() == split:
                 xmi_path = os.path.join(xmi_directory, xmi_file)
                 filename, sofa_string, sentence_with_labels = parse_xmi_file(xmi_path)
+                counter = 0
                 for text_span, label in sentence_with_labels:
-                    instance = sofa_string + f"\nSentence: {text_span}"
+                    if window_half_size <= counter < len(sentence_with_labels) - window_half_size:              # open on left and right
+                        window_sentences = sentence_with_labels[counter-window_half_size:counter+window_half_size+1]
+                    elif counter < window_half_size and counter < len(sentence_with_labels) - window_half_size: # short on left
+                        window_sentences = sentence_with_labels[:counter+window_half_size+1]
+                    elif len(sentence_with_labels) - window_half_size <= counter < window_half_size: # short on right and left
+                        window_sentences = sentence_with_labels[:]
+                    elif counter >= window_half_size and counter >= len(sentence_with_labels) - window_half_size: # open on left short on right
+                        window_sentences = sentence_with_labels[counter-window_half_size:]
+                    context = ".\n".join([pair[0] for pair in window_sentences])
+                    instance = f"Sentence: {text_span}\nDocument: {context}"
                     output.append_instance(filename, instance, [label])
+                    counter += 1
                 print(f"Processed: {filename}")
 
 
@@ -61,7 +74,6 @@ def main():
     add_seed_arg(arg_parser)
     arg_parser.add_argument("-a", "--custom_argument", help="Your custom argument")
     args = arg_parser.parse_known_args()[0]
-    set_seed(args)  # Seed random number generation
     split_path = datasets_path() / "essays-argument-mining" / "train-test-split.csv"
     df_split = pd.read_csv(split_path, sep=";")
     print(df_split.info())

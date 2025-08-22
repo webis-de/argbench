@@ -5,7 +5,8 @@ import re
 from collections import OrderedDict
 from typing import List, Dict, Tuple
 from nltk.tokenize.punkt import PunktTrainer
-from common import Genres, Output, Skills, datasets_path, Metadata, split_test_val_train, clean_text
+from common import Genres, Output, Skills, datasets_path, Metadata, split_test_val_train, clean_text, \
+    get_stanza_sentence_segmenter
 
 DATASET_NAME = "argument_unit_segmentation_echr_poudyal20"
 DATASET_FILE_TEMPLATE = "argument_unit_segmentation_echr_{split}_poudyal20.json"
@@ -50,6 +51,7 @@ def extract_argumentative_clauses(case):
         all_argumentative_clauses.extend(premises)
     return all_argumentative_clauses
 
+sentence_segmenter = get_stanza_sentence_segmenter()
 
 def extract_candidate_argument_units(case:Dict) -> List[Tuple[str, str, str]]:
     case_text = case['text']
@@ -88,7 +90,7 @@ def extract_candidate_argument_units(case:Dict) -> List[Tuple[str, str, str]]:
         all_candidates.append(("Argumentative", argument_clause, argument_unit_counter ))
         current_text += argument_clause
         last_argument_unit_index = clause_end
-        if len(current_text) >1000:
+        if len(all_candidates)>10:
             chunks.append({"text":current_text, "candidates": all_candidates})
             current_text = ""
             all_candidates = []
