@@ -1,11 +1,12 @@
 #!/bin/bash
-echo "${@:4}"
+echo "${@:5}"
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 export CONFIG_PATH="$BIGWORK/task-specific-argument-mining-and-generation/argbench/experiment/configs/prompting/"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 export gpu_count=$1
 export experiment=$2
 export jobname=$3
+export node_type=$4
 sbatch <<EOF
 #!/bin/bash -l
 #SBATCH --job-name="$jobname"
@@ -23,7 +24,7 @@ conda activate new-env
 start=\$(date +%s)
 
 start_date=\$(date +%Y-%m-%d:%H:%m)
-python -m  argbench.experiment.run --job_name "$jobname" -c "${CONFIG_PATH}/${experiment}.json" ${@:4}
+python -m  argbench.experiment.run --job_name "$jobname" -c "${CONFIG_PATH}/${experiment}.json" ${@:5}
 
 
 end=\$(date +%s)
