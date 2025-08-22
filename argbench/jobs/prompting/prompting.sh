@@ -4,9 +4,10 @@ export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 export CONFIG_PATH="$BIGWORK/task-specific-argument-mining-and-generation/argbench/experiment/configs/prompting/"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 export gpu_count=$1
-export experiment=$2
-export jobname=$3
-export node_type=$4
+export node_type=$2
+export experiment=$3
+export jobname=$4
+
 sbatch <<EOF
 #!/bin/bash -l
 #SBATCH --job-name="$jobname"
