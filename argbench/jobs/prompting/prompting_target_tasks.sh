@@ -37,10 +37,10 @@ fi
 for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
 
-    bash argbench/jobs/prompting/prompting.sh 1 prompting "${task:0:3}-${model:0:3}-0-shot" --seed 17023 --dataset "$task" --model "$model" --debug
-    bash argbench/jobs/prompting/prompting.sh 1 prompting "${task:0:3}-${model:0:3}-1-shot" --seed 17023 --dataset "$task" --model "$model" -k 1 --debug
-    bash argbench/jobs/prompting/prompting.sh 1 prompting "${task:0:3}-${model:0:3}-4-shot" --seed 17023 --dataset "$task" --model "$model" -k 4 --debug
-    bash argbench/jobs/prompting/prompting.sh 1 prompting "${task:0:3}-${model:0:3}-cot" --seed 17023 --dataset "$task" --model "$model" --cot --debug
+    bash argbench/jobs/prompting/prompting.sh 1 prompting "${task:0:3}-${model:0:3}-0-shot" --seed 17023 --dataset "$task" --model "$model" --debug --sample
+    bash argbench/jobs/prompting/prompting.sh 1 prompting "${task:0:3}-${model:0:3}-1-shot" --seed 17023 --dataset "$task" --model "$model" -k 1 --debug --sample
+    bash argbench/jobs/prompting/prompting.sh 1 prompting "${task:0:3}-${model:0:3}-4-shot" --seed 17023 --dataset "$task" --model "$model" -k 4 --debug --sample
+    bash argbench/jobs/prompting/prompting.sh 1 prompting "${task:0:3}-${model:0:3}-cot" --seed 17023 --dataset "$task" --model "$model" --cot --debug --sample
   done
 
 done
