@@ -186,7 +186,7 @@ class Runner:
 
             #tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
             tokenized_template = self.tokenizer(self.config.model_config.prompt_template)
-            tokenized_template_len = len(tokenized_template["input_ids"][0])
+            tokenized_template_len = len(tokenized_template["input_ids"])
 
             logger.debug(f"length of tokenized template {tokenized_template_len}")
 
