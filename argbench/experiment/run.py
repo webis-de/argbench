@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import gc
+import logging
+
 import optuna
 import re
 
@@ -185,6 +187,9 @@ class Runner:
             tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
             tokenized_template = tokenizer({"input": self.config.model_config.prompt_template})
             tokenized_template_len = len(tokenized_template["input_ids"][0])
+
+            logger.debug(f"length of tokenized template {tokenized_template_len}")
+
             tokenizer = get_tokenizer(cutoff_len - tokenized_template_len, self.tokenizer, False)
             generate_truncated = get_truncated_text(self.tokenizer)
             for task_label in self.dataset:
