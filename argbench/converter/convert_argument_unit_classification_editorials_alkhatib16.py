@@ -1,6 +1,8 @@
 
 import os
 import json
+
+
 from common import Metadata, Output, add_seed_arg, set_seed, Genres, Skills, datasets_path, tasks_path
 from argparse import ArgumentParser
 from random import sample
@@ -79,7 +81,7 @@ def main():
      """)
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
-    set_seed(args)
+
 
     txt_directory_path = datasets_path() / "editorials" / "txt" / "txt" / "complete-annotated-final"
     dataset_train = "argument_unit_classification_editorials_train_alkhatib16.json"
@@ -123,24 +125,31 @@ the above classes.
     test_indices = sample(list(instances_dict.keys()), test_size)
     training_indices = [id for id in instances_dict.keys() if id not in test_indices]
     val_indices = sample(training_indices, test_size)
-
+    window_half_size = 5
 
     for instance_id, outputs in instances_dict.items():
         # Join multiple outputs with \n and add to the output
         sentences = [pair[0] for pair in outputs]
 
-        document = (" ").join(sentences)
+        for i, (sentence, label) in enumerate(outputs):
+            if i < window_half_size and i < len(outputs) - window_half_size:
+                window_sentences = sentences[:i+window_half_size+1]
+            elif i >= window_half_size and i > len(outputs) - window_half_size:
+                window_sentences = sentences[i-window_half_size:]
+            elif i >= window_half_size and i < len(outputs) - window_half_size:
+                window_sentences = sentences[i-window_half_size:i+window_half_size+1]
+            elif i < window_half_size and i > len(outputs) - window_half_size:
+                window_sentences = sentences[:]
 
-
-        for sentence, label in outputs:
-            combined_input = document + "\n" + f"Span: {sentence}"
+            context = " ".join(window_sentences)
+            combined_input = f"Span: {sentence}\nDocument: {context}"
 
             if instance_id in test_indices:
-                test_output.append_instance(instance_id, combined_input, [label])
+                test_output.append_instance(str(instance_id)+"_"+str(i), combined_input, [label])
             elif instance_id in val_indices:
-                val_output.append_instance(instance_id, combined_input, [label])
+                val_output.append_instance(str(instance_id)+"_"+str(i), combined_input, [label])
             else:
-                train_output.append_instance(instance_id, combined_input, [label])
+                train_output.append_instance(str(instance_id)+"_"+str(i), combined_input, [label])
 
     train_output.append_genre(Genres.NEWS)
     train_output.append_subarea(Skills.MINING)

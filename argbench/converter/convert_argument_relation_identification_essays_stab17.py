@@ -19,15 +19,19 @@ def parse_xmi_file(xmi_path):
 
     # Extracting ArgumentativeDiscourseUnits
     units = root.xpath("//argumentation:ArgumentativeDiscourseUnit", namespaces=root.nsmap)
-    unit_dict = {}
+    unit_text_dict = {}
+    unit_position = []
+    units_dict= {}
     for unit in units:
         unit_id = unit.get("{http://www.omg.org/XMI}id")  # xmi:id with the correct namespace
+        unit_position.append(unit_id)
         if unit_id:
             try:
                 begin = int(unit.get("begin"))
                 end = int(unit.get("end"))
                 unit_text = sofa_string[begin:end]
-                unit_dict[unit_id] = unit_text
+                unit_text_dict[unit_id] = unit_text
+                units_dict[unit_id] = unit
             except (TypeError, ValueError) as e:
                 print(f"Error extracting text for unit_id {unit_id}: {e}")
         else:
@@ -37,14 +41,36 @@ def parse_xmi_file(xmi_path):
     arguments = root.xpath("//argumentation:Argument", namespaces=root.nsmap)
     instance_inputs = []
     instance_outputs = []
+
     for argument in arguments:
         premise_id = argument.get("premises")
+
         conclusion_id = argument.get("conclusion")
+        premise_position = unit_position.index(premise_id)
+        conclusion_position = unit_position.index(conclusion_id)
+        first_position = min([premise_position, conclusion_position])
+        last_position = max([premise_position, conclusion_position])
+        window_half_size = 2
+        if first_position >= window_half_size:
+            first_position-=window_half_size
+        else:
+            first_position = 0
+
+        if last_position < len(unit_position) - window_half_size:
+            last_position+= window_half_size
+        else:
+            last_position= len(unit_position) - 1
+        first_id = unit_position[first_position]
+        last_id = unit_position[last_position]
+        first_unit_begin = int(units_dict[first_id].get("begin"))
+        last_unit_end = int(units_dict[last_id].get("end"))
+        window_text = sofa_string[first_unit_begin:last_unit_end+1]
+
         argument_type = argument.get("argumentType")
 
-        premise_text = unit_dict.get(premise_id, f"Unknown premise (ID: {premise_id})")
-        conclusion_text = unit_dict.get(conclusion_id, f"Unknown conclusion (ID: {conclusion_id})")
-        instance_inputs.append(f"Document:{sofa_string}\nPremise:{premise_text}\nConclusion:{conclusion_text}\n")
+        premise_text = unit_text_dict.get(premise_id, f"Unknown premise (ID: {premise_id})")
+        conclusion_text = unit_text_dict.get(conclusion_id, f"Unknown conclusion (ID: {conclusion_id})")
+        instance_inputs.append(f"Premise: {premise_text}\nConclusion: {conclusion_text}\nDocument: {window_text}")
         if argument_type == "supports":
             instance_outputs.append(f"Support")
         elif argument_type == "attacks":
@@ -81,7 +107,6 @@ def main():
     add_seed_arg(arg_parser)
     arg_parser.add_argument("-a", "--custom_argument", help="Your custom argument")
     args = arg_parser.parse_known_args()[0]
-    set_seed(args)  # Seed random number generation
     split_path = datasets_path() / "essays-argument-mining" / "train-test-split.csv"
     xmi_directory = datasets_path() / "essays-argument-mining"
     dataset_name = "argument_relation_identification_essays_stab17"
@@ -97,7 +122,7 @@ def main():
     df_split["SET"] = df_split.apply(lambda x: "VAL" if x["ID"] in val_ids else x["SET"], axis=1)
     splits = df_split["SET"]
     split_map = {ids[i]:splits[i] for i in range(len(ids))}
-    task_definition = """Given the following essay in which the given premise and conclusion appear.\n
+    task_definition = """Given the following premise and conclusion and their context.\n
      Classify whether the premise supports or attacks the conclusion.
          Only output Support or Attack."""
     metadata = Metadata(dataset_name)

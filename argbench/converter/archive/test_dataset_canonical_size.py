@@ -1,4 +1,4 @@
-from .common import tasks_path
+from argbench.converter.common import tasks_path
 from pathlib import Path
 import pytest
 import json
