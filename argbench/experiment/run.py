@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import gc
+import logging
+
 import optuna
 import re
 
@@ -153,9 +155,9 @@ class Runner:
                                                        )
 
         self.turn_off_thinking_qwen()
-        self.tokenizer.pad_token_id = config.get_pad_token_id()
+        self.tokenizer.pad_token = config.get_pad_token_id()
         self.tokenizer.unk_token = config.get_unk_token_id()
-
+        self.tokenizer.add_special_tokens({'pad_token' : "<pad>"})
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())
         self.task_metrics = get_evaluation_metrics_map()
         self.leaderboard = Leaderboard(config.get_leaderboard_path())
@@ -182,9 +184,12 @@ class Runner:
         self.iterable_dataset = DatasetDict()
         if self.config.prompting:
 
-            tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
-            tokenized_template = tokenizer({"input": self.config.model_config.prompt_template})
+            #tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
+            tokenized_template = self.tokenizer(self.config.model_config.prompt_template)
             tokenized_template_len = len(tokenized_template["input_ids"][0])
+
+            logger.debug(f"length of tokenized template {tokenized_template_len}")
+
             tokenizer = get_tokenizer(cutoff_len - tokenized_template_len, self.tokenizer, False)
             generate_truncated = get_truncated_text(self.tokenizer)
             for task_label in self.dataset:
