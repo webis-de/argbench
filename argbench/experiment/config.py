@@ -828,7 +828,7 @@ class RunConfig:
         # if "qwen" in self.model:
         #     return None
         # else:
-            return self.pad_token_id
+            return "<pad>"
 
     def get_unk_token_id(self):
         # if "qwen" in self.model :
