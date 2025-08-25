@@ -2,8 +2,8 @@ import unittest
 
 from argbench.converter.archive.convert_argument_unit_segmentation_echr import get_spacy_sentence_segmenter, \
     get_stanza_sentence_segmenter
-from argbench.converter.convert_argument_relation_detection_echr import generate_case_output, get_nltk_sentence_segmenter
-from argbench.converter.convert_argument_unit_segmentation_echr import *
+from argbench.converter.convert_argument_relation_detection_echr_poudyal20 import generate_case_output, get_nltk_sentence_segmenter
+from argbench.converter.convert_argument_unit_segmentation_echr_poudyal20 import *
 
 import numpy as np
 from random import randint
@@ -22,13 +22,16 @@ class TestEchrPreprocessing(unittest.TestCase):
             i = 41
             print(i)
             case = all_data[i]
+            print(case["text"])
             chunks = extract_candidate_argument_units(case)
+            print("BEGINING of TEST")
             for chunk in chunks:
                 units = chunk["candidates"]
                 self.assertTrue( chunk["text"])
                 #            self.assertIn(candidate_argument_units, ("Argumentative", "The Government submit that the Austrian reservation to Article 5 (Art. 5) of the Convention prevents the Commission from examining the case."))
-                print( chunk["text"])
-                print("**output**\n")
+                print("**text**\n")
+                print(chunk["text"])
+                print("**units**\n")
 
                 print("\n***\n".join(f"{unit[0]}: {unit[1]}" for unit in units))
 

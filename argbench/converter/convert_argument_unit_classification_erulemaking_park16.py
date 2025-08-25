@@ -37,9 +37,15 @@ personal feelings, prejudices, or interpretations.'
 
 
         # 将input和output写入到实例中
+        counter = 0
         for label, text in zip(labels, input_texts):
-            instance = combined_input + f"\nSentence: {text}"
-            output.append_instance(comment_id, instance, [label])
+            id = str(counter) + "_" + str(comment_id)
+            print(id)
+            instance = f"Sentence: {text}\n Document: {combined_input}"
+            output.append_instance(id, instance, [label])
+            counter += 1
+
+
     output.write_output(dataset_file_name)
     metadata.add_dataset(dataset_file_name, split)
     output.append_genre(Genres.WEB_FORUMS)
@@ -52,7 +58,7 @@ def main():
     arg_parser = ArgumentParser(description="What dataset will be processed?")
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
-    set_seed(args)  # Seed random number generation
+
 
     data_path = (datasets_path() /
                  "erulemaking" /

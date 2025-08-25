@@ -22,11 +22,11 @@ def parse_xmi_file(xmi_path):
         text_segment = sofa_string[begin:end]
 
         if unit_type == "majorclaim":
-            sentences_with_labels.append((text_segment, "Major Claim"))
+            sentences_with_labels.append((text_segment, "Major Claim", begin, end))
         elif unit_type in ["claim-for", "claim-against"]:
-            sentences_with_labels.append((text_segment, "Claim"))
+            sentences_with_labels.append((text_segment, "Claim", begin, end))
         elif unit_type == "premise":
-            sentences_with_labels.append((text_segment, "Premise"))
+            sentences_with_labels.append((text_segment, "Premise", begin, end))
 
 
 
@@ -42,7 +42,7 @@ def process_xmi_files(xmi_directory, output, split_map, split):
                 xmi_path = os.path.join(xmi_directory, xmi_file)
                 filename, sofa_string, sentence_with_labels = parse_xmi_file(xmi_path)
                 counter = 0
-                for text_span, label in sentence_with_labels:
+                for text_span, label, _, _  in sentence_with_labels:
                     if window_half_size <= counter < len(sentence_with_labels) - window_half_size:              # open on left and right
                         window_sentences = sentence_with_labels[counter-window_half_size:counter+window_half_size+1]
                     elif counter < window_half_size and counter < len(sentence_with_labels) - window_half_size: # short on left
@@ -51,9 +51,12 @@ def process_xmi_files(xmi_directory, output, split_map, split):
                         window_sentences = sentence_with_labels[:]
                     elif counter >= window_half_size and counter >= len(sentence_with_labels) - window_half_size: # open on left short on right
                         window_sentences = sentence_with_labels[counter-window_half_size:]
-                    context = ".\n".join([pair[0] for pair in window_sentences])
+                    start = window_sentences[0][2]
+                    end = window_sentences[-1][3]
+                    context = sofa_string[start:end]
+
                     instance = f"Sentence: {text_span}\nDocument: {context}"
-                    output.append_instance(filename, instance, [label])
+                    output.append_instance(filename+"_"+str(counter), instance, [label])
                     counter += 1
                 print(f"Processed: {filename}")
 

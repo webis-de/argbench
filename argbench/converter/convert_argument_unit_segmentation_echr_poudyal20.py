@@ -5,7 +5,7 @@ import re
 from collections import OrderedDict
 from typing import List, Dict, Tuple
 from nltk.tokenize.punkt import PunktTrainer
-from common import Genres, Output, Skills, datasets_path, Metadata, split_test_val_train, clean_text, \
+from argbench.converter.common import Genres, Output, Skills, datasets_path, Metadata, split_test_val_train, clean_text, \
     get_stanza_sentence_segmenter
 
 DATASET_NAME = "argument_unit_segmentation_echr_poudyal20"
@@ -53,6 +53,16 @@ def extract_argumentative_clauses(case):
 
 sentence_segmenter = get_stanza_sentence_segmenter()
 
+def split_un_argumentative_span(span):
+    sentences = sentence_segmenter(span)
+    chunks = []
+    for sentence in sentences:
+        piece_start = sentence[0]
+        piece_end = sentence[1]
+        unargumentative_chunk = span[piece_start:piece_end+1]
+        chunks.append(unargumentative_chunk)
+    return chunks
+
 def extract_candidate_argument_units(case:Dict) -> List[Tuple[str, str, str]]:
     case_text = case['text']
     all_argumentative_clauses = extract_argumentative_clauses(case)
@@ -70,42 +80,57 @@ def extract_candidate_argument_units(case:Dict) -> List[Tuple[str, str, str]]:
             unique_clause_texts.add(clause[0].strip().lower())
             unique_clauses.add(clause_unique_id)
 
+    window_size = 5 # count of maximum units to allow in each document
+    argumentative_span_size = 1 # count of sentences that an argumentative_piece may span
 
     unique_argument_clauses = sorted(unique_argument_clauses, key=lambda x: x[1])
     current_text = ""
     chunks = []
     for argument_clause, clause_start, clause_end, clause_id in unique_argument_clauses:
-        print(f"cluase start {clause_start} {clause_end} {clause_id}")
-        print(argument_clause)
+
+
         if clause_start > last_argument_unit_index:
 
             unargumentative_span = case_text[last_argument_unit_index:clause_start]
-            current_text += unargumentative_span
+
             if unargumentative_span.strip():
+                unargumentative_pieces = split_un_argumentative_span(unargumentative_span)
+                for non_argumentative_piece in unargumentative_pieces:
 
-                argument_unit_counter+= 1
-                all_candidates.append(("Non-argumentative", unargumentative_span, argument_unit_counter))
 
-        argument_unit_counter+= 1
+                    all_candidates.append(("Non-argumentative", non_argumentative_piece, argument_unit_counter))
+                    current_text+= non_argumentative_piece
+                    argument_unit_counter+= 1
+
+                    if len(all_candidates)>window_size-1:
+
+                        chunks.append({"text":current_text, "candidates": all_candidates})
+                        current_text = ""
+                        all_candidates = []
+            else:
+                current_text += unargumentative_span
+
+
         all_candidates.append(("Argumentative", argument_clause, argument_unit_counter ))
+        argument_unit_counter+= 1
         current_text += argument_clause
         last_argument_unit_index = clause_end
-        if len(all_candidates)>10:
+        if len(all_candidates)>window_size:
+
             chunks.append({"text":current_text, "candidates": all_candidates})
             current_text = ""
             all_candidates = []
 
-    if last_argument_unit_index != len(case_text):
-        unargumentative_span = case_text[last_argument_unit_index:]
-        if current_text:
-            current_text += unargumentative_span
-            all_candidates.append(("Non-argumentative", unargumentative_span, argument_unit_counter))
-        else:
-            chunks[-1]["text"] += unargumentative_span
-            chunks[-1]["candidates"].append(("Non-argumentative", unargumentative_span, argument_unit_counter))
-
     if current_text:
         chunks.append({"text":current_text, "candidates": all_candidates})
+
+    if last_argument_unit_index != len(case_text):
+        unargumentative_span = case_text[last_argument_unit_index:]
+        unargumentative_pieces = split_un_argumentative_span(unargumentative_span)
+        for non_argumentative_piece in unargumentative_pieces:
+            chunks.append({"text": non_argumentative_piece,"candidates":[("Non-argumentative", non_argumentative_piece, argument_unit_counter)]})
+            argument_unit_counter += 1
+
     return chunks
 
 def process_split(DATASET_NAME, dataset, split_name, metadata):
@@ -119,8 +144,8 @@ Do not add a new formating or enumeration also do not rephrase the argument unit
 
     counter = 0
     for case in dataset:
-
-        for chunk in extract_candidate_argument_units(case):
+        chunks = extract_candidate_argument_units(case)
+        for chunk in chunks:
 
             all_candidates = chunk["candidates"]
             text = chunk["text"]

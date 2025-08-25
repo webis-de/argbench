@@ -6,7 +6,7 @@ from typing import List, Dict, Tuple, Set
 from nltk.tokenize.punkt import PunktTrainer, PunktSentenceTokenizer
 
 
-from common import Genres, Output, Skills, datasets_path, Metadata, split_test_val_train, get_stanza_sentence_segmenter, clean_text
+from argbench.converter.common import Genres, Output, Skills, datasets_path, Metadata, split_test_val_train, get_stanza_sentence_segmenter, clean_text
 
 import re
 
@@ -79,14 +79,13 @@ def generate_case_output(case, segmenter) -> List:
                 end_doc_window = len(sentences) - 1
             end_sentence = sentences[end_doc_window]
             doc = case_text[start_sentence[0]:end_sentence[1]]
-
             for relation_candidate in argument_relations_candidates:
                 if relation_candidate not in all_argument_relation_candidates:
                     all_argument_relation_candidates.append({"relation":relation_candidate, "document":doc})
     return all_argument_relation_candidates
 
 def process_split(DATASET_NAME, dataset, split_name, metadata):
-    print(split_name)
+
     output = Output(DATASET_NAME)
 
     output.append_definition(""" Given the following document and two sentences, your task is to judge whether they are part of the same argument. 

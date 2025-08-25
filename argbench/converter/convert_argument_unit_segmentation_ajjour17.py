@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
-from common import split_test_val_train
+from common import split_test_val_train, get_stanza_sentence_segmenter
 from common import Genres, Output, Skills, datasets_path, tasks_path, Metadata, add_seed_arg, set_seed
 from dataclasses import dataclass
 from argparse import ArgumentParser
@@ -111,8 +111,39 @@ def process_folder(path: Path):
 
     return test_dataset, val_dataset, train_dataset
 
+def get_splits(file, window_size):
+    split_indices = range(0, len(file.units), window_size)
+    splits = []
+    for i, index in enumerate(split_indices):
+        if i + 1 < len(split_indices):
+            next_index = split_indices[i+1]
+            window_split_units = file.units[index:next_index]
+        else:
+            window_split_units = file.units[index:]
+        splits.append(window_split_units)
+    return splits
 
-def convert_arguments(dataset_name, test_dataset, val_dataset, train_dataset):
+sentence_segmenter = get_stanza_sentence_segmenter()
+
+def split_long_unit(file, limit):
+    file_new_units = []
+    for i, unit in enumerate(file.units):
+
+        if len(unit.span) > limit and unit.label=="Non-argumentative":
+
+            sentences = sentence_segmenter(unit.span)
+            new_units = []
+            for sentence in sentences:
+                piece_start = sentence[0]
+                piece_end = sentence[1]
+                unargumentative_chunk = unit.span[piece_start:piece_end+1]
+                new_units.append(Unit(unargumentative_chunk, "Non-argumentative"))
+            file_new_units.extend(new_units)
+        else:
+            file_new_units.append(unit)
+    file.units = file_new_units
+
+def convert_arguments(dataset_name, test_dataset, val_dataset, train_dataset, window_size):
     prompt = """Given the following document, split all of the document into argumentative units and non-argumentative units.
 An argumentative unit is a statement that has an argumentative function for example a claim or anecdote.
 Prepend each argumentative unit with argumentative: and spans that are not Argumentative with Non-argumentative:.
@@ -126,18 +157,35 @@ Do not add a new formating or enumeration also do not rephrase the argument unit
     train_output.append_definition(prompt)
     test_output.append_definition(prompt)
     val_output.append_definition(prompt)
+    max_unit_char = 300
 
     for file in tqdm(train_dataset):
-        extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in file.units])
-        train_output.append_instance(file.fragment_id, file.text, [extracted_units])
+        split_long_unit(file, max_unit_char)
+        splits = get_splits(file, window_size)
+        for i, split in enumerate(splits):
+            extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in split])
+
+            text = "".join([unit.span for unit in split])
+
+            train_output.append_instance(file.fragment_id+f"_{str(i)}", text.strip(), [extracted_units])
 
     for file in tqdm(test_dataset):
-        extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in file.units])
-        test_output.append_instance(file.fragment_id, file.text, [extracted_units])
+        split_long_unit(file, max_unit_char)
+        splits = get_splits(file, window_size)
+        for i, split in enumerate(splits):
+
+            extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in split])
+            text = "".join([unit.span for unit in split])
+            test_output.append_instance(file.fragment_id+f"_{str(i)}", text.strip(), [extracted_units])
 
     for file in tqdm(val_dataset):
-        extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in file.units])
-        val_output.append_instance(file.fragment_id, file.text, [extracted_units])
+        split_long_unit(file, max_unit_char)
+        splits = get_splits(file, window_size)
+        for i, split in enumerate(splits):
+            extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in split])
+            text = "".join([unit.span for unit in split])
+
+            val_output.append_instance(file.fragment_id+f"_{str(i)}", text.strip(), [extracted_units])
 
     return test_output, val_output, train_output
 
@@ -170,10 +218,11 @@ if __name__ == "__main__":
     arg_parser = ArgumentParser(description="Program to convert ajjour unit segmentation dataset into appropriate form")
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
-    set_seed(args)
+
 
 
     output_path = tasks_path()
+    window_sizes = {"editorials": 15, "essays": 17, "webDiscourse":6}
     for dataset in ["editorials", "essays", "webDiscourse"]:
         dataset_path = (datasets_path() / "unit-segmentation" / "simple" / dataset)
 
@@ -181,9 +230,9 @@ if __name__ == "__main__":
         dataset_file_train = DATASET_FILE_TEMPLATE.replace("{dataset}", dataset).format(split="train")
         dataset_file_test = DATASET_FILE_TEMPLATE.replace("{dataset}", dataset).format(split="test")
         dataset_file_val = DATASET_FILE_TEMPLATE.replace("{dataset}", dataset).format(split="val")
-
+        window_size = window_sizes[dataset]
         test_data, val_data, train_data  = process_folder(dataset_path)
-        test_data, val_data, train_data = convert_arguments(dataset_name, test_data, val_data, train_data)
+        test_data, val_data, train_data = convert_arguments(dataset_name, test_data, val_data, train_data, window_size)
 
         if dataset == "essays":
             genre = Genres.ESSAYS
