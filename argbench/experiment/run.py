@@ -184,8 +184,8 @@ class Runner:
         self.iterable_dataset = DatasetDict()
         if self.config.prompting:
 
-            tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
-            tokenized_template = tokenizer({"input": self.config.model_config.prompt_template})
+            #tokenizer = get_tokenizer(cutoff_len, self.tokenizer, False)
+            tokenized_template = self.tokenizer(self.config.model_config.prompt_template)
             tokenized_template_len = len(tokenized_template["input_ids"][0])
 
             logger.debug(f"length of tokenized template {tokenized_template_len}")
