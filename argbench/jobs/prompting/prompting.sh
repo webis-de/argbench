@@ -15,7 +15,7 @@ sbatch <<EOF
 #SBATCH --time=72:00:00
 #SBATCH --output argbench/output/"$jobname"-%j.out
 #SBATCH --error argbench/output/"$jobname"-%j.err
-#SBATCH --gres=gpu:a100:"$gpu_count"
+#SBATCH --gres=gpu:h100:"$gpu_count"
 
 module load Miniforge3
 conda activate new-env
