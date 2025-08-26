@@ -2,7 +2,9 @@ from collections import defaultdict
 from typing import Dict, Set
 
 import datasets
+import pandas
 from datasets import Dataset, DatasetDict, load_from_disk, concatenate_datasets
+from pandas import DataFrame
 
 from argbench.converter.common import *
 from argbench.experiment.preprocess import *
@@ -19,22 +21,19 @@ def get_dataset_split(dataset, set, metadata, task_data_path):
             return task_data_path / dataset / file
     return None
 
-def load_set(dataset, task_data_path, split, sample_rate:float = None, sample_size: int = None):
+def load_set(dataset, task_data_path, split, sample_rate:float = None, sample_size: int = None, max_few_shot_len=None) -> DataFrame:
     metadata = get_metadata()
 
     if split == DatasetSplit.TRAIN_AND_VAL:
-        train_set,_ = load_set(dataset, task_data_path, DatasetSplit.TRAIN, sample_rate, sample_size)
-        test_set,_ = load_set(dataset, task_data_path, DatasetSplit.VAL, sample_rate, sample_size)
-        return pd.concat([train_set, test_set]), None
+        train_set = load_set(dataset, task_data_path, DatasetSplit.TRAIN, sample_rate, sample_size, max_few_shot_len)
+        test_set = load_set(dataset, task_data_path, DatasetSplit.VAL, sample_rate, sample_size, max_few_shot_len)
+        return pd.concat([train_set, test_set])
     split = split.value
     path = get_dataset_split(dataset, split, metadata, task_data_path)
     if sample_rate or sample_size:
-        path_sample = formulate_sample_path(path, sample_rate, sample_size)
+        return sample_set(path, sample_rate, sample_size, max_few_shot_len)
     else:
-        return pd.read_json(path, lines=True), path
-    logger.debug(f"path:{path}")
-    logger.debug(f"sample path:{path_sample}")
-    return sample_set(path, sample_rate, sample_size)
+        return pd.read_json(path, lines=True)
 
 def formulate_sample_path(output_path: Path, sample_rate: float = None, sample_size: int= None):
     base, file_name = os.path.split(output_path)
@@ -47,18 +46,25 @@ def formulate_sample_path(output_path: Path, sample_rate: float = None, sample_s
 
     return os.path.join(base, sample_name)
 
-def sample_set(output_path: Path, sample_rate: float = None, sample_size: int = None ):
+def sample_set(output_path: Path, sample_rate: float = None, sample_size: int = None, max_few_shot_len =None ) -> DataFrame:
 
     df_set = pd.read_json(output_path, lines=True)
     path_sample = formulate_sample_path(output_path, sample_rate, sample_size)
     if sample_rate:
         df_sample = df_set.sample(frac=sample_rate)
     elif sample_size:
+        if max_few_shot_len:
+            df_set["length-complaint"] = df_set.apply(lambda x: len(x["input"]+ " " + x["output"]) <max_few_shot_len)
+            df_filtered_set = df_set[df_set["length-complaint"]]
+            if len(df_filtered_set) > sample_size:
+                df_set = df_filtered_set
+            else:
+                logger.info(f"could not find few shots that satisfies the max_few_shot_len limit {max_few_shot_len}")
         df_sample = df_set.sample(sample_size)
     else:
         raise ValueError("no rate or size defined")
     df_sample.to_json(path_sample, orient='records', lines=True)
-    return df_sample, path_sample
+    return df_sample
 
 
 def create_dataset_in_tasks(task_data_path, prompt_technique_template, experiment_splits, test_subsample_rate=None, train_subsample_rate=None):
@@ -79,13 +85,13 @@ def create_dataset_in_tasks(task_data_path, prompt_technique_template, experimen
 
 
         if task == "counter_argument_generation_cmv_hua18" and train_subsample_rate:
-            df_training, train_path = load_set(task, task_data_path, DatasetSplit.TRAIN)
+            df_training = load_set(task, task_data_path, DatasetSplit.TRAIN)
             df_training = df_training.sample(20000)
             df_training = df_training.sample(frac=train_subsample_rate)
         else:
-            df_training, train_path = load_set(task, task_data_path, DatasetSplit.TRAIN, sample_rate=train_subsample_rate)
-        df_test, test_path = load_set(task, task_data_path, DatasetSplit.TEST,  sample_rate=test_subsample_rate)
-        df_validation, val_path = load_set(task, task_data_path, DatasetSplit.VAL, sample_rate=test_subsample_rate)
+            df_training = load_set(task, task_data_path, DatasetSplit.TRAIN, sample_rate=train_subsample_rate)
+        df_test = load_set(task, task_data_path, DatasetSplit.TEST,  sample_rate=test_subsample_rate)
+        df_validation = load_set(task, task_data_path, DatasetSplit.VAL, sample_rate=test_subsample_rate)
         dataframes = (df_training, df_test, df_validation)
         for df_split in dataframes:
             for column in df_split.columns:
@@ -103,9 +109,6 @@ def create_dataset_in_tasks(task_data_path, prompt_technique_template, experimen
         hf_training = datasets.Dataset.from_pandas(df_training)
         hf_validation = datasets.Dataset.from_pandas(df_validation)
 
-        df_training.path = train_path
-        df_test.path = test_path
-        df_validation.path = val_path
 
 
         dataset =  {f"test_{task}":hf_test, f"train_{task}":hf_training, f"val_{task}": hf_validation}
@@ -126,7 +129,7 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
     for task in experiment_splits["test"]:
 
 
-        df_test, test_path = load_set(task, task_data_path, DatasetSplit.TEST,  sample_rate=test_subsample_rate)
+        df_test = load_set(task, task_data_path, DatasetSplit.TEST,  sample_rate=test_subsample_rate)
 
         for column in df_test.columns:
             df_test[column] = df_test[column].astype(str)
@@ -142,7 +145,7 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
 
     for task in experiment_splits["validation"]:
         print(task)
-        df_validation, validation_path = load_set(task, task_data_path, DatasetSplit.VAL, sample_rate=0.1) ## This should be made 1 for final
+        df_validation = load_set(task, task_data_path, DatasetSplit.VAL, sample_rate=0.1) ## This should be made 1 for final
         for column in df_validation.columns:
             df_validation[column] = df_validation[column].astype(str)
         df_validation.rename(columns={"input": "document"}, inplace=True)
@@ -158,7 +161,7 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
     all_tasks.extend(experiment_splits["validation"])
     all_tasks.extend(experiment_splits["test"])
     for task in all_tasks:
-        df_training, training_path = load_set(task, task_data_path, DatasetSplit.TRAIN)
+        df_training = load_set(task, task_data_path, DatasetSplit.TRAIN)
         if len(df_training) > 1000:
             df_training = df_training.sample(1000)
         if  train_subsample_rate:
@@ -176,7 +179,7 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
     hf_leave_one_task_dataset = DatasetDict(leave_one_task_dataset)
     return hf_leave_one_task_dataset
 
-def create_dataset_prompting(task_data_path, prompting_technique_template, test_subsample_rate=None, few_shot_amount=None):
+def create_dataset_prompting(task_data_path, prompting_technique_template, test_subsample_rate=None, few_shot_amount=None, max_few_shot_len=None):
 
     def few_shot_template_formatter(row):
         return prompting_technique_template.format(instance_input=row["document"], definition=row["definition"], example=row["example"])
@@ -190,8 +193,8 @@ def create_dataset_prompting(task_data_path, prompting_technique_template, test_
 
     for task in tasks:
         if few_shot_amount:
-            df_training, train_path = load_set(task, task_data_path, DatasetSplit.TRAIN, sample_size=few_shot_amount)
-            df_training.path = train_path
+            df_training = load_set(task, task_data_path, DatasetSplit.TRAIN, sample_size=few_shot_amount, max_few_shot_len=max_few_shot_len)
+
             for column in df_training.columns:
                 df_training[column] = df_training[column].astype(str)
             df_training = df_training[["id", "input", "output"]]
@@ -199,9 +202,9 @@ def create_dataset_prompting(task_data_path, prompting_technique_template, test_
 
 
 #        df_test['output'] = df_test['output'].apply(json.dumps)
-        df_test, test_path = load_set(task, task_data_path, DatasetSplit.TEST,sample_rate = test_subsample_rate)
+        df_test = load_set(task, task_data_path, DatasetSplit.TEST,sample_rate = test_subsample_rate)
 
-        df_test.path = test_path
+
 
         ###  Formatting
         if few_shot_amount:
@@ -276,7 +279,7 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
         few_shot_count = 1
     else:
         few_shot_count = None
-
+    max_few_shot_len = run_config.max_few_shot_len
     with open(run_config.experiment_splits_path) as experiment_splits_file:
         experiment_splits = json.load(experiment_splits_file)
     if experiment_type == ExperimentType.IN_TASK:
@@ -286,9 +289,9 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
             dataset = create_dataset_in_tasks(tasks_path, prompt_template, experiment_splits)
     elif experiment_type == ExperimentType.PROMPTING:
             if sample:
-                dataset = create_dataset_prompting(tasks_path, prompt_template,0.1, few_shot_count )
+                dataset = create_dataset_prompting(tasks_path, prompt_template,0.1, few_shot_count , max_few_shot_len=run_config.max_few_shot_len)
             else:
-                dataset = create_dataset_prompting(tasks_path, prompt_template, test_subsample_rate=None, few_shot_amount=few_shot_count )
+                dataset = create_dataset_prompting(tasks_path, prompt_template, test_subsample_rate=None, few_shot_amount=few_shot_count, max_few_shot_len=run_config.max_few_shot_len)
     elif experiment_type == ExperimentType.LEAVE_ONE_TASK or experiment_type == ExperimentType.SKILL_TRANSFER:
         if sample:
             dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits, 0.1, train_subsample_rate=0.25)
