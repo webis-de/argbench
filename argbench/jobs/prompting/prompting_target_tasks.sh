@@ -38,12 +38,13 @@ for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
 
     bash argbench/jobs/prompting/prompting.sh 1 prompting "${task:0:3}-${model:0:3}-0-shot" --seed 17023 --dataset "$task" --model "$model" --debug --sample
-    sleep 1
+    sleep 5
     bash argbench/jobs/prompting/prompting.sh 1 prompting "${task:0:3}-${model:0:3}-1-shot" --seed 17023 --dataset "$task" --model "$model" -k 1 --debug --sample
-    sleep 1
+    sleep 5
     bash argbench/jobs/prompting/prompting.sh 1 prompting "${task:0:3}-${model:0:3}-4-shot" --seed 17023 --dataset "$task" --model "$model" -k 4 --debug --sample
-    sleep 1
+    sleep 5
     bash argbench/jobs/prompting/prompting.sh 1 prompting "${task:0:3}-${model:0:3}-cot" --seed 17023 --dataset "$task" --model "$model" --cot --debug --sample
+    sleep 5
   done
 
 done
