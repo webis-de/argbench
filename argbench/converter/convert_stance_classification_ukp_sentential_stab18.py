@@ -32,7 +32,7 @@ if __name__ == "__main__":
     arg_parser = ArgumentParser(description="Program to convert gretz20 ibm quality dataset into appropriate form")
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
-    set_seed(args)
+    
 
     metadata = Metadata(DATASET_NAME)
     dataset_path = datasets_path() / "ukp-sentential" / "data"

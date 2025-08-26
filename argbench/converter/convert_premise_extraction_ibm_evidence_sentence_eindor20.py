@@ -47,7 +47,7 @@ if __name__ == "__main__":
     argument_parser = ArgumentParser(description="Convert argument mining dataset")
     add_seed_arg(argument_parser)
     args = argument_parser.parse_known_args()[0]
-    set_seed(args)
+    
 
     dataset_path = str(datasets_path()
                     / "ibm-argument-sentences-2"

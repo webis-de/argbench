@@ -80,7 +80,7 @@ if __name__ == "__main__":
     arg_parser = ArgumentParser(description="What dataset will be processed?")
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
-#    set_seed(args) # Seed random number generation
+#     # Seed random number generation
     data_path = datasets_path() / "logic" # path to data
     all_training_datasets = ["climate_train.csv", "edu_train.csv"]
     all_val_datasets = ["climate_dev.csv", "edu_dev.csv"]

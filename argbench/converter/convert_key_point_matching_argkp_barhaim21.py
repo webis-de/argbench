@@ -37,7 +37,7 @@ if __name__ == "__main__":
     arg_parser = ArgumentParser(description="Program to convert ajjour unit segmentation dataset into appropriate form")
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
-    set_seed(args)
+    
 
     dataset_path = str(datasets_path()
                     / "argkpa-2021"
