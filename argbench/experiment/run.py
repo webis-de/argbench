@@ -91,11 +91,14 @@ def formate_model_template(template):
 
 def tokenize(prompt, tokenizer, cutoff_len, train):
     if train:
-        prompt = tokenizer(prompt, padding="max_length", max_length=cutoff_len, truncation=True)
+        #prompt = tokenizer(prompt, padding="max_length", max_length=cutoff_len, truncation=True)
+        prompt = tokenizer(prompt, padding=True, max_length=cutoff_len, truncation=True)
         logger.debug( f"count of tokens in prompt {len(prompt['input_ids'][0])}")
     else:
 
-        prompt =  tokenizer(prompt, padding="max_length", max_length=cutoff_len, truncation=True, return_tensors="pt")
+        #prompt =  tokenizer(prompt, padding="max_length", max_length=cutoff_len, truncation=True, return_tensors="pt")
+        prompt =  tokenizer(prompt, padding=True, max_length=cutoff_len, truncation=True, return_tensors="pt")
+
         logger.debug( f"count of tokens in prompt {len(prompt['input_ids'][0])}")
         return prompt
     if prompt["input_ids"][-1] != tokenizer.eos_token_id and len(prompt["input_ids"]) < cutoff_len:
