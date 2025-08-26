@@ -27,12 +27,12 @@ else
 fi
 
 for model in "${models[@]}"; do
-    bash argbench/jobs/prompting/prompting.sh 1 prompting "${model:0:3}-0-shot" --max-length 128000 --model "$model" --debug --sample
+    bash argbench/jobs/prompting/prompting.sh 1 prompting "${model:0:3}-0-shot" --max_length 128000 --model "$model" --debug --sample
     sleep 5
-    bash argbench/jobs/prompting/prompting.sh 1 prompting "${model:0:3}-1-shot" --max-length 128000  --model "$model" -k 1 --debug --sample
+    bash argbench/jobs/prompting/prompting.sh 1 prompting "${model:0:3}-1-shot" --max_length 128000  --model "$model" -k 1 --debug --sample
     sleep 5
-    bash argbench/jobs/prompting/prompting.sh 1 prompting "${model:0:3}-4-shot" --max-length 128000  --model "$model" -k 4 --debug --sample
+    bash argbench/jobs/prompting/prompting.sh 1 prompting "${model:0:3}-4-shot" --max_length 128000  --model "$model" -k 4 --debug --sample
     sleep 5
-    bash argbench/jobs/prompting/prompting.sh 1 prompting "${model:0:3}-cot" --max-length 128000 --model "$model" --cot --debug --sample
+    bash argbench/jobs/prompting/prompting.sh 1 prompting "${model:0:3}-cot" --max_length 128000 --model "$model" --cot --debug --sample
     sleep 5
 done
