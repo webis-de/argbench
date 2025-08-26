@@ -127,7 +127,7 @@ if __name__ == "__main__":
     argument_parser = ArgumentParser()
     add_seed_arg(argument_parser)
     args = argument_parser.parse_known_args()[0]
-    set_seed(args)
+    
 
     dataset_path = datasets_path() / "microtexts-1/original/original/corpus/en"
 

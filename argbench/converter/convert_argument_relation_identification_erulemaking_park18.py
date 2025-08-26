@@ -53,7 +53,7 @@ def main():
     arg_parser = ArgumentParser(description="What dataset will be processed?")
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
-    set_seed(args)
+    
     dataset_name = "argument_relation_identification_erulemaking_park18"
     dataset_file_test = "argument_relation_identification_erulemaking_test_park18.json"
     dataset_file_train = "argument_relation_identification_erulemaking_train_park18.json"

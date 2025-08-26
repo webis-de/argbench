@@ -58,7 +58,7 @@ if __name__ == "__main__":
     arg_parser = ArgumentParser()
     add_seed_arg(arg_parser)
     args = arg_parser.parse_known_args()[0]
-    set_seed(args)
+    
     cache_dir = "/bigwork/nhwpajjy/computational-argumentation-tasks-instructions/datasets/openDebateEvidence/datasets--Yusuf5--OpenCaselist/snapshots/751ef23038d6beca927a66c4af5fb8122f2806b5"
     process_dataset(cache_dir)
 
