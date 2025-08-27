@@ -9,7 +9,7 @@
 #SBATCH --gres=gpu:a100:1
 
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
-
+export HF_HUB_OFFLINE=1
 module load Miniforge3
 conda activate new-env
 export HF_HOME="/bigwork/nhwpajjy/.cache/huggingface"
