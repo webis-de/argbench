@@ -9,12 +9,9 @@
 #SBATCH --gres=gpu:a100:1
 
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
-export HF_HUB_OFFLINE=1
 module load Miniforge3
 conda activate new-env
-export HF_HOME="/bigwork/nhwpajjy/.cache/huggingface"
-export HF_DATASETS_CACHE="/bigwork/nhwpajjy/.cache/huggingface/datasets"
-export TRANSFORMERS_CACHE="/bigwork/nhwpajjy/.cache/huggingface/transformers"
+export HF_HUB_OFFLINE=1
 
 python -c "from transformers import AutoTokenizer;  AutoTokenizer.from_pretrained('roberta-large')"
 python -m unittest argbench.experiment.tests.test_bert_score
