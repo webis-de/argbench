@@ -27,6 +27,7 @@ conda activate new-env
 export HF_HUB_OFFLINE=1
 start=\$(date +%s)
 Start_Date=\$(date +%Y-%m-%d:%H:%m)
+echo "no parallel"
 python -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:5}
 end=\$(date +%s)
 export Time=\$((end-start))
@@ -53,7 +54,7 @@ module load Miniforge3
 conda activate new-env
 start=\$(date +%s)
 Start_Date=\$(date +%Y-%m-%d:%H:%m)
-
+echo "parallel"
 accelerate launch --config_file "${CONFIG_PATH}/accelerate/config_${gpu_count}_gpus_3_stage.yaml" \\
 -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:5}
 end=\$(date +%s)
