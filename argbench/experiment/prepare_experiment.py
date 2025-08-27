@@ -54,7 +54,7 @@ def sample_set(output_path: Path, sample_rate: float = None, sample_size: int = 
         df_sample = df_set.sample(frac=sample_rate)
     elif sample_size:
         if max_few_shot_len:
-            df_set["length-complaint"] = df_set.apply(lambda x: len(x["input"]+ " " + x["output"]) <max_few_shot_len)
+            df_set["length-complaint"] = df_set.apply(lambda x: len(x["input"]+ " " + x["output"])<max_few_shot_len, axis=1)
             df_filtered_set = df_set[df_set["length-complaint"]]
             if len(df_filtered_set) > sample_size:
                 df_set = df_filtered_set

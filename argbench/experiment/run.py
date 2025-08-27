@@ -74,9 +74,9 @@ def clean_prediction(prediction, chain_of_thoughts):
     if prediction.startswith("assistant"):
         prediction = prediction.replace("assistant", "")
     prediction = re.sub("<think>.*</think>", "", prediction)
-    if prediction.count("<think>") > 1:
-        index = prediction.rindex("<think>")
-        prediction = prediction[index+7:]
+    if prediction.count("</think>") > 1:
+        index = prediction.rindex("</think>")
+        prediction = prediction[index+8:]
     if "</think>" in prediction:
         prediction = prediction.split("</think>")[1]
 
@@ -503,7 +503,7 @@ class Runner:
 
         sampling_params = self.load_sampling_params(self.test_dataset_name, trial, self.config.hpo_config.vllm_config)
         self.trainer.evaluate()
-        metrics = self.evaluate(self.test_dataset_name, self.iterable_dataset["test"], sampling_params, model=self.trainer.model)
+        metrics = self.evaluate(self.test_dataset_name, self.iterable_dataset["val"], sampling_params, model=self.trainer.model)
         log_mem(f"finished evaluation")
         logger.debug(f"metrics are {metrics}")
         metric = self.task_metrics[self.test_dataset_name]
