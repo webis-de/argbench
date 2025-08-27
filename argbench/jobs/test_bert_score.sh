@@ -12,4 +12,5 @@ export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 
 module load Miniforge3
 conda activate new-env
+python -c "from transformers import AutoTokenizer; AutoTokenizer.from_pretrained('roberta-large')"
 python -m unittest argbench.experiment.tests.test_bert_score
