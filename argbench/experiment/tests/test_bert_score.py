@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from nltk.translate.bleu_score import sentence_bleu
 
-from ..testing import *
+from argbench.experiment.testing import *
 
 
 class TestBertScore(TestCase):
