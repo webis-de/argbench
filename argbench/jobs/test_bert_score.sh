@@ -12,5 +12,5 @@ export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 
 module load Miniforge3
 conda activate new-env
-python -c "from transformers import AutoTokenizer; from huggingface_hub import hf_hub_download; path = hf_hub_download('roberta-large', filename='config.json'); print(path); AutoTokenizer.from_pretrained(path)"
+python -c "from transformers import AutoTokenizer; from huggingface_hub import hf_hub_download; path = hf_hub_download('roberta-large', filename='config.json'); print(path); AutoTokenizer.from_pretrained('/home/nhwpajjy/.cache/huggingface/hub/models--roberta-large/snapshots/722cf37b1afa9454edce342e7895e588b6ff1d59/')"
 #python -m unittest argbench.experiment.tests.test_bert_score
