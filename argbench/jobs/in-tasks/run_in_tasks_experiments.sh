@@ -4,8 +4,9 @@ export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 export CONFIG_PATH="$BIGWORK/task-specific-argument-mining-and-generation/argbench/experiment/configs/"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 export gpu_count=$1
-export experiment=$2
-export jobname=$3
+export gpu_type=$2
+export experiment=$3
+export jobname=$4
 
 if [ "$gpu_count" == 1 ] ; then
 sbatch <<EOF
@@ -17,7 +18,7 @@ sbatch <<EOF
 #SBATCH --time=72:00:00
 #SBATCH --output argbench/output/"$jobname"-%j.out
 #SBATCH --error argbench/output/"$jobname"-%j.err
-#SBATCH --gres=gpu:a100:"$gpu_count"
+#SBATCH --gres=gpu:"$gpu_type:$gpu_count"
 
 module load Miniforge3
 conda activate new-env
@@ -43,7 +44,7 @@ sbatch <<EOF
 #SBATCH --time=72:00:00
 #SBATCH --output argbench/output/"$jobname"-%j.out
 #SBATCH --error argbench/output/"$jobname"-%j.err
-#SBATCH --gpus=h100:${gpu_count}
+#SBATCH --gpus="$gpu_type:$gpu_count"
 
 module load Miniforge3
 conda activate new-env
