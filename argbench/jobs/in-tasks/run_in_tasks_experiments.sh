@@ -1,8 +1,9 @@
 #!/bin/bash
-echo "${@:4}"
+echo "${@:5}"
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 export CONFIG_PATH="$BIGWORK/task-specific-argument-mining-and-generation/argbench/experiment/configs/"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
+
 export gpu_count=$1
 export gpu_type=$2
 export experiment=$3
@@ -24,7 +25,7 @@ module load Miniforge3
 conda activate new-env
 start=\$(date +%s)
 Start_Date=\$(date +%Y-%m-%d:%H:%m)
-python -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:4}
+python -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:5}
 end=\$(date +%s)
 export Time=\$((end-start))
 Time_HOURS=\$(echo "scale=2; \$Time / 3600" | bc)
@@ -52,7 +53,7 @@ start=\$(date +%s)
 Start_Date=\$(date +%Y-%m-%d:%H:%m)
 
 accelerate launch --config_file "${CONFIG_PATH}/accelerate/config_${gpu_count}_gpus_3_stage.yaml" \\
--m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:4}
+-m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:5}
 end=\$(date +%s)
 export Time=\$((end-start))
 TIME_HOURS=\$(awk -v t="\$Time" 'BEGIN { printf "%.2f", t / 3600 }')

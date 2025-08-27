@@ -1,11 +1,14 @@
 #!/bin/bash
-echo "${@:4}"
+echo "${@:5}"
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 export CONFIG_PATH="$BIGWORK/task-specific-argument-mining-and-generation/argbench/experiment/configs/prompting/"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
+
 export gpu_count=$1
-export experiment=$2
-export jobname=$3
+export gpu_type=$2
+export experiment=$3
+export jobname=$4
+
 sbatch <<EOF
 #!/bin/bash -l
 #SBATCH --job-name="$jobname"
@@ -15,7 +18,7 @@ sbatch <<EOF
 #SBATCH --time=72:00:00
 #SBATCH --output argbench/output/"$jobname"-%j.out
 #SBATCH --error argbench/output/"$jobname"-%j.err
-#SBATCH --gres=gpu:a100:"$gpu_count"
+#SBATCH --gres="$gpu_type:$gpu_count"
 
 module load Miniforge3
 conda activate new-env
@@ -23,7 +26,7 @@ conda activate new-env
 start=\$(date +%s)
 
 start_date=\$(date +%Y-%m-%d:%H:%m)
-python -m  argbench.experiment.run --job_name "$jobname" -c "${CONFIG_PATH}/${experiment}.json" ${@:4}
+python -m  argbench.experiment.run --job_name "$jobname" -c "${CONFIG_PATH}/${experiment}.json" ${@:5}
 
 
 end=\$(date +%s)
