@@ -128,7 +128,7 @@ def compute_bleu_score(predictions, references):
 
 def compute_bert_score(predictions, references):
 
-    P, R, F1 = score(predictions, references, lang='en')
+    P, R, F1 = score(predictions, references, lang='en', use_fast_tokenizer=True)
     return {"bertscore": F1.mean().item()}
 
 
