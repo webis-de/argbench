@@ -23,6 +23,8 @@ sbatch <<EOF
 
 module load Miniforge3
 conda activate new-env
+
+export HF_HUB_OFFLINE=1
 start=\$(date +%s)
 Start_Date=\$(date +%Y-%m-%d:%H:%m)
 python -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:5}

@@ -22,7 +22,7 @@ sbatch <<EOF
 
 module load Miniforge3
 conda activate new-env
-
+export HF_HUB_OFFLINE=1
 start=\$(date +%s)
 
 start_date=\$(date +%Y-%m-%d:%H:%m)

@@ -11,6 +11,7 @@
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 module load Miniforge3
 conda activate new-env
+
 export HF_HUB_OFFLINE=1
 
 python -c "from transformers import AutoTokenizer;  AutoTokenizer.from_pretrained('roberta-large')"
