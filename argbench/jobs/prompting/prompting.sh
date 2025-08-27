@@ -8,7 +8,7 @@ export gpu_count=$1
 export gpu_type=$2
 export experiment=$3
 export jobname=$4
-
+echo
 sbatch <<EOF
 #!/bin/bash -l
 #SBATCH --job-name="$jobname"
@@ -18,7 +18,7 @@ sbatch <<EOF
 #SBATCH --time=72:00:00
 #SBATCH --output argbench/output/"$jobname"-%j.out
 #SBATCH --error argbench/output/"$jobname"-%j.err
-#SBATCH --gres="$gpu_type:$gpu_count"
+#SBATCH --gres="gpu:$gpu_type:$gpu_count"
 
 module load Miniforge3
 conda activate new-env
