@@ -21,7 +21,7 @@
  	"model_configs_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/model_configs.json",
     "train_datasets": {},
     "test_dataset": {
-        "name": "argument_rating_dagstuhl_15512_effectiveness_wachsmuth17",
+        "name": "argument_rating_dagstuhl_15512_wachsmuth17",
         "subsample_rate": 0.5
     },
 
