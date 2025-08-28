@@ -7,38 +7,46 @@ parser.add_argument("--metadata", type=str)
 parser.add_argument("--k", type=int)
 parser.add_argument("--cot", action='store_true')
 parser.add_argument("--missing-tasks", action='store_true')
-
+parser.add_argument("--skill-output-path", type=str)
+parser.add_argument("--seed", type=int)
 args= parser.parse_args()
 df = pd.read_csv(args.file, sep="\t")
 #df.drop_duplicates(["test_task","k","model","score"],inplace=True)
 with open(args.metadata) as file:
 
     metadata = json.load(file)
-
+    df = df[df["seed"]==args.seed]
     df = df[df["test_task"]!="generation"]
     df = df[df["test_task"]!="quality-assessment"]
     df = df[df["test_task"]!="reasoning"]
     df = df[df["test_task"]!="reasonableness_scoring_cmv_habernal18"]
     df = df[df["test_task"]!="perspective-assessment"]
     df = df[df["test_task"]!="mining"]
-    times = sorted(df["start_time"].values)
-    last_time = times[-1]
-    print(f"\n** aggregating run on {last_time}**\n")
-    df = df[df["start_time"]==last_time]
     processed_tasks = set(df["test_task"].tolist())
     expected_tasks = metadata.keys()
     missing_tasks = expected_tasks - processed_tasks
     print("** Missing Tasks **\n")
     print(list(missing_tasks).sort())
     print("\n**               **\n")
+    path_output = args.skill_output_path
+    prompting_technique=""
     if args.k:
         df = df[df["k"] == args.k]
+        prompting_technique=f"few-shot-{args.k}"
     elif args.cot:
         df = df[df["model"].str.contains("cot")]
+        prompting_technique=f"cot"
     else:
         df = df[~df["model"].str.contains("cot")]
         df = df[df["k"] != 1]
         df = df[df["k"] != 4]
+        prompting_technique=f"few-shot-{0}"
+    times = sorted(df["start_time"].values)
+    last_time = times[-1]
+
+    print(f"\n** aggregating run on {last_time}**\n")
+    df = df[df["start_time"]==last_time]
+    experiment = df["model"].iloc[0]
     print(f"found tasks {len(df)}")
     num_tasks = df["test_task"].nunique()
     print(f"found {num_tasks} tasks")
@@ -49,8 +57,12 @@ with open(args.metadata) as file:
     df["skill-index"] = df["skill"].apply(lambda x: skills.index(x) )
     df.sort_values(by="skill-index", inplace=True)
     for skill, df_skill in df.groupby("skill", sort=False):
-
-
+        print(f"\n-----overview ({skill})-------\n")
+        df_skill = df_skill[df_skill["metric"].isin(["generation-score", "fscore"])]
+        df_skill_overview = df_skill[["test_task", "score"]]
+        df_skill_overview.to_csv(f"{path_output}/{skill}-{experiment}-{prompting_technique}-{last_time}-{args.seed}.csv", index=False)
+        print(df_skill_overview)
+        print(f"--------------------\n")
         if skill == "generation":
             df_blue_records = df_skill[df_skill["metric"]=="bleu"]
             blue_score_agg =df_blue_records["score"].mean()

@@ -179,7 +179,7 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
     hf_leave_one_task_dataset = DatasetDict(leave_one_task_dataset)
     return hf_leave_one_task_dataset
 
-def create_dataset_prompting(task_data_path, prompting_technique_template, test_subsample_rate=None, few_shot_amount=None, max_few_shot_len=None):
+def create_dataset_prompting(task_data_path, prompting_technique_template, max_test_subsample_count=None, few_shot_amount=None, max_few_shot_len=None):
 
     def few_shot_template_formatter(row):
         return prompting_technique_template.format(instance_input=row["document"], definition=row["definition"], example=row["example"])
@@ -202,7 +202,10 @@ def create_dataset_prompting(task_data_path, prompting_technique_template, test_
 
 
 #        df_test['output'] = df_test['output'].apply(json.dumps)
-        df_test = load_set(task, task_data_path, DatasetSplit.TEST,sample_rate = test_subsample_rate)
+
+        df_test = load_set(task, task_data_path, DatasetSplit.TEST)
+        if len(df_test) > max_test_subsample_count:
+            df_test = load_set(task, task_data_path, DatasetSplit.TEST, sample_size=max_test_subsample_count)
 
 
 
@@ -289,9 +292,9 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
             dataset = create_dataset_in_tasks(tasks_path, prompt_template, experiment_splits)
     elif experiment_type == ExperimentType.PROMPTING:
             if sample:
-                dataset = create_dataset_prompting(tasks_path, prompt_template,0.1, few_shot_count , max_few_shot_len=run_config.max_few_shot_len)
+                dataset = create_dataset_prompting(tasks_path, prompt_template,1000, few_shot_count , max_few_shot_len=max_few_shot_len)
             else:
-                dataset = create_dataset_prompting(tasks_path, prompt_template, test_subsample_rate=None, few_shot_amount=few_shot_count, max_few_shot_len=run_config.max_few_shot_len)
+                dataset = create_dataset_prompting(tasks_path, prompt_template, None, few_shot_amount=few_shot_count, max_few_shot_len=max_few_shot_len)
     elif experiment_type == ExperimentType.LEAVE_ONE_TASK or experiment_type == ExperimentType.SKILL_TRANSFER:
         if sample:
             dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits, 0.1, train_subsample_rate=0.25)
