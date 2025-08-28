@@ -23,7 +23,7 @@ sbatch <<EOF
 
 module load Miniforge3
 conda activate "$jobname"
-
+export CUDA_VISIBLE_DEVICES=0
 export HF_HUB_OFFLINE=1
 start=\$(date +%s)
 Start_Date=\$(date +%Y-%m-%d:%H:%m)
@@ -55,6 +55,7 @@ conda activate argbench
 start=\$(date +%s)
 Start_Date=\$(date +%Y-%m-%d:%H:%m)
 echo "parallel"
+export CUDA_VISIBLE_DEVICES=0,1,2,3
 accelerate launch --config_file "${CONFIG_PATH}/accelerate/config_${gpu_count}_gpus_3_stage.yaml" \\
 -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:5}
 end=\$(date +%s)
