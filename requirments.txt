@@ -10,3 +10,4 @@ ndjson
 nltk
 evaluate
 tensorboardX
+tf-keras
