@@ -51,7 +51,7 @@ sbatch <<EOF
 #SBATCH --gpus="$gpu_type:$gpu_count"
 
 module load Miniforge3
-conda activate new-env
+conda activate argbench
 start=\$(date +%s)
 Start_Date=\$(date +%Y-%m-%d:%H:%m)
 echo "parallel"
