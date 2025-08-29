@@ -1,18 +1,19 @@
 torch --index-url https://download.pytorch.org/whl/cu126
 torchvision --index-url https://download.pytorch.org/whl/cu126
-accelerate
-bitsandbytes
-deepspeed
-transformers
 vllm
+bitsandbytes
+accelerate
+transformers
+deepspeed
+peft
+optuna
+evaluate
+bert_score
+stanza
 scikit-learn
 pandas
-optuna
-bert_score
-peft
+tensorboardX
 ndjson
 nltk
-evaluate
-tensorboardX
 tf-keras
-stanza
+
