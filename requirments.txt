@@ -3,6 +3,7 @@ torchvision --index-url https://download.pytorch.org/whl/cu126
 accelerate
 bitsandbytes
 deepspeed
+vllm
 transformers
 scikit-learn
 pandas
