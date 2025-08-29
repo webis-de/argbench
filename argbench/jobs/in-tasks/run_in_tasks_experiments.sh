@@ -21,6 +21,8 @@ sbatch <<EOF
 #SBATCH --error argbench/output/"$jobname"-%j.err
 #SBATCH --gres=gpu:"$gpu_type:$gpu_count"
 
+module load GCCcore/.13.2.0
+module load NVHPC/24.9-CUDA-12.6.0
 module load Miniforge3
 conda activate argbench
 export CUDA_VISIBLE_DEVICES=0
@@ -50,6 +52,8 @@ sbatch <<EOF
 #SBATCH --error argbench/output/"$jobname"-%j.err
 #SBATCH --gpus="$gpu_type:$gpu_count"
 
+module load GCCcore/.13.2.0
+module load NVHPC/24.9-CUDA-12.6.0
 module load Miniforge3
 conda activate argbench
 start=\$(date +%s)
