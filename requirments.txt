@@ -11,3 +11,5 @@ nltk
 evaluate
 tensorboardX
 tf-keras
+vllm
+stanza
