@@ -1,6 +1,10 @@
+torch torchvision --index-url https://download.pytorch.org/whl/cu126
+vllm
 accelerate
+bitsandbytes
 deepspeed
 transformers
+
 scikit-learn
 pandas
 optuna
@@ -11,5 +15,4 @@ nltk
 evaluate
 tensorboardX
 tf-keras
-vllm
 stanza

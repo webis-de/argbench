@@ -58,26 +58,31 @@ with open(args.metadata) as file:
     df.sort_values(by="skill-index", inplace=True)
     for skill, df_skill in df.groupby("skill", sort=False):
         print(f"\n-----overview ({skill})-------\n")
-        df_skill = df_skill[df_skill["metric"].isin(["generation-score", "fscore"])]
-        df_skill_overview = df_skill[["test_task", "score"]]
+        df_skill_overview = df_skill[df_skill["metric"].isin(["generation-score", "fscore"])]
+        df_skill_overview = df_skill_overview[["test_task", "score"]]
         df_skill_overview.to_csv(f"{path_output}/{skill}-{experiment}-{prompting_technique}-{last_time}-{args.seed}.csv", index=False)
         print(df_skill_overview)
         print(f"--------------------\n")
         if skill == "generation":
             df_blue_records = df_skill[df_skill["metric"]=="bleu"]
             blue_score_agg =df_blue_records["score"].mean()
-            scores += blue_score_agg
+
             print(f"{skill:<30} bleu {blue_score_agg:>14.2f}")
             df_bertscore_records = df_skill[df_skill["metric"]=="bertscore"]
-            blue_score_agg =df_bertscore_records["score"].mean()
+
             bertscore = (df_bertscore_records["score"].mean())
+            generation_score = (bertscore + blue_score_agg) /2
+            print(f"{skill:<30} generationscore {generation_score:>9.2f}")
             print(f"{skill:<30} bertscore {bertscore:>9.2f}\n----------\n")
-            scores += bertscore
+
+
+
+            scores += generation_score
         else:
             df_fscore_records = df_skill[df_skill["metric"]=="fscore"]
             fscore_agg =df_fscore_records["score"].mean()
             print(f"{skill:<30} fscore {fscore_agg:>12.2f}\n-------------\n")
             scores += fscore_agg
-    all = scores / 6
+    all = scores / 5
     all_skill = "all"
     print(f"{all_skill:<30} macro {all:>13.2f}\n-------------\n")
