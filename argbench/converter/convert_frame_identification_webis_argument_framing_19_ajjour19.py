@@ -10,33 +10,40 @@ DATASET_NAME = "frame_identification_webis_argument_framing_19_ajjour19"
 
 def process_split(df, data_file):
     output = Output(DATASET_NAME)
-    output.append_definition("Identify the frame of the following argument on the given topic form the following candidate frames. The frame is main highlighted the aspect of the topic which resonate with as specific audience. Only output one of the candidate frames.")
-
+    output.append_definition("""Judge if the given frame captures the most salient aspect of the given argument on the given topic.
+                                The frame is the main highlighted aspect of the topic which resonate with as specific audience.
+                                Possible responses: Match if the argument emphasizes the given frame and No Match if the argument is not emphasized by the frame.
+                                Only output Match or No Match
+                                 """)
+    negative_frame_count = 5
     for row in df.iterrows():
         row = row[1]
-        response = row["frame"]
+        right_frame = row["frame"]
         # frames = dataset["frame"].unique().tolist()
         frames = df[(df["topic_id"] == row["topic_id"]) & (df["frame"] != row["frame"])]["frame"].unique().tolist() # If topic has no other frames, pick from random
         if not len(frames):
             frames = df[df["frame"] != row["frame"]]["frame"].unique().tolist()
-        if len(frames) < 3:
+        if len(frames) < negative_frame_count:
             available_frames = (df[df["frame"] != row["frame"]]["frame"]
                                 .unique()
                                 .tolist())
-            frames += random.sample(available_frames, 3 - len(frames))
-        wrong_candidates = random.sample(frames, 3)
-        response_candidates = [response] + wrong_candidates
-        random.shuffle(response_candidates)
-        frame_string = ";".join(response_candidates)
-        prompt = f"Premise: {row['premise']}\nConclusion: {row['conclusion']}\nCandidate frames: " + frame_string
+            frames += random.sample(available_frames, negative_frame_count - len(frames))
+        wrong_candidates = random.sample(frames, negative_frame_count)
+
+
+
+        prompt = f"Topic: {row['topic'].strip()}\nArgument: {row['conclusion'].strip()}. {row['premise'].strip()}\nFrame: {right_frame}"
         if len(prompt) > 2000:
             print(prompt)
         id = str(uuid.uuid4())
-        output.append_instance(id, prompt, [response])
+        output.append_instance(id, prompt, ["Match"])
+        for wrong_frame in wrong_candidates:
+            prompt = f"Topic: {row['topic'].strip()}\nArgument: {row['conclusion'].strip()} {row['premise'].strip()}\nFrame: {wrong_frame}"
+            output.append_instance(id, prompt, ["No Match"])
 
     output.append_genre(Genres.DEBATE_PORTALS)
     output.append_subarea(Skills.PERSPECTIVE_ASSESSMENT)
-    print(data_file)
+
     output.write_output(data_file)
 
 

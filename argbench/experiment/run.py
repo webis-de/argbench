@@ -540,7 +540,7 @@ class Runner:
             self.prepare_data()
             hpo_output = HPOOutput(self.config.hpo_config.hpo_coarse_output)
             now = datetime.now()
-            starting_time = now.strftime("%m-%d-%H:%M:%S")
+            self.starting_time = now.strftime("%m-%d-%H:%M:%S")
             best_params, best_value = self.perform_hpo()
             experiment_name = self.config.get_experiment_name()
             results = {"test_task": self.test_dataset_name, "metric" : self.config.hpo_config.val_metric, "score": best_value,
