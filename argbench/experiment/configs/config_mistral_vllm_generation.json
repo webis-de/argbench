@@ -100,7 +100,7 @@
             "top_p": 1,
             "top_k": 1,
             "min_tokens": 25,
-            "max_tokens": 100
+            "max_tokens": 250
         }
     }
 }
