@@ -77,9 +77,19 @@ def clean_prediction(prediction, chain_of_thoughts):
     if prediction.count("</think>") > 1:
         index = prediction.rindex("</think>")
         prediction = prediction[index+8:]
-    if "</think>" in prediction:
-        prediction = prediction.split("</think>")[1]
+        if len(prediction.strip()) >=3:
+            return prediction
+        elif prediction.index("</think>") >= 3:
+            ind = prediction.index("</think>")
+            return prediction[:ind]
 
+
+    if "</think>" in prediction:
+        cleaned_prediction = prediction.split("</think>")[1]
+        if len(cleaned_prediction.strip()) >=3:
+            return cleaned_prediction
+        elif len(prediction.split("</think>")[0]) >= 3:
+            return prediction.split("</think>")[0]
     return prediction
 
 ### TODO replace by apply chat template
