@@ -36,7 +36,7 @@ else
 fi
 
 if [ -z "$model" ]; then
-  models=("phi-3.5-moe-7.5b" "qwen3-4b" "deepseek-r1-distill-7b" "llama-3.1-8b-instruct" "gemma3-4b")
+  models=("phi-3.5-moe-7.5b" "qwen3-4b" "deepseek-r1-distill-7b" "llama-3.1-8b-instruct" "gemma3-4b" "mistral-7b-inst-3" "deepseek-r1-distill-7b" "deepseek-r1-distill-1.5b" "qwen3-1.5b")
 else
   models=("$model")
 fi
