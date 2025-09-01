@@ -76,7 +76,8 @@ def compute_f1_score(predictions, references):
             prediction = prediction.replace("Output:", "")
         if ":" in prediction:
             prediction = prediction.replace(":", "")
-
+        if "." in prediction:
+            prediction = prediction.replace(".", "")
         for label in labels_lowered:
             if prediction.strip().lower().startswith(label):
                 predictions_int.append(mappings[label])
