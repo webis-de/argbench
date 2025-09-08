@@ -289,7 +289,6 @@ class Runner:
         
         self.peft_model = model
         log_mem(f"created model for training")
-        model = torch.compile(model)
         return model
 
     def  prepare_model_for_generation(self):
@@ -668,6 +667,7 @@ class Runner:
                 logger.debug("++++ lora input ++++")
         elif model:
             generation_config = Runner.get_generation_config_from_vllm_params(sampling_params)
+            model = torch.compile(model)
             model.eval()
         output_splitter = self.model_config.output_splitter
         counter = 0
