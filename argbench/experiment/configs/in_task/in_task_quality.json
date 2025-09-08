@@ -8,7 +8,7 @@
     "seed": 4112,
     "debug": false,
     "model": "mistral-7b-inst-3",
-    "cutoff_len": 1000,
+    "cutoff_len": 300,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "models_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models",
     "data_type": "ndjson",
