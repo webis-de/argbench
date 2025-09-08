@@ -67,7 +67,7 @@ def sample_set(output_path: Path, sample_rate: float = None, sample_size: int = 
     return df_sample
 
 
-def create_dataset_in_tasks(task_data_path, prompt_technique_template, experiment_splits, test_subsample_rate=None, train_subsample_rate=None):
+def create_dataset_in_tasks(task_data_path, prompt_technique_template, experiment_splits, max_test_sub_sample_amount=None, max_train_sub_sample_amount=None, test_subsample_rate=None, train_subsample_rate=None):
 
     def template_formatter(row):
         return prompt_technique_template.format(instance_input=row["document"], definition=row["definition"])
@@ -82,16 +82,24 @@ def create_dataset_in_tasks(task_data_path, prompt_technique_template, experimen
     for task in experiment_splits["test"]:
         print(task)
 
+        df_training = load_set(task, task_data_path, DatasetSplit.TRAIN)
 
+        if max_train_sub_sample_amount and len(df_training) > max_train_sub_sample_amount:
+            df_training = df_training.sample(max_train_sub_sample_amount)
 
-        if task == "counter_argument_generation_cmv_hua18" and train_subsample_rate:
-            df_training = load_set(task, task_data_path, DatasetSplit.TRAIN)
-            df_training = df_training.sample(20000)
+        if train_subsample_rate:
             df_training = df_training.sample(frac=train_subsample_rate)
-        else:
-            df_training = load_set(task, task_data_path, DatasetSplit.TRAIN, sample_rate=train_subsample_rate)
-        df_test = load_set(task, task_data_path, DatasetSplit.TEST,  sample_rate=test_subsample_rate)
-        df_validation = load_set(task, task_data_path, DatasetSplit.VAL, sample_rate=test_subsample_rate)
+
+        df_test = load_set(task, task_data_path, DatasetSplit.TEST)
+        if max_test_sub_sample_amount and len(df_test) > max_test_sub_sample_amount:
+            df_test = df_test.sample(max_test_sub_sample_amount)
+        df_test = df_test.sample(frac=test_subsample_rate)
+
+        df_validation = load_set(task, task_data_path, DatasetSplit.VAL)
+        if max_test_sub_sample_amount and len(df_validation) > max_test_sub_sample_amount:
+            df_validation = df_validation.sample(max_test_sub_sample_amount)
+        df_validation = df_validation.sample(frac=test_subsample_rate)
+
         dataframes = (df_training, df_test, df_validation)
         for df_split in dataframes:
             for column in df_split.columns:
@@ -117,7 +125,7 @@ def create_dataset_in_tasks(task_data_path, prompt_technique_template, experimen
     return hf_dataset
 
 
-def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experiment_splits, test_subsample_rate=None, train_subsample_rate=None):
+def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experiment_splits, max_test_sub_sample_amount=None, max_train_sub_sample_amount=None, test_subsample_rate=None, train_subsample_rate=None):
     leave_one_task_dataset = {}
     ### add eac validation set of each validation task as validation
     ### Iterate over each task in the test dataset and take its teset as a  test dataset
@@ -129,7 +137,10 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
     for task in experiment_splits["test"]:
 
 
-        df_test = load_set(task, task_data_path, DatasetSplit.TEST,  sample_rate=test_subsample_rate)
+        df_test = load_set(task, task_data_path, DatasetSplit.TEST)
+        if max_test_sub_sample_amount and len(df_test) > max_test_sub_sample_amount:
+            df_test = df_test.sample(max_test_sub_sample_amount)
+        df_test = df_test.sample(frac=test_subsample_rate)
 
         for column in df_test.columns:
             df_test[column] = df_test[column].astype(str)
@@ -144,8 +155,11 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
 
 
     for task in experiment_splits["validation"]:
-        print(task)
-        df_validation = load_set(task, task_data_path, DatasetSplit.VAL, sample_rate=0.1) ## This should be made 1 for final
+        df_validation = load_set(task, task_data_path, DatasetSplit.VAL)
+        if len(df_validation) > max_test_sub_sample_amount:
+            df_validation = df_validation.sample(max_test_sub_sample_amount)
+        df_validation = df_validation.sample(frac=test_subsample_rate)
+
         for column in df_validation.columns:
             df_validation[column] = df_validation[column].astype(str)
         df_validation.rename(columns={"input": "document"}, inplace=True)
@@ -162,8 +176,8 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
     all_tasks.extend(experiment_splits["test"])
     for task in all_tasks:
         df_training = load_set(task, task_data_path, DatasetSplit.TRAIN)
-        if len(df_training) > 1000:
-            df_training = df_training.sample(1000)
+        if len(df_training) > max_train_sub_sample_amount:
+            df_training = df_training.sample(max_train_sub_sample_amount)
         if  train_subsample_rate:
             df_training = df_training.sample(frac=train_subsample_rate)
 
@@ -287,9 +301,9 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
         experiment_splits = json.load(experiment_splits_file)
     if experiment_type == ExperimentType.IN_TASK:
         if sample:
-            dataset = create_dataset_in_tasks(tasks_path, prompt_template, experiment_splits, 0.1, 0.5)
+            dataset = create_dataset_in_tasks(tasks_path, prompt_template, experiment_splits,max_train_sub_sample_amount=3000, max_test_sub_sample_amount=1000, test_subsample_rate=0.1, train_subsample_rate=0.5)
         else:
-            dataset = create_dataset_in_tasks(tasks_path, prompt_template, experiment_splits)
+            dataset = create_dataset_in_tasks(tasks_path, prompt_template, experiment_splits, max_train_sub_sample_amount=3000, max_test_sub_sample_amount=1000)
     elif experiment_type == ExperimentType.PROMPTING:
             if sample:
                 dataset = create_dataset_prompting(tasks_path, prompt_template,1000, few_shot_count , max_few_shot_len=max_few_shot_len)
@@ -297,9 +311,9 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
                 dataset = create_dataset_prompting(tasks_path, prompt_template, None, few_shot_amount=few_shot_count, max_few_shot_len=max_few_shot_len)
     elif experiment_type == ExperimentType.LEAVE_ONE_TASK or experiment_type == ExperimentType.SKILL_TRANSFER:
         if sample:
-            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits, 0.1, train_subsample_rate=0.25)
+            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits,max_train_sub_sample_amount=3000, max_test_sub_sample_amount=1000, test_subsample_rate=0.1, train_subsample_rate=0.5)
         else:
-            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits)
+            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits, max_train_sub_sample_amount=3000, max_test_sub_sample_amount=1000)
     else:
         ### TODO
         pass
