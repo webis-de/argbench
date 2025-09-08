@@ -262,6 +262,9 @@ class Runner:
         logger.info(f"preparing model {self.model_config.path} on {device}")
 
         model = self.prepare_model_for_causal_llm(self.model_config.path, quantization)
+
+        model = torch.compile(model)
+
         logger.debug(f"logging model {self.config.model} precision")
         log_model_type(model)
         self.base_model = model

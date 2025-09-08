@@ -86,7 +86,7 @@ def create_dataset_in_tasks(task_data_path, prompt_technique_template, experimen
 
         if task == "counter_argument_generation_cmv_hua18" and train_subsample_rate:
             df_training = load_set(task, task_data_path, DatasetSplit.TRAIN)
-            df_training = df_training.sample(2000)
+            df_training = df_training.sample(20000)
             df_training = df_training.sample(frac=train_subsample_rate)
         else:
             df_training = load_set(task, task_data_path, DatasetSplit.TRAIN, sample_rate=train_subsample_rate)
