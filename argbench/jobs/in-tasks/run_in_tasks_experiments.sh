@@ -36,7 +36,7 @@ export Time=\$((end-start))
 Time_HOURS=\$(echo "scale=2; \$Time / 3600" | bc)
 Time_Minutes=\$(echo "scale=2; \$Time / 60" | bc)
 Start_Date=\$(date +%Y-%m-%d:%H:%m)
-echo "\$Start_Date,\$Time_HOURS,\$Time_Minutes,\$jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
+echo "\$Start_Date,\$Time_HOURS,\$Time_Minutes,$jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 
 EOF
 else
@@ -67,7 +67,7 @@ export Time=\$((end-start))
 TIME_HOURS=\$(awk -v t="\$Time" 'BEGIN { printf "%.2f", t / 3600 }')
 Time_Minutes=\$(awk -v t="\$Time" 'BEGIN { printf "%.2f", t / 60 }')
 
-echo "\$Start_Date,\$TIME_HOURS,\$Time_Minutes,\$jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
+echo "\$Start_Date,\$TIME_HOURS,\$Time_Minutes,$jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 
 EOF
 fi;
