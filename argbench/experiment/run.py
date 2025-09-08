@@ -263,7 +263,7 @@ class Runner:
 
         model = self.prepare_model_for_causal_llm(self.model_config.path, quantization)
 
-        model = torch.compile(model)
+
 
         logger.debug(f"logging model {self.config.model} precision")
         log_model_type(model)
@@ -289,7 +289,7 @@ class Runner:
         
         self.peft_model = model
         log_mem(f"created model for training")
-
+        model = torch.compile(model)
         return model
 
     def  prepare_model_for_generation(self):
