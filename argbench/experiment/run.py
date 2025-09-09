@@ -92,6 +92,18 @@ def clean_prediction(prediction, chain_of_thoughts):
             return prediction.split("</think>")[0]
     return prediction
 
+def clean_label_prediction(prediction, labels):
+    prediction = prediction.lower().strip()
+    prediction = prediction.replace("<s>", "")
+    labels = "|".join([label.lower() for label in  labels])
+    regular_expressions = [ f"^({labels})",  f"({labels})$", f".*output:?\s?({labels})"]
+    for regular_expression in regular_expressions:
+        match  = re.match(regular_expression, prediction)
+        if match:
+            label = match.group(1)
+            return label
+    return prediction
+
 ### TODO replace by apply chat template
 def formate_model_template(template):
     def formate_template(data_point):
@@ -671,6 +683,9 @@ class Runner:
             model.eval()
         output_splitter = self.model_config.output_splitter
         counter = 0
+        metric = self.task_metrics[test_task_name]
+        if metric == "fscore":
+            labels_lowered = [label.lower().strip() for label in labels]
         for data in tqdm(loader):
             text = data["input"][0]
             labels.extend(data["output"])
@@ -688,6 +703,8 @@ class Runner:
                     response = output[0]
                     responses.append(response)
                     prediction = clean_prediction(response, self.config.chain_of_thoughts)
+                    if metric == "fscore":
+                        prediction = clean_label_prediction(prediction, labels_lowered)
                     predictions.append(prediction)
                     if prediction:
                         logger.debug(format_logging(response, prediction, text))
@@ -704,6 +721,8 @@ class Runner:
                     responses.append(response)
                     counter +=1
                     prediction = clean_prediction(response, self.config.chain_of_thoughts)
+                    if metric == "fscore":
+                        prediction = clean_label_prediction(prediction, labels_lowered)
                     predictions += [prediction]
                     if prediction:
                         logger.debug(format_logging(response, prediction, text))
@@ -717,15 +736,8 @@ class Runner:
             self.prediction_samples.extend(sampled_predictions)
 
         logger.debug(f"evaluating {counter} instances")
-        metric = self.task_metrics[test_task_name]
-        if metric == "fscore-detailed":
-            return compute_precision_recall_fscore_support(
-                predictions,
-                labels,
-                f1_average=self.config.validation_config.fscore_average,
-                beta=self.config.validation_config.fscore_beta
-            )
-        elif metric == "fscore":
+
+        if metric == "fscore":
             return compute_f1_score(predictions, labels)
         elif metric == "rouge":
             return compute_rouge_score(predictions, labels)

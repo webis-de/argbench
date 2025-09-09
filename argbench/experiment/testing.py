@@ -60,8 +60,6 @@ def compute_precision_recall_fscore_support(predictions, references, f1_average=
 def compute_f1_score(predictions, references):
     logger.log(level=logging.INFO, msg=f"referecnes {references}")
     logger.log(level=logging.INFO, msg=f"predictions {predictions}")
-    predictions = [prediction.replace("<s>", "") for prediction in predictions]
-
     labels = set(references)
     labels_lowered = {label.lower().strip() for label in labels}
     mappings = {}
@@ -72,12 +70,6 @@ def compute_f1_score(predictions, references):
     predictions_int = []
     for i, prediction in enumerate(predictions):
         found = False
-        if prediction.startswith("Output:"):
-            prediction = prediction.replace("Output:", "")
-        if ":" in prediction:
-            prediction = prediction.replace(":", "")
-        if "." in prediction:
-            prediction = prediction.replace(".", "")
         for label in labels_lowered:
             if prediction.strip().lower().startswith(label):
                 predictions_int.append(mappings[label])
