@@ -64,15 +64,20 @@ def log_model_type(model):
             reported_modules.add(module_path)
 
 
-
-def clean_prediction(prediction, chain_of_thoughts):
-    if chain_of_thoughts and "Output:" in prediction:
-        index = prediction.rindex("Output:")
-        prediction = prediction[index+7:]
+def clean_prediction_general(prediction):
     if prediction.startswith("<|start_header_id|>assistant<|end_header_id|>"):
         prediction = prediction.replace("<|start_header_id|>assistant<|end_header_id|>", "")
     if prediction.startswith("assistant"):
         prediction = prediction.replace("assistant", "")
+    prediction = prediction.replace("<s>", "")
+    prediction = prediction.lower().strip()
+    return prediction
+
+def clean_for_generation_and_segmentation(prediction, chain_of_thoughts):
+    prediction = clean_prediction_general(prediction)
+    if chain_of_thoughts and "Output:" in prediction:
+        index = prediction.rindex("Output:")
+        prediction = prediction[index+7:]
     prediction = re.sub("<think>.*</think>", "", prediction)
     if prediction.count("</think>") > 1:
         index = prediction.rindex("</think>")
@@ -82,8 +87,6 @@ def clean_prediction(prediction, chain_of_thoughts):
         elif prediction.index("</think>") >= 3:
             ind = prediction.index("</think>")
             return prediction[:ind]
-
-
     if "</think>" in prediction:
         cleaned_prediction = prediction.split("</think>")[1]
         if len(cleaned_prediction.strip()) >=3:
@@ -92,11 +95,10 @@ def clean_prediction(prediction, chain_of_thoughts):
             return prediction.split("</think>")[0]
     return prediction
 
-def clean_label_prediction(prediction, labels):
-    prediction = prediction.lower().strip()
-    prediction = prediction.replace("<s>", "")
+def clean_for_classification(prediction, labels):
+    prediction = clean_prediction_general(prediction)
     labels = "|".join([label.lower() for label in  labels])
-    regular_expressions = [ f"^({labels})",  f"({labels})$", f".*output:?\s?({labels})"]
+    regular_expressions = [ f"^({labels})",  f"({labels})$", f".*output:?\s?({labels})", f".*</think>\s?({labels})"]
     for regular_expression in regular_expressions:
         match  = re.match(regular_expression, prediction)
         if match:
@@ -702,9 +704,11 @@ class Runner:
 
                     response = output[0]
                     responses.append(response)
-                    prediction = clean_prediction(response, self.config.chain_of_thoughts)
+
                     if metric == "fscore":
-                        prediction = clean_label_prediction(prediction, labels_lowered)
+                        prediction = clean_for_classification(responses, labels_lowered)
+                    else:
+                        prediction = clean_for_generation_and_segmentation(response, self.config.chain_of_thoughts)
                     predictions.append(prediction)
                     if prediction:
                         logger.debug(format_logging(response, prediction, text))
@@ -720,9 +724,11 @@ class Runner:
                     response = output.outputs[0].text
                     responses.append(response)
                     counter +=1
-                    prediction = clean_prediction(response, self.config.chain_of_thoughts)
+
                     if metric == "fscore":
-                        prediction = clean_label_prediction(prediction, labels_lowered)
+                        prediction = clean_for_classification(response, labels_lowered)
+                    else:
+                        prediction = clean_for_generation_and_segmentation(response, chain_of_thoughts=self.config.chain_of_thoughts)
                     predictions += [prediction]
                     if prediction:
                         logger.debug(format_logging(response, prediction, text))
