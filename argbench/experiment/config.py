@@ -620,7 +620,7 @@ class RunConfig:
         if args.max_few_shot_len:
             conf_obj.max_few_shot_len = args.max_few_shot_len
 
-        if args.max_input_toknes:
+        if args.max_input_tokens:
             conf_obj.max_input_tokens = args.max_input_toknes
 
         if args.max_output_tokens:
