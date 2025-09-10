@@ -390,6 +390,10 @@ class RunConfig:
     hpo: bool
     # Padding token id
 
+    max_input_tokens: int = 768
+
+    max_output_tokens: int = 256
+
     max_few_shot_len: int = 1024
     chain_of_thoughts : bool = False
 
@@ -433,6 +437,8 @@ class RunConfig:
         """
         Registers all cli parameters for RunConfig
         """
+        arg_parser.add_argument("--max_input_tokens", type=int)
+        arg_parser.add_argument("--max_output_tokens", type=int)
         arg_parser.add_argument("--max_few_shot_len", type=int)
         arg_parser.add_argument("--quantization", action="store_true")
         arg_parser.add_argument("--sample", action="store_true")
@@ -613,6 +619,12 @@ class RunConfig:
             conf_obj.in_task = True
         if args.max_few_shot_len:
             conf_obj.max_few_shot_len = args.max_few_shot_len
+
+        if args.max_input_toknes:
+            conf_obj.max_input_tokens = args.max_input_toknes
+
+        if args.max_output_tokens:
+            conf_obj.max_output_tokens = args.max_output_tokens
 
         if args.debug:
             conf_obj.debug = args.debug

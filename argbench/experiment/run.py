@@ -687,7 +687,7 @@ class Runner:
         counter = 0
         metric = self.task_metrics[test_task_name]
         if metric == "fscore":
-            labels_lowered = [label.lower().strip() for label in labels]
+            labels_lowered = [set(label.lower().strip() for label in labels)]
         for data in tqdm(loader):
             text = data["input"][0]
             labels.extend(data["output"])
@@ -706,7 +706,7 @@ class Runner:
                     responses.append(response)
 
                     if metric == "fscore":
-                        prediction = clean_for_classification(responses, labels_lowered)
+                        prediction = clean_for_classification(response, labels_lowered)
                     else:
                         prediction = clean_for_generation_and_segmentation(response, self.config.chain_of_thoughts)
                     predictions.append(prediction)

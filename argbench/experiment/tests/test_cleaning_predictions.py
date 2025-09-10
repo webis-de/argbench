@@ -35,3 +35,8 @@ class test_response_cleaning(TestCase):
         output = "Output Output Low similarity."
         output = clean_for_classification(output, ["Some Similarity", "High Similarity", "Low Similarity", "No Similarity"])
         self.assertEquals(output, "low similarity")
+
+
+        output = "Some Similarity.</think> </think> Some Similarity.</think> </think> Some Similarity."
+        output = clean_for_classification(output, ["Some Similarity", "High Similarity", "Low Similarity", "No Similarity"])
+        self.assertEquals(output, "some similarity")

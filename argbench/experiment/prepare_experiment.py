@@ -5,6 +5,7 @@ import datasets
 import pandas
 from datasets import Dataset, DatasetDict, load_from_disk, concatenate_datasets
 from pandas import DataFrame
+from transformers import AutoTokenizer
 
 from argbench.converter.common import *
 from argbench.experiment.preprocess import *
@@ -20,6 +21,25 @@ def get_dataset_split(dataset, set, metadata, task_data_path):
 
             return task_data_path / dataset / file
     return None
+
+
+
+def truncate_set(df, tokenizer, max_input_tokens:int = None, max_output_tokens: int = None) ->DataFrame:
+    def truncate_text(text, tokenizer, max_tokens):
+        if not isinstance(text, str) or not text:
+            return text
+
+        tokens = tokenizer.tokenize(text)
+        if len(tokens) > max_tokens:
+            truncated_tokens = tokens[:max_tokens]
+            return tokenizer.convert_tokens_to_string(truncated_tokens)
+        return text
+
+    df["input"] = df["input"].apply(lambda x: truncate_text(x, tokenizer, max_input_tokens))
+    df["output"] = df["output"].apply(lambda x: truncate_text(x, tokenizer, max_output_tokens))
+
+    return df
+
 
 def load_set(dataset, task_data_path, split, sample_rate:float = None, sample_size: int = None, max_few_shot_len=None) -> DataFrame:
     metadata = get_metadata()
@@ -67,7 +87,7 @@ def sample_set(output_path: Path, sample_rate: float = None, sample_size: int = 
     return df_sample
 
 
-def create_dataset_in_tasks(task_data_path, prompt_technique_template, experiment_splits, max_test_sub_sample_amount=None, max_train_sub_sample_amount=None, test_subsample_rate=None, train_subsample_rate=None):
+def create_dataset_in_tasks(task_data_path, prompt_technique_template, experiment_splits, tokenizer, max_input_tokens, max_output_tokens, max_test_sub_sample_amount=None, max_train_sub_sample_amount=None, test_subsample_rate=None, train_subsample_rate=None):
 
     def template_formatter(row):
         return prompt_technique_template.format(instance_input=row["document"], definition=row["definition"])
@@ -104,7 +124,7 @@ def create_dataset_in_tasks(task_data_path, prompt_technique_template, experimen
         for df_split in dataframes:
             for column in df_split.columns:
                 df_split[column] = df_split[column].astype(str)
-
+                df_split = truncate_set(df_split, tokenizer, max_input_tokens, max_output_tokens)
 
             df_split.rename(columns={"input": "document"}, inplace=True)
             df_split["input"] = df_split.apply(template_formatter, axis=1)
@@ -125,7 +145,7 @@ def create_dataset_in_tasks(task_data_path, prompt_technique_template, experimen
     return hf_dataset
 
 
-def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experiment_splits, max_test_sub_sample_amount=None, max_train_sub_sample_amount=None, test_subsample_rate=None, train_subsample_rate=None):
+def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experiment_splits, tokenizer, max_input_tokens, max_output_tokens, max_test_sub_sample_amount=None, max_train_sub_sample_amount=None, test_subsample_rate=None, train_subsample_rate=None):
     leave_one_task_dataset = {}
     ### add eac validation set of each validation task as validation
     ### Iterate over each task in the test dataset and take its teset as a  test dataset
@@ -144,6 +164,8 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
 
         for column in df_test.columns:
             df_test[column] = df_test[column].astype(str)
+        df_test = truncate_set(df_test, tokenizer, max_input_tokens, max_output_tokens)
+
         df_test.rename(columns={"input": "document"}, inplace=True)
         df_test["input"] = df_test.apply(template_formatter, axis=1)
 
@@ -162,6 +184,9 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
 
         for column in df_validation.columns:
             df_validation[column] = df_validation[column].astype(str)
+
+        df_validation = truncate_set(df_validation, tokenizer, max_input_tokens, max_output_tokens)
+
         df_validation.rename(columns={"input": "document"}, inplace=True)
         df_validation["input"] = df_validation.apply(template_formatter, axis=1)
 
@@ -183,6 +208,9 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
 
         for column in df_training.columns:
             df_training[column] = df_training[column].astype(str)
+
+        df_training = truncate_set(df_training, tokenizer, max_input_tokens, max_output_tokens)
+
         df_training.rename(columns={"input": "document"}, inplace=True)
         df_training["input"] = df_training.apply(template_formatter, axis=1)
 
@@ -193,7 +221,7 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
     hf_leave_one_task_dataset = DatasetDict(leave_one_task_dataset)
     return hf_leave_one_task_dataset
 
-def create_dataset_prompting(task_data_path, prompting_technique_template, max_test_subsample_count=None, few_shot_amount=None, max_few_shot_len=None):
+def create_dataset_prompting(task_data_path, prompting_technique_template, tokenizer, max_input_tokens, max_output_tokens, max_test_subsample_count=None, few_shot_amount=None, max_few_shot_len=None):
 
     def few_shot_template_formatter(row):
         return prompting_technique_template.format(instance_input=row["document"], definition=row["definition"], example=row["example"])
@@ -221,7 +249,7 @@ def create_dataset_prompting(task_data_path, prompting_technique_template, max_t
         if len(df_test) > max_test_subsample_count:
             df_test = load_set(task, task_data_path, DatasetSplit.TEST, sample_size=max_test_subsample_count)
 
-
+        df_test = truncate_set(df_test, tokenizer, max_input_tokens, max_output_tokens)
 
         ###  Formatting
         if few_shot_amount:
@@ -276,6 +304,10 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
     ### TODO add the configuration to path
     path_argbench_dataset = Path(run_config.argbench_dataset_path)
     tasks_path = Path(run_config.data_folder)
+    tokenizer = AutoTokenizer.from_pretrained(run_config.model_config.path)
+
+    max_input_tokens = run_config.model_config.max_input_tokens
+    max_output_tokens = run_config.model_config.max_output_tokens
 
     path_dataset = formulate_argbench_dataset_path(experiment_type, prompting_technique, sample, path_argbench_dataset)
     # path_dataset = formulate_argbench_dataset_path(ExperimentType.PROMPTING, PromptingTechnique.ZERO_SHOT, sample=sample, path_argbench_dataset=path_argbench_dataset)
@@ -301,19 +333,25 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
         experiment_splits = json.load(experiment_splits_file)
     if experiment_type == ExperimentType.IN_TASK:
         if sample:
-            dataset = create_dataset_in_tasks(tasks_path, prompt_template, experiment_splits,max_train_sub_sample_amount=3000, max_test_sub_sample_amount=1000, test_subsample_rate=0.1, train_subsample_rate=0.5)
+            dataset = create_dataset_in_tasks(tasks_path, prompt_template, experiment_splits, tokenizer, max_input_tokens, max_output_tokens,
+                            max_train_sub_sample_amount=3000, max_test_sub_sample_amount=1000, test_subsample_rate=0.1, train_subsample_rate=0.5)
         else:
-            dataset = create_dataset_in_tasks(tasks_path, prompt_template, experiment_splits, max_train_sub_sample_amount=3000, max_test_sub_sample_amount=1000)
+            dataset = create_dataset_in_tasks(tasks_path, prompt_template, experiment_splits, tokenizer, max_input_tokens, max_output_tokens,
+                                              max_train_sub_sample_amount=3000, max_test_sub_sample_amount=1000)
     elif experiment_type == ExperimentType.PROMPTING:
             if sample:
-                dataset = create_dataset_prompting(tasks_path, prompt_template,1000, few_shot_count , max_few_shot_len=max_few_shot_len)
+                dataset = create_dataset_prompting(tasks_path, prompt_template,tokenizer, max_input_tokens, max_output_tokens,
+                                                   1000, few_shot_count , max_few_shot_len=max_few_shot_len)
             else:
-                dataset = create_dataset_prompting(tasks_path, prompt_template, None, few_shot_amount=few_shot_count, max_few_shot_len=max_few_shot_len)
+                dataset = create_dataset_prompting(tasks_path, prompt_template, tokenizer, max_input_tokens, max_output_tokens,
+                                                   None, few_shot_amount=few_shot_count, max_few_shot_len=max_few_shot_len)
     elif experiment_type == ExperimentType.LEAVE_ONE_TASK or experiment_type == ExperimentType.SKILL_TRANSFER:
         if sample:
-            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits,max_train_sub_sample_amount=3000, max_test_sub_sample_amount=1000, test_subsample_rate=0.1, train_subsample_rate=0.5)
+            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits,tokenizer, max_input_tokens, max_output_tokens,
+                                                 max_train_sub_sample_amount=3000, max_test_sub_sample_amount=1000, test_subsample_rate=0.1, train_subsample_rate=0.5)
         else:
-            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits, max_train_sub_sample_amount=3000, max_test_sub_sample_amount=1000)
+            dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits, tokenizer, max_input_tokens, max_output_tokens,
+                                                 max_train_sub_sample_amount=3000, max_test_sub_sample_amount=1000)
     else:
         ### TODO
         pass
