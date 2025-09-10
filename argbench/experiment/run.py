@@ -683,7 +683,9 @@ class Runner:
         counter = 0
         metric = self.task_metrics[test_task_name]
         if metric == "fscore":
-            labels_lowered = list(set(label.lower().strip() for label in dataset["output"]))
+            tmp_loader = DataLoader(dataset, batch_size=1)
+            tmp_labels = [record["output"] for record in list(tmp_loader)]
+            labels_lowered = list(set(tmp_labels))
             logger.debug(f"considered labels are {labels_lowered}")
         for data in tqdm(loader):
             text = data["input"][0]
