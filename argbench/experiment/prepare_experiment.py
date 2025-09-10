@@ -1,3 +1,4 @@
+import random
 from collections import defaultdict
 from typing import Dict, Set
 
@@ -25,23 +26,27 @@ def get_dataset_split(dataset, set, metadata, task_data_path):
 
 
 def truncate_set(df, tokenizer, max_input_tokens:int = None, max_output_tokens: int = None) ->DataFrame:
-    def truncate_text(text, tokenizer, max_tokens):
+
+    def truncate_text(text, max_tokens):
         if not isinstance(text, str) or not text:
             return text
 
         tokens = tokenizer.tokenize(text)
         if max_tokens and len(tokens) > max_tokens:
-            #print(f"before{text}")
+
             truncated_tokens = tokens[:max_tokens]
 
             truncated_text = tokenizer.convert_tokens_to_string(truncated_tokens)
             #print(f"after{truncated_text}")
+
+            if random.randint(0,8) % 7 == 0:
+                logger.debug(f"before truncation: {text} \n  after truncation {truncated_text}")
             return truncated_text
 
         return text
 
-    df["input"] = df["input"].apply(lambda x: truncate_text(x, tokenizer, max_input_tokens))
-    df["output"] = df["output"].apply(lambda x: truncate_text(x, tokenizer, max_output_tokens))
+    df["input"] = df["input"].apply(lambda x: truncate_text(x, max_input_tokens))
+    df["output"] = df["output"].apply(lambda x: truncate_text(x, max_output_tokens))
 
     return df
 
@@ -314,8 +319,9 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
     tokenizer = AutoTokenizer.from_pretrained(run_config.model_config.path)
 
     max_input_tokens = run_config.max_input_tokens
-    max_output_tokens = run_config.max_output_tokens
 
+    max_output_tokens = run_config.max_output_tokens
+    logger.info(f"run_config.max_input_tokens {run_config.max_input_tokens}")
     path_dataset = formulate_argbench_dataset_path(experiment_type, prompting_technique, sample, path_argbench_dataset)
     # path_dataset = formulate_argbench_dataset_path(ExperimentType.PROMPTING, PromptingTechnique.ZERO_SHOT, sample=sample, path_argbench_dataset=path_argbench_dataset)
     # path_four_shot_dataset = formulate_argbench_dataset_path(ExperimentType.PROMPTING, PromptingTechnique.FOUR_SHOT, sample=sample, path_argbench_dataset=path_argbench_dataset)
