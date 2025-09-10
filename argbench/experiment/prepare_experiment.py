@@ -92,6 +92,7 @@ def sample_set(output_path: Path, sample_rate: float = None, sample_size: int = 
                 df_set = df_filtered_set
             else:
                 logger.info(f"could not find few shots that satisfies the max_few_shot_len limit {max_few_shot_len}")
+        sample_size = min(sample_size, len(df_set))
         df_sample = df_set.sample(sample_size)
     else:
         raise ValueError("no rate or size defined")
@@ -114,23 +115,20 @@ def create_dataset_in_tasks(task_data_path, prompt_technique_template, experimen
     for task in experiment_splits["test"]:
         print(task)
 
-        df_training = load_set(task, task_data_path, DatasetSplit.TRAIN)
+        df_training = load_set(task, task_data_path, DatasetSplit.TRAIN, sample_size=max_train_sub_sample_amount)
 
-        if max_train_sub_sample_amount and len(df_training) > max_train_sub_sample_amount:
-            df_training = df_training.sample(max_train_sub_sample_amount)
 
         if train_subsample_rate:
             df_training = df_training.sample(frac=train_subsample_rate)
 
-        df_test = load_set(task, task_data_path, DatasetSplit.TEST)
-        if max_test_sub_sample_amount and len(df_test) > max_test_sub_sample_amount:
-            df_test = df_test.sample(max_test_sub_sample_amount)
-        df_test = df_test.sample(frac=test_subsample_rate)
+        df_test = load_set(task, task_data_path, DatasetSplit.TEST, sample_size=max_test_sub_sample_amount)
+        if test_subsample_rate:
+            df_test = df_test.sample(frac=test_subsample_rate)
 
-        df_validation = load_set(task, task_data_path, DatasetSplit.VAL)
-        if max_test_sub_sample_amount and len(df_validation) > max_test_sub_sample_amount:
-            df_validation = df_validation.sample(max_test_sub_sample_amount)
-        df_validation = df_validation.sample(frac=test_subsample_rate)
+        df_validation = load_set(task, task_data_path, DatasetSplit.VAL, sample_size=max_test_sub_sample_amount)
+
+        if test_subsample_rate:
+            df_validation = df_validation.sample(frac=test_subsample_rate)
 
         dataframes = (df_training, df_test, df_validation)
         for df_split in dataframes:
@@ -169,10 +167,9 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
     for task in experiment_splits["test"]:
 
 
-        df_test = load_set(task, task_data_path, DatasetSplit.TEST)
-        if max_test_sub_sample_amount and len(df_test) > max_test_sub_sample_amount:
-            df_test = df_test.sample(max_test_sub_sample_amount)
-        df_test = df_test.sample(frac=test_subsample_rate)
+        df_test = load_set(task, task_data_path, DatasetSplit.TEST, sample_size=max_test_sub_sample_amount)
+        if test_subsample_rate:
+            df_test = df_test.sample(frac=test_subsample_rate)
 
         for column in df_test.columns:
             df_test[column] = df_test[column].astype(str)
@@ -189,10 +186,9 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
 
 
     for task in experiment_splits["validation"]:
-        df_validation = load_set(task, task_data_path, DatasetSplit.VAL)
-        if len(df_validation) > max_test_sub_sample_amount:
-            df_validation = df_validation.sample(max_test_sub_sample_amount)
-        df_validation = df_validation.sample(frac=test_subsample_rate)
+        df_validation = load_set(task, task_data_path, DatasetSplit.VAL, sample_size=max_test_sub_sample_amount)
+        if test_subsample_rate:
+            df_validation = df_validation.sample(frac=test_subsample_rate)
 
         for column in df_validation.columns:
             df_validation[column] = df_validation[column].astype(str)
@@ -212,9 +208,7 @@ def create_dataset_cross_tasks(task_data_path, prompt_technique_template, experi
     all_tasks.extend(experiment_splits["validation"])
     all_tasks.extend(experiment_splits["test"])
     for task in all_tasks:
-        df_training = load_set(task, task_data_path, DatasetSplit.TRAIN)
-        if len(df_training) > max_train_sub_sample_amount:
-            df_training = df_training.sample(max_train_sub_sample_amount)
+        df_training = load_set(task, task_data_path, DatasetSplit.TRAIN, sample_size=max_train_sub_sample_amount)
         if  train_subsample_rate:
             df_training = df_training.sample(frac=train_subsample_rate)
 
@@ -257,9 +251,7 @@ def create_dataset_prompting(task_data_path, prompting_technique_template, token
 
 #        df_test['output'] = df_test['output'].apply(json.dumps)
 
-        df_test = load_set(task, task_data_path, DatasetSplit.TEST)
-        if len(df_test) > max_test_subsample_count:
-            df_test = load_set(task, task_data_path, DatasetSplit.TEST, sample_size=max_test_subsample_count)
+        df_test = load_set(task, task_data_path, DatasetSplit.TEST, sample_size=max_test_subsample_count)
 
         df_test = truncate_set(df_test, tokenizer, max_input_tokens, max_output_tokens)
 
