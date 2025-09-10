@@ -31,8 +31,13 @@ def truncate_set(df, tokenizer, max_input_tokens:int = None, max_output_tokens: 
 
         tokens = tokenizer.tokenize(text)
         if max_tokens and len(tokens) > max_tokens:
+            #print(f"before{text}")
             truncated_tokens = tokens[:max_tokens]
-            return tokenizer.convert_tokens_to_string(truncated_tokens)
+
+            truncated_text = tokenizer.convert_tokens_to_string(truncated_tokens)
+            #print(f"after{truncated_text}")
+            return truncated_text
+
         return text
 
     df["input"] = df["input"].apply(lambda x: truncate_text(x, tokenizer, max_input_tokens))
