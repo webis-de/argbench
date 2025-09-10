@@ -127,6 +127,32 @@
     "counter_argument_generation_cmv_hua18": {
       "train_batch_size":6,
       "learning_rate":0.0000697
-    }
+    },
+    "qwen3-4b":
+    {
+      "argument_unit_segmentation_webDiscourse_ajjour17": {
+        "train_batch_size": 7,
+        "learning_rate": 1.58150805949671E-06
+
+      },
+
+      "argument_rating_dagstuhl_15512_effectiveness_wachsmuth17": {
+        "train_batch_size": 7,
+        "learning_rate": 1.58150805949671E-06
+
+      },
+      "argument_similarity_ukp_aspect_reimers19": {
+        "train_batch_size": 7,
+        "learning_rate": 1.58150805949671E-06
+
+      },
+      "fallacy_detection_cmv_adhominem_habernal18": {
+        "train_batch_size":7,
+        "learning_rate":1.58150805949671E-06
+      },
+      "counter_argument_generation_cmv_hua18": {
+        "train_batch_size":7,
+        "learning_rate":1.58150805949671E-06
+      }
   }
 }
