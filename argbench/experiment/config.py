@@ -392,7 +392,7 @@ class RunConfig:
 
     max_input_tokens: int = 768
 
-    max_output_tokens: int = 256
+    max_output_tokens: int = None
 
     max_few_shot_len: int = 1024
     chain_of_thoughts : bool = False

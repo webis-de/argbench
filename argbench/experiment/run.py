@@ -218,7 +218,7 @@ class Runner:
             for task_label in self.dataset:
                 task = task_label.replace("test_", "")
                 log_mem(f"formatting {task}")
-                self.iterable_dataset[task_label] = self.dataset[task_label].to_iterable_dataset().map(tokenizer).map(generate_truncated)
+                self.iterable_dataset[task_label] = self.dataset[task_label].map(tokenizer).map(generate_truncated)
                 log_mem(f"tokenizing {task}")
                 self.iterable_dataset[task_label] = self.iterable_dataset[task_label].map(template_formatter)
 

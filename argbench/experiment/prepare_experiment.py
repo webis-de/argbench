@@ -30,7 +30,7 @@ def truncate_set(df, tokenizer, max_input_tokens:int = None, max_output_tokens: 
             return text
 
         tokens = tokenizer.tokenize(text)
-        if len(tokens) > max_tokens:
+        if max_tokens and len(tokens) > max_tokens:
             truncated_tokens = tokens[:max_tokens]
             return tokenizer.convert_tokens_to_string(truncated_tokens)
         return text
@@ -70,6 +70,8 @@ def sample_set(output_path: Path, sample_rate: float = None, sample_size: int = 
 
     df_set = pd.read_json(output_path, lines=True)
     path_sample = formulate_sample_path(output_path, sample_rate, sample_size)
+    if os.path.exists(path_sample):
+        return pd.read_json(path_sample, lines=True)
     if sample_rate:
         df_sample = df_set.sample(frac=sample_rate)
     elif sample_size:
@@ -306,8 +308,8 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
     tasks_path = Path(run_config.data_folder)
     tokenizer = AutoTokenizer.from_pretrained(run_config.model_config.path)
 
-    max_input_tokens = run_config.model_config.max_input_tokens
-    max_output_tokens = run_config.model_config.max_output_tokens
+    max_input_tokens = run_config.max_input_tokens
+    max_output_tokens = run_config.max_output_tokens
 
     path_dataset = formulate_argbench_dataset_path(experiment_type, prompting_technique, sample, path_argbench_dataset)
     # path_dataset = formulate_argbench_dataset_path(ExperimentType.PROMPTING, PromptingTechnique.ZERO_SHOT, sample=sample, path_argbench_dataset=path_argbench_dataset)
