@@ -683,7 +683,7 @@ class Runner:
         counter = 0
         metric = self.task_metrics[test_task_name]
         if metric == "fscore":
-            labels_lowered = [set(label.lower().strip() for label in labels)]
+            labels_lowered = list(set(label.lower().strip() for label in labels))
         for data in tqdm(loader):
             text = data["input"][0]
             labels.extend(data["output"])
