@@ -23,7 +23,7 @@ def process_json_file(docs, output):
                     support_id = int(support_id)
                     supporting_text = proposition_texts.get(support_id)
                     if supporting_text:
-                        instances.append((f"Document: {doc}\nSource: {supporting_text}\nTarget: {current_text}\n", "Reason"))
+                        instances.append((f"Source: {supporting_text}\nTarget: {current_text}\nDocument: {doc}", "Reason"))
 
             evidence_sentences = proposition.get("evidence")
             if evidence_sentences:
@@ -31,7 +31,7 @@ def process_json_file(docs, output):
                     evidence_id = int(evidence_id)
                     evidence_text = proposition_texts.get(evidence_id)
                     if evidence_text:
-                        instances.append((f"Document: {doc}\nSource: {evidence_text}\nTarget: {current_text}\n", "Evidence"))
+                        instances.append((f"Source: {evidence_text}\nTarget: {current_text}\nDocument: {doc}", "Evidence"))
 
         if instances:
             for i, instance in enumerate(instances):

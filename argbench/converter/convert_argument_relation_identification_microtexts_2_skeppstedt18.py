@@ -70,12 +70,13 @@ def format_argument_relations(spans, argument_relations, document):
 
         #src_index = sentence_ids.index(src_id)
         #trgt_index = sentence_ids.index(trgt_id)
-        text = f"Document: {document}"
+        text = f""
         if relation == "sup" or relation == "add":
             if (spans[src_id], spans[trgt_id], "Support\n") not in added_relations:
                 label = "Support"
                 text += "\nSource: " + spans[src_id] + "\n"
                 text += "Target: " + spans[trgt_id]
+                text += f"Document: {document}"
                 added_relations.append((spans[src_id], spans[trgt_id], "Support\n"))
                 instances.append((text, label))
         elif relation =="reb" or relation =="und":
@@ -83,6 +84,7 @@ def format_argument_relations(spans, argument_relations, document):
                 label = "Attack"
                 text += "\nSource: " + spans[src_id] + "\n"
                 text += "Target: " + spans[trgt_id]
+                text += f"Document: {document}"
                 instances.append((text, label))
                 added_relations.append((spans[src_id], spans[trgt_id] , "Attack\n"))
     return instances

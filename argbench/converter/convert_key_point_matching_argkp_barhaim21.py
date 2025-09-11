@@ -17,7 +17,7 @@ def preprocess_data(dataset, split, metadata):
      Only output Match or No Match.""")
     for row in dataset.iterrows():
         row = row[1]
-        prompt = f"Argument: {row['argument']}\nKey Point: {row['key_point']}"
+        prompt = f"Key Point: {row['key_point']}\nArgument: {row['argument']}"
         response = "Match" if row["label"] == 1 else "No Match"
         wrong_response = "No Match" if row["label"] == 1 else "Match"
         id = str(uuid.uuid4())
