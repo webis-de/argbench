@@ -23,7 +23,7 @@ def process_dataset(data_files, output_file, metadata, split_name):
     Process elecdeb60t020 datafile
     """
     output = Output(DATASET_NAME)
-    output.append_definition("Given the following argument, split the argument into spans that contains one of the following fallacy. In case a span does not contain a fallacy, simply prepend it with No-fallacy"+
+    output.append_definition("Given the following argument, split the argument into spans that contains one of the following fallacies. A fallacy a failure in reasoning which renders an argument invalid. In case a span does not contain a fallacy, simply prepend it with No-fallacy"+
                              "The split spans should be separated by newlines and be output in the exact order they appear in the argument. Add before each span that covers a fallacy the name of the fallacy and a colon.\n" +
                              "Do not rephrase anything in the argument." +
                              "Here are the candidate fallacies: Ad Hominem: When the argument becomes an excessive attack on an arguer’s position\n" +
@@ -103,7 +103,7 @@ def process_dataset(data_files, output_file, metadata, split_name):
 
         for snippet in snippets:
             id = str(uuid.uuid4())
-            prompt = snippet.document
+            prompt = f"Argument: {snippet.document}"
             model_out = []
 
             # print(snippet)

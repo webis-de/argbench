@@ -28,7 +28,7 @@ def process_dataset(op_path, arg_path, keynote_path, output=None):
         statement = " ".join([s.text.replace(" .",".").replace(" ,", ",").strip() for s in post_sentences])
         keynote = ", ".join([s.text.replace(" .",".").replace(" ,", ",").strip() for s in keynote_sentences])
         contexts = " ".join([s.text.replace(" .",".").replace(" ,", ",").strip() for s in post_contextes])
-        prompt = f"Statement: {statement}\nKeyphrases: {keynote}\nEvidence: {contexts}"
+        prompt = f"Statement: {statement}\nKey phrases: {keynote}\nEvidence: {contexts}"
         response= ""
         for arg in argument_sentences:
             response += arg.text.strip()

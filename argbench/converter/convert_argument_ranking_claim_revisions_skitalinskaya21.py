@@ -11,7 +11,7 @@ mapping = {0: "Worse", 1: "Better"}
 def process_data(dataset, metadata, split):
     output = Output(dataset_name)
     output.append_definition("""Given the following argument pair, is the first argument better or worse 
-    than the second argument. Only respond with better or worse.""")
+    than the second argument in terms of overall quality. Only respond with better or worse.""")
 
 
     for i, record in dataset.iterrows():

@@ -55,7 +55,7 @@ def process_xmi_files(xmi_directory, output, split_map, split):
                     end = window_sentences[-1][3]
                     context = sofa_string[start:end]
 
-                    instance = f"Sentence: {text_span}\nDocument: {context}"
+                    instance = f"Sentence: {text_span}\nEssay: {context}"
                     output.append_instance(filename+"_"+str(counter), instance, [label])
                     counter += 1
                 print(f"Processed: {filename}")

@@ -11,9 +11,10 @@ def preprocess_data(dataset, split, metadata):
 
     dataset_file = dataset_file_template.format(split=split)
 
-    output.append_definition("""Judge if the following keypoint summarizes the given argument.
+    output.append_definition("""Judge if the following keypoint summarizes the given argument. A key point is a short talking point.
+     Key points may be viewed as high- level arguments. They should be general enough to match a significant portion of the arguments, yet informative enough to make a useful summary.
      Possible responses: Match if argument is summarized by key point and No Match if argument is not summarized by key point.
-     Only output Match or No Match""")
+     Only output Match or No Match.""")
     for row in dataset.iterrows():
         row = row[1]
         prompt = f"Argument: {row['argument']}\nKey Point: {row['key_point']}"

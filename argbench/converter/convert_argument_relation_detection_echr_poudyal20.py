@@ -88,7 +88,7 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
 
     output = Output(DATASET_NAME)
 
-    output.append_definition(""" Given the following document and two sentences, your task is to judge whether they are part of the same argument. 
+    output.append_definition("""Given the following document and two sentences, your task is to judge whether they are part of the same argument. 
      An argument consists of a conclusion and multiple premises. Your task is to judge whether the two sentences are part of the same argument, where one sentence supports or attacks the other.
        Output related if there is an argumentative relation between the two sentences or not-related if not. Only output related or non-related.  
     """)

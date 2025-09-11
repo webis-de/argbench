@@ -138,6 +138,7 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
 
     output.append_definition("""Given the following document, split all of the document into argumentative units and non-argumentative units.
 An argumentative unit is a statement that has an argumentative function for example a conclusion or premise.
+An argumentative unit may span a clause, a complete sentence, multiple sentences, or something in between.
 Prepend each argumentative unit with argumentative: and spans that are not Argumentative with Non-argumentative:.
 Output the extracted spans as they are ordered in the given document and separate them by a new line.
 Do not add a new formating or enumeration also do not rephrase the argument units. Order the output spans as they appear in the document.""")
@@ -151,7 +152,7 @@ Do not add a new formating or enumeration also do not rephrase the argument unit
             text = chunk["text"]
 
             case_output = "".join([f"{label}: {clean_text(candidate_clause)}\n" for label, candidate_clause, _ in all_candidates])
-            output.append_instance(str(counter), clean_text(text), [case_output])
+            output.append_instance(str(counter), f"Document: {clean_text(text)}", [case_output])
             counter += 1
 
     output.append_genre(Genres.LEGAL)

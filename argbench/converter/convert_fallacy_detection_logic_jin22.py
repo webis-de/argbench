@@ -24,7 +24,7 @@ map = {
 def process_data(dataset, data_name, data_split, metadata):
 
     output = Output(dataset_name)
-    output.append_definition("Classify the following sentence into one of the following fallacies:" +
+    output.append_definition("A fallacy a failure in reasoning which renders an argument invalid. Classify the following sentence into one of the following fallacies: " +
 
                              "Intentional: some intentional (sometimes subconscious) action/choice to incorrectly support an argument.\n" +
                              "Faulty Generalization: an informal fallacy wherein a conclusion is drawn about all or many instances of a phenomenon on the basis of one or a few instances of that phenomenon. is an example of jumping to conclusions.\n" +

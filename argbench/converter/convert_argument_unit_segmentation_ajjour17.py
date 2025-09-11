@@ -145,7 +145,8 @@ def split_long_unit(file, limit):
 
 def convert_arguments(dataset_name, test_dataset, val_dataset, train_dataset, window_size):
     prompt = """Given the following document, split all of the document into argumentative units and non-argumentative units.
-An argumentative unit is a statement that has an argumentative function for example a claim or anecdote.
+An argumentative unit is a statement that has an argumentative function for example a claim or anecdote. 
+An argumentative unit may span a clause, a complete sentence, multiple sentences, or something in between.
 Prepend each argumentative unit with argumentative: and spans that are not Argumentative with Non-argumentative:.
 Output the extracted spans as they are ordered in the given document and separate them by a new line.
 Do not add a new formating or enumeration also do not rephrase the argument units. Order the output spans as they appear in the document."""
@@ -167,7 +168,7 @@ Do not add a new formating or enumeration also do not rephrase the argument unit
 
             text = "".join([unit.span for unit in split])
 
-            train_output.append_instance(file.fragment_id+f"_{str(i)}", text.strip(), [extracted_units])
+            train_output.append_instance(file.fragment_id+f"_{str(i)}", f"Document: {text.strip()}", [extracted_units])
 
     for file in tqdm(test_dataset):
         split_long_unit(file, max_unit_char)
@@ -176,7 +177,7 @@ Do not add a new formating or enumeration also do not rephrase the argument unit
 
             extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in split])
             text = "".join([unit.span for unit in split])
-            test_output.append_instance(file.fragment_id+f"_{str(i)}", text.strip(), [extracted_units])
+            test_output.append_instance(file.fragment_id+f"_{str(i)}", f"Document: {text.strip()}", [extracted_units])
 
     for file in tqdm(val_dataset):
         split_long_unit(file, max_unit_char)
@@ -185,7 +186,7 @@ Do not add a new formating or enumeration also do not rephrase the argument unit
             extracted_units = "".join([f"{unit.label}: {unit.span.strip()}\n" for unit in split])
             text = "".join([unit.span for unit in split])
 
-            val_output.append_instance(file.fragment_id+f"_{str(i)}", text.strip(), [extracted_units])
+            val_output.append_instance(file.fragment_id+f"_{str(i)}", f"Document: {text.strip()}", [extracted_units])
 
     return test_output, val_output, train_output
 

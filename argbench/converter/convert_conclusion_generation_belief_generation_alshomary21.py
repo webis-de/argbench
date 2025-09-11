@@ -5,7 +5,8 @@ import uuid
 
 def process_dataset(bows_dataset, metadata, dataset_name, dataset_file, dataset_pathes, split):
     output = Output(dataset_name)
-    output.append_definition("Given discussion topic and a collection of topic staces that describe users stance on various issues, generate a claim that is based user stance.")
+    output.append_definition("""Given a discussion topic and a collection of topic stances that describe users stance on various issues, generate a claim that is based on the user stances.
+    A claim is a controversial statement and the central component of an argument.""")
 
     for dataset_path in dataset_pathes:
         dataset = read_tabular(dataset_path)
@@ -27,7 +28,7 @@ def process_dataset(bows_dataset, metadata, dataset_name, dataset_file, dataset_
     #                total_topic_rel.append(topic_str)
 
             total_topic_rel = "; ".join(total_topic_rel)
-            prompt = f"Topic: {row['topic']}\nTopic Stances: {total_topic_rel}"
+            prompt = f"Topic: {row['topic']}\nUser Stances: {total_topic_rel}"
             label = row["top_claim"]
             id = str(uuid.uuid4())
             output.append_instance(id, prompt, [label])

@@ -14,7 +14,7 @@ DATASET_FILE_VAL = "argument_summarization_open_debate_evidence_val_roush23.json
 def make_output(dataset, metadata, output_file, split):
     output = Output(DATASET_NAME)
 
-    output.append_definition("Given the following argument, generate a short summary.")
+    output.append_definition("Provide an abstractive summary/card-tag of the argument made in the document below.")
 
     for i, data in dataset.iterrows():
         id = data['id']
@@ -22,7 +22,7 @@ def make_output(dataset, metadata, output_file, split):
         output_text = data['tag']
         if not input_text or not output_text:
             continue
-        output.append_instance(id, input_text, output_text)
+        output.append_instance(id, f"Document: {input_text}", output_text)
     metadata.add_dataset(output_file, split)
     output.append_genre(Genres.DEBATES)
     output.append_subarea(Skills.GENERATION)

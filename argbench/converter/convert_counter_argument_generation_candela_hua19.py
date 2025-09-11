@@ -8,7 +8,7 @@ DATASET_NAME = "counter_argument_generation_candela_hua19"
 
 def process_dataset(data_files, output_file, split_name, metadata):
     output = Output(DATASET_NAME)
-    output.append_definition("Write a counterargument to the following original post and take into account retrieved passages related to the post.")
+    output.append_definition("Write a counterargument to the following post and take into account retrieved passages related to the post.")
     for data_file in data_files:
         dataset = open(data_file, "r")
         file_instances = ndjson.load(dataset)
@@ -39,7 +39,7 @@ def process_dataset(data_files, output_file, split_name, metadata):
 
             retrieved_phrase = "\n".join(retrieved_phrase)
 
-            prompt = f"Original Post: {op}\nRetrieved Passages: {retrieved_phrase}"
+            prompt = f"Post: {op}\nRetrieved Passages: {retrieved_phrase}"
 
             output.append_instance(instance["url"], prompt, [counter_phrase])
         print(data_file)
