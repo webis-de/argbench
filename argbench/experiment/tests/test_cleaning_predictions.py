@@ -45,3 +45,7 @@ class test_response_cleaning(TestCase):
         output = "</think> No Similarity Step-by-step explanation: 1. **Identify the topic of each argument**:    - Argument 1: Focuses on environmental effects of offshore drilling.    - Argument 2: Discusses a historical moratorium"
         output = clean_for_classification(output, ["Some Similarity", "High Similarity", "Low Similarity", "No Similarity"])
         self.assertEquals(output, "no similarity")
+
+        output = "</think>\nNo Similarity Step-by-step explanation: 1. **Identify the topic of each argument**:    - Argument 1: Focuses on environmental effects of offshore drilling.    - Argument 2: Discusses a historical moratorium"
+        output = clean_for_classification(output, ["Some Similarity", "High Similarity", "Low Similarity", "No Similarity"])
+        self.assertEquals(output, "no similarity")
