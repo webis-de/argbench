@@ -606,6 +606,8 @@ class RunConfig:
                 conf_obj.model_configs = model_configs
 
 
+
+
         if not args:
             return conf_obj
         # Runner config
@@ -761,8 +763,16 @@ class RunConfig:
             conf_obj.validation_config.fscore_beta = args.fscore_beta
 
         # Generation arguments
-        if args.max_length:
+
+        if conf_obj.model_config.cutoff_len:
+            conf_obj.cutoff_len = conf_obj.model_config.cutoff_len
+        elif args.max_length:
             conf_obj.cutoff_len= args.max_length
+
+
+
+
+
         if args.max_new_tokens:
             conf_obj.generation_config.max_new_tokens = args.max_new_tokens
         if args.min_length:

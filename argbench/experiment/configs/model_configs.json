@@ -6,14 +6,14 @@
       "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-3-4b-it",
       "prompt_template": "<start_of_turn>user{instruction}<end_of_turn><start_of_turn>model",
       "output_splitter": "<start_of_turn>model",
-      "cutoff_len": 8192
+      "cutoff_len": 128000
     },
     {
       "label": "gemma-3-27b-it",
       "path": "/bigwork/nhwpajjy/pre-trained-models/gemma-3-27b-it",
       "prompt_template": "<start_of_turn>user{instruction}<end_of_turn><start_of_turn>model",
       "output_splitter": "<start_of_turn>model",
-      "cutoff_len": 8192
+      "cutoff_len": 128000
     },
     {
       "label": "mistral-nemo",
@@ -27,7 +27,7 @@
       "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
       "prompt_template": "[INST]{instruction}[/INST]",
       "output_splitter": "[/INST]",
-      "cutoff_len": 8192
+      "cutoff_len": 32000
     },
     {
       "label": "mistral-small",
@@ -69,7 +69,7 @@
       "path": "/bigwork/nhwpajjy/pre-trained-models/DeepSeek-R1-Distill-Qwen-1.5B",
       "prompt_template": "<|begin of sentence|><|User|>{instruction}<|end of sentence|><|Assistant|>\n",
       "output_splitter": "<|Assistant|>",
-      "cutoff_len": 128000
+      "cutoff_len": 32000
     },
     {
       "label": "deepseek-r1-distill-7b",
