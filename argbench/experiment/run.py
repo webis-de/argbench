@@ -70,7 +70,6 @@ def clean_prediction_general(prediction):
     if prediction.startswith("assistant"):
         prediction = prediction.replace("assistant", "")
     prediction = prediction.replace("<s>", "")
-    prediction = prediction.lower().strip()
     return prediction
 
 def clean_for_generation_and_segmentation(prediction, chain_of_thoughts):
@@ -92,9 +91,10 @@ def clean_for_generation_and_segmentation(prediction, chain_of_thoughts):
     return prediction
 
 def clean_for_classification(prediction, labels):
+    prediction = prediction.lower().strip()
     prediction = clean_prediction_general(prediction)
     labels = "|".join([label.lower() for label in  labels])
-    regular_expressions = [ f"^({labels})",  f"({labels})$", f".*output:?\s?({labels})", f".*</think>\s?({labels})"]
+    regular_expressions = [ f"^({labels})",  f"({labels})$", f".*output:?\\s?({labels})", f".*</think>\\s?({labels})"]
     for regular_expression in regular_expressions:
         match  = re.match(regular_expression, prediction)
         if match:
