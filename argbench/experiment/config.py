@@ -677,8 +677,8 @@ class RunConfig:
             conf_obj.peft_configs = peft_configs
 
         best_hyper_parameters: {}
-        if not conf_obj.hpo and not conf_obj.prompting and config.get("best_hyper_parameters_path"):
-            with open(config.get("best_hyper_parameters_path")) as hps_stream:
+        if not conf_obj.hpo and not conf_obj.prompting and conf_obj.best_hyper_parameters_path:
+            with open(conf_obj.best_hyper_parameters_path) as hps_stream:
                 best_hyper_parameters = json.load(hps_stream)
                 if conf_obj.model in best_hyper_parameters:
                     model_hyper_parameters = best_hyper_parameters[conf_obj.model]
