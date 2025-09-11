@@ -48,8 +48,8 @@ for model in "${models[@]}"; do
     sleep 5
 #    bash argbench/jobs/prompting/prompting.sh 1 "$gpu_type" prompting "${task:0:3}-${model:0:3}-1-shot" --dataset "$task" --model "$model" -k 1 --debug --sample
 #    sleep 5
-#    bash argbench/jobs/prompting/prompting.sh 1 "$gpu_type" prompting "${task:0:3}-${model:0:3}-4-shot" --dataset "$task" --model "$model" -k 4 --debug --sample
-#    sleep 5
+    bash argbench/jobs/prompting/prompting.sh 1 "$gpu_type" prompting "${task:0:3}-${model:0:3}-4-shot" --dataset "$task" --model "$model" -k 4 --debug --sample
+    sleep 5
     bash argbench/jobs/prompting/prompting.sh 1 "$gpu_type" prompting "${task:0:3}-${model:0:3}-cot" --dataset "$task" --model "$model" --cot --debug --sample
     sleep 5
   done
