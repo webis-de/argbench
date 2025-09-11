@@ -94,9 +94,11 @@ def clean_for_classification(prediction, labels):
     prediction = prediction.lower().strip()
     prediction = clean_prediction_general(prediction)
     labels = "|".join([label.lower() for label in  labels])
+    logger.debug(prediction)
     logger.debug(labels)
     regular_expressions = [ f"^({labels})",  f"({labels})$", f".*output:?\\s?({labels})", f".*</think>\\s?({labels})"]
     for regular_expression in regular_expressions:
+        logger.debug(regular_expression)
         match  = re.match(regular_expression, prediction)
         if match:
             label = match.group(1)
