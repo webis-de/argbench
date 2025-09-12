@@ -54,3 +54,11 @@ class test_response_cleaning(TestCase):
         output = "output:\noutput:\nnot-ad-hominem </think> output: not-ad-hominem "
         output = clean_for_classification(output, ["not-ad-hominem", "ad-hominem"])
         self.assertEquals(output, "not-ad-hominem")
+
+        output = "output:\toutput:\nnot-ad-hominem </think> output: not-ad-hominem "
+        output = clean_for_classification(output, ["not-ad-hominem", "ad-hominem"])
+        self.assertEquals(output, "not-ad-hominem")
+
+        output = "output: output:\nnot-ad-hominem </think> output: not-ad-hominem "
+        output = clean_for_classification(output, ["not-ad-hominem", "ad-hominem"])
+        self.assertEquals(output, "not-ad-hominem")
