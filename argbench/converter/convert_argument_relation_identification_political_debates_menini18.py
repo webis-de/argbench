@@ -7,9 +7,9 @@ from random import sample
 def process_split(dataset, path):
     output = Output(dataset_name)
     output.append_definition(
-    """Given the following two arguments on the given topic:\n 
-    "Detect whether the first argument supports, attacks, or is unrelated to the second argument.
-    Only output support, attack, or unrelated.
+    """Given the following two arguments on the given topic ,
+    Detect whether the first argument supports, attacks, or is unrelated to the second argument.
+    Only output Support, Attack, or Unrelated.
     """)
     for row in dataset.iterrows():
         instance = row[1]

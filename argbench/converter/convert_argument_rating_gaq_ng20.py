@@ -48,7 +48,7 @@ def format_dataset(dataset, dimension_definitions,  metadata, split):
             print(row[f"{dimension}_mean"])
             print(dimension)
             score = number_to_label(float(row[f"{dimension}_mean"]))
-            prompt = f"Title: {row['title']}\nArgument: {row['text']}\n Quality Aspect: {dimension}\n Quality Aspect Definition: {dimension_definition}"
+            prompt = f"Argument: {row['text']}\n Quality Aspect: {dimension}\n Quality Aspect Definition: {dimension_definition}"
             id = row["id"]
             task_output.append_instance(id, prompt, [score])
 

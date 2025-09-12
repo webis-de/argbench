@@ -16,7 +16,7 @@ def make_output(dataset, dataset_name):
     output = Output(DATASET_NAME)
 
     output.append_definition("""Given the following argument pairs, is the first argument better or worse than 
-    the second argument in terms of quality. Only respond with better or worse.""")
+    the second argument in terms of quality. Only respond with Better or Worse.""")
 
     for idx, row in dataset.iterrows():
         compare_arg = (dataset[dataset["topic"] == row["topic"]]

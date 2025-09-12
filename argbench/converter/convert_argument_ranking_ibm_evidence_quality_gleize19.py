@@ -6,7 +6,7 @@ import uuid
 def convert_dataset(dataset, data_file, metadata, split):
     output = Output(dataset_name)
     output.append_definition("Given the topic and the two evidences, is the first evidence more convincing than" +
-                             "the second evidence. Only respond with better or worse.")
+                             "the second evidence. Only respond with Better or Worse.")
 
     dataset["label"] = dataset["label"].map({1: "Better", 2: "Worse"})
 
