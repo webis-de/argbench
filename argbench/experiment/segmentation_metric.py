@@ -184,7 +184,7 @@ def compute_aspect_bio_f1_score(predictions, references, inputs):
 
 def compute_fallacy_bio_f1_score(predictions, references, inputs):
     map ={
-        "Ad Hominem" : "Fal-ad-hom",
+        "Ad-hominem" : "Fal-ad-hom",
         "Appeal to Emotion": "Fal-appeal-emotio",
         "Appeal to Authority": "Fal-app-author",
         "Slippery Slope": "Fal-slipper-slope",

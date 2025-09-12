@@ -12,14 +12,14 @@ def preprocess_data(dataset, split, metadata):
     dataset_file = dataset_file_template.format(split=split)
 
     output.append_definition("""Judge if the following keypoint summarizes the given argument. A key point is a short talking point.
-     Key points may be viewed as high- level arguments. They should be general enough to match a significant portion of the arguments, yet informative enough to make a useful summary.
+     Key points may be viewed as high-level arguments. They should be general enough to match a significant portion of the arguments, yet informative enough to make a useful summary.
      Possible responses: Match if argument is summarized by key point and No Match if argument is not summarized by key point.
-     Only output Match or No Match.""")
+     Only output Match or No-match.""")
     for row in dataset.iterrows():
         row = row[1]
         prompt = f"Key Point: {row['key_point']}\nArgument: {row['argument']}"
-        response = "Match" if row["label"] == 1 else "No Match"
-        wrong_response = "No Match" if row["label"] == 1 else "Match"
+        response = "Match" if row["label"] == 1 else "No-match"
+        wrong_response = "No-match" if row["label"] == 1 else "Match"
         id = str(uuid.uuid4())
         output.append_positive_example(prompt, response, "")
         output.append_negative_example(prompt, wrong_response, "")

@@ -10,9 +10,9 @@ def process_split(dataset_files, output_file, metadata, dataset_split):
      split the argument into spans of text that cover an aspect or not.
      An aspect is a span of the argument that characterizes the argument.
      Multiple aspects can be found in an argument.
-     Prepend the aspect span with Aspect and the not-aspect span with Not-aspect.
+     Prepend the aspect span with Aspect: and the not-aspect span with Not-aspect:.
      Do not rephrase the spans or modify it. Always process the whole argument.
-     Multiple aspects can be found in an argument. In case there is not aspect, simply output the argument with Not-aspect before it.""")
+     Multiple aspects can be found in an argument. In case there is not aspect, simply output the argument with Not-aspect: before it.""")
     for dataset_file in dataset_files:
         with open(dataset_file, "r") as f:
             dataset = ndjson.load(f)

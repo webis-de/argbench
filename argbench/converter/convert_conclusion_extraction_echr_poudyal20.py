@@ -79,7 +79,7 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
                     print(f"found in sentence: {sentence}\n")
                     conclusion_counts = conclusion_counts + 1
                 else:
-                    response = "No-Conclusion"
+                    response = "No-conclusion"
 
             output.append_instance(counter, prompt, [response])
             counter += 1

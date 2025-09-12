@@ -94,19 +94,12 @@ def main():
     process_all_txt_files_in_directory(txt_directory_path, instances_dict)
     task_definition ="""Given the following document and span, classify the span that appears in the document into the following argument unit types:
     Common Ground, Assumption, Testimony, Statistics, Anecdote, or Other.
-    Common Ground: is common knowledge, a self-evident fact, an accepted truth, or
-similar. 
-    Assumption: the unit states an assumption, conclusion, judgment, or opinion of the author, a
-general observation, possibly false fact, or similar.
-    Testimony: The unit gives evidence by stating or quoting that a proposition was made by some
-expert, authority, witness, group, organization, or similar.
-    Statistics:  The unit gives evidence by stating or quoting the results or conclusions of quantitative re-
-search, studies, empirical data analyses, or similar.
-    Anecdote: The unit gives evidence by stating personal experience of the author, an anecdote, a
-concrete example, an instance, a specific event, or similar.
-    Other: The unit does not or hardly adds to the argumentative discourse or it does not match any of
-the above classes.
-      Only output one of these classes.
+    Common Ground: is common knowledge, a self-evident fact, an accepted truth, or similar. 
+    Assumption: the unit states an assumption, conclusion, judgment, or opinion of the author, a general observation, possibly false fact, or similar.
+    Testimony: The unit gives evidence by stating or quoting that a proposition was made by some expert, authority, witness, group, organization, or similar.
+    Statistics:  The unit gives evidence by stating or quoting the results or conclusions of quantitative research, studies, empirical data analyses, or similar.
+    Anecdote: The unit gives evidence by stating personal experience of the author, an anecdote, a concrete example, an instance, a specific event, or similar.
+    Other: The unit does not or hardly adds to the argumentative discourse or it does not match any of the above classes. Only output one of these classes.
      """
     train_output = Output(dataset_name)
     test_output = Output(dataset_name)

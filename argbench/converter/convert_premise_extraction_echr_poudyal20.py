@@ -43,7 +43,7 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
     output = Output(DATASET_NAME)
 
     output.append_definition("""Given the following document, Judge if the following sentence is a premise or not.
-     A Premise is a reason for justifying or refuting a claim. Answer only with Premise or No-Premise.""")
+     A Premise is a reason for justifying or refuting a claim. Answer only with Premise or No-premise.""")
     counter = 0
     premises_count = 0
     doc_half_window = 2
@@ -82,7 +82,7 @@ def process_split(DATASET_NAME, dataset, split_name, metadata):
                     print(f"found in sentence: {sentence}\n")
                     premises_count = premises_count + 1
                 else:
-                    response = "No-Premise"
+                    response = "No-premise"
 
             output.append_instance(counter, prompt, [response])
             counter += 1

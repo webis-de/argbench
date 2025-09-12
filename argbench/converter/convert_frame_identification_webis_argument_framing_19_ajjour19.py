@@ -12,8 +12,8 @@ def process_split(df, data_file):
     output = Output(DATASET_NAME)
     output.append_definition("""Judge if the given frame captures the most salient aspect of the given argument on the given topic.
                                 The frame is the main highlighted aspect of the topic which resonate with as specific audience.
-                                Possible responses: Match if the argument emphasizes the given frame and No Match if the argument is not emphasized by the frame.
-                                Only output Match or No Match
+                                Possible responses: Match if the argument emphasizes the given frame and No-match if the argument is not emphasized by the frame.
+                                Only output Match or No-match
                                  """)
     negative_frame_count = 5
     for row in df.iterrows():
@@ -39,7 +39,7 @@ def process_split(df, data_file):
         output.append_instance(id, prompt, ["Match"])
         for wrong_frame in wrong_candidates:
             prompt = f"Topic: {row['topic'].strip()}\nArgument: {row['conclusion'].strip()} {row['premise'].strip()}\nFrame: {wrong_frame}"
-            output.append_instance(id, prompt, ["No Match"])
+            output.append_instance(id, prompt, ["No-match"])
 
     output.append_genre(Genres.DEBATE_PORTALS)
     output.append_subarea(Skills.PERSPECTIVE_ASSESSMENT)

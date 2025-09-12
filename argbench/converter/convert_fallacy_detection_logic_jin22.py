@@ -9,14 +9,14 @@ dataset_name = "fallacy_detection_logic_jin22"
 map = {
     "intentional": "Intentional",
     "faulty generalization" : "Faulty Generalization",
-    "ad hominem": "Ad Hominem",
+    "ad hominem": "Ad-hominem",
     "fallacy of relevance" : "Fallacy of Relevance",
     "false causality": "False Causality",
     "appeal to emotion": "Appeal to Emotion",
     "fallacy of extension" : "Fallacy of Extension",
     "fallacy of logic" : "Fallacy of Logic",
     "fallacy of credibility" : "Fallacy of Credibility",
-    "ad populum": "Ad Populum",
+    "ad populum": "Ad-populum",
     "equivocation":"Equivocation",
     "circular reasoning": "Circular Reasoning",
     "false dilemma" : "False Dilemma"
@@ -28,14 +28,14 @@ def process_data(dataset, data_name, data_split, metadata):
 
                              "Intentional: some intentional (sometimes subconscious) action/choice to incorrectly support an argument.\n" +
                              "Faulty Generalization: an informal fallacy wherein a conclusion is drawn about all or many instances of a phenomenon on the basis of one or a few instances of that phenomenon. is an example of jumping to conclusions.\n" +
-                             "Ad Hominem: instead of addressing someone's argument or position, you irrelevantly attack the person or some aspect of the person who is making the argument.\n" +
+                             "Ad-hominem: instead of addressing someone's argument or position, you irrelevantly attack the person or some aspect of the person who is making the argument.\n" +
                              "Fallacy of Relevance: introducing premises or conclusions that have nothing to do with the subject matter.\n" +
                              "False Causality: statement that jumps to a conclusion implying a causal relationship without supporting evidence.\n" +
                              "Appeal to Emotion: manipulation of the recipient's emotions in order to win an argument.\n" +
                              "Fallacy of Extension: attacking an exaggerated or caricatured version of your opponent's position.\n" +
                              "Fallacy of Logic: an error in the logical structure of an argument.\n" +
                              "Fallacy of Credibility: attempts to disprove an argument by attacking the character of the speaker.\n" +
-                             "Ad Populum: a fallacious argument which is based on affirming that something is real or better because the majority thinks so\n" +
+                             "Ad-populum: a fallacious argument which is based on affirming that something is real or better because the majority thinks so\n" +
                              "Equivocation: when a key term or phrase in an argument is used in an ambiguous way, with one meaning in one portion of the argument and then another meaning in another portion of the argument.\n" +
                              "Circular Reasoning: when the end of an argument comes back to the beginning without having proven itself.\n" +
                              "False Dilemma: presenting only two options or sides when there are many options or sides.\n")

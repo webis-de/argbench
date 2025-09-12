@@ -122,7 +122,7 @@ def main():
     df_split["SET"] = df_split.apply(lambda x: "VAL" if x["ID"] in val_ids else x["SET"], axis=1)
     splits = df_split["SET"]
     split_map = {ids[i]:splits[i] for i in range(len(ids))}
-    task_definition = """Given the following premise and conclusion and their context.\n
+    task_definition = """Given the following premise and conclusion and their context.
      Classify whether the premise supports or attacks the conclusion.
          Only output Support or Attack."""
     metadata = Metadata(dataset_name)

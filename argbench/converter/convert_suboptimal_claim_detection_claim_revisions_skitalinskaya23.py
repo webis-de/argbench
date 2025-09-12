@@ -34,13 +34,13 @@ dataset_template = "suboptimal_claim_detection_claim_revisions_{split}_skitalins
 def process_data(dataset, metadata, split):
     dataset_file = dataset_template.format(split=split)
     output = Output(dataset_name)
-    output.append_definition("Judge if the following claim can be improved by revising it. Possible outputs: Improvable if revision should be made, Non-Improvable if no revision is necessary. Only output Improvable or Non-Improvable.")
+    output.append_definition("Judge if the following claim can be improved by revising it. Possible outputs: Improvable if revision should be made, Non-improvable if no revision is necessary. Only output Improvable or Non-improvable.")
     for row in dataset.iterrows():
         row = row[1]
         prompt = f"Claim: {row['claim_text']}"
         id = str(uuid.uuid4())
         if row["label"]:
-            output.append_instance(id, prompt, ["Non-Improvable"])
+            output.append_instance(id, prompt, ["Non-improvable"])
         else:
             output.append_instance(id, prompt, ["Improvable"])
     metadata.add_dataset(dataset_file, split)

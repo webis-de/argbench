@@ -43,7 +43,9 @@ def process_data(dataset, metadata, split):
     dataset["revision_type"] = dataset["revision_type"].apply(lambda x: "Other" if x not in labels else x)
     dataset_file = dataset_template.format(split=split)
     output = Output(dataset_name)
-    output.append_definition("Given an argumentative claim, does the following quality issue match the following claim. Available quality issues are Clarification, Typo/Grammar, Links, or Other. If the quality issue matches the claim, output Match. If the quality issue does not apply to the claim, output No-match. Only output Match or No-match.")
+    output.append_definition("""Given an argumentative claim, does the following quality issue match the following claim.
+     Available quality issues are Clarification, Typo/Grammar, Links, or Other. If the quality issue matches the claim, output Match.
+     If the quality issue does not apply to the claim, output No Match. Only output Match or No Match.""")
     all_counts = {label:0 for label in quality_issues}
     for row in dataset.iterrows():
         row = row[1]
@@ -54,7 +56,7 @@ def process_data(dataset, metadata, split):
                 output.append_instance(id, prompt, ["Match"])
                 all_counts[quality_issue] +=  1
             else:
-                output.append_instance(id, prompt, ["No-match"])
+                output.append_instance(id, prompt, ["No Match"])
     print(all_counts)
     metadata.add_dataset(dataset_file, split)
     output.append_genre(Genres.DEBATE_PORTALS)

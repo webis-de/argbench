@@ -13,14 +13,14 @@ def process_data(data, split):
 
     dataset_file_name = dataset_file_format.format(split=split)
     output = Output(dataset_name)
-    output.append_definition("Classify if the following argument is an ad-hominem (personal attack) or not. Answer with ad-hominem or not-ad-hominem.")
+    output.append_definition("Classify if the following argument is an ad-hominem (personal attack) or not. Answer with Ad-hominem or Not-ad-hominem.")
 
     for post in data:
 
         if post["violated_rule"] == 2:
-            ad_hominem = "ad-hominem"
+            ad_hominem = "Ad-hominem"
         else:
-            ad_hominem = "not-ad-hominem"
+            ad_hominem = "Not-ad-hominem"
         argument = post["body"]
         output.append_instance(id=post["id"],input=f"Argument: {argument}", output=[ad_hominem])
 
