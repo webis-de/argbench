@@ -21,3 +21,4 @@ echo $f
 done
 cd "$CODE_PATH"
 python -m argbench.experiment.preprocess -o "$DATA_PATH/tasks"
+
