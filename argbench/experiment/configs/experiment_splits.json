@@ -34,6 +34,7 @@
         "scheme_classification_argu_saha23",
         "stance_classification_ibmsc_barhaim17",
         "suboptimal_claim_detection_claim_revisions_skitalinskaya23",
+        "claim_improvement_suggestion_claim_revisions_skitalinskaya23",
         "warrant_generation_arc_chakarbarty21",
         "warrant_generation_ideological_debate_chakarbarty21",
         "warrant_generation_microtext_1_chakarbarty21",
