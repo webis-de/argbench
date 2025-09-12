@@ -45,13 +45,13 @@ def process_data(dataset, metadata, split):
     output = Output(dataset_name)
     output.append_definition("""Given an argumentative claim, does the following quality issue match the following claim.
      Available quality issues are Clarification, Typo/Grammar, Links, or Other. If the quality issue matches the claim, output Match.
-     If the quality issue does not apply to the claim, output No Match. Only output Match or No-match.""")
+     If the quality issue does not apply to the claim, output No-match. Only output Match or No-match.""")
     all_counts = {label:0 for label in quality_issues}
     for row in dataset.iterrows():
         row = row[1]
         for quality_issue in quality_issues:
             prompt = f"Quality Issue: {quality_issue}\nClaim: {row['claim_text']}"
-            id = str(uuid.uuid4()) + quality_issue
+            id = quality_issue + "-" +str(uuid.uuid4())
             if row["revision_type"] == quality_issue:
                 output.append_instance(id, prompt, ["Match"])
                 all_counts[quality_issue] +=  1
