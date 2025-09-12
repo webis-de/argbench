@@ -636,7 +636,10 @@ class Runner:
             sampling_params= self.load_sampling_params(self.test_dataset_name)
             train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
             self.trainer.evaluate()
-            val_loss = self.trainer.state.log_history[-1]['val_loss']
+            if "val_loss" in self.trainer.state.log_history[-1]:
+                val_loss = self.trainer.state.log_history[-1]['val_loss']
+            else:
+                val_loss = -1000
             train_loss = self.trainer.state.log_history[-1]['train_loss']
             metrics = self.evaluate(self.test_dataset_name, self.iterable_dataset["test"], sampling_params, model=self.trainer.model)
             for metric in metrics:
