@@ -5,8 +5,8 @@ from argbench.experiment.run import *
 class test_response_cleaning(TestCase):
     def test_response_cleaning(self):
         output = "Different Topics</think> </think> Different Topics</think> </think> Different Topics."
-        response = clean_prediction(output, False)
-        print(f"response {response}")
+        #response = clean_for_classification(output, False)
+        #print(f"response {response}")
 
 
     def test_label_clearning(self):
@@ -49,3 +49,8 @@ class test_response_cleaning(TestCase):
         output = "</think>\nNo Similarity Step-by-step explanation: 1. **Identify the topic of each argument**:    - Argument 1: Focuses on environmental effects of offshore drilling.    - Argument 2: Discusses a historical moratorium"
         output = clean_for_classification(output, ["Some Similarity", "High Similarity", "Low Similarity", "No Similarity"])
         self.assertEquals(output, "no similarity")
+
+
+        output = "output:\noutput:\nnot-ad-hominem </think> output: not-ad-hominem "
+        output = clean_for_classification(output, ["not-ad-hominem", "ad-hominem"])
+        self.assertEquals(output, "not-ad-hominem")
