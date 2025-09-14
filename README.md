@@ -53,7 +53,7 @@ The search process can be then accessed via optuna and is stored under `hpo_conf
 ./argbench/jobs/in-tasks/run_in_tasks_experiment.sh 1 a100 in_task/in_task_{skill}.json --model {model} 
 ```
 
-** Sample Prompting Experiments**
+**Sample Prompting Experiments**
 
 Experiment for a set of [target tasks](argbench/data/target_tasks.txt) can be run as follows
 
