@@ -2,104 +2,163 @@
 
 This repo comprises 33 datasets and 46 tasks covering 5 skills to evaluate how good are LLMs at computational argumentation tasks.
 The skills are argument mining, argument perspective and quality assessment, argument reasoning, and argument generation.
-You can evaluate your language model in Prompting, i.e. how good is your models at computational argumentation tasks. Or
-how good is your model at generalizing to unseen computational tasks (Leave-one-out), by evaluating it on five hold-out tasks
-after training it on the remaining tasks. 
 
-To evaluate your models on the whole benchmark
+## Experiments
+
+You can evaluate your language model in Prompting, i.e. how good is a model at computational argumentation tasks. Or
+how good is an LLM model at generalizing to unseen computational tasks (Leave-one-out), by evaluating it on five hold-out tasks
+after training it on the remaining tasks as specific in this [split](argbench/experiment/configs/experiment_splits.json).
+You can also evaluate a model's ability to transfer one skill (e.g., Quality) to another (e.g., Generation). 
+The generation parameters for a model are stored in  [config_mistral_vllm_generation.json](argbench/experiment/configs/config_mistral_vllm_generation.json). 
 
 
-| Model | Architecture                   | Learning | Attention | Context Length | Tokenizer | Extra |
-| --- |--------------------------------| --- | --- |----------------| --- | --- |
-| Qwen-3-4b | MOE, Sigwlu, RMS Norm, QK-Norm | Pre-training, reasoning | GQA, Dual Chunk Attention | 128k           | BBPE | https://arxiv.org/pdf/2505.09388 |
-| qwen3-1.7b |                                |  |  | 32k            |  |  |
-| llama-3-8b-instruct | SWIGLU                         | DPO, SFT | GQA, PagedAttention | 128k           | BPE | https://arxiv.org/pdf/2407.21783 |
-| deepseek-r1-32b |                                |  |  | 128k           |  |  |
-| deepseek-r1-distill-1.5b |                                |  | GQA, Dual Chunk Attention | 32k            |  |  |
-| mistral-7b |                                |  | GQA, sliding window | 32k            |  | https://arxiv.org/pdf/2310.06825 |
-| deepseek-r1-distill-7b | RMS Norm, MOE                  | instruction fine-tuned + reinforcmenet learning | GQA, Dual Chunk Attention | 128k           | BPE | https://arxiv.org/pdf/2407.10671
-https://qwenlm.github.io/blog/qwen2.5/ |
-| Gemma-3-4b-it | RMSNorm, QK-norm               | iinstruction fine-tuned + refinrocement learning using warp | GQA, sliding window self-attention to , global self attention | 128K           | Sentencepiece, preserved Whte space, byte-level encoding | Multilingual,
-https://arxiv.org/pdf/2503.19786 |
-| phi-moe-7.6b | mode                           | iinstruction fine-tuned + refinrocement learning using warp | GQA, sliding window self-attention to , global self attention | 4K             | Sentencepiece, preserved Whte space, byte-level encoding | Multilingual,
-https://arxiv.org/pdf/2503.19786 |
+### Add a model 
+
+To evaluate your models, you have to add first it to [argbench/experiment/configs/model_configs.json](argbench/experiment/configs/model_configs.json)
 
 
 ### Prompting
 
-1. Add your model to [argbench/experiment/configs/prompting/prompting.json](argbench/experiment/configs/prompting/prompting.json) configuration.
-Each model should include three templates: zero-shot, few-shot, and Chain-of-thought prompting.
-
-
-2. For prompting run the following script 
-
 ```
-sbatch argbench/jobs/prompting.sh mistral-7b-inst-3
+./argbench/jobs/prompting/prompting.sh {gpu-count} {gpu-type} prompting.json {job-name} --model {model} --dataset {task}
 ```
-### Leave-one-out
 
-3. For fine-tuning, add your model as described in prompting to [argbench/experiment/configs/fine-tuning/prompting.json](argbench/experiment/configs/fine-tuning/cross-task.json)
+Example:
+```
+./argbench/jobs/prompting/prompting.sh 1 a100 prompting.json prompting-qwen --model qwen3-4b --dataset argument_relation_detection_echr_poudyal20 
+```
+
+
+### Fine tuning
+
+**In-task**
+
+To fine-tune an adapter for an LLM
+
+1. Run hyper-parameter optimization on the validation set to get the best hyper-parameter (lr and batch size)
+
 ``` 
- sbatch argbench/jobs/cross_tasks.sh mistral-7b-inst-3
+./argbench/jobs/in-tasks/run_in_tasks_experiment.sh 1 a100 in_task/in_task_{skill}_hpo.json --model {model} 
 ```
 
-to your modely on one dataset you can run
+The best hyper-parameters and best performance can be then located in the configuration `in_task_{skill}_hpo.json` in `hpo_config` > `hpo_coarse_output`
 
-**Prompting**
+The search process can be then accessed via optuna and is stored under `hpo_config` > `storage`
+
+2. Add the model and hyper-parameters `hyper-parameters-in-task.json`
+3. Run the test experiment. The jobs create results for the model will be appended to the leader board located in the leaderboard path
+   which can be configured in the configuration file. 
+
+``` 
+./argbench/jobs/in-tasks/run_in_tasks_experiment.sh 1 a100 in_task/in_task_{skill}.json --model {model} 
 ```
-sbatch argbench/jobs/prompting_dataset.sh mistral-7b-inst-3 warrant_identification_semeval_2018_task_12_habernal18
+
+** Sample Prompting Experiments**
+
+Experiment for a set of [target tasks](argbench/data/target_tasks.txt) can be run as follows
+
 ```
+./argbench/jobs/prompting/prompting_target_tasks.sh -m {model} -t {task}
+```
+
+
 **Leave-one-out**
+
+1. Run hyper-parameter optimization on the validation task to get the best hyper-parameter (lr and batch size)
+
+``` 
+./argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh 1 a100 cross_task/cross_task_hpo.json --model {model} 
 ```
-sbatch argbench/jobs/cross_tasks.sh mistral-7b-inst-3 warrant_identification_semeval_2018_task_12_habernal18
+2. Add the model and hyper-parameters `hyper-parameters-cross-task.json`
+3. Run the test experiment. The jobs create results for the model will be appended to the leader board located in the leaderboard path
+   which can be configured in the configuration file `cross_task_{skill}.json`.
+
+``` 
+./argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh 1 a100 cross_task/cross_task_{skill}.json --model {model} 
 ```
 
-All jobs create results for the model will be appended to the leader board located in the leaderboard path 
+**Skill-transfer**
+
+1. Run hyper-parameter optimization on the validation task to get the best hyper-parameter (lr and batch size)
+
+``` 
+To BE DONE
+```
+2. Add the model and hyper-parameters `To BE DONE`
+3. Run the test experiment. The jobs create results for the model will be appended to the leader board located in the leaderboard path
+   which can be configured in the configuration file `To BE DONE`.
+
+``` 
+To BE DONE 
+```
+
+The jobs create results for the model will be appended to the leader board located in the leaderboard path 
 which can be configured in the configuration file
+
 ```
 /bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/runs
 ```
+
 and the time for the job can be tracked in 
 ```
 /bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/jobs
 ```
-### Benchmark Preparation
+
+### Get aggregated results over skills
+
+To get aggregated results of a specific model
+
+```
+python argbench/experiment/aggregate_results.py --file /mnt/home/yajjour/task-specific-argument-mining-and-generation-data/runs/prompting-gemma3-4b-results.csv  --metadata /mnt/home/yajjour/computational-argumentation-tasks-instructions/tasks/metadata.json --seed 1517  --skill-output-path . --k 4 --cot
+
+```
+# Benchmark 
+
+A task in ArgBench is named with the following format *{task}*_*{dataset}*_*{authors}*. For example `warrant_generation_arc_chakarbarty21`.
+ArgBench is preprocessed in three steps: Original Datasets -> Json > Ijson. To preprocess a single tasks or all tasks run the following:  
+
+
+### Add a dataset
+
+
 
 1. To add your dataset to the benchmark, you should create a converter script in [argbench/experiment/converter](argbench/experiment/converter)
 The script should include a task definition and how each instance should be converted to completion tasks. For each dataset,
 you should add a training, test, and validation set. 
 
-2. You have also to add the following
+2. You have also to add the following meta data in the code. 
+
+
 *Metadata*: 
 
 - Skill (whether it is mining, quality assessment, perspective assessment, reasoning, or generation)
 - The genre (e.g., Scoial Media)
 - Evaluation metric (e.g., F1-score or BertScore)
 - The file and their corresponding split, i.e., which part of the dataset is a training or test set.
-3. To generate or prepare the benchmark you have to run
+3. to add the dataset to the benchmark you have to run the following
+
+
+```
+sbatch argbench/jobs/generate_dataset.sh {task}
+```
+
+### Preprocess all datasets
+
+To generate or prepare the benchmark you have to run
 ```
 sbatch argbench/jobs/preprocess_all_datasets.sh
 ```
 
+### Statistics for the datasets
+To get statistics of the benchmark in terms of size, length of input and output.
+```
+python -m  argbench.analysis.dataset_size --tasks-to-shorten --output /bigwork/nhwpajjy/dataset-size.csv
+```
+
+
+
 ### Jobs
 
-1. You can prompt all datasets with a prompting technique by one of the scripts
-
-```
-sbatch argbench/jobs/prompting_all_{1_shot,4_shot,cot}.sh mistral-7b-inst-3
-```
-
-2. You can prompt one dataset with a prompting technique by one of the scripts
-```
-sbatch argbench/jobs/prompting_datsaet_{1_shot,4_shot,cot}.sh fallacy_detection_cmv_adhominem_habernal18 mistral-7b-inst-3
-```
-
-3. To optimize hyper-prameters for a specific task or cross-task , you can run 
-
-```
-sbatch argbench/jobs/run_in_tasks_hpo.sh mistral-7b-inst-3 fallacy_detection_cmv_adhominem_habernal18
-sbatch argbench/jobs/run_cross_tasks_hpo.sh mistral-7b-inst-3
-```
 4. To run the final in-task or cross- experiments you can run 
 ```
 sbatch argbench/jobs/run_in_tasks_experiments.sh mistral-7b-inst-3 fallacy_detection_cmv_adhominem_habernal18
@@ -111,18 +170,6 @@ sbatch argbench/jobs/run_cross_tasks_experiments.sh mistral-7b-inst-3 fallacy_de
 sbatch argbench/jobs/run_cross_tasks_experiments.sh mistral-7b-inst-3 
 ```
  
-6. To run all prompting experiments for a specific skill
-```
-sbatch argbench/jobs/run_prompting_skill_model.sh mining  mistral-7b-inst-3
-```
-7. To run all prompting experiments for a specific skill
-```
-./run_prompting_skill_model.sh mining  mistral-7b-inst-3
-```
-8. To run all in-task experiment son all models
-```
-./run_in_tasks_experiments_all_models.sh
-```
 
 
 
