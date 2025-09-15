@@ -130,7 +130,7 @@ and the time for the job can be tracked in
 To get aggregated results of a specific model
 
 ```
-python argbench/experiment/aggregate_results.py --file /mnt/home/yajjour/task-specific-argument-mining-and-generation-data/runs/prompting-gemma3-4b-results.csv  --metadata /mnt/home/yajjour/computational-argumentation-tasks-instructions/tasks/metadata.json --seed 1517  --skill-output-path . --k 4 --cot
+python argbench/analysis/aggregate_results.py --file /mnt/home/yajjour/task-specific-argument-mining-and-generation-data/runs/prompting-gemma3-4b-results.csv  --metadata /mnt/home/yajjour/computational-argumentation-tasks-instructions/tasks/metadata.json --seed 1517  --skill-output-path . --k 4 --cot
 
 ```
 # Benchmark 

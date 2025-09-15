@@ -11,7 +11,7 @@ from transformers import AutoTokenizer
 from argbench.converter.common import *
 from argbench.experiment.preprocess import *
 from argbench.experiment.utils import *
-
+import argparse
 logger = logging.getLogger()
 
 
@@ -478,6 +478,30 @@ def save_experiment_splits(experiment_splits_path):
 
 
 
+if __name__ == "__main__":
+    arg_parser = ArgumentParser(description="Run peft finetuning experiment")
+
+    arg_parser.add_argument("-c", "--config", type=Path, action="append", help="Path to experiment config")
+
+    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cudnn.allow_tf32 = True
+
+    RunConfig.register_cli(arg_parser)
+
+    args = arg_parser.parse_args()
+    config = RunConfig.from_file([], args)
+    logger = get_logger(config)
+    print(f"logging file is {config.log_path}")
+    logger.info(" ".join(sys.argv[1:]))
+    dataset = create_argbench_dataset(ExperimentType.PROMPTING, prompting_technique=PromptingTechnique.ZERO_SHOT, sample=True, run_config=config)
+    dataset = create_argbench_dataset(ExperimentType.PROMPTING, prompting_technique=PromptingTechnique.FOUR_SHOT, sample=True, run_config=config)
+    dataset = create_argbench_dataset(ExperimentType.PROMPTING, prompting_technique=PromptingTechnique.COT, sample=True, run_config=config)
+    dataset = create_argbench_dataset(ExperimentType.IN_TASK, sample=True, run_config=config, prompting_technique=PromptingTechnique.ZERO_SHOT)
+    dataset = create_argbench_dataset(ExperimentType.IN_TASK, sample=False, run_config=config, prompting_technique=PromptingTechnique.ZERO_SHOT)
+    dataset = create_argbench_dataset(ExperimentType.LEAVE_ONE_TASK, sample=False, run_config=config, prompting_technique=PromptingTechnique.ZERO_SHOT)
+    dataset = create_argbench_dataset(ExperimentType.LEAVE_ONE_TASK, sample=True, run_config=config, prompting_technique=PromptingTechnique.ZERO_SHOT)
+    dataset = create_argbench_dataset(ExperimentType.SKILL_TRANSFER, sample=False, run_config=config, prompting_technique=PromptingTechnique.ZERO_SHOT)
+    dataset = create_argbench_dataset(ExperimentType.SKILL_TRANSFER, sample=True, run_config=config, prompting_technique=PromptingTechnique.ZERO_SHOT)
 
 
 

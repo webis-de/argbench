@@ -6,12 +6,11 @@ def process_data(lines, dataset_name, dataset_file_name, metadata, split):
     """Process the JSON file and append examples to the output."""
     output = Output(dataset_name)
     output.append_definition(
-        """Given the document and the appended sentence, classify the sentence which appears in the document into Fact, Testimony, Value, Policy, Resource,or Others.
+        """Given the document and the appended sentence, classify the sentence which appears in the document into Fact, Testimony, Value, Policy, Resource.
          Fact is objective proposition 'expressing or dealing with facts or conditions as perceived without distortion by personal feelings, prejudices, or interpretations.'
          Testimony: objective proposition about the author’s personal state or experience.
          Policy:  proposition proposing a specific course of action to be taken.
          Resource: reference to a source of objective evidence.
-         Others: anything that does not full under these categories.
          Keep the order of the sentences as provided in the text.
          Only output with one of these classes.
          """)

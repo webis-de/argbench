@@ -62,3 +62,7 @@ class test_response_cleaning(TestCase):
         output = "output: output:\nnot-ad-hominem </think> output: not-ad-hominem "
         output = clean_for_classification(output, ["not-ad-hominem", "ad-hominem"])
         self.assertEquals(output, "not-ad-hominem")
+
+        output = "Output: Output: Better Output: Worse Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output: Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output. Output"
+        output = clean_for_classification(output, ["better", "worse"])
+        self.assertEquals(output, "better")
