@@ -25,4 +25,4 @@ conda activate new-env
 #find "$DATA_PATH/tasks/" -name "*size*"  | xargs -I % rm %
 #find "$DATA_PATH/tasks/" -name "*rate*"  | xargs -I % rm %
 
-python -m  argbench.experiment.prepare_experiment -c "$CODE_PATH"
+python -m  argbench.experiment.prepare_experiment -c "$CONFIG_PATH"
