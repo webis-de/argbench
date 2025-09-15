@@ -51,3 +51,8 @@ class testArgBenchDataset(TestCase):
             self.assertGreaterEqual(804,len(tokens["input_ids"]))
 
 
+        for record in  in_task_dataset["train_counter_argument_generation_cmv_hua18"]:
+
+            tokens = tokenizer(record["input"])
+            print(len(tokens["input_ids"]))
+            self.assertGreaterEqual(804,len(tokens["input_ids"]))
