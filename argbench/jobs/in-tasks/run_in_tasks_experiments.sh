@@ -24,7 +24,7 @@ sbatch <<EOF
 module load GCCcore/.13.2.0
 module load NVHPC/24.9-CUDA-12.6.0
 module load Miniforge3
-conda activate argbench
+conda activate new-env
 export CUDA_VISIBLE_DEVICES=0
 export HF_HUB_OFFLINE=1
 start=\$(date +%s)
@@ -55,7 +55,7 @@ sbatch <<EOF
 module load GCCcore/.13.2.0
 module load NVHPC/24.9-CUDA-12.6.0
 module load Miniforge3
-conda activate argbench
+conda activate new-env
 start=\$(date +%s)
 Start_Date=\$(date +%Y-%m-%d:%H:%m)
 echo "parallel"
