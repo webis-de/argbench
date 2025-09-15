@@ -764,7 +764,7 @@ class RunConfig:
 
         # Generation arguments
 
-        if conf_obj.model_config.cutoff_len:
+        if conf_obj.model_config.cutoff_len and conf_obj.prompting:
             conf_obj.cutoff_len = conf_obj.model_config.cutoff_len
         elif args.max_length:
             conf_obj.cutoff_len= args.max_length

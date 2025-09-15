@@ -30,7 +30,7 @@ export HF_HUB_OFFLINE=1
 start=\$(date +%s)
 Start_Date=\$(date +%Y-%m-%d:%H:%m)
 echo "no parallel"
-python -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:5}
+python -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:5} --max_len 1024
 end=\$(date +%s)
 export Time=\$((end-start))
 Time_HOURS=\$(echo "scale=2; \$Time / 3600" | bc)
