@@ -13,8 +13,8 @@ export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 
 export CONFIG_PATH="$BIGWORK/task-specific-argument-mining-and-generation/argbench/experiment/configs/prompting/prompting.json"
 
-#module load Miniforge3
-#conda activate new-env
+module load Miniforge3
+conda activate new-env
 #
 #for f in "${CODE_PATH}"/argbench/converter/convert*.py;  do
 #python $f ;
