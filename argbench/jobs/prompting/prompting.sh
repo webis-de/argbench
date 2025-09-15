@@ -21,7 +21,7 @@ sbatch <<EOF
 #SBATCH --gres="gpu:$gpu_type:$gpu_count"
 
 module load Miniforge3
-conda activate new-env
+conda activate argbench
 export HF_HUB_OFFLINE=1
 start=\$(date +%s)
 
