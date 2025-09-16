@@ -1,31 +1,73 @@
-#!/bin/bash -l
-#SBATCH --job-name=cross-task
-#SBATCH --nodes=1
-#SBATCH --cpus-per-task=6
-#SBATCH --mem=32G
-#SBATCH --time=72:00:00
-#SBATCH --output argbench/output/cross-task-%j.out
-#SBATCH --error argbench/output/cross-task-%j.err
-#SBATCH --gpus=1
-module load Miniforge3
-conda activate task-specific
-
-model=$1
-echo $model
-dataset=$2
-echo $dataset
-
+#!/bin/bash
+echo "${@:5}"
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
+export CONFIG_PATH="$BIGWORK/task-specific-argument-mining-and-generation/argbench/experiment/configs/"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 
-cd "$CODE_PATH"
+export gpu_count=$1
+export gpu_type=$2
+export experiment=$3
+export jobname=$4
 
+if [ "$gpu_count" == 1 ] ; then
+sbatch <<EOF
+#!/bin/bash -l
+#SBATCH --job-name="$jobname"
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=6
+#SBATCH --mem=24G
+#SBATCH --time=72:00:00
+#SBATCH --output argbench/output/"$jobname"-%j.out
+#SBATCH --error argbench/output/"$jobname"-%j.err
+#SBATCH --gres=gpu:"$gpu_type:$gpu_count"
 
-python -m  argbench.experiment.run -c "${CODE_PATH}/argbench/experiment/configs/instruction-fine-tuning/cross_task_${dataset}.json" \
---model "$model"
+module load GCCcore/.13.2.0
+module load NVHPC/24.9-CUDA-12.6.0
+module load Miniforge3
+conda activate new-env
+export CUDA_VISIBLE_DEVICES=0
+export HF_HUB_OFFLINE=1
+start=\$(date +%s)
+Start_Date=\$(date +%Y-%m-%d:%H:%m)
+echo "no parallel"
+python -m  argbench.experiment.run -c "${CONFIG_PATH}/cross_task/${experiment}.json" ${@:5} --max_len 1024
+end=\$(date +%s)
+export Time=\$((end-start))
+Time_HOURS=\$(echo "scale=2; \$Time / 3600" | bc)
+Time_Minutes=\$(echo "scale=2; \$Time / 60" | bc)
+Start_Date=\$(date +%Y-%m-%d:%H:%m)
+echo "\$Start_Date,\$Time_HOURS,\$Time_Minutes,$jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 
+EOF
+else
+  echo "on accelerate"
+sbatch <<EOF
+#!/bin/bash -l
+#SBATCH --job-name="$jobname"
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=100G
+#SBATCH --time=72:00:00
+#SBATCH --output argbench/output/"$jobname"-%j.out
+#SBATCH --error argbench/output/"$jobname"-%j.err
+#SBATCH --gpus="$gpu_type:$gpu_count"
 
+module load GCCcore/.13.2.0
+module load NVHPC/24.9-CUDA-12.6.0
+module load Miniforge3
+conda activate new-env
+start=\$(date +%s)
+Start_Date=\$(date +%Y-%m-%d:%H:%m)
+echo "parallel"
+export CUDA_VISIBLE_DEVICES=0,1,2,3
+accelerate launch --config_file "${CONFIG_PATH}/accelerate/config_${gpu_count}_gpus_3_stage.yaml" \\
+-m  argbench.experiment.run -c "${CONFIG_PATH}/cross_task/${experiment}.json" ${@:5}
+end=\$(date +%s)
+export Time=\$((end-start))
+TIME_HOURS=\$(awk -v t="\$Time" 'BEGIN { printf "%.2f", t / 3600 }')
+Time_Minutes=\$(awk -v t="\$Time" 'BEGIN { printf "%.2f", t / 60 }')
 
-export TIME="$(sacct --format=Elapsed -j $SLURM_JOB_ID | tail -n 1 | xargs 2>&1)"
-export JOB_ARGUMENTS=";${dataset}.5;cross-task;${model};\n"
-echo "$SLURM_JOB_ID,$SLURM_JOB_NAME,$TIME,$JOB_ARGUMENTS" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
+echo "\$Start_Date,\$TIME_HOURS,\$Time_Minutes,$jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
+
+EOF
+fi;
