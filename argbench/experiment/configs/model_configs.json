@@ -34,7 +34,7 @@
       "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-Small-Instruct-2409",
       "prompt_template": "[INST]{instruction}[/INST]",
       "output_splitter": "[/INST]",
-      "cutoff_len": 128000
+      "cutoff_len": 32768
     },
     {
       "label": "mixtral-8x7b",
