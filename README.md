@@ -1,11 +1,11 @@
 # ArgBench
 
 This repo comprises 33 datasets and 46 tasks covering 5 skills to evaluate how good are LLMs at computational argumentation tasks.
-The skills are *argument mining*, *argument perspective assessment*,  *argument quality assessment*, *argument reasoning*, and *argument generation*.
+The skills are *argument mining*, *argument perspective assessment*,  *argument quality assessment*, *argument reasoning*, and *argument generation*.  Prompts for the tasks can be found [here](argbench/data/task_definitions.md).
 
 ## Experiments
 
-You can evaluate your language model in Prompting, i.e. how good is a model at computational argumentation tasks. Prompts for the tasks can be found [here](argbench/data/task_definitions.md). Or
+You can evaluate your language model in Prompting, i.e. how good is a model at computational argumentation tasks. Or
 how good is an LLM model at generalizing to unseen computational tasks (Leave-one-out), by evaluating it on five hold-out tasks
 after training it on the remaining tasks as specific in this [split](argbench/experiment/configs/experiment_splits.json).
 You can also evaluate a model's ability to transfer one skill (e.g., Quality) to another (e.g., Generation). 
