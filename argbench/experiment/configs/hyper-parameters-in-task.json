@@ -129,7 +129,7 @@
         "train_batch_size": 8,
         "learning_rate": 1.3825589888186944e-05
       },
-      "argument_rating_dagstuhl_15512_effectiveness_wachsmuth17": {
+      "argument_rating_dagstuhl_15512_wachsmuth17": {
         "train_batch_size": 8,
         "learning_rate": 4.6973663279440106e-05
       },
