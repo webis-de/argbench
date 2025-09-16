@@ -5,10 +5,10 @@
     "in_task": false,
     "chain_of_thoughts": false,
     "experiment_splits_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/experiment_splits.json",
-    "seed": 4112,
+    "seed": 1517,
     "debug": false,
     "model": "mistral-7b-inst-3",
-    "cutoff_len": 300,
+    "cutoff_len": 1024,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "models_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models",
     "data_type": "ndjson",
@@ -21,8 +21,7 @@
  	"model_configs_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/model_configs.json",
     "train_datasets": {},
     "test_dataset": {
-        "name": "stance_classification_ukp_sentential_stab18",
-        "subsample_rate": 0.5
+        "name": "stance_classification_ukp_sentential_stab18"
     },
     "hpo_config": {
         "n_trials": 10,
@@ -71,7 +70,7 @@
     },
     "training_args_config": {
         "per_device_train_batch_size": 128,
-        "num_train_epochs": 5,
+        "num_train_epochs": 1,
         "learning_rate": 0.0003,
         "optim": "adamw_bnb_8bit",
         "eval_strategy": "steps",

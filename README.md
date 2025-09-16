@@ -88,7 +88,7 @@ The search process can be then accessed via optuna and is stored under `hpo_conf
 1. Run hyper-parameter optimization on the validation task to get the best hyper-parameter (lr and batch size)
 
 ``` 
-./argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh 1 a100 cross_task/cross_task_hpo.json --model {model} 
+./argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh 1 a100 cross_task/cross_task_val_hpo.json --model {model} 
 ```
 2. Add the model and hyper-parameters `hyper-parameters-cross-task.json`
 3. Run the test experiment. The jobs create results for the model will be appended to the leader board located in the leaderboard path
