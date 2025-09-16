@@ -5,7 +5,7 @@ The skills are *argument mining*, *argument perspective assessment*,  *argument 
 
 ## Experiments
 
-You can evaluate your language model in Prompting, i.e. how good is a model at computational argumentation tasks. Or
+You can evaluate your language model in Prompting, i.e. how good is a model at computational argumentation tasks. Prompts for the tasks can be found [here](argbench/data/task_definitions.md). Or
 how good is an LLM model at generalizing to unseen computational tasks (Leave-one-out), by evaluating it on five hold-out tasks
 after training it on the remaining tasks as specific in this [split](argbench/experiment/configs/experiment_splits.json).
 You can also evaluate a model's ability to transfer one skill (e.g., Quality) to another (e.g., Generation). 
@@ -137,6 +137,7 @@ python argbench/analysis/aggregate_results.py --file /mnt/home/yajjour/task-spec
 
 A task in ArgBench is named with the following format *{task}*_*{dataset}*_*{authors}*. For example `warrant_generation_arc_chakarbarty21`.
 ArgBench is preprocessed in three steps: Original Datasets -> Json > Ijson. To preprocess a single tasks or all tasks run the following:  
+
 
 
 ### Add a dataset
