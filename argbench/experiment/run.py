@@ -704,7 +704,7 @@ class Runner:
 
                 inputs = data["input_ids"][0].cuda()
                 with torch.inference_mode():
-                    generated = model.generate(input_ids=inputs, generation_config=generation_config, return_dict_in_generate=True)
+                    generated = model.generate(input_ids=inputs, generation_config=generation_config, return_dict_in_generate=True, do_sample=False)
 
                     output = self.tokenizer.batch_decode(generated.sequences)
 
