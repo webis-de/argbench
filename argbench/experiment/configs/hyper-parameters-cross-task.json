@@ -4,7 +4,7 @@
       "train_batch_size": 11,
       "learning_rate": 0.0000701
     },
-    "argument_rating_dagstuhl_15512_effectiveness_wachsmuth17": {
+    "argument_rating_dagstuhl_15512_wachsmuth17": {
       "train_batch_size": 11,
       "learning_rate": 0.0000701
     },
@@ -29,7 +29,7 @@
 
       },
 
-      "argument_rating_dagstuhl_15512_effectiveness_wachsmuth17": {
+      "argument_rating_dagstuhl_15512_wachsmuth17": {
         "train_batch_size": 13,
         "learning_rate": 0.0000848
 
@@ -56,7 +56,7 @@
 
     },
 
-    "argument_rating_dagstuhl_15512_effectiveness_wachsmuth17": {
+    "argument_rating_dagstuhl_15512_wachsmuth17": {
       "train_batch_size": 4,
       "learning_rate": 0.0000997
 
@@ -83,7 +83,7 @@
 
     },
 
-    "argument_rating_dagstuhl_15512_effectiveness_wachsmuth17": {
+    "argument_rating_dagstuhl_15512_wachsmuth17": {
       "train_batch_size": 16,
       "learning_rate": 0.0000452
 
