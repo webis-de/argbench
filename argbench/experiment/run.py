@@ -185,7 +185,8 @@ class Runner:
 
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
-
+        # This is commented after countering assserting errors with mistral. The most problematic part is the last line.
+        # This code is compatible with qwen
         # self.tokenizer.pad_token = config.get_pad_token_id()
         # self.tokenizer.unk_token = config.get_unk_token_id()
         # self.tokenizer.add_special_tokens({'pad_token' : "<pad>"})
@@ -422,7 +423,7 @@ class Runner:
         :param quantization: whether to train the model in a quantized manner
         :returns: ModelForCausalLM initialized from config
         """
-        params = {"trust_remote_code":True, "pretrained_model_name_or_path":base_model, "torch_dtype":torch.bfloat16}
+        params = {"trust_remote_code":True, "pretrained_model_name_or_path":base_model}
         if quantization:
             params["quantization_config"] = BitsAndBytesConfig(load_in_8bit=True)
             params["device_map"]= "auto"
