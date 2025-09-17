@@ -417,7 +417,7 @@ class Runner:
         :param quantization: whether to train the model in a quantized manner
         :returns: ModelForCausalLM initialized from config
         """
-        params = {"trust_remote_code":True, "pretrained_model_name_or_path":base_model, "torch_type":torch.bfloat16}
+        params = {"trust_remote_code":True, "pretrained_model_name_or_path":base_model, "torch_dtype":torch.bfloat16}
         if quantization:
             params["quantization_config"] = BitsAndBytesConfig(load_in_8bit=True)
             params["device_map"]= "auto"
