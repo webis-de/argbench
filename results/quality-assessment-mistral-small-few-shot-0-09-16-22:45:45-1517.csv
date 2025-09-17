@@ -1,4 +1,7 @@
 test_task,score
+suboptimal_claim_detection_claim_revisions_skitalinskaya23,0.3043
 argument_ranking_ibm_evidence_quality_gleize19,0.3591
 argument_ranking_ibm_rank_30k_gretz20,0.5199
 argument_ranking_claim_revisions_skitalinskaya23,0.3766
+controversy_scoring_cmv_adhominem_habernal18,0.1843
+reasonableness_scoring_cmv_adhominem_habernal18,0.1397

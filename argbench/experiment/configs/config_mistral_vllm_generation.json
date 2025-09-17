@@ -4,21 +4,21 @@
             "temperature": 0,
             "top_p": 1,
             "top_k": 50,
-            "min_tokens": 25,
+            "min_tokens": 32,
             "max_tokens": 1024
         },
         "argument_unit_segmentation": {
             "temperature": 0,
             "top_p": 1,
             "top_k": 50,
-            "min_tokens": 25,
+            "min_tokens": 32,
             "max_tokens": 2048
         },
         "fallacy_detection_elecdeb60t020_goffredo23": {
             "temperature": 0,
             "top_p": 1,
             "top_k": 50,
-            "min_tokens": 25,
+            "min_tokens": 32,
             "max_tokens": 1024
 
         },
@@ -26,29 +26,29 @@
             "temperature": 0,
             "top_p": 1,
             "top_k": 50,
-            "min_tokens": 25,
-            "max_tokens": 1024
+            "min_tokens": 32,
+            "max_tokens": 512
         },
         "generation": {
             "temperature": 0,
             "top_p": 1,
             "top_k": 50,
-            "min_tokens": 25,
-            "max_tokens": 1024
+            "min_tokens": 32,
+            "max_tokens": 512
         },
         "claim_optimization": {
             "temperature": 0,
             "top_p": 1,
             "top_k": 50,
-            "min_tokens": 25,
-            "max_tokens": 1024
+            "min_tokens": 32,
+            "max_tokens": 512
         },
         "default": {
             "temperature": 0,
             "top_p": 1,
             "top_k": 1,
-            "min_tokens": 15,
-            "max_tokens": 50
+            "min_tokens": 16,
+            "max_tokens": 32
 
         }
     },
@@ -57,50 +57,50 @@
             "temperature": 0,
             "top_p": 1,
             "top_k": 50,
-            "min_tokens": 25,
-            "max_tokens": 1536
+            "min_tokens": 32,
+            "max_tokens": 2048
         },
         "argument_unit_segmentation": {
             "temperature": 0,
             "top_p": 1,
             "top_k": 50,
-            "min_tokens": 25,
+            "min_tokens": 32,
             "max_tokens": 2048
         },
         "fallacy_detection_elecdeb60t020_goffredo23": {
             "temperature": 0,
             "top_p": 1,
             "top_k": 50,
-            "min_tokens": 25,
-            "max_tokens": 1536
+            "min_tokens": 32,
+            "max_tokens": 2048
         },
         "generation": {
             "temperature": 0,
             "top_p": 1,
             "top_k": 50,
-            "min_tokens": 25,
-           "max_tokens": 1536
+            "min_tokens": 32,
+           "max_tokens": 1024
         },
         "argument_summarization_open_debate_evidence_roush23": {
             "temperature": 0,
             "top_p": 1,
             "top_k": 50,
-            "min_tokens": 25,
-            "max_tokens": 1536
+            "min_tokens": 32,
+            "max_tokens": 1024
         },
         "claim_optimization": {
             "temperature": 0,
             "top_p": 1,
             "top_k": 50,
-            "min_tokens": 25,
-            "max_tokens": 1536
+            "min_tokens": 32,
+            "max_tokens": 1024
         },
         "default": {
             "temperature": 0,
             "top_p": 1,
             "top_k": 1,
-            "min_tokens": 25,
-            "max_tokens": 250
+            "min_tokens": 16,
+            "max_tokens": 256
         }
     }
 }
