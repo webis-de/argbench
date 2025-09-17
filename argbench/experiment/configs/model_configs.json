@@ -27,7 +27,7 @@
       "path": "/bigwork/nhwpajjy/pre-trained-models/Mistral-7B-Instruct-v0.3",
       "prompt_template": "[INST]{instruction}[/INST]",
       "output_splitter": "[/INST]",
-      "cutoff_len": 32000
+      "cutoff_len": 4000
     },
     {
       "label": "mistral-small",
