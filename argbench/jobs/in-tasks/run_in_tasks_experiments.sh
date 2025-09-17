@@ -33,8 +33,8 @@ echo "no parallel"
 python -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:5} --max_len 1024
 end=\$(date +%s)
 export Time=\$((end-start))
-Time_HOURS=\$(echo "scale=2; \$Time / 3600" | bc)
-Time_Minutes=\$(echo "scale=2; \$Time / 60" | bc)
+TIME_HOURS=\$(awk -v t="\$Time" 'BEGIN { printf "%.2f", t / 3600 }')
+Time_Minutes=\$(awk -v t="\$Time" 'BEGIN { printf "%.2f", t / 60 }')
 Start_Date=\$(date +%Y-%m-%d:%H:%m)
 echo "\$Start_Date,\$Time_HOURS,\$Time_Minutes,$jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 
