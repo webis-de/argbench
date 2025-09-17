@@ -430,7 +430,7 @@ class Runner:
         if quantization:
             params["quantization_config"] = BitsAndBytesConfig(load_in_8bit=True)
             params["device_map"]= "auto"
-            return AutoModelForCausalLM.from_pretrained(**params, torch_dtype=torch.bfloat16)
+            return AutoModelForCausalLM.from_pretrained(**params)
         else:
             params["quantization_config"] = None
             #params["device_map"]= "auto"
