@@ -30,6 +30,7 @@ export HF_HUB_OFFLINE=1
 start=\$(date +%s)
 Start_Date=\$(date +%Y-%m-%d:%H:%m)
 echo "no parallel"
+export CUDA_LAUNCH_BLOCKING=1
 python -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:5} --max_len 1024
 end=\$(date +%s)
 export Time=\$((end-start))
@@ -60,6 +61,7 @@ start=\$(date +%s)
 Start_Date=\$(date +%Y-%m-%d:%H:%m)
 echo "parallel"
 export CUDA_VISIBLE_DEVICES=0,1,2,3
+export CUDA_LAUNCH_BLOCKING=1
 accelerate launch --config_file "${CONFIG_PATH}/accelerate/config_${gpu_count}_gpus_3_stage.yaml" \\
 -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:5}
 end=\$(date +%s)
