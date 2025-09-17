@@ -104,7 +104,7 @@
       "path": "/bigwork/nhwpajjy/pre-trained-models/Qwen3-32B",
       "prompt_template": "<|im_start|>user\n{instruction}<|im_end|>\n<|im_start|>assistant",
       "output_splitter": "assistant",
-      "cutoff_len": 128000
+      "cutoff_len": 40960
     },
     {
       "label": "phi-3.5-moe-7.6b",
