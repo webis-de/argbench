@@ -50,7 +50,7 @@ for model in "${models[@]}"; do
       bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh 1 "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --debug  --quantization --sample --train_epochs 1
     else
       echo "validation"
-      bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh 1 "$gpu_type" "in_task_${task}_hpo" "in-tsk-$model-$task-hpo" --model "$model" --debug  --quantization --sample
+      bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh 1 "$gpu_type" "in_task_${task}_hpo" "in-tsk-$model-$task-hpo" --model "$model" --debug  --quantization --sample --train_epochs 1
 
      fi
     sleep 5
