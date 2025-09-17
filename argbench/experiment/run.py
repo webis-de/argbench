@@ -183,12 +183,15 @@ class Runner:
 
         self.turn_off_thinking_qwen()
 
-        if self.tokenizer.pad_token is None:
-            self.tokenizer.pad_token = self.tokenizer.eos_token
+
+
+        # if self.tokenizer.pad_token is None:
+        #     self.tokenizer.pad_token = self.tokenizer.eos_token
+
         # This is commented after countering assserting errors with mistral. The most problematic part is the last line.
         # This code is compatible with qwen
-        # self.tokenizer.pad_token = config.get_pad_token_id()
-        # self.tokenizer.unk_token = config.get_unk_token_id()
+        self.tokenizer.pad_token = config.get_pad_token_id()
+        self.tokenizer.unk_token = config.get_unk_token_id()
         # self.tokenizer.add_special_tokens({'pad_token' : "<pad>"})
 
         self.generation_config = GenerationConfig(**config.generation_config.to_conf())

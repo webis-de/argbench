@@ -1,0 +1,4 @@
+test_task,score
+argument_ranking_ibm_evidence_quality_gleize19,0.4919
+argument_ranking_ibm_rank_30k_gretz20,0.51
+argument_ranking_claim_revisions_skitalinskaya23,0.4815

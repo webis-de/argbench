@@ -1,0 +1,7 @@
+test_task,score
+key_point_matching_argkp_barhaim21,0.6589
+argument_similarity_ukp_aspect_reimers19,0.395
+stance_classification_ukp_sentential_stab18,0.4829
+aspect_detection_ukp_corpus_schiller21,0.0
+stance_classification_ibmsc_barhaim17,0.6954
+frame_identification_webis_argument_framing_19_ajjour19,0.6544
