@@ -19,11 +19,11 @@
     "tensorboard_logs": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tensorboard",
     "argbench_dataset_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/argbench-dataset",
  	"model_configs_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/model_configs.json",
-
-    "train_datasets": {},
+    "prediction_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/in-task-generation-predictions.tsv",
+    "train_datasets": {
+    },
     "test_dataset": {
         "name": "counter_argument_generation_cmv_hua18",
-        "subsample_rate": 0.5
     },
     "hpo_config": {
         "n_trials": 5,

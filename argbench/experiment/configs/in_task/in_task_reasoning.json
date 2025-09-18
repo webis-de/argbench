@@ -19,6 +19,7 @@
     "tensorboard_logs": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tensorboard",
     "argbench_dataset_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/argbench-dataset",
  	"model_configs_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/model_configs.json",
+    "prediction_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/in-task-reasoning-predictions.tsv",
     "train_datasets": {},
     "test_dataset": {
         "name": "fallacy_detection_cmv_adhominem_habernal18",
