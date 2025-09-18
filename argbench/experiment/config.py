@@ -461,7 +461,7 @@ class RunConfig:
         arg_parser.add_argument("-tdn", "--dataset", type=str, help="Name of the test dataset to use")
         arg_parser.add_argument("-rc", "--resume_checkpoint", help="Resume training from checkpoint")
         arg_parser.add_argument("-la", "--load_adapter", action="append", help="Adapter to load")
-        arg_parser.add_argument("-an", "--adapter_name", action="append", help="Adapter name that is being loaded")
+        arg_parser.add_argument("-mi", "--model_id", type=str, action="store_true", help="model id")
         arg_parser.add_argument("-co", "--config_output", type=Path, help="File to write config to")
         arg_parser.add_argument("-df", "--data_folder", type=Path, help="Data folder path")
         arg_parser.add_argument("-mf" , "--models_folder", type=Path, help="Data folder path")
@@ -668,15 +668,8 @@ class RunConfig:
         if args.models_folder:
             conf_obj.models_folder = args.models_folder
 
-        if args.load_adapter:
-            peft_configs = []
-            for i, adapter in enumerate(args.load_adapter):
-                peft_configs.append(PeftPretrainedConfig(
-                    model_id=adapter,
-                    adapter_name=args.adapter_name[i],
-                    is_trainable=not args.is_evaluate
-                ))
-            conf_obj.peft_configs = peft_configs
+        if args.model_id:
+            conf_obj.peft_configs[0].model_id = args.model_id
 
         best_hyper_parameters: {}
         if not conf_obj.hpo and not conf_obj.prompting and conf_obj.best_hyper_parameters_path:
