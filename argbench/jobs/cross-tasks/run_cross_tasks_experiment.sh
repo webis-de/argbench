@@ -31,7 +31,7 @@ start=\$(date +%s)
 Start_Date=\$(date +%Y-%m-%d:%H:%m)
 echo "no parallel"
 export CUDA_LAUNCH_BLOCKING=1
-python -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:5} --max_len 1024
+python -m  argbench.experiment.run -c "${CONFIG_PATH}/cross_task/${experiment}.json" ${@:5} --max_len 1024
 end=\$(date +%s)
 export Time=\$((end-start))
 TIME_HOURS=\$(awk -v t="\$Time" 'BEGIN { printf "%.2f", t / 3600 }')
