@@ -1,4 +1,5 @@
 #!/bin/bash
+#/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output/qwen3-4b-hpo-cross-task-stance_classification_ukp_sentential_stab18-09-17-15:19:54
 while getopts "ahvm:l:t:" opt; do
   case $opt in
     a)
@@ -60,5 +61,3 @@ for model in "${models[@]}"; do
 done
 
 
-export model_id=/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output/qwen3-4b-hpo-cross-task-stance_classification_ukp_sentential_stab18-09-17-15:19:54
-bash
