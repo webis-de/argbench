@@ -47,7 +47,7 @@ for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
     if [ -z "$validation" ]; then
       echo "test"
-      bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh 1 "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --debug  --quantization --train_epochs 1
+      bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh 1 "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --debug  --quantization --train_epochs 1 --sample
     else
       echo "validation"
       bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh 1 "$gpu_type" "in_task_${task}_hpo" "in-tsk-$model-$task-hpo" --model "$model" --debug  --quantization --sample
