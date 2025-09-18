@@ -1,8 +1,16 @@
 #!/bin/bash
 
+export model_list=argbench/data/models-small.txt
 
-while getopts "ahm:" opt; do
+while getopts "abhm:c:" opt; do
   case $opt in
+      c)
+        gpu_count="$OPTARG"
+      ;;
+    b)
+      model_list=argbench/data/models-large.txt
+      ;;
+
     a)
       gpu_type="a100"
     ;;
@@ -28,16 +36,16 @@ done
 
 
 if [ -z "$model" ]; then
-  models=("phi-3.5-moe-7.6b" "qwen3-4b" "deepseek-r1-distill-7b" "llama-3.1-8b-instruct")
+  mapfile -t models < "$model_list"
 else
   models=("$model")
 fi
 
 for model in "${models[@]}"; do
-#    bash argbench/jobs/prompting/prompting.sh 1 "$gpu_type" prompting "${model:0:3}-0-shot"  --model "$model" --debug --sample --seed 1517
+#    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${model:0:3}-0-shot"  --model "$model" --debug --sample --seed 1517
 #    sleep 5
-#    bash argbench/jobs/prompting/prompting.sh 1 "$gpu_type" prompting "${model:0:3}-4-shot"  --model "$model" -k 4 --debug --sample --seed 1517
+#    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${model:0:3}-4-shot"  --model "$model" -k 4 --debug --sample --seed 1517
 #    sleep 5
-    bash argbench/jobs/prompting/prompting.sh 1 "$gpu_type" prompting "${model:0:3}-cot" --model "$model" --cot --debug --sample --seed 1517
+    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${model:0:3}-cot" --model "$model" --cot --debug --sample --seed 1517
     sleep 5
 done

@@ -1,0 +1,6 @@
+mistral-small
+mixtral-8x7b
+llama-3.3-70b-instruct
+deepseek-r1-distill-32b
+qwen3-32b
+phi-3.5-moe-16x3.8b

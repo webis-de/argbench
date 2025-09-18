@@ -1,7 +1,16 @@
 #!/bin/bash
 #/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output/qwen3-4b-hpo-cross-task-stance_classification_ukp_sentential_stab18-09-17-15:19:54
-while getopts "ahvm:l:t:" opt; do
+
+export model_list=argbench/data/models-small.txt
+while getopts "abhvm:l:t:c:" opt; do
   case $opt in
+    c)
+      gpu_count="$OPTARG"
+    ;;
+    b)
+      model_list=argbench/data/models-large.txt
+      ;;
+
     a)
       gpu_type="a100"
     ;;
@@ -40,7 +49,7 @@ else
 fi
 
 if [ -z "$model" ]; then
-  models=("phi-3.5-moe-7.6b" "qwen3-4b" "deepseek-r1-distill-7b" "llama-3.1-8b-instruct" "gemma-3-4b-it" "mistral-7b-inst-3" "qwen3-1.7b" "deepseek-r1-distill-1.5b")
+  mapfile -t models < "$model_list"
 else
   models=("$model")
 fi
@@ -49,10 +58,10 @@ for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
     if [ -z "$validation" ]; then
       echo "test"
-      bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh 1 "$gpu_type" "testing_cross_task_${task}" "cross-tsk-$model-$task" --model "$model" --debug  --quantization --train_epochs 1 --sample --model_id "$model_adapter"
+      bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "testing_cross_task_${task}" "cross-tsk-$model-$task" --model "$model" --debug  --quantization --train_epochs 1 --sample --model_id "$model_adapter"
     else
       echo "validation"
-      bash argbench/jobs/in-tasks/run_cross_tasks_experiment.sh 1 "$gpu_type" "cross_task_val_hpo" "cross-tsk-$model-hpo" --model "$model" --debug  --quantization --sample
+      bash argbench/jobs/in-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "cross_task_val_hpo" "cross-tsk-$model-hpo" --model "$model" --debug  --quantization --sample
 
      fi
     sleep 5

@@ -1,8 +1,15 @@
 #!/bin/bash
 
+export model_list=argbench/data/models-small.txt
 
-while getopts "ahm:t:" opt; do
+while getopts "abhm:t:c:" opt; do
   case $opt in
+    c)
+      gpu_count="$OPTARG"
+    ;;
+    b)
+      model_list=argbench/data/models-large.txt
+      ;;
     a)
       gpu_type="a100"
     ;;
@@ -29,6 +36,7 @@ while getopts "ahm:t:" opt; do
 done
 
 
+
 if [ -z "$task" ]; then
   mapfile -t tasks < argbench/data/target_tasks.txt
 else
@@ -36,7 +44,7 @@ else
 fi
 
 if [ -z "$model" ]; then
-  models=("phi-3.5-moe-7.6b" "qwen3-4b" "qwen3-1.7b" "deepseek-r1-distill-7b" "llama-3.1-8b-instruct" "gemma3-4b" "mistral-7b-inst-3" "deepseek-r1-distill-1.5b")
+  mapfile -t models < "$model_list"
 else
   models=("$model")
 fi
@@ -44,13 +52,13 @@ fi
 for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
 
-    bash argbench/jobs/prompting/prompting.sh 1 "$gpu_type" prompting "${task:0:3}-${model:0:3}-0-shot" --dataset "$task" --model "$model" --debug --sample
+    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${task:0:3}-${model:0:3}-0-shot" --dataset "$task" --model "$model" --debug --sample
     sleep 5
-#    bash argbench/jobs/prompting/prompting.sh 1 "$gpu_type" prompting "${task:0:3}-${model:0:3}-1-shot" --dataset "$task" --model "$model" -k 1 --debug --sample
+#    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${task:0:3}-${model:0:3}-1-shot" --dataset "$task" --model "$model" -k 1 --debug --sample
 #    sleep 5
-#    bash argbench/jobs/prompting/prompting.sh 1 "$gpu_type" prompting "${task:0:3}-${model:0:3}-4-shot" --dataset "$task" --model "$model" -k 4 --debug --sample
+#    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${task:0:3}-${model:0:3}-4-shot" --dataset "$task" --model "$model" -k 4 --debug --sample
 #    sleep 5
-#    bash argbench/jobs/prompting/prompting.sh 1 "$gpu_type" prompting "${task:0:3}-${model:0:3}-cot" --dataset "$task" --model "$model" --cot --debug --sample
+#    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${task:0:3}-${model:0:3}-cot" --dataset "$task" --model "$model" --cot --debug --sample
 #    sleep 5
   done
 
