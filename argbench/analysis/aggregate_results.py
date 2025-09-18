@@ -57,7 +57,8 @@ with open(args.metadata) as file:
     df["skill-index"] = df["skill"].apply(lambda x: skills.index(x) )
     df.sort_values(by="skill-index", inplace=True)
     for skill, df_skill in df.groupby("skill", sort=False):
-        print(f"\n-----overview ({skill})-------\n")
+        task_count = df_skill['test_task'].nunique()
+        print(f"\n-----overview ({skill})----(count {task_count})---\n")
         df_skill_overview = df_skill[df_skill["metric"].isin(["generation-score", "fscore"])]
         df_skill_overview = df_skill_overview[["test_task", "score"]]
         df_skill_overview.to_csv(f"{path_output}/{skill}-{experiment}-{prompting_technique}-{last_time}-{args.seed}.csv", index=False)
