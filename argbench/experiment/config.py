@@ -461,7 +461,7 @@ class RunConfig:
         arg_parser.add_argument("-tdn", "--dataset", type=str, help="Name of the test dataset to use")
         arg_parser.add_argument("-rc", "--resume_checkpoint", help="Resume training from checkpoint")
         arg_parser.add_argument("-la", "--load_adapter", action="append", help="Adapter to load")
-        arg_parser.add_argument("-mi", "--model_id", type=str, action="store_true", help="model id")
+        arg_parser.add_argument("-mi", "--model_id", type=str, help="model id")
         arg_parser.add_argument("-co", "--config_output", type=Path, help="File to write config to")
         arg_parser.add_argument("-df", "--data_folder", type=Path, help="Data folder path")
         arg_parser.add_argument("-mf" , "--models_folder", type=Path, help="Data folder path")
