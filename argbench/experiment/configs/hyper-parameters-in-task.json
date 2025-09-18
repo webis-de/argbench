@@ -1,8 +1,8 @@
 {
   "mistral-7b-inst-3": {
     "argument_unit_segmentation_webDiscourse_ajjour17": {
-      "train_batch_size": 10,
-      "learning_rate": 0.000057
+      "train_batch_size": 9,
+      "learning_rate": 3.50532403050817E-05
     },
     "argument_rating_dagstuhl_15512_wachsmuth17": {
       "train_batch_size": 9,
@@ -78,8 +78,8 @@
   "deepseek-r1-distill-7b":
   {
     "argument_unit_segmentation_webDiscourse_ajjour17": {
-      "train_batch_size": 6,
-      "learning_rate": 0.0000584
+      "train_batch_size": 12,
+      "learning_rate": 4.98763318950875E-05
 
     },
 
@@ -126,8 +126,8 @@
   },
     "qwen3-4b": {
       "argument_unit_segmentation_webDiscourse_ajjour17": {
-        "train_batch_size": 8,
-        "learning_rate": 1.3825589888186944e-05
+        "train_batch_size": 16,
+        "learning_rate": 9.48904538795427E-05
       },
       "argument_rating_dagstuhl_15512_wachsmuth17": {
         "train_batch_size": 8,
@@ -145,5 +145,119 @@
         "train_batch_size": 13,
         "learning_rate": 1.2766347912829616e-05
       }
+    },
+  "qwen3-1.7b": {
+    "argument_unit_segmentation_webDiscourse_ajjour17": {
+      "train_batch_size": 11,
+      "learning_rate":4.21315072502123E-05
+    },
+    "argument_rating_dagstuhl_15512_wachsmuth17": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "argument_similarity_ukp_aspect_reimers19": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "fallacy_detection_cmv_adhominem_habernal18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "counter_argument_generation_cmv_hua18": {
+      "train_batch_size": 0,
+      "learning_rate":0
     }
+  },
+  "phi-3.5-moe-7.6b": {
+    "argument_unit_segmentation_webDiscourse_ajjour17": {
+      "train_batch_size":13 ,
+      "learning_rate":5.05422800591571E-05
+    },
+    "argument_rating_dagstuhl_15512_wachsmuth17": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "argument_similarity_ukp_aspect_reimers19": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "fallacy_detection_cmv_adhominem_habernal18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "counter_argument_generation_cmv_hua18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    }
+  },
+  "llama-3.1-8b-instruct": {
+    "argument_unit_segmentation_webDiscourse_ajjour17": {
+      "train_batch_size": 7,
+      "learning_rate":1.5444250042488E-05
+    },
+    "argument_rating_dagstuhl_15512_wachsmuth17": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "argument_similarity_ukp_aspect_reimers19": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "fallacy_detection_cmv_adhominem_habernal18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "counter_argument_generation_cmv_hua18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    }
+  },
+  "gemma-3-4b-it": {
+    "argument_unit_segmentation_webDiscourse_ajjour17": {
+      "train_batch_size": 7,
+      "learning_rate":1.5444250042488E-05
+    },
+    "argument_rating_dagstuhl_15512_wachsmuth17": {
+      "train_batch_size":0 ,
+      "learning_rate":0
+    },
+    "argument_similarity_ukp_aspect_reimers19": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "fallacy_detection_cmv_adhominem_habernal18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "counter_argument_generation_cmv_hua18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    }
+  },
+  "deepseek-r1-distill-1.5b": {
+    "argument_unit_segmentation_webDiscourse_ajjour17": {
+      "train_batch_size":7,
+      "learning_rate":4.25770388267419E-05
+    },
+    "argument_rating_dagstuhl_15512_wachsmuth17": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "argument_similarity_ukp_aspect_reimers19": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "fallacy_detection_cmv_adhominem_habernal18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "counter_argument_generation_cmv_hua18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    }
+  }
+
+
+
+
 }
