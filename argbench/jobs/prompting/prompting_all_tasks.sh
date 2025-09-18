@@ -28,7 +28,7 @@ done
 
 
 if [ -z "$model" ]; then
-  models=("phi-3.5-moe-7.6b" "qwen3-4b" "deepseek-r1-distill-7b" "llama-3.1-8b-instruct" "gemma3-4b")
+  models=("phi-3.5-moe-7.6b" "qwen3-4b" "deepseek-r1-distill-7b" "llama-3.1-8b-instruct")
 else
   models=("$model")
 fi
