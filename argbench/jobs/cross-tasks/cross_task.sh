@@ -49,10 +49,10 @@ for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
     if [ -z "$validation" ]; then
       echo "test"
-      bash argbench/jobs/cross-tasks/run_cross_tasks.sh 1 "$gpu_type" "testing_cross_task_${task}" "cross-tsk-$model-$task" --model "$model" --debug  --quantization --train_epochs 1 --sample --model_id "$model_adapter"
+      bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh 1 "$gpu_type" "testing_cross_task_${task}" "cross-tsk-$model-$task" --model "$model" --debug  --quantization --train_epochs 1 --sample --model_id "$model_adapter"
     else
       echo "validation"
-      bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh 1 "$gpu_type" "cross_task_val_hpo" "cross-tsk-$model-hpo" --model "$model" --debug  --quantization --sample
+      bash argbench/jobs/in-tasks/run_cross_tasks_experiment.sh 1 "$gpu_type" "cross_task_val_hpo" "cross-tsk-$model-hpo" --model "$model" --debug  --quantization --sample
 
      fi
     sleep 5
