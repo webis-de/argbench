@@ -56,7 +56,7 @@ for model in "${models[@]}"; do
     if [ -z "$validation" ]; then
       echo "test"
       if [ "$gpu_count" == 1 ] ; then
-          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --debug  --quantization
+          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --debug  --quantization --train_epochs 1
         else
           bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --debug --optim "adamw_torch"
         fi
