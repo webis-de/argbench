@@ -45,7 +45,13 @@
                 "step": 1,
                 "high": 16
             }
-        }
+        },
+      "early_stopping_config": {
+        "name": "early_stopping_threshold",
+        "type": "float",
+        "low": 1e-06,
+        "high": 0.1
+      }
     },
     "peft_fresh_config": {
         "adapter_name": "adapter",
