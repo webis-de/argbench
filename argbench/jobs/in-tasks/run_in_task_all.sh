@@ -58,7 +58,7 @@ for model in "${models[@]}"; do
       if [ "$gpu_count" == 1 ] ; then
           bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --debug  --quantization
         else
-          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --debug --train_optim "adamw_torch"
+          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --debug --optim "adamw_torch"
         fi
 
     else
