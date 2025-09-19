@@ -8,8 +8,8 @@ export gpu_count=$1
 export gpu_type=$2
 export experiment=$3
 export jobname=$4
-echo gpu_type
-echo gpu_count
+echo "$gpu_type"
+echo "$gpu_count"
 if [ "$gpu_count" == 1 ] ; then
 sbatch <<EOF
 #!/bin/bash -l
