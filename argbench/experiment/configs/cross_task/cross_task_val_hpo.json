@@ -24,7 +24,7 @@
         "name": "stance_classification_ukp_sentential_stab18"
     },
     "hpo_config": {
-        "n_trials": 10,
+        "n_trials": 20,
         "study_name": "stance-barhaim17",
         "storage": "sqlite:///db.sqlite3",
         "hpo_fine_grained_output": "sqlite:////bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo/cross-task.sqlite3",
