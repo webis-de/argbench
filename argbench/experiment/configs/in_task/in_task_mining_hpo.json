@@ -46,14 +46,14 @@
                 "high": 16
             }
 
-        },"early_stopping_config": {
+        },"early_stopping_config":
+            {
           "early_stopping_threshold": {
             "name": "early_stopping_threshold",
             "type": "float",
             "low": 0.1,
             "high": 0.000001
           }
-
       }
     },
     "peft_fresh_config": {
