@@ -42,10 +42,10 @@ else
 fi
 
 for model in "${models[@]}"; do
-#    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${model:0:6}-0-shot"  --model "$model" --sample --seed 1517
-#    sleep 5
-#    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${model:0:6}-4-shot"  --model "$model" -k 4 --sample --seed 1517
-#    sleep 5
+    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${model:0:6}-0-shot"  --model "$model" --sample --seed 1517
+    sleep 5
+    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${model:0:6}-4-shot"  --model "$model" -k 4 --sample --seed 1517
+    sleep 5
     bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${model:0:6}-cot" --model "$model" --cot--sample --seed 1517
     sleep 5
 done

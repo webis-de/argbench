@@ -8,10 +8,16 @@ from transformers import AutoTokenizer
 
 class testArgBenchDataset(TestCase):
     def test_dataset_size(self):
-        main_path = "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/argbench-dataset"
+        main_path = "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/argbench-dataset"
         argbench_dataset = f"{main_path}/argbench-prompting-zero-shot-small"
         dataset = load_from_disk(argbench_dataset)
-        self.assertEquals(dataset["test_counter_argument_generation_candela_hua19"].shape[0], 1000)
+        self.assertEquals(dataset["test_counter_argument_generation_candela_hua19"].shape[0], 500)
+
+        main_path = "/mnt/home/yajjour/task-specific-argument-mining-and-generation-data/argbench-dataset"
+        argbench_dataset = f"{main_path}/argbench-in-task"
+        dataset = load_from_disk(argbench_dataset)
+        self.assertEquals(dataset["test_counter_argument_generation_cmv_hua18"].shape[0], 500)
+
 
     def test_sampling_same(self):
         main_path = "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/argbench-dataset"
