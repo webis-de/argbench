@@ -52,16 +52,18 @@ sbatch <<EOF
 #SBATCH --time=72:00:00
 #SBATCH --output argbench/output/"$jobname"-%j.out
 #SBATCH --error argbench/output/"$jobname"-%j.err
-#SBATCH --gpus="$gpu_type:$gpu_count"
+#SBATCH --gres=gpu:"$gpu_type:$gpu_count"
 #SBATCH --exclude=gpu004.kisski
 
 module load GCCcore/.13.2.0
 module load NVHPC/24.9-CUDA-12.6.0
+
 module load Miniforge3
 conda activate new-env
 start=\$(date +%s)
 Start_Date=\$(date +%Y-%m-%d:%H:%m)
 echo "parallel"
+export HF_HUB_OFFLINE=1
 export CUDA_VISIBLE_DEVICES=0,1,2,3
 export CUDA_LAUNCH_BLOCKING=1
 accelerate launch --config_file "${CONFIG_PATH}/accelerate/config_${gpu_count}_gpus_3_stage.yaml" \\
