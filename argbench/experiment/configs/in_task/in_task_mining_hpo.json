@@ -44,14 +44,15 @@
                 "low": 4,
                 "step": 1,
                 "high": 16
-            }
+            },
+          "num_train_epochs": {
+            "name": "early_stopping_threshold",
+            "type": "int",
+            "low": 1,
+            "high": 30
+          }
+
         },
-      "early_stopping_config": {
-        "name": "early_stopping_threshold",
-        "type": "float",
-        "low": 1e-06,
-        "high": 0.1
-      }
     },
     "peft_fresh_config": {
         "adapter_name": "adapter",
@@ -93,8 +94,8 @@
         "metric_for_best_model": "loss"
     },
     "early_stopping_config": {
-        "early_stopping_patience": 3,
-        "early_stopping_threshold": 0.001
+        "early_stopping_patience": 1,
+        "early_stopping_threshold": 0
     },
     "data_collator_config": {
         "padding": true,
