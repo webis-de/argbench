@@ -339,24 +339,24 @@ def create_argbench_dataset(experiment_type: ExperimentType, prompting_technique
     if experiment_type == ExperimentType.IN_TASK:
         if sample:
             dataset = create_dataset_in_tasks(tasks_path, prompt_template, experiment_splits, tokenizer, max_input_tokens, max_output_tokens,
-                            max_train_sub_sample_amount=3000, max_test_sub_sample_amount=1000, test_subsample_rate=0.1, train_subsample_rate=0.5)
+                            max_train_sub_sample_amount=1500, max_test_sub_sample_amount=500, test_subsample_rate=0.1, train_subsample_rate=0.5)
         else:
             dataset = create_dataset_in_tasks(tasks_path, prompt_template, experiment_splits, tokenizer, max_input_tokens, max_output_tokens,
-                                              max_train_sub_sample_amount=3000, max_test_sub_sample_amount=1000)
+                                              max_train_sub_sample_amount=1500, max_test_sub_sample_amount=500)
     elif experiment_type == ExperimentType.PROMPTING:
             if sample:
                 dataset = create_dataset_prompting(tasks_path, prompt_template,tokenizer, max_input_tokens, max_output_tokens,
-                                                   1000, few_shot_count , max_few_shot_len=max_few_shot_len)
+                                                   500, few_shot_count , max_few_shot_len=max_few_shot_len)
             else:
                 dataset = create_dataset_prompting(tasks_path, prompt_template, tokenizer, max_input_tokens, max_output_tokens,
                                                    None, few_shot_amount=few_shot_count, max_few_shot_len=max_few_shot_len)
     elif experiment_type == ExperimentType.LEAVE_ONE_TASK or experiment_type == ExperimentType.SKILL_TRANSFER:
         if sample:
             dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits,tokenizer, max_input_tokens, max_output_tokens,
-                                                 max_train_sub_sample_amount=3000, max_test_sub_sample_amount=1000, test_subsample_rate=0.1, train_subsample_rate=0.5)
+                                                 max_train_sub_sample_amount=1500, max_test_sub_sample_amount=500, test_subsample_rate=0.1, train_subsample_rate=0.5)
         else:
             dataset = create_dataset_cross_tasks(tasks_path, prompt_template, experiment_splits, tokenizer, max_input_tokens, max_output_tokens,
-                                                 max_train_sub_sample_amount=3000, max_test_sub_sample_amount=1000)
+                                                 max_train_sub_sample_amount=1500, max_test_sub_sample_amount=500)
     else:
         ### TODO
         pass
