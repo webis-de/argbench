@@ -36,5 +36,5 @@ export Time=\$((end-start))
 Time_HOURS=\$(awk -v t="\$Time" 'BEGIN { printf "%.2f", t / 3600 }')
 Time_Minutes=\$(awk -v t="\$Time" 'BEGIN { printf "%.2f", t / 60 }')
 
-echo "\$start_date,\$Time_HOURS,\$Time_Minutes,\$jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
+echo "\$start_date,\$Time_HOURS,\$Time_Minutes,$jobname" >> "$CODE_PATH/argbench/jobs/job-accounting.csv"
 EOF
