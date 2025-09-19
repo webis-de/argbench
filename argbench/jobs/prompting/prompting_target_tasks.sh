@@ -52,13 +52,13 @@ fi
 for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
 
-##    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${task:0:6}-${model:0:6}-0-shot" --dataset "$task" --model "$model" --debug --sample
+##    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${task:0:6}-${model:0:6}-0-shot" --dataset "$task" --model "$model"  --sample
     sleep 5
-#    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${task:0:6}-${model:0:6}-1-shot" --dataset "$task" --model "$model" -k 1 --debug --sample
+#    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${task:0:6}-${model:0:6}-1-shot" --dataset "$task" --model "$model" -k 1  --sample
 #    sleep 5
-#    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${task:0:6}-${model:0:6}-4-shot" --dataset "$task" --model "$model" -k 4 --debug --sample
+#    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${task:0:6}-${model:0:6}-4-shot" --dataset "$task" --model "$model" -k 4 --sample
 #    sleep 5
-    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${task:0:6}-${model:0:6}-cot" --dataset "$task" --model "$model" --cot --debug --sample
+    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" prompting "${task:0:6}-${model:0:6}-cot" --dataset "$task" --model "$model" --cot --sample
 #    sleep 5
   done
 
