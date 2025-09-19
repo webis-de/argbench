@@ -716,7 +716,7 @@ class Runner:
                 with torch.inference_mode():
                     generated = model.generate(input_ids=inputs, generation_config=generation_config, return_dict_in_generate=True, do_sample=False)
 
-                    output = self.tokenizer.batch_decode(generated.sequences)
+                    output = self.tokenizer.batch_decode(generated.sequences, skip_special_tokens=True)
 
                     output = [o.split(output_splitter)[-1] for o in output]
 
@@ -727,6 +727,7 @@ class Runner:
                         prediction = clean_for_classification(response, labels_lowered)
                     else:
                         prediction = clean_for_generation_and_segmentation(response, self.config.chain_of_thoughts)
+
                     predictions.append(prediction)
                     if prediction:
                         logger.debug(format_logging(response, prediction, text))
