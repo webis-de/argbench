@@ -64,7 +64,7 @@ for model in "${models[@]}"; do
     else
       echo "validation"
       if [ "$gpu_count" == 1 ] ; then
-          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}_hpo" "in-tsk-$model-$task-hpo" --model "$model" --debug  --quantization  --train_epochs 1
+          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}_hpo" "in-tsk-$model-$task-hpo" --model "$model" --debug  --quantization
         else
           echo "$gpu_count"
           echo "$gpu_type"
