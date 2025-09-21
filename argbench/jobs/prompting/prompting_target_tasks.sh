@@ -2,7 +2,7 @@
 
 export model_list=argbench/data/models-small.txt
 
-while getopts "abhm:t:c:" opt; do
+while getopts "abhm:t:c:f:" opt; do
   case $opt in
     c)
       gpu_count="$OPTARG"
@@ -23,6 +23,9 @@ while getopts "abhm:t:c:" opt; do
     t)
       task="$OPTARG"
       ;;
+    f)
+      file="OPTARG"
+      ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
@@ -38,7 +41,11 @@ done
 
 
 if [ -z "$task" ]; then
-  mapfile -t tasks < argbench/data/target_tasks.txt
+  if [ -n "$file" ] ; then
+    mapfile -t tasks < "$file"
+  else
+    mapfile -t tasks < argbench/data/target_tasks.txt
+    fi
 else
   tasks=("$task")
 fi
