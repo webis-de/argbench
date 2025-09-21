@@ -1,13 +1,14 @@
 #!/bin/bash
-echo "${@:5}"
+echo "${@:6}"
 export CODE_PATH="$BIGWORK/task-specific-argument-mining-and-generation"
 export CONFIG_PATH="$BIGWORK/task-specific-argument-mining-and-generation/argbench/experiment/configs/prompting/"
 export DATA_PATH="$BIGWORK/task-specific-argument-mining-and-generation-data"
 
 export gpu_count=$1
 export gpu_type=$2
-export experiment=$3
-export jobname=$4
+export time=$3
+export experiment=$4
+export jobname=$5
 echo
 sbatch <<EOF
 #!/bin/bash -l
@@ -15,7 +16,7 @@ sbatch <<EOF
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=30G
-#SBATCH --time=72:00:00
+#SBATCH --time=$time
 #SBATCH --output argbench/output/"$jobname"-%j.out
 #SBATCH --error argbench/output/"$jobname"-%j.err
 #SBATCH --gres="gpu:$gpu_type:$gpu_count"
