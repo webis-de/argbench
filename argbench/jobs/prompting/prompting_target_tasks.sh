@@ -24,7 +24,7 @@ while getopts "abhm:t:c:f:" opt; do
       task="$OPTARG"
       ;;
     f)
-      file="OPTARG"
+      file="$OPTARG"
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
