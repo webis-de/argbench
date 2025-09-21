@@ -68,7 +68,7 @@ for model in "${models[@]}"; do
         else
           echo "$gpu_count"
           echo "$gpu_type"
-          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}_hpo" "in-tsk-$model-$task-hpo" --model "$model" --debug   --optim "adamw_torch"
+          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}_hpo" "in-tsk-$model-$task-hpo" --model "$model" --debug   --optim "adamw_torch" --sample --train_epochs 1
         fi
 
 
