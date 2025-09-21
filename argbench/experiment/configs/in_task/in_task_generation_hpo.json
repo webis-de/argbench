@@ -43,7 +43,7 @@
                 "type": "int",
                 "low": 1,
                 "step": 1,
-                "high": 6
+                "high": 4
             }
         },
       "early_stopping_config":
@@ -51,7 +51,7 @@
         "early_stopping_threshold": {
           "name": "early_stopping_threshold",
           "type": "float",
-          "low": 0.000001,
+          "low": 0.001,
           "high": 0.1
         }
       }
