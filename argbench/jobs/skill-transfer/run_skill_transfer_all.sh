@@ -59,9 +59,10 @@ for model in "${models[@]}"; do
     if [ -z "$validation" ]; then
       echo "test"
       if [ -n "$quantization" ] ; then
-          bash argbench/jobs/skill-transfer/run_skill_transfer_experiments.sh "$gpu_count" "$gpu_type" "${task}" "skill-transfer-$model-$task" --model "$model" --skill_filter "$task"  --quantization --train_epochs 1 --debug
+
+          bash argbench/jobs/skill-transfer/run_skill_transfer_experiments.sh "$gpu_count" "$gpu_type" "${task}" "skill-transfer-$model-$task" --model "$model" --skill_filter "$task"  --quantization --train_epochs 1 --debug --sample
         else
-          bash argbench/jobs/skill-transfer/run_skill_transfer_experiments.sh "$gpu_count" "$gpu_type" "${task}" "skill-transfer-$model-$task" --model "$model" --skill_filter "$task" --optim "adamw_torch" --train_epochs 1 --debug
+          bash argbench/jobs/skill-transfer/run_skill_transfer_experiments.sh "$gpu_count" "$gpu_type" "${task}" "skill-transfer-$model-$task" --model "$model" --skill_filter "$task" --optim "adamw_torch" --train_epochs 1 --debug --sample
         fi
 
     else

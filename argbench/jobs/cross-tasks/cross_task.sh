@@ -2,13 +2,16 @@
 #/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output/qwen3-4b-hpo-cross-task-stance_classification_ukp_sentential_stab18-09-17-15:19:54
 
 export model_list=argbench/data/models-small.txt
-while getopts "abhvm:l:t:c:" opt; do
+while getopts "qabhvm:l:t:c:" opt; do
   case $opt in
     c)
       gpu_count="$OPTARG"
     ;;
     b)
       model_list=argbench/data/models-large.txt
+      ;;
+    q)
+      quantization="quantization"
       ;;
 
     a)
@@ -58,11 +61,19 @@ for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
     if [ -z "$validation" ]; then
       echo "test"
-      bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "testing_cross_task_${task}" "cross-tsk-$model-$task" --model "$model" --debug  --quantization --train_epochs 1 --sample --model_id "$model_adapter"
+      if [ -n "$quantization" ] ; then
+        bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "testing_cross_task_${task}" "cross-tsk-$model-$task" --model "$model"  --quantization --model_id "$model_adapter" --debug --train_epochs 1 --sample
+      else
+        bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "testing_cross_task_${task}" "cross-tsk-$model-$task" --model "$model"  --optim "adamw_torch" --model_id "$model_adapter" --debug --train_epochs 1 --sample
+      fi
     else
       echo "validation"
-      bash argbench/jobs/in-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "cross_task_val_hpo" "cross-tsk-$model-hpo" --model "$model" --debug  --quantization --sample
+      if [ -n "$quantization" ] ; then
 
+        bash argbench/jobs/in-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "cross_task_val_hpo" "cross-tsk-$model-hpo" --model "$model"  --quantization --sample --debug
+      else
+        bash argbench/jobs/in-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "cross_task_val_hpo" "cross-tsk-$model-hpo" --model "$model"  --optim "adamw_torch" --sample --debug
+      fi
      fi
     sleep 5
   done
