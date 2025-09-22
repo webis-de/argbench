@@ -2,7 +2,7 @@
 #/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output/qwen3-4b-hpo-cross-task-stance_classification_ukp_sentential_stab18-09-17-15:19:54
 
 export model_list=argbench/data/models-small.txt
-while getopts "qabhvm:l:t:c:" opt; do
+while getopts "qabhnvm:l:t:c:" opt; do
   case $opt in
     c)
       gpu_count="$OPTARG"
@@ -20,6 +20,10 @@ while getopts "qabhvm:l:t:c:" opt; do
     l)
       model_adapter="$OPTARG"
     ;;
+    n)
+      no_training="no_training"
+    ;;
+
     h)
       gpu_type="h100"
     ;;
@@ -55,6 +59,7 @@ if [ -z "$model" ]; then
   mapfile -t models < "$model_list"
 else
   models=("$model")
+fi
 
 args=()
 
@@ -69,6 +74,9 @@ if [ -n "$model_adapter" ]; then
     args+=("--model_id" "$model_adapter")
 fi
 
+if [ -n "$no_training" ]; then
+  args+=("--train_epochs" 0)
+fi
 
 # Run the command with the array expanded
 # The command will be executed as: ./your_command

@@ -2,7 +2,7 @@
 
 export model_list=argbench/data/models-small.txt
 
-while getopts "qabhvm:t:c:l:" opt; do
+while getopts "qabnhvm:t:c:l:" opt; do
   case $opt in
     c)
       gpu_count=$OPTARG
@@ -18,6 +18,9 @@ while getopts "qabhvm:t:c:l:" opt; do
     ;;
     l)
       model_adapter="$OPTARG"
+    ;;
+    n)
+      no_training="no_training"
     ;;
 
     h)
@@ -67,6 +70,9 @@ if [ -n "$model_adapter" ]; then
     args+=("--model_id" "$model_adapter")
 fi
 
+if [ -n "$no_training" ]; then
+  args+=("--train_epochs" 0)
+fi
 
 for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
