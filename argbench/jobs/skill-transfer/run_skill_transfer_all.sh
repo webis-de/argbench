@@ -2,7 +2,7 @@
 
 export model_list=argbench/data/models-small.txt
 
-while getopts "qabhvm:t:c:" opt; do
+while getopts "qabhvm:t:c:l:" opt; do
   case $opt in
     c)
       gpu_count=$OPTARG
@@ -15,6 +15,9 @@ while getopts "qabhvm:t:c:" opt; do
       ;;
     a)
       gpu_type="a100"
+    ;;
+    l)
+      model_adapter="$OPTARG"
     ;;
 
     h)
@@ -54,27 +57,25 @@ else
   models=("$model")
 fi
 
+if [ -n "$quantization" ]; then
+    args+=("--quantization")
+else
+  args+=("--optim" "adamw_torch")
+fi
+
+if [ -n "$model_adapter" ]; then
+    args+=("--model_id" "$model_adapter")
+fi
+
+
 for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
     if [ -z "$validation" ]; then
       echo "test"
-      if [ -n "$quantization" ] ; then
-
-          bash argbench/jobs/skill-transfer/run_skill_transfer_experiments.sh "$gpu_count" "$gpu_type" "${task}" "skill-transfer-$model-$task" --model "$model" --skill_filter "$task"  --quantization --train_epochs 1 --debug --sample --debug
-        else
-          bash argbench/jobs/skill-transfer/run_skill_transfer_experiments.sh "$gpu_count" "$gpu_type" "${task}" "skill-transfer-$model-$task" --model "$model" --skill_filter "$task" --optim "adamw_torch" --train_epochs 1 --debug --sample --debug
-        fi
-
+          bash argbench/jobs/skill-transfer/run_skill_transfer_experiments.sh "$gpu_count" "$gpu_type" "${task}" "skill-transfer-$model-$task" --model "$model" --skill_filter "$task"   --train_epochs 1 --debug --sample --debug "${args[@]}"
     else
       echo "validation"
-      if [ -n "$quantization" ] ; then
-          bash argbench/jobs/skill-transfer/run_skill_transfer_experiments.sh "$gpu_count" "$gpu_type" "${task}_hpo" "skill-transfer-$model-$task-hpo" --model "$model"   --skill_filter "$task" --quantization --sample --train_epochs 1 --debug
-        else
-          bash argbench/jobs/skill-transfer/run_skill_transfer_experiments.sh "$gpu_count" "$gpu_type" "${task}_hpo" "skill-transfer-$model-$task-hpo" --model "$model"  --skill_filter "$task"  --optim "adamw_torch" --sample --train_epochs 1 --debug
-        fi
-
-
-
+          bash argbench/jobs/skill-transfer/run_skill_transfer_experiments.sh "$gpu_count" "$gpu_type" "${task}_hpo" "skill-transfer-$model-$task-hpo" --model "$model"   --skill_filter "$task"  --sample --train_epochs 1 --debug "${args[@]}"
      fi
     sleep 5
   done

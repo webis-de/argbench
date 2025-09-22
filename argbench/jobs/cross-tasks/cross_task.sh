@@ -55,25 +55,32 @@ if [ -z "$model" ]; then
   mapfile -t models < "$model_list"
 else
   models=("$model")
+
+args=()
+
+# If QUANTIZATION is set, add the flag to the array
+if [ -n "$quantization" ]; then
+    args+=("--quantization")
+else
+  args+=("--optim" "adamw_torch")
 fi
+
+if [ -n "$model_adapter" ]; then
+    args+=("--model_id" "$model_adapter")
+fi
+
+
+# Run the command with the array expanded
+# The command will be executed as: ./your_command
+./your_command "${args[@]}"
 
 for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
     if [ -z "$validation" ]; then
       echo "test"
-      if [ -n "$quantization" ] ; then
-        bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "testing_cross_task_${task}" "cross-tsk-$model-$task" --model "$model"  --quantization --model_id "$model_adapter" --debug --train_epochs 1 --sample
-      else
-        bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "testing_cross_task_${task}" "cross-tsk-$model-$task" --model "$model"  --optim "adamw_torch" --model_id "$model_adapter" --debug --train_epochs 1 --sample
-      fi
+        bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "testing_cross_task_${task}" "cross-tsk-$model-$task" --model "$model"  --debug --train_epochs 1 --sample "${args[@]}"
     else
-      echo "validation"
-      if [ -n "$quantization" ] ; then
-
-        bash argbench/jobs/in-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "cross_task_val_hpo" "cross-tsk-$model-hpo" --model "$model"  --quantization --sample --debug
-      else
-        bash argbench/jobs/in-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "cross_task_val_hpo" "cross-tsk-$model-hpo" --model "$model"  --optim "adamw_torch" --sample --debug
-      fi
+        bash argbench/jobs/in-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "cross_task_val_hpo" "cross-tsk-$model-hpo" --model "$model"  --sample --debug "${args[@]}"
      fi
     sleep 5
   done
