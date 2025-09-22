@@ -65,7 +65,7 @@ for model in "${models[@]}"; do
 #    sleep 5
 #    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" 24:00:00 prompting "${task:0:6}-${model:0:6}-4-shot" --dataset "$task" --model "$model" -k 4 --sample
 #    sleep 5
-    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" 24:00:00 prompting "${task:0:6}-${model:0:9}-cot" --dataset "$task" --model "$model" --cot --sample
+    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" 24:00:00 prompting "${task}-${model}-cot" --dataset "$task" --model "$model" --cot --sample
 #    sleep 5
   done
 
