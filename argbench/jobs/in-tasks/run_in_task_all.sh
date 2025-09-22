@@ -2,13 +2,16 @@
 
 export model_list=argbench/data/models-small.txt
 
-while getopts "abhvm:t:c:" opt; do
+while getopts "qabhvm:t:c:" opt; do
   case $opt in
     c)
       gpu_count=$OPTARG
     ;;
     b)
       model_list=argbench/data/models-large.txt
+      ;;
+    q)
+      quantization="quantization"
       ;;
 
     a)
@@ -55,20 +58,18 @@ for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
     if [ -z "$validation" ]; then
       echo "test"
-      if [ "$gpu_count" == 1 ] ; then
-          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --debug  --quantization
+      if [ -n "$quantization" ] ; then
+          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --quantization --debug
         else
-          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --debug --optim "adamw_torch"
+          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --optim "adamw_torch" --debug
         fi
 
     else
       echo "validation"
-      if [ "$gpu_count" == 1 ] ; then
-          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}_hpo" "in-tsk-$model-$task-hpo" --model "$model" --debug  --optim "adamw_torch"
+      if [ -n "$quantization" ] ; then
+          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}_hpo" "in-tsk-$model-$task-hpo" --model "$model" --quantization --debug
         else
-          echo "$gpu_count"
-          echo "$gpu_type"
-          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}_hpo" "in-tsk-$model-$task-hpo" --model "$model" --debug   --optim "adamw_torch"
+          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}_hpo" "in-tsk-$model-$task-hpo" --model "$model"  --optim "adamw_torch" --debug
         fi
 
 
