@@ -2,31 +2,30 @@
     "sample": false,
     "prompting": false,
     "hpo": true,
-    "in_task": true,
+    "in_task": false,
     "chain_of_thoughts": false,
     "experiment_splits_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/experiment_splits.json",
     "seed": 1517,
     "debug": false,
     "model": "mistral-7b-inst-3",
-    "cutoff_len": 1024,
+    "cutoff_len": 800,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "models_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models",
     "data_type": "ndjson",
     "task_metrics_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_task_metrics_sample.json",
     "generation_config_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/config_mistral_vllm_generation.json",
-    "best_hyper_parameters_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/hyper-parameters-in-task.json",
+    "best_hyper_parameters_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/hyper-parameters-skill-transfer-quality.json",
     "output_dir": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output",
     "tensorboard_logs": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tensorboard",
     "argbench_dataset_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/argbench-dataset",
  	"model_configs_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/model_configs.json",
     "train_datasets": {},
     "test_dataset": {
-        "name": "counter_argument_generation_cmv_hua18",
-        "subsample_rate": 0.5
+        "name": "stance_classification_ukp_sentential_stab18"
     },
     "hpo_config": {
-        "n_trials": 10,
-        "storage": "sqlite:////bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo/in-task-generation.sqlite3",
+        "n_trials": 1,
+        "storage": "sqlite:////bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo/skill-transfer-quality.sqlite3",
         "hpo_fine_grained_output": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo/hpo-results/",
         "hpo_coarse_output": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo-results.csv",
         "direction": "maximize",
@@ -45,15 +44,15 @@
                 "step": 1,
                 "high": 2
             }
-        },
-      "early_stopping_config":
-      {
-        "early_stopping_threshold": {
-          "name": "early_stopping_threshold",
-          "type": "float",
-          "low": 0.001,
-          "high": 0.1
-        }
+
+        },"early_stopping_config":
+            {
+          "early_stopping_threshold": {
+            "name": "early_stopping_threshold",
+            "type": "float",
+            "low": 0.000001,
+            "high": 0.1
+          }
       }
     },
     "peft_fresh_config": {
@@ -84,14 +83,14 @@
         "optim": "adamw_bnb_8bit",
         "eval_strategy": "steps",
         "save_strategy": "steps",
-        "eval_steps": 2000,
-        "save_steps": 2000,
+        "eval_steps": 5000,
+        "save_steps": 5000,
         "load_best_model_at_end": true,
         "group_by_length": false,
         "do_eval": true,
         "warmup_steps": 200,
         "bf16": true,
-        "logging_steps": 10000,
+        "logging_steps": 1000,
         "lr_scheduler_type": "linear",
         "metric_for_best_model": "loss"
     },

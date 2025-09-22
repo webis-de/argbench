@@ -25,7 +25,7 @@
         "subsample_rate": 0.5
     },
     "hpo_config": {
-        "n_trials": 20,
+        "n_trials": 10,
         "storage": "sqlite:////bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo/in-task-perspective.sqlite3",
         "hpo_fine_grained_output": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo/hpo-results/",
         "hpo_coarse_output": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo-results.csv",
@@ -79,13 +79,13 @@
     },
     "training_args_config": {
         "per_device_train_batch_size": 128,
-        "num_train_epochs": 20,
+        "num_train_epochs": 15,
         "learning_rate": 0.0003,
         "optim": "adamw_bnb_8bit",
         "eval_strategy": "steps",
         "save_strategy": "steps",
-        "eval_steps": 50,
-        "save_steps": 50,
+        "eval_steps": 2000,
+        "save_steps": 2000,
         "load_best_model_at_end": true,
         "group_by_length": false,
         "do_eval": true,
