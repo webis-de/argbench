@@ -27,7 +27,7 @@ export HF_HUB_OFFLINE=1
 start=\$(date +%s)
 
 start_date=\$(date +%Y-%m-%d:%H:%m)
-python -m  argbench.experiment.run --job_name "$jobname" -c "${CONFIG_PATH}/${experiment}.json" ${@:5}
+python -m  argbench.experiment.run --job_name jobname -c "${CONFIG_PATH}/${experiment}.json" ${@:5}
 
 
 end=\$(date +%s)
