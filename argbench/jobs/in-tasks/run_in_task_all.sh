@@ -2,7 +2,7 @@
 
 export model_list=argbench/data/models-small.txt
 
-while getopts "qabhvm:t:c:" opt; do
+while getopts "qabhvm:l:t:c:" opt; do
   case $opt in
     c)
       gpu_count=$OPTARG
@@ -13,6 +13,9 @@ while getopts "qabhvm:t:c:" opt; do
     q)
       quantization="quantization"
       ;;
+    l)
+      model_adapter="$OPTARG"
+    ;;
 
     a)
       gpu_type="a100"
@@ -54,26 +57,25 @@ else
   models=("$model")
 fi
 
+if [ -n "$quantization" ]; then
+    args+=("--quantization")
+else
+  args+=("--optim" "adamw_torch")
+fi
+
+if [ -n "$model_adapter" ]; then
+    args+=("--model_id" "$model_adapter")
+fi
+
+
 for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
     if [ -z "$validation" ]; then
       echo "test"
-      if [ -n "$quantization" ] ; then
-          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --quantization --debug
-        else
-          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --optim "adamw_torch" --debug
-        fi
-
+          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --debug "${args[@]}"
     else
       echo "validation"
-      if [ -n "$quantization" ] ; then
-          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}_hpo" "in-tsk-$model-$task-hpo" --model "$model" --quantization --debug
-        else
-          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}_hpo" "in-tsk-$model-$task-hpo" --model "$model"  --optim "adamw_torch" --debug
-        fi
-
-
-
+          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}_hpo" "in-tsk-$model-$task-hpo" --model "$model"  --debug "${args[@]}"
      fi
     sleep 5
   done
