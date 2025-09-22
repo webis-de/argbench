@@ -2,7 +2,7 @@
 
 export model_list=argbench/data/models-small.txt
 
-while getopts "qabnhvm:t:c:l:" opt; do
+while getopts "qabnhvm:t:c:l:g:" opt; do
   case $opt in
     c)
       gpu_count=$OPTARG
@@ -35,6 +35,9 @@ while getopts "qabnhvm:t:c:l:" opt; do
     t)
       task="$OPTARG"
       ;;
+    g)
+     goal_task="$OPTARG"
+     ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
@@ -73,6 +76,28 @@ fi
 if [ -n "$no_training" ]; then
   args+=("--train_epochs" 0)
 fi
+
+if [ -n "$goal_task" ]; then
+  case $goal_task in
+  mining)
+    goal_task="argument_unit_segmentation_webDiscourse_ajjour17"
+    ;;
+  generation)
+    goal_task="counter_argument_generation_cmv_hua18"
+  ;;
+  reasoning)
+    goal_task="fallacy_detection_cmv_adhominem_habernal18"
+    ;;
+  quality)
+    goal_task="argument_rating_dagstuhl_15512_wachsmuth17"
+    ;;
+  perspective)
+    goal_task="argument_similarity_ukp_aspect_reimers19"
+    ;;
+  esac
+  args+=("--dataset" "$goal_task")
+fi
+
 
 for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
