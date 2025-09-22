@@ -9,7 +9,6 @@ export gpu_type=$2
 export time=$3
 export experiment=$4
 export jobname=$5
-echo
 sbatch <<EOF
 #!/bin/bash -l
 #SBATCH --job-name="$jobname"

@@ -1,0 +1,263 @@
+{
+  "mistral-7b-inst-3": {
+    "argument_unit_segmentation_webDiscourse_ajjour17": {
+      "train_batch_size": 9,
+      "learning_rate": 3.50532403050817E-05
+    },
+    "argument_rating_dagstuhl_15512_wachsmuth17": {
+      "train_batch_size": 9,
+      "learning_rate": 0.000079
+    },
+    "argument_similarity_ukp_aspect_reimers19": {
+      "train_batch_size": 14,
+      "learning_rate": 0.0000506
+    },
+    "fallacy_detection_cmv_adhominem_habernal18": {
+      "train_batch_size": 8,
+      "learning_rate": 0.0000405
+    },
+    "counter_argument_generation_cmv_hua18": {
+      "train_batch_size": 5,
+      "learning_rate": 0.0000551
+    }
+  },
+    "mistral-nemo":
+    {
+      "argument_unit_segmentation_webDiscourse_ajjour17": {
+        "train_batch_size": 13,
+        "learning_rate": 0.0000854
+
+      },
+
+      "argument_rating_dagstuhl_15512_wachsmuth17": {
+        "train_batch_size": 9,
+        "learning_rate": 0.0000752
+
+      },
+      "argument_similarity_ukp_aspect_reimers19": {
+        "train_batch_size": 8,
+        "learning_rate": 0.0000246
+
+      },
+      "fallacy_detection_cmv_adhominem_habernal18": {
+        "train_batch_size":13,
+        "learning_rate":0.0000698
+      },
+      "counter_argument_generation_cmv_hua18": {
+        "train_batch_size":12,
+        "learning_rate":0.0000591
+      }
+  },
+  "mistral-small":
+  {
+    "argument_unit_segmentation_webDiscourse_ajjour17": {
+      "train_batch_size": 6,
+      "learning_rate": 0.0000913
+
+    },
+
+    "argument_rating_dagstuhl_15512_wachsmuth17": {
+      "train_batch_size": 4,
+      "learning_rate": 0.0000289
+
+    },
+    "argument_similarity_ukp_aspect_reimers19": {
+      "train_batch_size": 15,
+      "learning_rate": 0.0000970
+
+    },
+    "fallacy_detection_cmv_adhominem_habernal18": {
+      "train_batch_size":15,
+      "learning_rate":0.0000426
+    },
+    "counter_argument_generation_cmv_hua18": {
+      "train_batch_size":12,
+      "learning_rate":0.0000271
+    }
+  },
+  "deepseek-r1-distill-7b":
+  {
+    "argument_unit_segmentation_webDiscourse_ajjour17": {
+      "train_batch_size": 12,
+      "learning_rate": 4.98763318950875E-05
+
+    },
+
+    "argument_rating_dagstuhl_15512_wachsmuth17": {
+      "train_batch_size": 5,
+      "learning_rate": 0.0000489
+
+    },
+    "argument_similarity_ukp_aspect_reimers19": {
+      "train_batch_size": 15,
+      "learning_rate": 0.0000763
+
+    },
+    "fallacy_detection_cmv_adhominem_habernal18": {
+      "train_batch_size":4,
+      "learning_rate":0.0000232
+    },
+    "counter_argument_generation_cmv_hua18": {
+      "train_batch_size":6,
+      "learning_rate":0.0000697
+    }
+  },
+  "llama-3.3-70b-instruct": {
+    "argument_unit_segmentation_webDiscourse_ajjour17": {
+      "train_batch_size": 6,
+      "learning_rate": 0.0000584
+    },
+    "argument_rating_dagstuhl_15512_wachsmuth17": {
+      "train_batch_size": 5,
+      "learning_rate": 0.0000489
+    },
+    "argument_similarity_ukp_aspect_reimers19": {
+      "train_batch_size": 15,
+      "learning_rate": 0.0000763
+    },
+    "fallacy_detection_cmv_adhominem_habernal18": {
+      "train_batch_size": 4,
+      "learning_rate": 0.0000232
+    },
+    "counter_argument_generation_cmv_hua18": {
+      "train_batch_size": 6,
+      "learning_rate": 0.0000697
+    }
+  },
+    "qwen3-4b": {
+      "argument_unit_segmentation_webDiscourse_ajjour17": {
+        "train_batch_size": 16,
+        "learning_rate": 9.48904538795427E-05
+      },
+      "argument_rating_dagstuhl_15512_wachsmuth17": {
+        "train_batch_size": 8,
+        "learning_rate": 4.6973663279440106e-05
+      },
+      "argument_similarity_ukp_aspect_reimers19": {
+        "train_batch_size": 10,
+        "learning_rate": 1.8376736789569227e-05
+      },
+      "fallacy_detection_cmv_adhominem_habernal18": {
+        "train_batch_size": 14,
+        "learning_rate": 7.590690571016798e-05
+      },
+      "counter_argument_generation_cmv_hua18": {
+        "train_batch_size": 13,
+        "learning_rate": 1.2766347912829616e-05
+      }
+    },
+  "qwen3-1.7b": {
+    "argument_unit_segmentation_webDiscourse_ajjour17": {
+      "train_batch_size": 11,
+      "learning_rate":4.21315072502123E-05
+    },
+    "argument_rating_dagstuhl_15512_wachsmuth17": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "argument_similarity_ukp_aspect_reimers19": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "fallacy_detection_cmv_adhominem_habernal18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "counter_argument_generation_cmv_hua18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    }
+  },
+  "phi-3.5-moe-7.6b": {
+    "argument_unit_segmentation_webDiscourse_ajjour17": {
+      "train_batch_size":13 ,
+      "learning_rate":5.05422800591571E-05
+    },
+    "argument_rating_dagstuhl_15512_wachsmuth17": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "argument_similarity_ukp_aspect_reimers19": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "fallacy_detection_cmv_adhominem_habernal18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "counter_argument_generation_cmv_hua18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    }
+  },
+  "llama-3.1-8b-instruct": {
+    "argument_unit_segmentation_webDiscourse_ajjour17": {
+      "train_batch_size": 7,
+      "learning_rate":1.5444250042488E-05
+    },
+    "argument_rating_dagstuhl_15512_wachsmuth17": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "argument_similarity_ukp_aspect_reimers19": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "fallacy_detection_cmv_adhominem_habernal18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "counter_argument_generation_cmv_hua18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    }
+  },
+  "gemma-3-4b-it": {
+    "argument_unit_segmentation_webDiscourse_ajjour17": {
+      "train_batch_size": 7,
+      "learning_rate":1.5444250042488E-05
+    },
+    "argument_rating_dagstuhl_15512_wachsmuth17": {
+      "train_batch_size":0 ,
+      "learning_rate":0
+    },
+    "argument_similarity_ukp_aspect_reimers19": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "fallacy_detection_cmv_adhominem_habernal18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "counter_argument_generation_cmv_hua18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    }
+  },
+  "deepseek-r1-distill-1.5b": {
+    "argument_unit_segmentation_webDiscourse_ajjour17": {
+      "train_batch_size":7,
+      "learning_rate":4.25770388267419E-05
+    },
+    "argument_rating_dagstuhl_15512_wachsmuth17": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "argument_similarity_ukp_aspect_reimers19": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "fallacy_detection_cmv_adhominem_habernal18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    },
+    "counter_argument_generation_cmv_hua18": {
+      "train_batch_size": 0,
+      "learning_rate":0
+    }
+  }
+
+
+
+
+}
