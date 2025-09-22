@@ -126,25 +126,29 @@
   },
     "qwen3-4b": {
       "argument_unit_segmentation_webDiscourse_ajjour17": {
-        "train_batch_size": 1,
-        "learning_rate": 0,
+        "train_batch_size": 2,
+        "learning_rate": 2.13191515381155E-05,
         "early_stopping_threshold": 0.0718515033957483
       },
       "argument_rating_dagstuhl_15512_wachsmuth17": {
-        "train_batch_size": 1,
-        "learning_rate": 0
+        "train_batch_size": 2,
+        "learning_rate": 2.13191515381155E-05,
+        "early_stopping_threshold": 0.0718515033957483
       },
       "argument_similarity_ukp_aspect_reimers19": {
-        "train_batch_size": 1,
-        "learning_rate": 0
+        "train_batch_size": 2,
+        "learning_rate": 2.13191515381155E-05,
+        "early_stopping_threshold": 0.0718515033957483
       },
       "fallacy_detection_cmv_adhominem_habernal18": {
-        "train_batch_size": 1,
-        "learning_rate": 0
+        "train_batch_size": 2,
+        "learning_rate": 2.13191515381155E-05,
+        "early_stopping_threshold": 0.0718515033957483
       },
       "counter_argument_generation_cmv_hua18": {
-        "train_batch_size": 1,
-        "learning_rate": 0
+        "train_batch_size": 2,
+        "learning_rate": 2.13191515381155E-05,
+        "early_stopping_threshold": 0.0718515033957483
       }
     },
   "qwen3-1.7b": {
