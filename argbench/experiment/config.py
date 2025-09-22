@@ -682,6 +682,8 @@ class RunConfig:
                         task_hyper_parameters = model_hyper_parameters[test_dataset]
                         conf_obj.training_args_config.per_device_train_batch_size = task_hyper_parameters["train_batch_size"]
                         conf_obj.training_args_config.learning_rate = task_hyper_parameters["learning_rate"]
+                        if "early_stopping_threshold" in  task_hyper_parameters:
+                            conf_obj.early_stopping_config.early_stopping_threshold = task_hyper_parameters["early_stopping_threshold"]
                         print(f"loading best params for  {test_dataset} and {conf_obj.model}")
                         print(f"setting learning rate {conf_obj.training_args_config.learning_rate} and batch size {conf_obj.training_args_config.per_device_train_batch_size}")
                     else:

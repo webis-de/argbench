@@ -43,7 +43,7 @@
                 "type": "int",
                 "low": 1,
                 "step": 1,
-                "high": 2
+                "high": 8
             }
 
         },"early_stopping_config":
