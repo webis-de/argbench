@@ -2,7 +2,7 @@
 #/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output/qwen3-4b-hpo-cross-task-stance_classification_ukp_sentential_stab18-09-17-15:19:54
 
 export model_list=argbench/data/models-small.txt
-while getopts "qabhnvm:l:t:c:" opt; do
+while getopts "qabhnvm:l:t:c:g:" opt; do
   case $opt in
     c)
       gpu_count="$OPTARG"
@@ -23,6 +23,9 @@ while getopts "qabhnvm:l:t:c:" opt; do
     n)
       no_training="no_training"
     ;;
+    g)
+     goal_task="$OPTARG"
+     ;;
 
     h)
       gpu_type="h100"
@@ -80,13 +83,32 @@ fi
 
 # Run the command with the array expanded
 # The command will be executed as: ./your_command
-./your_command "${args[@]}"
+if [ -n "$goal_task" ]; then
+  case $goal_task in
+  mining)
+    goal_task="argument_unit_segmentation_webDiscourse_ajjour17"
+    ;;
+  generation)
+    goal_task="counter_argument_generation_cmv_hua18"
+  ;;
+  reasoning)
+    goal_task="fallacy_detection_cmv_adhominem_habernal18"
+    ;;
+  quality)
+    goal_task="argument_rating_dagstuhl_15512_wachsmuth17"
+    ;;
+  perspective)
+    goal_task="argument_similarity_ukp_aspect_reimers19"
+    ;;
+  esac
+  args+=("--dataset" "$goal_task")
+fi
 
 for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
     if [ -z "$validation" ]; then
       echo "test"
-        bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "testing_cross_task_${task}" "cross-tsk-$model-$task" --model "$model"  --debug --train_epochs 1 --sample "${args[@]}"
+        bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "cross_task" "cross-tsk-$model-$task" --model "$model"  --debug --train_epochs 1 --sample "${args[@]}"
     else
         bash argbench/jobs/in-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "cross_task_val_hpo" "cross-tsk-$model-hpo" --model "$model"  --sample --debug "${args[@]}"
      fi

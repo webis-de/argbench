@@ -8,7 +8,7 @@
     "seed": 1517,
     "debug": true,
     "model": "deepseek-r1-distill-7b",
-    "cutoff_len": 300,
+    "cutoff_len": 1024,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "models_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models",
     "data_type": "ndjson",
@@ -19,10 +19,10 @@
     "tensorboard_logs": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tensorboard",
     "argbench_dataset_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/argbench-dataset",
  	"model_configs_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/model_configs.json",
-    "prediction_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/cross-task-quality-predictions.tsv",
+    "prediction_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/cross-task-predictions.tsv",
     "train_datasets": {},
     "test_dataset": {
-        "name": "argument_rating_dagstuhl_15512_wachsmuth17"
+
     },
     "peft_configs": [{
         "model_id": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/adapters/deepseek",
@@ -53,14 +53,14 @@
         "optim": "adamw_bnb_8bit",
         "eval_strategy": "steps",
         "save_strategy": "steps",
-        "eval_steps": 20000,
-        "save_steps": 20000,
+        "eval_steps": 40000,
+        "save_steps": 40000,
         "load_best_model_at_end": true,
         "group_by_length": false,
         "do_eval": true,
         "warmup_steps": 200,
         "bf16": true,
-        "logging_steps": 20000,
+        "logging_steps": 40000,
         "lr_scheduler_type": "linear",
         "metric_for_best_model": "loss"
     },

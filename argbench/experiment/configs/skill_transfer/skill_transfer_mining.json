@@ -21,7 +21,7 @@
  	"model_configs_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/model_configs.json",
     "train_datasets": {},
     "test_dataset": {
-        "name": "argument_unit_segmentation_webDiscourse_ajjour17"
+
     },
     "hpo_config": {
         "n_trials": 10,
