@@ -22,6 +22,9 @@ sbatch <<EOF
 #SBATCH --gres="gpu:$gpu_type:$gpu_count"
 
 module load Miniforge3
+module load GCCcore/.13.2.0
+module load NVHPC/24.9-CUDA-12.6.0
+
 conda activate new-env
 export HF_HUB_OFFLINE=1
 start=\$(date +%s)
