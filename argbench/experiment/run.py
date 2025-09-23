@@ -519,7 +519,7 @@ class Runner:
             with open(self.config.prediction_path, "a+") as file:
                 file.writelines(self.prediction_samples)
 
-        if self.config.all_predictions_path:
+        if self.config.error_analysis:
             with open(self.config.get_all_predictions_path(), "w") as input_stream:
                 json.dump(self.formatted_predictions, input_stream, indent=4)
 
@@ -766,7 +766,7 @@ class Runner:
             sampled_predictions = zip(sampled_responses, sampled_predictions, sampled_labels, [self.config.model+"-"+prompting_technique for _ in range(10)], [test_task_name for _ in range(10)])
             sampled_predictions = [x[0]+"\t"+x[1]+"\t"+x[2]+"\t"+x[3]+"\t"+x[4]+"\t"+self.starting_time+"\t"+self.config.job_name+ "\n" for x in sampled_predictions]
             self.prediction_samples.extend(sampled_predictions)
-            if self.config.all_predictions_path:
+            if self.config.error_analysis:
                 formatted_predictions = zip(responses, predictions, labels,)
                 self.formatted_predictions.extend([{"response": x[0], "prediction": x[1], "ground_truth": x[2]} for x in formatted_predictions])
         logger.debug(f"evaluating {counter} instances")

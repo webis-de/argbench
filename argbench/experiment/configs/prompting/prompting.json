@@ -21,6 +21,7 @@
     "argbench_dataset_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/argbench-dataset",
  	"model_configs_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/model_configs.json",
     "prediction_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/prompting-predictions.tsv",
+    "all_predictions_path" : "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/predictions",
     "train_datasets": {
     },
     "test_dataset": {

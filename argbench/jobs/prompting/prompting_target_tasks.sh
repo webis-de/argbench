@@ -2,7 +2,7 @@
 
 export model_list=argbench/data/models-small.txt
 
-while getopts "abhm:t:c:f:" opt; do
+while getopts "abhme:t:c:f:" opt; do
   case $opt in
     c)
       gpu_count="$OPTARG"
@@ -12,6 +12,9 @@ while getopts "abhm:t:c:f:" opt; do
       ;;
     a)
       gpu_type="a100"
+    ;;
+  e)
+    error_analysis="error-analysis"
     ;;
     h)
       gpu_type="h100"
@@ -56,6 +59,9 @@ else
   models=("$model")
 fi
 
+if [ -n "$error_analysis" ]; then
+  args+=("--error_analysis")
+fi
 for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
 

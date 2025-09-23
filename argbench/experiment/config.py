@@ -389,6 +389,8 @@ class RunConfig:
 
     hpo: bool
     # Padding token id
+    error_analysis: bool = False
+
     all_predictions_path: str= None
 
     max_input_tokens: int = 768
@@ -438,6 +440,7 @@ class RunConfig:
         """
         Registers all cli parameters for RunConfig
         """
+        arg_parser.add_argument("--error_analysis", action="store_true")
         arg_parser.add_argument("--all_predictions_path", type=str)
         arg_parser.add_argument("--max_input_tokens", type=int)
         arg_parser.add_argument("--max_output_tokens", type=int)
@@ -613,6 +616,8 @@ class RunConfig:
         if not args:
             return conf_obj
         # Runner config
+        if args.error_analysis:
+            conf_obj.error_analysis = True
         if args.prediction_path:
             conf_obj.prediction_path = args.prediction_path
         if args.all_predictions_path:
