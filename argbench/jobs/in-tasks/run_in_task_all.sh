@@ -2,7 +2,7 @@
 
 export model_list=argbench/data/models-small.txt
 
-while getopts "qabhvnm:l:t:c:" opt; do
+while getopts "qabhvnsm:l:t:c:" opt; do
   case $opt in
     c)
       gpu_count=$OPTARG
@@ -19,6 +19,9 @@ while getopts "qabhvnm:l:t:c:" opt; do
     n)
       no_training="no_training"
     ;;
+      s)
+        sample="sample"
+      ;;
     a)
       gpu_type="a100"
     ;;
@@ -71,6 +74,10 @@ fi
 
 if [ -n "$no_training" ]; then
   args+=("--train_epochs" 0)
+fi
+
+if [ -n "$sample" ]; then
+  args+=("--sample")
 fi
 
 
