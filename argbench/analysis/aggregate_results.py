@@ -48,7 +48,7 @@ with open(args.metadata) as file:
 
         print(f"\n** aggregating run on {last_time}**\n")
         df = df[df["start_time"]==last_time]
-        last_run_per_task = True
+        last_run_per_task = False
     else:
         last_run_per_task = True
     experiment = df["model"].iloc[0]
@@ -64,11 +64,15 @@ with open(args.metadata) as file:
     for skill, df_skill in df.groupby("skill", sort=False):
         task_count = df_skill['test_task'].nunique()
         print(f"\n-----overview ({skill})----(count {task_count})---\n")
-        df_skill_overview = df_skill[df_skill["metric"].isin(["generation-score", "fscore"])]
-        df_skill_overview = df_skill_overview[["test_task", "score"]]
-        df_skill_overview.to_csv(f"{path_output}/{skill}-{experiment}-{prompting_technique}-{last_time}-{args.seed}.csv", index=False)
-        print(df_skill_overview)
-        print(f"--------------------\n")
+        if not last_run_per_task:
+            df_skill_overview = df_skill[df_skill["metric"].isin(["generation-score", "fscore"])]
+            df_skill_overview = df_skill_overview[["test_task", "score"]]
+            if not last_run_per_task:
+                df_skill_overview.to_csv(f"{path_output}/{skill}-{experiment}-{prompting_technique}-{last_time}-{args.seed}.csv", index=False)
+            else:
+                df_skill_overview.to_csv(f"{path_output}/{skill}-{experiment}-{prompting_technique}-{args.seed}.csv", index=False)
+            print(df_skill_overview)
+            print(f"--------------------\n")
         if skill == "generation":
             df_blue_records = df_skill[df_skill["metric"]=="bleu"]
             if last_run_per_task:
@@ -78,6 +82,9 @@ with open(args.metadata) as file:
 
             print(f"{skill:<30} bleu {blue_score_agg:>14.2f}")
             df_bertscore_records = df_skill[df_skill["metric"]=="bertscore"]
+            if last_run_per_task:
+                df_bertscore_records.sort_values(["test_task", "start_time"], ascending=False, inplace=True)
+                df_bertscore_records = df_bertscore_records.groupby("test_task").first()
 
             bertscore = (df_bertscore_records["score"].mean())
             generation_score = (bertscore + blue_score_agg) /2
