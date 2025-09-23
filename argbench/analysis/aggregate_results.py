@@ -9,6 +9,7 @@ parser.add_argument("--cot", action='store_true')
 parser.add_argument("--missing-tasks", action='store_true')
 parser.add_argument("--skill-output-path", type=str)
 parser.add_argument("--seed", type=int)
+parser.add_argument("--last-run-per-task", action="store_true")
 args= parser.parse_args()
 df = pd.read_csv(args.file, sep="\t")
 #df.drop_duplicates(["test_task","k","model","score"],inplace=True)
@@ -41,11 +42,15 @@ with open(args.metadata) as file:
         df = df[df["k"] != 1]
         df = df[df["k"] != 4]
         prompting_technique=f"few-shot-{0}"
-    times = sorted(df["start_time"].values)
-    last_time = times[-1]
+    if not args.last_run_per_task:
+        times = sorted(df["start_time"].values)
+        last_time = times[-1]
 
-    print(f"\n** aggregating run on {last_time}**\n")
-    df = df[df["start_time"]==last_time]
+        print(f"\n** aggregating run on {last_time}**\n")
+        df = df[df["start_time"]==last_time]
+        last_run_per_task = True
+    else:
+        last_run_per_task = True
     experiment = df["model"].iloc[0]
     print(f"found tasks {len(df)}")
     num_tasks = df["test_task"].nunique()
@@ -66,6 +71,9 @@ with open(args.metadata) as file:
         print(f"--------------------\n")
         if skill == "generation":
             df_blue_records = df_skill[df_skill["metric"]=="bleu"]
+            if last_run_per_task:
+                df_blue_records.sort_values(["test_task", "start_time"], ascending=False, inplace=True)
+                df_blue_records = df_blue_records.groupby("test_task").first()
             blue_score_agg =df_blue_records["score"].mean()
 
             print(f"{skill:<30} bleu {blue_score_agg:>14.2f}")
@@ -81,6 +89,10 @@ with open(args.metadata) as file:
             scores += generation_score
         else:
             df_fscore_records = df_skill[df_skill["metric"]=="fscore"]
+            if last_run_per_task:
+                df_fscore_records.sort_values(["test_task", "start_time"], ascending=False, inplace=True)
+                df_fscore_records = df_fscore_records.groupby("test_task").first()
+
             fscore_agg =df_fscore_records["score"].mean()
             print(f"{skill:<30} fscore {fscore_agg:>12.2f}\n-------------\n")
             scores += fscore_agg
