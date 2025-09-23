@@ -2,7 +2,7 @@
 
 export model_list=argbench/data/models-small.txt
 
-while getopts "qabhvmn:l:t:c:" opt; do
+while getopts "qabhvnm:l:t:c:" opt; do
   case $opt in
     c)
       gpu_count=$OPTARG
