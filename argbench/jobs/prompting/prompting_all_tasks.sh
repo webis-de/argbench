@@ -2,7 +2,7 @@
 
 export model_list=argbench/data/models-small.txt
 
-while getopts "abhm:c:" opt; do
+while getopts "abehm:c:" opt; do
   case $opt in
       c)
         gpu_count="$OPTARG"
@@ -16,6 +16,9 @@ while getopts "abhm:c:" opt; do
     ;;
     h)
       gpu_type="h100"
+    ;;
+  e)
+    error_analysis="error-analysis"
     ;;
 
     m)
@@ -33,6 +36,9 @@ while getopts "abhm:c:" opt; do
   esac
 done
 
+if [ -n "$error_analysis" ]; then
+  args+=("--error_analysis")
+fi
 
 
 if [ -z "$model" ]; then
@@ -42,10 +48,10 @@ else
 fi
 
 for model in "${models[@]}"; do
-    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" 72:00:00  prompting "${model:0:6}-0-shot"  --model "$model" --sample --seed 1517
+    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" 72:00:00  prompting "${model:0:6}-0-shot"  --model "$model" --sample --seed 1517 "${args[@]}"
     sleep 5
-    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" 72:00:00 prompting "${model:0:6}-4-shot"  --model "$model" -k 4 --sample --seed 1517
+    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" 72:00:00 prompting "${model:0:6}-4-shot"  --model "$model" -k 4 --sample --seed 1517 "${args[@]}"
     sleep 5
-    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" 72:00:00 prompting "${model:0:6}-cot" --model "$model" --cot --sample --seed 1517
+    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" 72:00:00 prompting "${model:0:6}-cot" --model "$model" --cot --sample --seed 1517 "${args[@]}"
     sleep 5
 done
