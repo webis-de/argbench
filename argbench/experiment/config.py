@@ -936,4 +936,4 @@ class RunConfig:
 
     def get_all_predictions_path(self):
 
-        return self.all_predictions_path + "/"+ self.get_experiment_name() + "/" + str(self.get_prompting_technique().value)
+        return self.all_predictions_path + "/"+ self.get_experiment_name()  + str(self.get_prompting_technique().value) +".json"
