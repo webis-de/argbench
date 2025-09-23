@@ -703,7 +703,7 @@ class Runner:
                 logger.debug("++++ lora input ++++")
         elif model:
             generation_config = Runner.get_generation_config_from_vllm_params(sampling_params)
-            model = torch.compile(model)
+            #model = torch.compile(model)
             model.eval()
         output_splitter = self.model_config.output_splitter
         counter = 0

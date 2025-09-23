@@ -13,6 +13,16 @@ parser.add_argument("--last-run-per-task", action="store_true")
 args= parser.parse_args()
 df = pd.read_csv(args.file, sep="\t")
 #df.drop_duplicates(["test_task","k","model","score"],inplace=True)
+
+
+df_fallacy_goffredo23 = df[df["test_task"] == "fallacy_detection_elecdeb60t020_goffredo23"]
+for start_time, df_fallacy_detection_run in df_fallacy_goffredo23.groupby("start_time"):
+    df_fallacy_detection_run_f_scores = df_fallacy_detection_run[df_fallacy_detection_run["metric"].str.contains("fscore")]
+    if len(df_fallacy_detection_run_f_scores):
+        df_score_record = df_fallacy_detection_run_f_scores[df_fallacy_detection_run_f_scores["metric"]=="fscore"]
+        other_record = df_fallacy_detection_run_f_scores[df_fallacy_detection_run_f_scores["metric"]!="fscore"]
+        df.loc[df_score_record.index,"score"] = float(other_record["score"].mean())
+
 with open(args.metadata) as file:
 
     metadata = json.load(file)
