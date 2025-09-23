@@ -389,6 +389,7 @@ class RunConfig:
 
     hpo: bool
     # Padding token id
+    all_predictions_path: str= None
 
     max_input_tokens: int = 768
 
@@ -437,6 +438,7 @@ class RunConfig:
         """
         Registers all cli parameters for RunConfig
         """
+        arg_parser.add_argument("--all_predictions_path", type=str)
         arg_parser.add_argument("--max_input_tokens", type=int)
         arg_parser.add_argument("--max_output_tokens", type=int)
         arg_parser.add_argument("--max_few_shot_len", type=int)
@@ -613,6 +615,8 @@ class RunConfig:
         # Runner config
         if args.prediction_path:
             conf_obj.prediction_path = args.prediction_path
+        if args.all_predictions_path:
+            conf_obj.all_predictions_path = args.all_predictions_path
         if args.sample:
             conf_obj.sample = True
         if args.skill_filter:
@@ -925,3 +929,6 @@ class RunConfig:
         return path
 
 
+    def get_all_predictions_path(self):
+
+        return self.all_predictions_path + "/"+ self.get_experiment_name() + "/" + str(self.get_prompting_technique().value)

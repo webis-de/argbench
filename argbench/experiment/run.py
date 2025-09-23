@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 import gc
+import json
 import logging
 
 import optuna
 import re
-import deepspeed
+
 import torch
 from bert_score.utils import padding
 from optuna import create_study
@@ -208,6 +209,7 @@ class Runner:
 
         self.load_data()
         self.prediction_samples = []
+        self.formatted_predictions = []
 
     def turn_off_thinking_qwen(self):
         if "qwen" in self.config.model and self.config.get_prompting_technique() != PromptingTechnique.COT:
@@ -517,6 +519,11 @@ class Runner:
             with open(self.config.prediction_path, "a+") as file:
                 file.writelines(self.prediction_samples)
 
+        if self.config.all_predictions_path:
+            with open(self.config.get_all_predictions_path(), "w") as input_stream:
+                json.dump(self.formatted_predictions, input_stream, indent=4)
+
+
     def hpo_objective(self, trial: Trial):
         log_mem(f"loading model for hpo")
         self.model = self.load_model()
@@ -759,7 +766,9 @@ class Runner:
             sampled_predictions = zip(sampled_responses, sampled_predictions, sampled_labels, [self.config.model+"-"+prompting_technique for _ in range(10)], [test_task_name for _ in range(10)])
             sampled_predictions = [x[0]+"\t"+x[1]+"\t"+x[2]+"\t"+x[3]+"\t"+x[4]+"\t"+self.starting_time+"\t"+self.config.job_name+ "\n" for x in sampled_predictions]
             self.prediction_samples.extend(sampled_predictions)
-
+            if self.config.all_predictions_path:
+                formatted_predictions = zip(responses, predictions, labels,)
+                self.formatted_predictions.extend([{"response": x[0], "prediction": x[1], "ground_truth": x[2]} for x in formatted_predictions])
         logger.debug(f"evaluating {counter} instances")
 
         if metric == "fscore":
