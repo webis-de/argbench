@@ -502,8 +502,9 @@ class Runner:
             del self.base_model
         if self.peft_model:
             del self.peft_model
-        torch.cuda.empty_cache()
         gc.collect()
+        torch.cuda.empty_cache()
+
         log_mem(f"saved and free model")
 
     def free_vllm_model(self):
