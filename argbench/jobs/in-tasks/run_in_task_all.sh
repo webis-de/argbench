@@ -85,10 +85,10 @@ for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
     if [ -z "$validation" ]; then
       echo "test"
-          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --debug "${args[@]}" --max_len 1024
+          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --debug "${args[@]}" --max_length 1024
     else
       echo "validation"
-          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}_hpo" "in-tsk-$model-$task-hpo" --model "$model"  --debug "${args[@]}" --max_len 1024
+          bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}_hpo" "in-tsk-$model-$task-hpo" --model "$model"  --debug "${args[@]}" --max_length 1024
      fi
     sleep 5
   done
