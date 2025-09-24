@@ -65,7 +65,7 @@ echo "parallel"
 export HF_HUB_OFFLINE=1
 export CUDA_VISIBLE_DEVICES=0,1,2,3
 export CUDA_LAUNCH_BLOCKING=1
-accelerate launch --config_file "${CONFIG_PATH}/accelerate/config_${gpu_count}_gpus_3_stage.yaml" \\
+accelerate launch --config_file "${CONFIG_PATH}/accelerate/config_${gpu_count}_gpus_2_stage.yaml" \\
 -m  argbench.experiment.run -c "${CONFIG_PATH}/in_task/${experiment}.json" ${@:5}
 end=\$(date +%s)
 export Time=\$((end-start))
