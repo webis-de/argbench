@@ -43,7 +43,7 @@
                 "type": "int",
                 "low": 1,
                 "step": 1,
-                "high": 8
+                "high": 4
             }
 
         },"early_stopping_config":
@@ -94,7 +94,8 @@
         "bf16": true,
         "logging_steps": 10,
         "lr_scheduler_type": "linear",
-        "metric_for_best_model": "loss"
+        "metric_for_best_model": "loss",
+        "gradient_accumulation_steps": 4
     },
     "early_stopping_config": {
         "early_stopping_patience": 3,
