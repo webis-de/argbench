@@ -156,7 +156,7 @@ class TrainingArgsConfig(CommonConfig):
 
     do_eval: bool = True
 
-
+    gradient_accumulation_steps: int = 1
 
 
 @dataclass
