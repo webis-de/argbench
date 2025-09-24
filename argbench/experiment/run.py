@@ -502,6 +502,8 @@ class Runner:
             del self.base_model
         if self.peft_model:
             del self.peft_model
+        if self.trainer:
+            del self.trainer
         gc.collect()
         torch.cuda.empty_cache()
 
