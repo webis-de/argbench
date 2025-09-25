@@ -23,7 +23,7 @@
     "train_datasets": {
     },
     "test_dataset": {
-        "name": "counter_argument_generation_cmv_hua18",
+        "name": "counter_argument_generation_cmv_hua18"
     },
     "hpo_config": {
         "n_trials": 5,
@@ -72,21 +72,22 @@
     },
     "training_args_config": {
         "per_device_train_batch_size": 128,
-        "num_train_epochs": 10,
+        "num_train_epochs": 20,
         "learning_rate": 0.0003,
         "optim": "adamw_bnb_8bit",
         "eval_strategy": "steps",
         "save_strategy": "steps",
-        "eval_steps": 300,
-        "save_steps": 300,
+        "eval_steps": 2000,
+        "save_steps": 2000,
         "load_best_model_at_end": true,
         "group_by_length": false,
         "do_eval": true,
         "warmup_steps": 200,
         "bf16": true,
-        "logging_steps": 100,
+        "logging_steps": 1000,
         "lr_scheduler_type": "linear",
-        "metric_for_best_model": "loss"
+        "metric_for_best_model": "loss",
+      "gradient_accumulation_steps": 4
     },
     "early_stopping_config": {
         "early_stopping_patience": 3,

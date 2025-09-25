@@ -92,7 +92,7 @@
         "do_eval": true,
         "warmup_steps": 200,
         "bf16": true,
-        "logging_steps": 10000,
+        "logging_steps": 1000,
         "lr_scheduler_type": "linear",
         "metric_for_best_model": "loss",
       "gradient_accumulation_steps": 4
