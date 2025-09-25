@@ -698,6 +698,7 @@ class Runner:
         labels = []
         predictions = []
         responses = []
+        input = []
         ## is the batch size here a bottleneck?
         if vllm:
             count_workers = 1
@@ -725,6 +726,7 @@ class Runner:
             logger.debug(f"considered labels are {labels_lowered}")
         for data in tqdm(loader):
             text = data["input"][0]
+            input.append(text)
             labels.extend(data["output"])
 
             if model:
@@ -777,8 +779,8 @@ class Runner:
             sampled_predictions = [x[0]+"\t"+x[1]+"\t"+x[2]+"\t"+x[3]+"\t"+x[4]+"\t"+self.starting_time+"\t"+self.config.job_name+ "\n" for x in sampled_predictions]
             self.prediction_samples.extend(sampled_predictions)
             if self.config.error_analysis:
-                formatted_predictions = zip(responses, predictions, labels,)
-                self.formatted_predictions.extend([{"response": x[0], "prediction": x[1], "ground_truth": x[2]} for x in formatted_predictions])
+                formatted_predictions = zip(input, responses, predictions, labels,)
+                self.formatted_predictions.extend([{"input":x[0], "response": x[1], "prediction": x[2], "ground_truth": x[3]} for x in formatted_predictions])
         logger.debug(f"evaluating {counter} instances")
 
         if metric == "fscore":
