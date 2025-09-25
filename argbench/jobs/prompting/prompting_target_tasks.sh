@@ -65,14 +65,14 @@ fi
 for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
 
-##    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" 24:00:00 prompting "${task:0:6}-${model:0:6}-0-shot" --dataset "$task" --model "$model"  --sample "${args[@]}"
+    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" 24:00:00 prompting "pred-${task:0:6}-${model:0:6}-0-shot" --dataset "$task" --model "$model"  --sample "${args[@]}"
     sleep 5
-#    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" 24:00:00 prompting "${task:0:6}-${model:0:6}-1-shot" --dataset "$task" --model "$model" -k 1  --sample "${args[@]}"
+    #bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" 24:00:00 prompting "${task:0:6}-${model:0:6}-1-shot" --dataset "$task" --model "$model" -k 1  --sample "${args[@]}"
 #    sleep 5
-#    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" 24:00:00 prompting "${task:0:6}-${model:0:6}-4-shot" --dataset "$task" --model "$model" -k 4 --sample "${args[@]}"
-#    sleep 5
-    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" 24:00:00 prompting "${task}-${model}-cot" --dataset "$task" --model "$model" --cot --sample "${args[@]}"
-#    sleep 5
+   bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" 24:00:00 prompting "pred-${task:0:6}-${model:0:6}-4-shot" --dataset "$task" --model "$model" -k 4 --sample "${args[@]}"
+    sleep 5
+    bash argbench/jobs/prompting/prompting.sh "$gpu_count" "$gpu_type" 24:00:00 prompting "pred-${task}-${model}-cot" --dataset "$task" --model "$model" --cot --sample "${args[@]}"
+    sleep 5
   done
 
 done
