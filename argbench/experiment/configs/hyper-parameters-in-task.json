@@ -3,7 +3,7 @@
     "argument_unit_segmentation_webDiscourse_ajjour17": {
       "train_batch_size": 4,
       "learning_rate": 3.492909558848767e-05,
-      "early_stopping_threshold": 0.0081
+      "early_stopping_threshold": 0.0001
     },
     "argument_rating_dagstuhl_15512_wachsmuth17": {
       "train_batch_size": 9,
@@ -173,9 +173,9 @@
   },
   "llama-3.1-8b-instruct": {
     "argument_unit_segmentation_webDiscourse_ajjour17": {
-      "train_batch_size": 7,
-      "learning_rate":8.27524881823371E-05,
-      "early_stopping_threshold": 0.0051
+      "train_batch_size": 4,
+      "learning_rate":8.060642411010872e-05,
+      "early_stopping_threshold": 0.0001
     },
     "argument_rating_dagstuhl_15512_wachsmuth17": {
       "train_batch_size": 0,
