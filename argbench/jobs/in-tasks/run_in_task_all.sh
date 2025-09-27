@@ -83,7 +83,9 @@ fi
 
 for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
-    if [ -z "$validation" ]; then
+    if [ -z "$model_adapter" ] ; then
+        bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "test_task_${task}.json" "in-tsk-$model-$task" --model "$model" --debug "${args[@]}" --max_length 1024
+    elif [ -z "$validation" ]; then
       echo "test"
           bash argbench/jobs/in-tasks/run_in_tasks_experiments.sh "$gpu_count" "$gpu_type" "in_task_${task}" "in-tsk-$model-$task" --model "$model" --debug "${args[@]}" --max_length 1024
     else
