@@ -209,6 +209,7 @@ class Runner:
         self.model = None
         self.trainer = None
         self.peft_model = None
+        self.base_model = None
         self.load_data()
         self.prediction_samples = []
         self.formatted_predictions = []

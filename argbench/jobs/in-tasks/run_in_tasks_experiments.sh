@@ -53,7 +53,7 @@ sbatch <<EOF
 #SBATCH --output argbench/output/"$jobname"-%j.out
 #SBATCH --error argbench/output/"$jobname"-%j.err
 #SBATCH --gres=gpu:"$gpu_type:$gpu_count"
-#SBATCH --exclude=gpu005.kisski
+#SBATCH --exclude=gpu[005-007].kisski
 module load GCCcore/.13.2.0
 module load NVHPC/24.9-CUDA-12.6.0
 
