@@ -80,13 +80,13 @@
     },
     "training_args_config": {
         "per_device_train_batch_size": 128,
-        "num_train_epochs": 15,
+        "num_train_epochs": 20,
         "learning_rate": 0.0003,
         "optim": "adamw_bnb_8bit",
         "eval_strategy": "steps",
         "save_strategy": "steps",
-        "eval_steps": 500,
-        "save_steps": 500,
+        "eval_steps": 200,
+        "save_steps": 200,
         "load_best_model_at_end": true,
         "group_by_length": false,
         "do_eval": true,
@@ -94,7 +94,7 @@
         "bf16": true,
         "logging_steps": 50,
         "lr_scheduler_type": "linear",
-        "metric_for_best_model": "loss",
+        "metric_for_best_model": "eval_loss",
         "gradient_accumulation_steps": 4
     },
     "early_stopping_config": {
