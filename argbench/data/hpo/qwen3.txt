@@ -1,0 +1,30 @@
+Trial 11 finished with value: 0.20512820512820512 and parameters: {'learning_rate': 6.6428108331316e-05, 'batch_size': 12}. Best is trial 0 with value: 0.32727272727272727.
+Trial 12 finished with value: 0.2 and parameters: {'learning_rate': 6.103630644771462e-05, 'batch_size': 7}. Best is trial 0 with value: 0.32727272727272727.
+Trial 13 finished with value: 0.13953488372093023 and parameters: {'learning_rate': 2.861431107531154e-05, 'batch_size': 7}. Best is trial 0 with value: 0.32727272727272727.
+Trial 14 finished with value: 0.20338983050847456 and parameters: {'learning_rate': 9.984400103783353e-05, 'batch_size': 8}. Best is trial 0 with value: 0.32727272727272727.
+Trial 15 finished with value: 0.16666666666666666 and parameters: {'learning_rate': 4.67826623626495e-05, 'batch_size': 4}. Best is trial 0 with value: 0.32727272727272727.
+Trial 16 finished with value: 0.12765957446808507 and parameters: {'learning_rate': 1.717828649683143e-05, 'batch_size': 12}. Best is trial 0 with value: 0.32727272727272727.
+Trial 17 finished with value: 0.20408163265306123 and parameters: {'learning_rate': 7.692049184222244e-05, 'batch_size': 12}. Best is trial 0 with value: 0.32727272727272727.
+Trial 18 finished with value: 0.2 and parameters: {'learning_rate': 5.658187044534695e-05, 'batch_size': 8}. Best is trial 0 with value: 0.32727272727272727.
+Trial 19 finished with value: 0.20408163265306123 and parameters: {'learning_rate': 4.024960530260377e-05, 'batch_size': 6}. Best is trial 0 with value: 0.32727272727272727.
+Trial 20 finished with value: 0.12 and parameters: {'learning_rate': 1.8437700637148315e-05, 'batch_size': 10}. Best is trial 0 with value: 0.32727272727272727.
+Trial 31 finished with value: 0.2105263157894737 and parameters: {'learning_rate': 9.257152181849128e-05, 'batch_size': 11}. Best is trial 23 with value: 0.3333333333333333.
+Trial 32 finished with value: 0.3404255319148936 and parameters: {'learning_rate': 8.576737769834228e-05, 'batch_size': 16}. Best is trial 32 with value: 0.3404255319148936.
+Trial 33 finished with value: 0.26865671641791045 and parameters: {'learning_rate': 8.246828434488455e-05, 'batch_size': 15}. Best is trial 32 with value: 0.3404255319148936.
+Trial 34 finished with value: 0.2777777777777778 and parameters: {'learning_rate': 2.5013940995037813e-05, 'batch_size': 16}. Best is trial 32 with value: 0.3404255319148936.
+Trial 35 finished with value: 0.20833333333333334 and parameters: {'learning_rate': 8.5296271270906e-05, 'batch_size': 14}. Best is trial 32 with value: 0.3404255319148936.
+Trial 36 finished with value: 0.18518518518518517 and parameters: {'learning_rate': 7.670996626827603e-05, 'batch_size': 15}. Best is trial 32 with value: 0.3404255319148936.
+Trial 37 finished with value: 0.35714285714285715 and parameters: {'learning_rate': 9.48904538795427e-05, 'batch_size': 16}. Best is trial 37 with value: 0.35714285714285715.
+Trial 38 finished with value: 0.33333333333333326 and parameters: {'learning_rate': 9.508610582144017e-05, 'batch_size': 16}. Best is trial 37 with value: 0.35714285714285715.
+Trial 39 finished with value: 0.2380952380952381 and parameters: {'learning_rate': 9.434804852315015e-05, 'batch_size': 16}. Best is trial 37 with value: 0.35714285714285715.
+Trial 40 finished with value: 0.2962962962962963 and parameters: {'learning_rate': 9.530025988540544e-05, 'batch_size': 16}. Best is trial 37 with value: 0.35714285714285715.
+Trial 41 finished with value: 0.30317848410757947 and parameters: {'learning_rate': 8.868769354001743e-05, 'batch_size': 4, 'early_stopping_threshold': 0.0001}. Best is trial 37 with value: 0.35714285714285715.
+Trial 42 finished with value: 0.37378640776699035 and parameters: {'learning_rate': 8.602981681800379e-05, 'batch_size': 4, 'early_stopping_threshold': 0.0001}. Best is trial 42 with value: 0.37378640776699035.
+Trial 43 finished with value: 0.25853658536585367 and parameters: {'learning_rate': 8.696566006343087e-05, 'batch_size': 4, 'early_stopping_threshold': 0.0001}. Best is trial 42 with value: 0.37378640776699035.
+Trial 44 finished with value: 0.24908424908424912 and parameters: {'learning_rate': 9.951269743564228e-05, 'batch_size': 4, 'early_stopping_threshold': 0.0001}. Best is trial 42 with value: 0.37378640776699035.
+Trial 45 finished with value: 0.34123222748815163 and parameters: {'learning_rate': 9.172943567917815e-05, 'batch_size': 4, 'early_stopping_threshold': 0.0001}. Best is trial 42 with value: 0.37378640776699035.
+Trial 46 finished with value: 0.2890995260663507 and parameters: {'learning_rate': 7.324021833530803e-05, 'batch_size': 4, 'early_stopping_threshold': 0.0001}. Best is trial 42 with value: 0.37378640776699035.
+Trial 47 finished with value: 0.2413793103448276 and parameters: {'learning_rate': 8.411421867028816e-05, 'batch_size': 4, 'early_stopping_threshold': 0.0001}. Best is trial 42 with value: 0.37378640776699035.
+Trial 48 finished with value: 0.3145539906103286 and parameters: {'learning_rate': 6.681172287335084e-05, 'batch_size': 4, 'early_stopping_threshold': 0.0001}. Best is trial 42 with value: 0.37378640776699035.
+Trial 49 finished with value: 0.3120567375886525 and parameters: {'learning_rate': 7.715413787438318e-05, 'batch_size': 4, 'early_stopping_threshold': 0.0001}. Best is trial 42 with value: 0.37378640776699035.
+Trial 50 finished with value: 0.2898550724637681 and parameters: {'learning_rate': 9.094152256528389e-05, 'batch_size': 4, 'early_stopping_threshold': 0.0001}. Best is trial 42 with value: 0.37378640776699035.

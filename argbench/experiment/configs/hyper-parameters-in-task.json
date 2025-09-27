@@ -119,9 +119,9 @@
   },
     "qwen3-4b": {
       "argument_unit_segmentation_webDiscourse_ajjour17": {
-        "train_batch_size": 8,
-        "learning_rate": 9.48904538795427E-05,
-        "early_stopping_threshold": 0.0011
+        "train_batch_size": 4,
+        "learning_rate": 8.602981681800379e-05,
+        "early_stopping_threshold": 0.0001
       },
       "argument_rating_dagstuhl_15512_wachsmuth17": {
         "train_batch_size": 8,
