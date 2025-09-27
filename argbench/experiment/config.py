@@ -703,7 +703,7 @@ class RunConfig:
         # Training arguments
         if args.train_batch_size:
             conf_obj.training_args_config.per_device_train_batch_size = args.train_batch_size
-        if args.train_epochs:
+        if args.train_epochs is not None:
             conf_obj.training_args_config.num_train_epochs = args.train_epochs
         if args.train_learning_rate:
             conf_obj.training_args_config.learning_rate = args.train_learning_rate
