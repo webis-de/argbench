@@ -1,8 +1,8 @@
 {
   "mistral-7b-inst-3": {
     "argument_unit_segmentation_webDiscourse_ajjour17": {
-      "train_batch_size": 3,
-      "learning_rate": 9.87938241019976E-05,
+      "train_batch_size": 4,
+      "learning_rate": 3.492909558848767e-05,
       "early_stopping_threshold": 0.0081
     },
     "argument_rating_dagstuhl_15512_wachsmuth17": {
@@ -62,8 +62,8 @@
   {
     "argument_unit_segmentation_webDiscourse_ajjour17": {
       "train_batch_size": 4,
-      "learning_rate": 5.57157119269597E-05,
-      "early_stopping_threshold": 0.0061
+      "learning_rate": 4.9876331895087485e-05,
+      "early_stopping_threshold": 0.001
 
     },
 
@@ -92,9 +92,9 @@
   },
   "llama-3.3-70b-instruct": {
     "argument_unit_segmentation_webDiscourse_ajjour17": {
-      "train_batch_size": 7,
-      "learning_rate": 8.27524881823371E-05,
-      "early_stopping_threshold": 0.0051
+      "train_batch_size": 4,
+      "learning_rate":  7.29549040364368e-05,
+      "early_stopping_threshold": 0.0001
     },
     "argument_rating_dagstuhl_15512_wachsmuth17": {
       "train_batch_size": 7,
@@ -146,9 +146,9 @@
     },
   "phi-3.5-moe-7.6b": {
     "argument_unit_segmentation_webDiscourse_ajjour17": {
-      "train_batch_size":1 ,
-      "learning_rate":6.11081660880771E-05,
-      "early_stopping_threshold": 0.0061
+      "train_batch_size":4 ,
+      "learning_rate":9.79781561186713e-05,
+      "early_stopping_threshold": 0.001
     },
     "argument_rating_dagstuhl_15512_wachsmuth17": {
       "train_batch_size": 0,
@@ -227,9 +227,9 @@
   },
   "qwen3-32b": {
   "argument_unit_segmentation_webDiscourse_ajjour17": {
-    "train_batch_size":7,
-    "learning_rate":4.25770388267419E-05,
-    "early_stopping_threshold": 0.0011
+    "train_batch_size":4,
+    "learning_rate":6.057582027259501e-05,
+    "early_stopping_threshold": 0.009
   },
   "argument_rating_dagstuhl_15512_wachsmuth17": {
     "train_batch_size": 0,
