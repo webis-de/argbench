@@ -29,9 +29,9 @@
   "mistral-small":
   {
     "argument_unit_segmentation_webDiscourse_ajjour17": {
-      "train_batch_size": 6,
-      "learning_rate": 0.0000913,
-      "early_stopping_threshold": 0.0081
+      "train_batch_size": 4,
+      "learning_rate": 3.3583689119291145e-05,
+      "early_stopping_threshold": 0.0051
 
     },
 
