@@ -207,6 +207,8 @@ class Runner:
                 self.test_dataset_name = None
 
         self.model = None
+        self.trainer = None
+        self.peft_model = None
         self.load_data()
         self.prediction_samples = []
         self.formatted_predictions = []
@@ -504,10 +506,10 @@ class Runner:
             del self.peft_model
         if self.model:
             del self.model
-        if self.trainer.optimizer:
-            del self.trainer.optimizer
         if self.trainer:
             del self.trainer
+            if self.trainer.optimizer:
+                del self.trainer.optimizer
 
         gc.collect()
         torch.cuda.empty_cache()
