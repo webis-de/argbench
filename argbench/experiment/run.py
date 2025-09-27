@@ -206,7 +206,7 @@ class Runner:
             else:
                 self.test_dataset_name = None
 
-
+        self.model = None
         self.load_data()
         self.prediction_samples = []
         self.formatted_predictions = []
