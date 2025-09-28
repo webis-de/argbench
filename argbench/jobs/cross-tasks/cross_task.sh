@@ -110,7 +110,7 @@ for model in "${models[@]}"; do
       echo "test"
         bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "cross_task" "cross-tsk-$model-$task" --model "$model"  --debug --sample "${args[@]}"
     else
-        bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "cross_task_val_hpo" "cross-tsk-$model-hpo" --model "$model"  --sample --debug "${args[@]}"
+        bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "cross_task_val_hpo" "cross-tsk-$model-hpo" --model "$model"  --debug "${args[@]}"
      fi
     sleep 5
   done
