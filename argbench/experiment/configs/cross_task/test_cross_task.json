@@ -6,8 +6,8 @@
     "chain_of_thoughts": false,
     "experiment_splits_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/experiment_splits.json",
     "seed": 1517,
-    "debug": false,
-    "model": "mistral-7b-inst-3",
+    "debug": true,
+    "model": "deepseek-r1-distill-7b",
     "cutoff_len": 1024,
     "data_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tasks",
     "models_folder": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/fine-tuned-models",
@@ -19,48 +19,16 @@
     "tensorboard_logs": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tensorboard",
     "argbench_dataset_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/argbench-dataset",
  	"model_configs_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/model_configs.json",
+    "prediction_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/cross-task-predictions.tsv",
     "train_datasets": {},
     "test_dataset": {
 
     },
-    "hpo_config": {
-        "n_trials": 20,
-        "study_name": "stance-barhaim17",
-        "storage": "sqlite:////bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo/cross-task.sqlite3",
-        "hpo_fine_grained_output": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo/hpo-results/",
-        "hpo_coarse_output": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/hpo-results.csv",
-        "direction": "maximize",
-        "val_metric": "fscore",
-        "training_args_config": {
-            "learning_rate": {
-                "name": "learning_rate",
-                "type": "float",
-                "low": 1e-06,
-                "high": 0.0001
-            },
-            "per_device_train_batch_size": {
-                "name": "batch_size",
-                "type": "int",
-                "low": 4,
-                "step": 1,
-                "high": 4
-            }
-
-        },"early_stopping_config":
-            {
-          "early_stopping_threshold": {
-            "name": "early_stopping_threshold",
-            "type": "float",
-            "low": 0.0001,
-            "step": 0.0001,
-            "high": 0.001
-          }
-      }
-    },
-    "peft_fresh_config": {
+    "peft_configs": [{
+        "model_id": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/adapters/deepseek",
         "adapter_name": "adapter",
-        "adapter_type": "lora",
-        "config_args": {
+        "adapter_type": "LORA",
+        "config": {
             "bias": "none",
             "fan_in_fan_out": false,
             "inference_mode": true,
@@ -77,7 +45,7 @@
             ],
             "task_type": "CAUSAL_LM"
         }
-    },
+    }],
     "training_args_config": {
         "per_device_train_batch_size": 128,
         "num_train_epochs": 1,
@@ -92,10 +60,9 @@
         "do_eval": true,
         "warmup_steps": 200,
         "bf16": true,
-        "logging_steps": 1000,
+        "logging_steps": 40000,
         "lr_scheduler_type": "linear",
-        "metric_for_best_model": "eval_loss",
-        "gradient_accumulation_steps": 4
+        "metric_for_best_model": "eval_loss"
     },
     "early_stopping_config": {
         "early_stopping_patience": 3,
