@@ -553,17 +553,26 @@ class Runner:
 
         sampling_params = self.load_sampling_params(self.test_dataset_name, trial, self.config.hpo_config.vllm_config)
         self.trainer.evaluate()
+        if "generation" in self.iterable_dataset["test"]:
+            if "eval_loss" in self.trainer.state.log_history[-1]:
+                all_eval_loss = [rec["eval_loss"] for rec in self.trainer.state.log_history]
+                return min(all_eval_loss)
+            else:
+                metrics = self.evaluate(self.test_dataset_name, self.iterable_dataset["test"], sampling_params, model=self.trainer.model)
+                return metrics["generation-score"]
+        else:
+            metrics = self.evaluate(self.test_dataset_name, self.iterable_dataset["test"], sampling_params, model=self.trainer.model)
+            metric = self.task_metrics[self.test_dataset_name]
+            logger.debug(f"metrics are {metrics}")
+            if "fscore" in metric:
+                return metrics["fscore"]
+            else:
+                return metrics["generation-score"]
 
-        metrics = self.evaluate(self.test_dataset_name, self.iterable_dataset["test"], sampling_params, model=self.trainer.model)
         self.free_model()
 
         log_mem(f"finished evaluation")
-        logger.debug(f"metrics are {metrics}")
-        metric = self.task_metrics[self.test_dataset_name]
-        if "fscore" in metric:
-            return metrics["fscore"]
-        else:
-            return metrics["generation-score"]
+
 
     def perform_hpo(self):
         """Perform HPO search"""
@@ -664,12 +673,12 @@ class Runner:
             sampling_params= self.load_sampling_params(self.test_dataset_name)
             train_subsample_amount = self.config.train_datasets.get("subsample_amount", None)
             self.trainer.evaluate()
-            if "val_loss" in self.trainer.state.log_history[-1]:
-                val_loss = self.trainer.state.log_history[-1]['val_loss']
+            if "eval_loss" in self.trainer.state.log_history[-1]:
+                val_loss = self.trainer.state.log_history[-1]['eval_loss']
             else:
                 val_loss = -1000
-            if "train_loss" in self.trainer.state.log_history[-1]:
-                train_loss = self.trainer.state.log_history[-1]['train_loss']
+            if "loss" in self.trainer.state.log_history[-1]:
+                train_loss = self.trainer.state.log_history[-1]['loss']
             else:
                 train_loss = -1000
             metrics = self.evaluate(self.test_dataset_name, self.iterable_dataset["test"], sampling_params, model=self.trainer.model)
