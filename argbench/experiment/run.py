@@ -562,6 +562,7 @@ class Runner:
                 return min(all_loss)
             else:
                 metrics = self.evaluate(self.test_dataset_name, self.iterable_dataset["test"], sampling_params, model=self.trainer.model)
+                logger.debug(f"metrics are {metrics}")
                 return metrics["generation-score"]
         else:
             metrics = self.evaluate(self.test_dataset_name, self.iterable_dataset["test"], sampling_params, model=self.trainer.model)
