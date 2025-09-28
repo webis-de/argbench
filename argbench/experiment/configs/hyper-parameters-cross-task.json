@@ -1,8 +1,8 @@
 {
   "mistral-7b-inst-3": {
     "argument_unit_segmentation_webDiscourse_ajjour17": {
-      "train_batch_size": 11,
-      "learning_rate": 0.0000701
+      "train_batch_size": 4,
+      "learning_rate": 2.86544898675149e-05
     },
     "argument_rating_dagstuhl_15512_wachsmuth17": {
       "train_batch_size": 11,
