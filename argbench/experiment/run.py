@@ -558,6 +558,7 @@ class Runner:
 
             if eval_logs:
                 all_eval_loss = [rec["eval_loss"] for rec in eval_logs]
+                print("eval_loss")
                 return min(all_eval_loss)
             elif "train_loss" in self.trainer.state.log_history[-1]:
                 print("train_loss")
