@@ -553,7 +553,7 @@ class Runner:
 
         sampling_params = self.load_sampling_params(self.test_dataset_name, trial, self.config.hpo_config.vllm_config)
         self.trainer.evaluate()
-        if "generation" in self.iterable_dataset["test"]:
+        if "generation" in self.test_dataset_name:
             eval_logs = [log for log in self.trainer.state.log_history if 'eval_loss' in log]
 
             if eval_logs:
