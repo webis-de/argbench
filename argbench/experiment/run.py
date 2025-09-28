@@ -557,6 +557,9 @@ class Runner:
             if "eval_loss" in self.trainer.state.log_history[-1]:
                 all_eval_loss = [rec["eval_loss"] for rec in self.trainer.state.log_history]
                 return min(all_eval_loss)
+            elif "loss" in self.trainer.state.log_history[-1]:
+                all_loss = [rec["loss"] for rec in self.trainer.state.log_history]
+                return min(all_loss)
             else:
                 metrics = self.evaluate(self.test_dataset_name, self.iterable_dataset["test"], sampling_params, model=self.trainer.model)
                 return metrics["generation-score"]
