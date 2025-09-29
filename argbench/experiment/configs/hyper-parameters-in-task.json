@@ -11,9 +11,9 @@
       "early_stopping_threshold": 0.0081
     },
     "argument_similarity_ukp_aspect_reimers19": {
-      "train_batch_size": 14,
-      "learning_rate": 0.0000506,
-      "early_stopping_threshold": 0.0081
+      "train_batch_size": 4,
+      "learning_rate": 9.836263268315773e-05,
+      "early_stopping_threshold": 0.0007
     },
     "fallacy_detection_cmv_adhominem_habernal18": {
       "train_batch_size": 8,
