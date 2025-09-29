@@ -636,6 +636,7 @@ class Runner:
             self.trainer.train()
             self.adapter_path = self.config.get_model_path(self.starting_time)
             self.trainer.save_model(self.adapter_path)
+            print(f"best model checkpoint at {self.trainer.state.best_model_checkpoint}")
             for obj in self.trainer.state.log_history:
                 logger.debug(obj)
             log_mem("trained")
