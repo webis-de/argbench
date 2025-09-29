@@ -2,11 +2,15 @@
 
 export model_list=argbench/data/models-small.txt
 
-while getopts "qabnhvm:t:c:l:g:" opt; do
+while getopts "qabnhvosm:t:c:l:g:" opt; do
   case $opt in
     c)
       gpu_count=$OPTARG
     ;;
+    o)
+      one_epoch="one_epoch"
+    ;;
+
     b)
       model_list=argbench/data/models-large.txt
       ;;
@@ -15,6 +19,9 @@ while getopts "qabnhvm:t:c:l:g:" opt; do
       ;;
     a)
       gpu_type="a100"
+    ;;
+    s)
+      sample="sample"
     ;;
     l)
       model_adapter="$OPTARG"
@@ -98,15 +105,25 @@ if [ -n "$goal_task" ]; then
   args+=("--dataset" "$goal_task")
 fi
 
+if [ -n "$one_epoch" ]; then
+  args+=("--train_epochs" 1)
+fi
+
+if [ -n "$sample" ]; then
+  args+=("--sample")
+fi
+
 
 for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
-    if [ -z "$validation" ]; then
+    if [ -n "$model_adapter" ] ; then
+        bash argbench/jobs/skill-transfer/run_skill_transfer_experiments.sh  "$gpu_count" "$gpu_type" "test_task_${task}" "skill-transfer-$model-$task" --model "$model" --debug --max_length 1024 --skill_filter "$task" "${args[@]}"
+    elif [ -z "$validation" ]; then
       echo "test"
-          bash argbench/jobs/skill-transfer/run_skill_transfer_experiments.sh "$gpu_count" "$gpu_type" "${task}" "skill-transfer-$model-$task" --model "$model" --skill_filter "$task"   --train_epochs 1 --debug --sample --debug "${args[@]}"
+          bash argbench/jobs/skill-transfer/run_skill_transfer_experiments.sh "$gpu_count" "$gpu_type" "${task}" "skill-transfer-$model-$task" --model "$model" --skill_filter "$task"    --debug "${args[@]}" --max_length 1024
     else
       echo "validation"
-          bash argbench/jobs/skill-transfer/run_skill_transfer_experiments.sh "$gpu_count" "$gpu_type" "${task}_hpo" "skill-transfer-$model-$task-hpo" --model "$model"   --skill_filter "$task"  --sample --train_epochs 1 --debug "${args[@]}"
+          bash argbench/jobs/skill-transfer/run_skill_transfer_experiments.sh "$gpu_count" "$gpu_type" "${task}_hpo" "skill-transfer-$model-$task-hpo" --model "$model"   --skill_filter "$task"  --sample  --debug "${args[@]}" --max_length 1024
      fi
     sleep 5
   done

@@ -108,9 +108,9 @@ for model in "${models[@]}"; do
   for task in "${tasks[@]}"; do
     if [ -z "$validation" ]; then
       echo "test"
-        bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "cross_task" "cross-tsk-$model-$task" --model "$model"  --debug --sample "${args[@]}"
+        bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "cross_task" "cross-tsk-$model-$task" --model "$model"  --debug --sample "${args[@]}" --max_length 1024
     else
-        bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "cross_task_val_hpo" "cross-tsk-$model-hpo" --model "$model"  --debug "${args[@]}"
+        bash argbench/jobs/cross-tasks/run_cross_tasks_experiment.sh "$gpu_count" "$gpu_type" "cross_task_val_hpo" "cross-tsk-$model-hpo" --model "$model"  --debug "${args[@]}" --max_length 1024
      fi
     sleep 5
   done
