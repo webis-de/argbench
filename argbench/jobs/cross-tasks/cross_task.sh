@@ -2,11 +2,18 @@
 #/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/training_output/qwen3-4b-hpo-cross-task-stance_classification_ukp_sentential_stab18-09-17-15:19:54
 
 export model_list=argbench/data/models-small.txt
-while getopts "qabhnvm:l:t:c:g:" opt; do
+while getopts "qabhnvosm:l:t:c:g:" opt; do
   case $opt in
     c)
       gpu_count="$OPTARG"
     ;;
+      o)
+        one_epoch="one_epoch"
+      ;;
+    s)
+      sample="sample"
+    ;;
+
     b)
       model_list=argbench/data/models-large.txt
       ;;
@@ -80,6 +87,15 @@ fi
 if [ -n "$no_training" ]; then
   args+=("--train_epochs" 0)
 fi
+
+if [ -n "$one_epoch" ]; then
+  args+=("--train_epochs" 1)
+fi
+
+if [ -n "$sample" ]; then
+  args+=("--sample")
+fi
+
 
 # Run the command with the array expanded
 # The command will be executed as: ./your_command
