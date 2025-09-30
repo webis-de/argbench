@@ -392,7 +392,7 @@ class Runner:
 
         train_args = TrainingArguments(output_dir=self.config.get_output_path(),
             report_to=report_to,torch_empty_cache_steps=4,
-            logging_dir=tensorboard_dir,dataloader_pin_memory=True,
+            logging_dir=tensorboard_dir,dataloader_pin_memory=True, generation_config=self.generation_config,
             **training_args)
 
         data_collator = DataCollatorForSeq2Seq(
@@ -411,7 +411,7 @@ class Runner:
         
         trainer = Trainer(model=model, callbacks=callbacks, train_dataset=self.iterable_dataset["train"].with_format("torch"),
                           eval_dataset=self.iterable_dataset["val"].with_format("torch"),
-        args=train_args, data_collator=data_collator, generation_config=self.generation_config)
+        args=train_args, data_collator=data_collator)
 
         return trainer
 
