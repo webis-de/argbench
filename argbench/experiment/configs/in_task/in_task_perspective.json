@@ -99,7 +99,7 @@
     },
     "generation_config": {
       "min_new_tokens": 4,
-      "max_new_tokens": 7,
+      "max_new_tokens": 8,
       "do_sample": false
 
     },
