@@ -232,55 +232,17 @@ class ValidationConfig(CommonConfig):
 class ModelGenerationConfig(CommonConfig):
     """Configuration object for GenerationConfig"""
 
-    max_length: int = 20
 
-    max_new_tokens: int = None
+    max_new_tokens: int = 512
 
-    min_length: int = 0
-
-    min_new_tokens: int = None
-
-    # Early stopping condition
-    # True
-    # False
-    # "never"
-    early_stopping: str = None
-
-    max_time: float = None
-
-    # Generation strategy parameters
+    min_length: int = 3
 
     do_sample: bool = False
 
-    num_beams: int = 1
 
-    num_beam_groups: int = 1
 
-    penalty_alpha: float = None
 
-    use_cache: bool = True
 
-    # Logit parameters
-
-    temperature: float = 1
-
-    top_k: int = 50
-
-    top_p: float = 1
-
-    min_p: float = None
-
-    typical_p: float = None
-
-    epsilon_cutoff: float = None
-
-    eta_cutoff: float = None
-
-    diversity_penalty: float = 0
-
-    repetition_penalty: float = 1
-
-    length_penalty: float = 1
 
     def to_conf(self):
         config = super().to_conf()
