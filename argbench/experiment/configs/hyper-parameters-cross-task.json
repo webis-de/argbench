@@ -6,23 +6,23 @@
       "early_stopping_threshold": 0.0001
     },
     "argument_rating_dagstuhl_15512_wachsmuth17": {
-      "train_batch_size": 11,
-      "learning_rate": 0.0000701,
+      "train_batch_size": 4,
+      "learning_rate": 2.86544898675149e-05,
       "early_stopping_threshold": 0.0001
     },
     "argument_similarity_ukp_aspect_reimers19": {
-      "train_batch_size": 11,
-      "learning_rate": 0.0000701,
+      "train_batch_size": 4,
+      "learning_rate": 2.86544898675149e-05,
       "early_stopping_threshold": 0.0001
     },
     "fallacy_detection_cmv_adhominem_habernal18": {
-      "train_batch_size": 11,
-      "learning_rate": 0.0000701,
+      "train_batch_size": 4,
+      "learning_rate": 2.86544898675149e-05,
       "early_stopping_threshold": 0.0001
     },
     "counter_argument_generation_cmv_hua18": {
-      "train_batch_size": 11,
-      "learning_rate": 0.0000701,
+      "train_batch_size": 4,
+      "learning_rate": 2.86544898675149e-05,
       "early_stopping_threshold": 0.0001
     }
   },
