@@ -106,7 +106,10 @@
         "return_tensors": "pt"
     },
     "generation_config": {
-        "max_new_tokens": 1000
+      "min_new_tokens": 32,
+      "max_new_tokens": 2048,
+      "do_sample": false
+
     },
     "validation_config": {
         "batch_size": 1,

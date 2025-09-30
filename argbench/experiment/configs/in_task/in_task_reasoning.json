@@ -86,7 +86,7 @@
         "bf16": true,
         "logging_steps": 10,
         "lr_scheduler_type": "linear",
-        "metric_for_best_model": "eval_loss",
+        "metric_for_best_model": "loss",
         "gradient_accumulation_steps": 4
     },
     "early_stopping_config": {
@@ -98,7 +98,10 @@
         "return_tensors": "pt"
     },
     "generation_config": {
-        "max_new_tokens": 1000
+      "min_new_tokens": 4,
+      "max_new_tokens": 8,
+      "do_sample": false
+
     },
     "validation_config": {
         "batch_size": 1,

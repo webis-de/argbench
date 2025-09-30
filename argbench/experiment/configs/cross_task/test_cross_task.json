@@ -62,7 +62,7 @@
         "bf16": true,
         "logging_steps": 40000,
         "lr_scheduler_type": "linear",
-        "metric_for_best_model": "eval_loss"
+        "metric_for_best_model": "loss"
     },
     "early_stopping_config": {
         "early_stopping_patience": 3,
