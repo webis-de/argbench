@@ -184,7 +184,7 @@
     },
     "argument_similarity_ukp_aspect_reimers19": {
       "train_batch_size": 4,
-      "learning_rate":8.346462673349302e-05,
+      "learning_rate":3.9905367382043025e-05,
       "early_stopping_threshold": 0.0001
     },
     "fallacy_detection_cmv_adhominem_habernal18": {
