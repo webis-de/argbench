@@ -235,7 +235,7 @@ class ModelGenerationConfig(CommonConfig):
 
     max_new_tokens: int = 512
 
-    min_length: int = 3
+    min_new_tokens: int = 3
 
     do_sample: bool = False
 
