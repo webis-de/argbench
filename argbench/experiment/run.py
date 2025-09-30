@@ -390,7 +390,7 @@ class Runner:
             tensorboard_dir = None
         training_args = self.config.training_args_config.to_conf(trial, training_arg_hpo)
 
-        train_args = TrainingArguments(output_dir=self.config.get_output_path(),
+        train_args = Seq2SeqTrainingArguments(output_dir=self.config.get_output_path(),
             report_to=report_to,torch_empty_cache_steps=4,
             logging_dir=tensorboard_dir,dataloader_pin_memory=True, generation_config=self.generation_config,
             **training_args)
