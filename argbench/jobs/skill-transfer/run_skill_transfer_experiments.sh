@@ -17,7 +17,7 @@ sbatch <<EOF
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=6
 #SBATCH --mem=24G
-#SBATCH --time=2:00:00
+#SBATCH --time=72:00:00
 #SBATCH --output argbench/output/"$jobname"-%j.out
 #SBATCH --error argbench/output/"$jobname"-%j.err
 #SBATCH --gres=gpu:"$gpu_type:$gpu_count"
