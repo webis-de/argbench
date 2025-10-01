@@ -84,8 +84,8 @@
         "optim": "adamw_bnb_8bit",
         "eval_strategy": "steps",
         "save_strategy": "steps",
-        "eval_steps": 200,
-        "save_steps": 200,
+        "eval_steps": 500,
+        "save_steps": 500,
         "load_best_model_at_end": true,
         "group_by_length": false,
         "do_eval": true,
@@ -105,7 +105,10 @@
         "return_tensors": "pt"
     },
     "generation_config": {
-        "max_new_tokens": 1000
+      "min_new_tokens": 4,
+      "max_new_tokens": 1024,
+      "do_sample": false
+
     },
     "validation_config": {
         "batch_size": 1,
