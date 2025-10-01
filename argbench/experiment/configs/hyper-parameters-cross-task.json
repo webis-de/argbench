@@ -61,9 +61,9 @@
   "deepseek-r1-distill-7b":
   {
     "argument_unit_segmentation_webDiscourse_ajjour17": {
-      "train_batch_size": 16,
-      "learning_rate": 0.0000452,
-      "early_stopping_threshold": 0.0001
+      "train_batch_size": 4,
+      "learning_rate": 9.506364250370227e-05,
+      "early_stopping_threshold": 0.001
 
     },
 
