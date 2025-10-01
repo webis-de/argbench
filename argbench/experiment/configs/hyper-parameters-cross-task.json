@@ -31,7 +31,7 @@
     "argument_unit_segmentation_webDiscourse_ajjour17": {
       "train_batch_size": 4,
       "learning_rate": 0.0000997,
-      "early_stopping_threshold": 0.001
+      "early_stopping_threshold": 0.0001
 
     },
 
