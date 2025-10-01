@@ -19,6 +19,7 @@
     "tensorboard_logs": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/tensorboard",
     "argbench_dataset_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/argbench-dataset",
  	"model_configs_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation/argbench/experiment/configs/model_configs.json",
+    "prediction_path": "/bigwork/nhwpajjy/task-specific-argument-mining-and-generation-data/cross-predictions.tsv",
     "train_datasets": {},
     "test_dataset": {
 
@@ -80,7 +81,7 @@
     },
     "training_args_config": {
         "per_device_train_batch_size": 128,
-        "num_train_epochs": 1,
+        "num_train_epochs": 10,
         "learning_rate": 0.0003,
         "optim": "adamw_bnb_8bit",
         "eval_strategy": "steps",
@@ -92,7 +93,7 @@
         "do_eval": true,
         "warmup_steps": 200,
         "bf16": true,
-        "logging_steps": 1000,
+        "logging_steps": 50,
         "lr_scheduler_type": "linear",
         "metric_for_best_model": "loss",
         "gradient_accumulation_steps": 4
