@@ -180,7 +180,8 @@
     "argument_rating_dagstuhl_15512_wachsmuth17": {
       "train_batch_size": 4,
       "learning_rate":3.28153253149535E-05,
-      "early_stopping_threshold": 0.0004
+      "early_stopping_threshold": 0.0004,
+      "early_stopping_patience": 10
     },
     "argument_similarity_ukp_aspect_reimers19": {
       "train_batch_size": 4,
@@ -206,8 +207,8 @@
     },
     "argument_rating_dagstuhl_15512_wachsmuth17": {
       "train_batch_size": 4,
-      "learning_rate":7.386098812454895e-05,
-      "early_stopping_threshold": 0.0007
+      "learning_rate":2.53178275263973E-05,
+      "early_stopping_threshold": 0.0001
     },
     "argument_similarity_ukp_aspect_reimers19": {
       "train_batch_size": 4,
