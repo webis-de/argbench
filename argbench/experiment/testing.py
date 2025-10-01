@@ -11,7 +11,7 @@ from sklearn.metrics import f1_score
 from scipy.stats import kendalltau
 from nltk import word_tokenize
 from bert_score import score
-
+from argbench.experiment.utils import load_labels_set
 
 logger = logging.getLogger()
 
@@ -57,10 +57,12 @@ def compute_precision_recall_fscore_support(predictions, references, f1_average=
 
 
 
-def compute_f1_score(predictions, references):
+def compute_f1_score(predictions, references, test_task_name):
+    all_labels = load_labels_set()
+    labels = all_labels[test_task_name]
     logger.log(level=logging.INFO, msg=f"referecnes {references}")
     logger.log(level=logging.INFO, msg=f"predictions {predictions}")
-    labels = set(references)
+    logger.log(level=logging.INFO, msg=f"labels {labels}")
     labels_lowered = {label.lower().strip() for label in labels}
     mappings = {}
     counter = 0

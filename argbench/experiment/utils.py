@@ -35,6 +35,12 @@ def get_logger(config: RunConfig):
 
     return logger
 
+def load_labels_set():
+    curr_file = os.path.abspath(__file__)
+    config_file = Path(curr_file).parents[1] / "data" / "label_set.json"
+    with open(config_file) as stream:
+        return json.load(stream)
+
 def data_repo():
     """Get path of data repository"""
     curr_file = os.path.abspath(__file__)

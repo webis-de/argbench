@@ -21,6 +21,7 @@ map = {
     "circular reasoning": "Circular Reasoning",
     "false dilemma" : "False Dilemma"
 }
+
 def process_data(dataset, data_name, data_split, metadata):
 
     output = Output(dataset_name)

@@ -804,7 +804,7 @@ class Runner:
         logger.debug(f"evaluating {counter} instances")
 
         if metric == "fscore":
-            return compute_f1_score(predictions, labels)
+            return compute_f1_score(predictions, labels, test_task_name)
         elif metric == "rouge":
             return compute_rouge_score(predictions, labels)
         elif metric == "generation-score":
