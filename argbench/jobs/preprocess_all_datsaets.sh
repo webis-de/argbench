@@ -16,13 +16,13 @@ export CONFIG_PATH="$BIGWORK/task-specific-argument-mining-and-generation/argben
 module load Miniforge3
 conda activate new-env
 
-for f in "${CODE_PATH}"/argbench/converter/convert*.py;  do
-python $f ;
-echo $f
-done
-cd "$CODE_PATH"
-python -m argbench.experiment.preprocess -o "$DATA_PATH/tasks"
-find "$DATA_PATH/tasks/" -name "*size*"  | xargs -I % rm %
-find "$DATA_PATH/tasks/" -name "*rate*"  | xargs -I % rm %
+#for f in "${CODE_PATH}"/argbench/converter/convert*.py;  do
+#python $f ;
+#echo $f
+#done
+#cd "$CODE_PATH"
+#python -m argbench.experiment.preprocess -o "$DATA_PATH/tasks"
+#find "$DATA_PATH/tasks/" -name "*size*"  | xargs -I % rm %
+#find "$DATA_PATH/tasks/" -name "*rate*"  | xargs -I % rm %
 
 python -m  argbench.experiment.prepare_experiment -c "$CONFIG_PATH"

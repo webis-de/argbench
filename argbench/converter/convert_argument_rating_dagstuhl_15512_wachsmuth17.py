@@ -7,7 +7,7 @@ import re
 import uuid
 
 p = re.compile(r"\(([a-zA-Z]+)\)")
-QUALITY_SCORES = ["Low", "Medium", "High"]
+QUALITY_SCORES = ["Low", "Average", "High"]
 DATASET_NAME = "argument_rating_dagstuhl_15512_wachsmuth17"
 
 def aggregate_labels_and_split(dataset, tasks):
@@ -38,8 +38,8 @@ def make_output(dataset, metadata, dataset_file, split):
 
     output = Output(DATASET_NAME)
     output.append_definition(f"""Judge the quality of the argument according to quality aspect. Possible outputs:
-                            Low if arguments aspect quality is low, Medium if argument's aspect quality is average,
-                            High if arguments aspect quality is high. Only output Low, Medium, or High.""")
+                            Low if arguments aspect quality is low, average if argument's aspect quality is average,
+                            High if arguments aspect quality is high. Only output Low, Average, or High.""")
 
     for row in dataset.iterrows():
         row = row[1]

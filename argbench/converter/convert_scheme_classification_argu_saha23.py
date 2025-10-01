@@ -65,10 +65,10 @@ if __name__ == "__main__":
         for id in model_split_idx[split_model]:
             for arg in arguments:
                 if arg.id == id:
-                    output = arg.output
-                    if output == "means for goal":
-                        output = "means from goal"
-                    output.append_instance(arg.id, f"Argument: {arg.prompt}", [output])
+                    output_text = arg.output
+                    if output_text == "means for goal":
+                        output_text = "means from goal"
+                    output.append_instance(arg.id, f"Argument: {arg.prompt}", [output_text])
                     break
         dataset_file = f"scheme_classification_argu_{split_model}_saha23.json"
         metadata.add_dataset(dataset_file, split_model)
