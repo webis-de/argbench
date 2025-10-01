@@ -90,7 +90,7 @@
         "load_best_model_at_end": true,
         "group_by_length": false,
         "do_eval": true,
-        "warmup_steps": 200,
+        "warmup_steps": 100,
         "bf16": true,
         "logging_steps": 50,
         "lr_scheduler_type": "linear",
