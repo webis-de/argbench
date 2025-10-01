@@ -97,7 +97,7 @@
         "gradient_accumulation_steps": 4
     },
     "early_stopping_config": {
-        "early_stopping_patience": 3,
+        "early_stopping_patience": 20,
         "early_stopping_threshold": 0.001
     },
     "data_collator_config": {
