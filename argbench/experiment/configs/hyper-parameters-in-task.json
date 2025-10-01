@@ -6,9 +6,9 @@
       "early_stopping_threshold": 0.0001
     },
     "argument_rating_dagstuhl_15512_wachsmuth17": {
-      "train_batch_size": 9,
-      "learning_rate": 0.000079,
-      "early_stopping_threshold": 0.0081
+      "train_batch_size": 4,
+      "learning_rate": 3.48922121643742E-05,
+      "early_stopping_threshold": 0.001
     },
     "argument_similarity_ukp_aspect_reimers19": {
       "train_batch_size": 4,
@@ -37,8 +37,8 @@
 
     "argument_rating_dagstuhl_15512_wachsmuth17": {
       "train_batch_size": 4,
-      "learning_rate": 0.0000289,
-      "early_stopping_threshold": 0.0081
+      "learning_rate": 1.75818395588427E-05,
+      "early_stopping_threshold": 0.001
 
     },
     "argument_similarity_ukp_aspect_reimers19": {
@@ -69,8 +69,8 @@
 
     "argument_rating_dagstuhl_15512_wachsmuth17": {
       "train_batch_size": 4,
-      "learning_rate": 4.1936684089556845e-05,
-      "early_stopping_threshold": 0.001
+      "learning_rate": 9.93306138188364E-05,
+      "early_stopping_threshold": 0.0001
 
     },
     "argument_similarity_ukp_aspect_reimers19": {
@@ -124,9 +124,9 @@
         "early_stopping_threshold": 0.0001
       },
       "argument_rating_dagstuhl_15512_wachsmuth17": {
-        "train_batch_size": 8,
-        "learning_rate": 4.6973663279440106e-05,
-        "early_stopping_threshold": 0.0011
+        "train_batch_size": 4,
+        "learning_rate": 6.05270703191169E-06,
+        "early_stopping_threshold": 0.001
       },
       "argument_similarity_ukp_aspect_reimers19": {
         "train_batch_size": 4,
@@ -151,9 +151,9 @@
       "early_stopping_threshold": 0.001
     },
     "argument_rating_dagstuhl_15512_wachsmuth17": {
-      "train_batch_size": 0,
-      "learning_rate":0,
-      "early_stopping_threshold": 0.0061
+      "train_batch_size": 4,
+      "learning_rate":6.99043246458369E-05,
+      "early_stopping_threshold": 0.001
     },
     "argument_similarity_ukp_aspect_reimers19": {
       "train_batch_size": 4,
