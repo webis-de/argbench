@@ -184,8 +184,8 @@
     },
     "argument_similarity_ukp_aspect_reimers19": {
       "train_batch_size": 4,
-      "learning_rate":3.9905367382043025e-05,
-      "early_stopping_threshold": 0.0001
+      "learning_rate":3.7436448109969025e-06,
+      "early_stopping_threshold":  0.0004
     },
     "fallacy_detection_cmv_adhominem_habernal18": {
       "train_batch_size": 0,
@@ -238,8 +238,8 @@
   },
   "argument_similarity_ukp_aspect_reimers19": {
     "train_batch_size": 4,
-    "learning_rate":4.76202663930211e-05,
-    "early_stopping_threshold": 0.001
+    "learning_rate":2.857425562129485e-05,
+    "early_stopping_threshold": 0.0005
   },
   "fallacy_detection_cmv_adhominem_habernal18": {
     "train_batch_size": 0,
