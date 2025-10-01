@@ -175,7 +175,7 @@
     "argument_unit_segmentation_webDiscourse_ajjour17": {
       "train_batch_size": 4,
       "learning_rate":8.060642411010872e-05,
-      "early_stopping_threshold": 0.0001
+      "early_stopping_threshold": 0.001
     },
     "argument_rating_dagstuhl_15512_wachsmuth17": {
       "train_batch_size": 0,
