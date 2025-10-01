@@ -120,7 +120,7 @@ class TrainingArgsConfig(CommonConfig):
 
     save_steps: int
 
-    save_total_limit: int = 3
+    save_total_limit: int = 10
 
     weight_decay: float = 0.0
 
