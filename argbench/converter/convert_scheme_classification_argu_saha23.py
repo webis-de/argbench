@@ -57,15 +57,18 @@ if __name__ == "__main__":
         output.append_definition("Classify the following argument according to  the following Walton's argument schemes.\n"+
                                  "Means from Goal: is a form of practical reasoning used to justify an action by showing that it is a necessary or effective means to achieve a desired goal.\n"+
                                  "Goal from Means: is a form of practical reasoning that justifies an action (the means) by demonstrating its effectiveness in achieving a desired outcome (the goal).\n"+
-                                 "From Consequences: is a form of practical reasoning used to justify or critique an action based on its anticipated results.\n"+
-                                 "Source Knowledge: type of defeasible reasoning used to support a claim by citing a knowledgeable or credible source.\n"+
-                                 "Source Authority: is a type of reasoning that asserts a claim is true because a recognized expert in the relevant field says it.\n"+
+                                 "From Consequence: is a form of practical reasoning used to justify or critique an action based on its anticipated results.\n"+
+                                 "From Source Knowledge: type of defeasible reasoning used to support a claim by citing a knowledgeable or credible source.\n"+
+                                 "From Source Authority: is a type of reasoning that asserts a claim is true because a recognized expert in the relevant field says it.\n"+
                                  "Rule or Principle: a form of practical reasoning that justifies a specific action or decision by appealing to a general, established rule, policy, or principle.\n"+
-                                 "Only output one of the following argument schemes: means for goal, goal from means, from consequence, source knowledge, source authority, rule or principle, and other.")
+                                 "Only output one of the following argument schemes: means from goal, goal from means, from consequence, from source knowledge, from source authority, rule or principle, and other.")
         for id in model_split_idx[split_model]:
             for arg in arguments:
                 if arg.id == id:
-                    output.append_instance(arg.id, f"Argument: {arg.prompt}", [arg.output])
+                    output = arg.output
+                    if output == "means for goal":
+                        output = "means from goal"
+                    output.append_instance(arg.id, f"Argument: {arg.prompt}", [output])
                     break
         dataset_file = f"scheme_classification_argu_{split_model}_saha23.json"
         metadata.add_dataset(dataset_file, split_model)

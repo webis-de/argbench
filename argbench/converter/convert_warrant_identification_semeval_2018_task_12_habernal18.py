@@ -23,7 +23,7 @@ def process_split(dataset, metadata, split):
         reason = row["reason"]
         claim = row["claim"]
         #label = f"Warrant 1: {warrant_1}." if row["correctLabelW0orW1"] else f"Warrant 2: {warrant_2}."
-        label = f"Warrant 1" if row["correctLabelW0orW1"] else f"Warrant 2"
+        label = f"Warrant 2" if row["correctLabelW0orW1"] else f"Warrant 1"
         prompt = f"Debate Title: {title}\nDebate Description: {description}\nReason: {reason}.\nWarrant 1: {warrant_1}.\n Warrant 2: {warrant_2},\nClaim: {claim}."
         output.append_instance(id, prompt, [label])
 
